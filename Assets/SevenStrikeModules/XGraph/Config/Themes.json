@@ -1,0 +1,230 @@
+{
+    "Group": [
+        {
+            "solution": "M 默认",
+            "title_bg_color": "#161616",
+            "title_text_color": "#DDDDDD",
+            "content_bg_color": "#75757517",
+            "logo_color": "#DDDDDD"
+        },
+        {
+            "solution": "L 亮色系",
+            "title_bg_color": "#D1D1D1",
+            "title_text_color": "#222222",
+            "content_bg_color": "#75757517",
+            "logo_color": "#222222"
+        },
+        {
+            "solution": "Y 夜空蓝",
+            "title_bg_color": "#224D8D",
+            "title_text_color": "#DFDFDF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#E0E0E0"
+        },
+        {
+            "solution": "G 工业蓝",
+            "title_bg_color": "#224BAC",
+            "title_text_color": "#DFDFDF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#E0E0E0"
+        },
+        {
+            "solution": "M 暮色红",
+            "title_bg_color": "#843333",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "T 铁锈红",
+            "title_bg_color": "#8C4C2E",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "G 橄榄绿",
+            "title_bg_color": "#5D6E33",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "H 湖水绿",
+            "title_bg_color": "#4A7E59",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "S 神秘紫",
+            "title_bg_color": "#664DA1",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "D 靛蓝",
+            "title_bg_color": "#336C78",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "Y 烟灰蓝",
+            "title_bg_color": "#384D61",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "D 淡粉",
+            "title_bg_color": "#825F7B",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "Q 青草绿",
+            "title_bg_color": "#467432",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "N 柠檬黄",
+            "title_bg_color": "#807F22",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        }
+    ],
+    "GraphviewBgGrid": [
+        {
+            "solution": "M 默认",
+            "grid_bg_color": "#282828",
+            "line_color": "#2f2f2f",
+            "thickLine_color": "#2f2f2f",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "M 默认（无网格）",
+            "grid_bg_color": "#282828",
+            "line_color": "#282828",
+            "thickLine_color": "#282828",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "A 暗色系",
+            "grid_bg_color": "#1D1D1D",
+            "line_color": "#272727",
+            "thickLine_color": "#272727",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "A 暗色系（无网格）",
+            "grid_bg_color": "#1D1D1D",
+            "line_color": "#1D1D1D",
+            "thickLine_color": "#1D1D1D",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "L 亮色系",
+            "grid_bg_color": "#CECECE",
+            "line_color": "#b6b6b6",
+            "thickLine_color": "#b6b6b6",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "L 亮色系（无网格）",
+            "grid_bg_color": "#CECECE",
+            "line_color": "#CECECE",
+            "thickLine_color": "#CECECE",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "G 橄榄绿",
+            "grid_bg_color": "#505349",
+            "line_color": "#424242",
+            "thickLine_color": "#424242",
+            "spacing": 20,
+            "thicklines": 0
+        },
+        {
+            "solution": "G 橄榄绿（无网格）",
+            "grid_bg_color": "#505349",
+            "line_color": "#505349",
+            "thickLine_color": "#505349",
+            "spacing": 20,
+            "thicklines": 0
+        }
+    ],
+    "Node": [
+        {
+            "solution": "M 默认",
+            "nodecolor": "#00000000"
+        },
+        {
+            "solution": "L 亮色",
+            "nodecolor": "#DEDEDE"
+        },
+        {
+            "solution": "H 灰色",
+            "nodecolor": "#878787"
+        },
+        {
+            "solution": "A 暗色",
+            "nodecolor": "#1A1A1A"
+        },
+        {
+            "solution": "J 橘色",
+            "nodecolor": "#FFA32F"
+        },
+        {
+            "solution": "C 赤焰色",
+            "nodecolor": "#FF6D34"
+        },
+        {
+            "solution": "N 柠檬黄",
+            "nodecolor": "#E0D05C"
+        },
+        {
+            "solution": "G 橄榄绿",
+            "nodecolor": "#D5FF17"
+        },
+        {
+            "solution": "F 粉色",
+            "nodecolor": "#FA92FF"
+        },
+        {
+            "solution": "Z 紫色",
+            "nodecolor": "#8F47FF"
+        },
+        {
+            "solution": "Q 青色",
+            "nodecolor": "#39FFAB"
+        },
+        {
+            "solution": "L 绿色",
+            "nodecolor": "#22D640"
+        },
+        {
+            "solution": "B 薄荷绿",
+            "nodecolor": "#86CC5F"
+        },
+        {
+            "solution": "T 天际蓝",
+            "nodecolor": "#4CC3FF"
+        },
+        {
+            "solution": "B 宝石蓝",
+            "nodecolor": "#2583FF"
+        }
+    ]
+}

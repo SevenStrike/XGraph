@@ -1,0 +1,48 @@
+.scope.group.group_main
+{
+     background-color: transparent;
+}
+
+.mainContainer > #headerContainer > #titleContainer.groupTitleContainer
+{
+     /*margin-left: 25px;*/
+     /*margin-right: 25px;*/
+     margin-top: 0px;
+     margin-bottom: 0px;
+     padding-top: 6px;
+     padding-bottom: 6px;
+     width: 100%;
+}
+
+.mainContainer > #headerContainer > #titleContainer > #titleLabel.group_title
+{
+     font-size: 14px;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     width: auto;
+     -unity-text-align: middle-left;
+}
+
+.scope > .mainContainer > #centralContainer > #contentContainerPlaceholder.contentContainer
+{
+     padding-top: 15px;
+     padding-right: 15px;
+     padding-bottom: 15px;
+     padding-left: 15px;
+}
+
+.Title_Icon
+{
+     left: 15px;
+     top: 6px;
+     height: 16px;
+     width: 16px;
+     margin-right: 30px;
+     -unity-text-align: middle-left;
+}
+
+.scope > .mainContainer > #headerContainer.headcontainer
+{
+     flex-direction: row;
+     padding: 0;
+}

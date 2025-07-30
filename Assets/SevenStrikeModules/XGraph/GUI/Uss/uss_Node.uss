@@ -1,0 +1,66 @@
+#title-label.Title_Label
+{
+     height: 20px;
+     width: 80px;
+     -unity-text-align: middle-left;
+     font-size: 13px;
+     padding-left: 0;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 10px;
+}
+
+.Title_Icon
+{
+     left: 10px;
+     top: 8px;
+     height: 18px;
+     width: 18px;
+     margin-right: 15px;
+     -unity-text-align: middle-left;
+}
+
+.Extension_Label
+{
+     color: darkgrey;
+     height: 30px;
+     width: 30px;
+     font-size: 11px;
+     -unity-text-align: middle-left;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 10px;
+     padding-left: 5px;
+}
+
+.MainContainer
+{
+     background-color: rgba(0, 0, 0, 0.5);
+}
+
+/*.TitleContainer
+{
+     border-bottom-color: aqua;
+     border-bottom-width: 5px;
+}*/
+
+.TitleButtonContainer
+{
+}
+
+.TopContainer
+{
+}
+
+.InputContainer
+{
+}
+
+.OutputContainer
+{
+}
+
+.ExtensionContainer
+{
+     background-color: rgba(31, 31, 31, 0.95);
+}

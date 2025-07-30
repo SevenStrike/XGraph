@@ -1,0 +1,64 @@
+{
+    "root_title": "节点列表",
+    "root_types": [
+        {
+            "catergory_title": "基础",
+            "catergory_nodes": [
+                {
+                    "name": "开始",
+                    "note": "开始行为",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "Start",
+                    "icon":"start",
+                    "visual_nodeType": "N_In_S_Out"
+                },
+                {
+                    "name": "结束",
+                    "note": "结束行为",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "End",
+                    "icon":"end",
+                    "visual_nodeType": "S_In_N_Out"
+                },
+                {
+                    "name": "合成",
+                    "note": "合成行为",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "Composite",
+                    "icon":"composite",
+                    "visual_nodeType": "S_In_M_Out"
+                },
+                {
+                    "name": "等待",
+                    "note": "等待行为",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "Wait",
+                    "icon":"wait",
+                    "visual_nodeType": "S_In_S_Out"
+                },
+                {
+                    "name": "调试",
+                    "note": "调试行为",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "Debug",
+                    "icon":"debug",
+                    "visual_nodeType": "S_In_S_Out"
+                },
+                {
+                    "name": "便签",
+                    "note": "注释便签",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "BaseNode_",
+                    "action_nodeType": "StickNote",
+                    "icon":"stick",
+                    "visual_nodeType": "N_In_N_Out"
+                }
+            ]
+        }
+    ]
+}

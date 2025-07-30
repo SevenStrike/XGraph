@@ -1,0 +1,17 @@
+.ToolbarButon {
+    width: 40px;
+    -unity-text-align: middle-center;
+    -unity-font-style: normal;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+    letter-spacing: 20px;
+}
+
+.MarkText {
+    position: absolute;
+    top: auto;
+    left: 30px;
+    font-size: 30px;
+    color: rgba(139, 139, 139, 0.17);
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+    bottom: 15px;
+}

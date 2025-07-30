@@ -1,0 +1,186 @@
+.Title_Input
+{
+     height: 25px;
+     width: auto;
+     margin-right: 10px;
+}
+
+#unity-text-input.TitleInput
+{
+     top: 0;
+     width: auto;
+     margin: 0;
+     padding: 0;
+     -unity-text-align: middle-right;
+}
+
+.unity-text-element.TitleInputText
+{
+     padding: 0;
+     top: 0;
+     color: rgba(35,35,35, 1);
+     -unity-text-align: middle-right;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     font-size: 16px;
+     letter-spacing: 10px;
+}
+
+.Title_Icon
+{
+     left: 10px;
+     top: 8px;
+     height: 18px;
+     width: 18px;
+     margin-right: 15px;
+     -unity-text-align: middle-left;
+}
+
+.Extension_Label
+{
+     color: darkgrey;
+     height: 30px;
+     width: 30px;
+     font-size: 11px;
+     -unity-text-align: middle-left;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 10px;
+     padding-left: 0;
+     padding-top: 0;
+     padding-right: 0;
+     padding-bottom: 0;
+}
+
+#node-border
+{
+     min-width: 80px;
+     min-height: 65px;
+     margin: 0;
+}
+
+#selection-border
+{
+     min-width: 80px;
+     min-height: 65px;
+}
+
+.ContentContainer
+{
+     min-width: 90px;
+     min-height: 75px;
+     background-image: none;
+     background-color: rgba(0, 0, 0, 0);
+     -unity-slice-left: 0;
+     -unity-slice-top: 0;
+     -unity-slice-right: 0;
+     -unity-slice-bottom: 0;
+}
+
+.resizer-icon
+{
+     right: 10px;
+     bottom: 10px;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/resize.png?fileID=2800000&guid=7ee37ab7fc61a8a43bfae9fed2cb81cf&type=3#resize");
+     background-size: 100% 100%;
+     -unity-background-image-tint-color: rgba(74, 74, 74, 0.82);
+     background-color: rgba(0, 0, 0, 0);
+     width: 50%;
+     height: 50%;
+     position: absolute;
+}
+
+.MainContainer
+{
+     width: 100%;
+     height: 100%;
+     min-width: 80px;
+     min-height: 65px;
+     margin-left: 0;
+     background-color: rgb(195, 179, 99);
+     background-image: none;
+     -unity-slice-left: 0;
+     -unity-slice-top: 0;
+     -unity-slice-right: 0;
+     -unity-slice-bottom: 0;
+}
+
+#title.TitleContainer
+{
+     background-color: rgb(195, 179, 99);
+     height: 0;
+}
+
+.TitleButtonContainer
+{
+     display: none;
+}
+
+.TopContainer
+{
+     background-color: rgba(67, 64, 51, 0);
+     height: 100%;
+     width: 100%;
+     background-image: none;
+     -unity-slice-left: 5;
+     -unity-slice-top: 5;
+     -unity-slice-right: 5;
+     -unity-slice-bottom: 5;
+     margin-top: 36px;
+}
+
+.InputContainer
+{
+     display: none;
+}
+
+.OutputContainer
+{
+     display: none;
+}
+
+.ExtensionContainer
+{
+     display: none;
+}
+
+#unity-text-input
+{
+     background-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     width: 100%;
+     height: 100%;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     color: rgb(51, 51, 51);
+     letter-spacing: 3px;
+     padding-top: 0;
+     padding-right: 10px;
+     padding-bottom: 5px;
+     padding-left: 10px;
+     margin-top: 0;
+     -unity-font-style: normal;
+     top: 0;
+     flex-grow: 1;
+     -unity-text-align: upper-left;
+     text-overflow: clip;
+     overflow: hidden;
+     white-space: normal;
+     font-size: 12px;
+     flex-basis: auto;
+}
+
+.unity-text-element
+{
+     font-size: 13px;
+}
+
+.StickNoteTextField_Title
+{
+     height: 100%;
+     width: 100%;
+     -unity-text-align: upper-left;
+     margin-top: 0;
+}
