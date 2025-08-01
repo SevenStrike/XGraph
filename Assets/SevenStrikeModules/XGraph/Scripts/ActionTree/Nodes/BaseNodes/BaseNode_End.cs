@@ -6,7 +6,7 @@ namespace SevenStrikeModules.XGraph
     {
         public override void Execute()
         {
-            Debug.Log("我是结束节点消息！");
+            
         }
     }
 }

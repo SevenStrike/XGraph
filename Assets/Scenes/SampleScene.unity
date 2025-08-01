@@ -284,7 +284,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
@@ -406,7 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d72094bf6c48c45ba81dedfb823f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assetNode: {fileID: 0}
+  assetNode: {fileID: 11400000, guid: 2697b5baeb285ae41a289250868588cc, type: 2}
 --- !u!4 &1687983410
 Transform:
   m_ObjectHideFlags: 0

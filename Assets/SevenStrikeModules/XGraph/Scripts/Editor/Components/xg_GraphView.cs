@@ -418,14 +418,26 @@ namespace SevenStrikeModules.XGraph
                                 xGraphNode_Base node = CurrentSelectedNodes[s];
                                 node.ActionTreeNode.nodeThemeSolution = dat.solution;
                                 node.ActionTreeNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
+                                // 改变连线颜色
+                                if (node.Port_Input != null && node.Port_Input.Port != null)
+                                    node.Port_Input.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : node.ActionTreeNode.nodeThemeColor;
+                                if (node.Port_Output != null && node.Port_Output.Port != null)
+                                    node.Port_Output.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : node.ActionTreeNode.nodeThemeColor;
                                 node.SetMarkColor();
+                                node.UpdateMarkColor();
                             }
                         }
                         else
                         {
                             nodebase.ActionTreeNode.nodeThemeSolution = dat.solution;
                             nodebase.ActionTreeNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
+                            // 改变连线颜色
+                            if (nodebase.Port_Input != null && nodebase.Port_Input.Port != null)
+                                nodebase.Port_Input.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : nodebase.ActionTreeNode.nodeThemeColor;
+                            if (nodebase.Port_Output != null && nodebase.Port_Output.Port != null)
+                                nodebase.Port_Output.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : nodebase.ActionTreeNode.nodeThemeColor;
                             nodebase.SetMarkColor();
+                            nodebase.UpdateMarkColor();
                         }
                     });
                 }

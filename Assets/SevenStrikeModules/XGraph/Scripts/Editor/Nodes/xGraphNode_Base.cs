@@ -264,7 +264,7 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Output()
         {
             // 绘制端口 - 输出
-            Port_Output.Port = CreatePort(Port_Output.Name, Orientation.Horizontal, Port_Output.Direction, Port_Output.Capacity, Port_Output.Type);
+            Port_Output.Port = CreatePort(Port_Output.Name, Orientation.Horizontal, Port_Output.Direction, Port_Output.Capacity, Port_Output.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : ActionTreeNode.nodeThemeColor);
             AppendElement(GraphNodeContainerType.OutputContainer, Port_Output.Port);
         }
 
@@ -274,7 +274,7 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Input()
         {
             // 绘制端口 - 输入
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Port_Input.Direction, Port_Input.Capacity, Port_Input.Type);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Port_Input.Direction, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : ActionTreeNode.nodeThemeColor);
             AppendElement(GraphNodeContainerType.InputContainer, Port_Input.Port);
         }
 
@@ -419,10 +419,11 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="capacity"></param>
         /// <param h_name="type"></param>
         /// <returns></returns>
-        protected Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null)
+        protected Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
         {
             Port port = InstantiatePort(orientation, direction, capacity, type);
             port.portName = name;
+            port.portColor = nodeThemeColor;
             return port;
         }
         #endregion

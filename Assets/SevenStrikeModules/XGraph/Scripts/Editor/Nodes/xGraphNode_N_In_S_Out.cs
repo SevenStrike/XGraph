@@ -14,7 +14,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 端口设置
-            xGraph_NodePort port_info = new xGraph_NodePort("输出端", typeof(Vector3), Direction.Output, Port.Capacity.Single);
+            xGraph_NodePort port_info = new xGraph_NodePort("输出端", typeof(bool), Direction.Output, Port.Capacity.Single);
             SetPortInfo(port_info);
             #endregion
         }
