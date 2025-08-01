@@ -944,7 +944,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public xGraphNode_Base Node_Make(Vector2 pos, ActionTree_Node_Base data = null)
         {
-            if (data.graphNodeType == xg_GraphViewNode.None)
+            if (data.graphNodeType == "None")
                 return null;
 
             #region 根据枚举类型创建 NodeView
@@ -1369,7 +1369,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="visual_nodeType"></param>
         /// <param h_name="action_name"></param>
         /// <returns></returns>
-        private ActionTree_Node_Base ActionTreeNodeCreate(string prefix_namespace, string prefix_class, Type type, xg_ActionTreeType action_nodeType, string icon, xg_GraphViewNode visual_nodeType, string action_name)
+        private ActionTree_Node_Base ActionTreeNodeCreate(string prefix_namespace, string prefix_class, Type type, xg_ActionTreeType action_nodeType, string icon, string visual_nodeType, string action_name)
         {
             ActionTree_Node_Base data = ScriptableObject.CreateInstance(type) as ActionTree_Node_Base;
             data.name = type.Name;
@@ -1392,7 +1392,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="action_nodeType"></param>
         /// <param name="icon"></param>
         /// <param name="visual_nodeType"></param>
-        public void Node_Create(string visualName, string prefix_namespace, string prefix_class, xg_ActionTreeType action_nodeType, string icon, xg_GraphViewNode visual_nodeType)
+        public void Node_Create(string visualName, string prefix_namespace, string prefix_class, xg_ActionTreeType action_nodeType, string icon, string visual_nodeType)
         {
             // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             if (action_nodeType == xg_ActionTreeType.StickNote)

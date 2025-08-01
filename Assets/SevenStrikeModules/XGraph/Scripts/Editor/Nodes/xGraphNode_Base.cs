@@ -101,10 +101,6 @@ namespace SevenStrikeModules.XGraph
         /// 指定节点图标
         /// </summary>
         public string icon;
-        /// <summary>
-        /// 节点类型
-        /// </summary>
-        public xg_GraphViewNode nodeType { get; set; } = xg_GraphViewNode.None;
 
         #region 端口
         /// <summary>
@@ -215,6 +211,23 @@ namespace SevenStrikeModules.XGraph
                 Port_Output = portInfo;
 
             return this;
+        }
+
+        /// <summary>
+        /// 创建端口
+        /// </summary>
+        /// <param h_name="solution"></param>
+        /// <param h_name="orientation"></param>
+        /// <param h_name="direction"></param>
+        /// <param h_name="capacity"></param>
+        /// <param h_name="type"></param>
+        /// <returns></returns>
+        protected Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
+        {
+            Port port = InstantiatePort(orientation, direction, capacity, type);
+            port.portName = name;
+            port.portColor = nodeThemeColor;
+            return port;
         }
         #endregion
 
@@ -375,7 +388,6 @@ namespace SevenStrikeModules.XGraph
             outputContainer.AddToClassList("OutputContainer");
             extensionContainer.AddToClassList("ExtensionContainer");
         }
-
         /// <summary>
         /// 添加元素到指定类型的容器中
         /// </summary>
@@ -408,23 +420,6 @@ namespace SevenStrikeModules.XGraph
                     RefreshExpandedState();
                     break;
             }
-        }
-
-        /// <summary>
-        /// 创建端口
-        /// </summary>
-        /// <param h_name="solution"></param>
-        /// <param h_name="orientation"></param>
-        /// <param h_name="direction"></param>
-        /// <param h_name="capacity"></param>
-        /// <param h_name="type"></param>
-        /// <returns></returns>
-        protected Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
-        {
-            Port port = InstantiatePort(orientation, direction, capacity, type);
-            port.portName = name;
-            port.portColor = nodeThemeColor;
-            return port;
         }
         #endregion
     }

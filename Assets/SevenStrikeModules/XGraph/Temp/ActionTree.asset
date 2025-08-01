@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3212413035271815282
+--- !u!114 &-2166595650203150868
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19,13 +19,48 @@ MonoBehaviour:
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Debug.asset
   actionNodeType: 5
   icon: debug
-  graphNodeType: 2
-  nodeGraphPosition: {x: 348.2681, y: 26.54158}
+  graphNodeType: S_In_S_Out
+  nodeGraphPosition: {x: 377.50134, y: -49.91423}
   nodeThemeSolution: "M \u9ED8\u8BA4"
   nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
-  ChildNode: {fileID: -1265804525242297189}
+  ChildNode: {fileID: 6229561227194418220}
   Message: SDFERT
---- !u!114 &-1265804525242297189
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceefca4de5ca61b4cbd21850e0b342e7, type: 3}
+  m_Name: ActionTree
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1179, y: 778}
+  LastGraphViewPosition: {x: 22, y: 407}
+  LastGraphViewZoom: 0.94910944
+  ActionTreeNodes:
+  - {fileID: 7018853979799094821}
+  - {fileID: -2166595650203150868}
+  - {fileID: 6229561227194418220}
+  StickNoteDatas:
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: 452df5b0503519a4c9d808aeb6b1eeae
+    position: {x: 377.50134, y: -170.91423}
+    size: {x: 217, y: 99}
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 349d878f52de56644ac944addc8df9c9
+    pos: {x: 97.00001, y: -218}
+    solution: "M \u9ED8\u8BA4"
+    guids:
+    - bb3a1a5d8a10b854fba5e50e6a2fc61b
+    - 0446c24e2c142cb49922fa9746df0e57
+    - 452df5b0503519a4c9d808aeb6b1eeae
+    - 852c8fe8b2d303d44bfa3fd54ff50451
+--- !u!114 &6229561227194418220
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,46 +79,11 @@ MonoBehaviour:
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_End.asset
   actionNodeType: 2
   icon: end
-  graphNodeType: 1
-  nodeGraphPosition: {x: 612, y: -65.05362}
+  graphNodeType: S_In_N_Out
+  nodeGraphPosition: {x: 625.46906, y: -119.99999}
   nodeThemeSolution: "M \u9ED8\u8BA4"
   nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceefca4de5ca61b4cbd21850e0b342e7, type: 3}
-  m_Name: ActionTree
-  m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1179, y: 778}
-  LastGraphViewPosition: {x: 22, y: 407}
-  LastGraphViewZoom: 0.94910944
-  ActionTreeNodes:
-  - {fileID: 303231032458375937}
-  - {fileID: -3212413035271815282}
-  - {fileID: -1265804525242297189}
-  StickNoteDatas:
-  - name: "\u4FBF\u7B7E"
-    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
-    guid: 452df5b0503519a4c9d808aeb6b1eeae
-    position: {x: 348.2681, y: -94.45842}
-    size: {x: 151, y: 105}
-  NodeGroupDatas:
-  - name: "\u8282\u70B9\u7F16\u7EC4"
-    guid: 349d878f52de56644ac944addc8df9c9
-    pos: {x: 67, y: -141}
-    solution: "M \u9ED8\u8BA4"
-    guids:
-    - bb3a1a5d8a10b854fba5e50e6a2fc61b
-    - 0446c24e2c142cb49922fa9746df0e57
-    - 852c8fe8b2d303d44bfa3fd54ff50451
-    - 452df5b0503519a4c9d808aeb6b1eeae
---- !u!114 &303231032458375937
+--- !u!114 &7018853979799094821
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,8 +102,8 @@ MonoBehaviour:
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Start.asset
   actionNodeType: 1
   icon: start
-  graphNodeType: 6
-  nodeGraphPosition: {x: 86, y: -42.999996}
+  graphNodeType: N_In_S_Out
+  nodeGraphPosition: {x: 115.50135, y: -119.91423}
   nodeThemeSolution: "M \u9ED8\u8BA4"
   nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
-  ChildNode: {fileID: -3212413035271815282}
+  ChildNode: {fileID: -2166595650203150868}

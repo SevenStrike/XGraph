@@ -35,7 +35,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 行为节点 - 类型
         /// </summary>
-        [SerializeField] public xg_GraphViewNode graphNodeType;
+        [SerializeField] public string graphNodeType = "None";
         /// <summary>
         /// 行为节点 - 在GraphView里的位置记录
         /// </summary>

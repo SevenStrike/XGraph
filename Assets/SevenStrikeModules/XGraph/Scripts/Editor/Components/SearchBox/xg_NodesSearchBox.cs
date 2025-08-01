@@ -59,7 +59,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点级类型视觉节点枚举
         /// </summary>
-        public xg_GraphViewNode visual_nodeType;
+        public string visual_nodeType;
     }
     #endregion
 
@@ -91,9 +91,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 视觉节点枚举类型
         /// </summary>
-        public xg_GraphViewNode visual_nodeType;
+        public string visual_nodeType;
 
-        public NodeMenuParam(string _name, string prefix_namespace, string prefix_class, xg_ActionTreeType action_nodeType, string icon, xg_GraphViewNode visual_nodeType)
+        public NodeMenuParam(string _name, string prefix_namespace, string prefix_class, xg_ActionTreeType action_nodeType, string icon, string visual_nodeType)
         {
             visual_name = _name;
             this.prefix_namespace = prefix_namespace;

@@ -7,10 +7,6 @@ namespace SevenStrikeModules.XGraph
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionTree_Node_Base data = null)
         {
             base.Initialize(graphView, pos, data);
-
-            #region 类型指定
-            nodeType = xg_GraphViewNode.N_In_N_Out;
-            #endregion
         }
 
         #region 节点绘制
