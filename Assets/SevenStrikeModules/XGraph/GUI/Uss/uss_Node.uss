@@ -33,31 +33,74 @@
      padding-left: 5px;
 }
 
-.MainContainer
+.port.output > #type.PortText_Out
 {
-     background-color: rgba(0, 0, 0, 0.5);
+     font-size: 12px;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
 }
 
-/*.TitleContainer
+.port.input > #type.PortText_In
 {
-     border-bottom-color: aqua;
-     border-bottom-width: 5px;
-}*/
-
-.TitleButtonContainer
-{
+     font-size: 12px;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
 }
 
-.TopContainer
+.port.output.Port_Out
 {
+     width: auto;
+     height: 35px;
 }
 
-.InputContainer
+.port.input.Port_In
 {
+     width: auto;
+     height: 35px;
 }
 
-.OutputContainer
+#contents > #top
 {
+     background-color: rgb(128, 128, 128);
+}
+
+#contents > #top > #input
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#contents > #top
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#node-border
+{
+     background-color: rgba(60, 60, 60, 0.95);
+}
+
+#title
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#divider.horizontal
+{
+     display: none;
+}
+
+#divider.vertical
+{
+     display: flex;
+     height: 10px;
+     top: 40%;
+     background-color: rgba(255,255,255, 0.2);
+     border-right-color: rgba(255,255,255, 0.2);
+}
+
+#contents > #top > #output
+{
+     background-color: rgba(0, 0, 0, 0);
 }
 
 .ExtensionContainer

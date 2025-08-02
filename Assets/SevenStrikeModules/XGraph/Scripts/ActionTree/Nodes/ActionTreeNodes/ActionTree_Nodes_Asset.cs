@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
@@ -148,6 +149,15 @@ namespace SevenStrikeModules.XGraph
 #endif
     }
 
+    [Serializable]
+    public class RelayNodeData
+    {
+        public string guid;           // 唯一标识
+        public Vector2 position;      // 节点位置
+        public string inputGuid;      // 输入连接的节点GUID
+        public string outputGuid;     // 输出连接的节点GUID
+    }
+
     [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionTree")]
     public class ActionTree_Nodes_Asset : ScriptableObject
     {
@@ -175,6 +185,10 @@ namespace SevenStrikeModules.XGraph
         /// 编组列表
         /// </summary>
         [SerializeField] public List<NodeGroupData> NodeGroupDatas = new List<NodeGroupData>();
+        /// <summary>
+        /// 中继器列表
+        /// </summary>
+        [SerializeField] public List<RelayNodeData> relayNodes = new List<RelayNodeData>();
 
         /// <summary>
         /// 刷新

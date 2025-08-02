@@ -1,66 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2166595650203150868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
-  m_Name: BaseNode_Debug
-  m_EditorClassIdentifier: 
-  nodeName: "\u8C03\u8BD5"
-  nodeGUID: 0446c24e2c142cb49922fa9746df0e57
-  nodeNameSpaceName: SevenStrikeModules.XGraph
-  nodeClassName: BaseNode_
-  nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Debug.asset
-  actionNodeType: 5
-  icon: debug
-  graphNodeType: S_In_S_Out
-  nodeGraphPosition: {x: 377.50134, y: -49.91423}
-  nodeThemeSolution: "M \u9ED8\u8BA4"
-  nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
-  ChildNode: {fileID: 6229561227194418220}
-  Message: SDFERT
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceefca4de5ca61b4cbd21850e0b342e7, type: 3}
-  m_Name: ActionTree
-  m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1179, y: 778}
-  LastGraphViewPosition: {x: 22, y: 407}
-  LastGraphViewZoom: 0.94910944
-  ActionTreeNodes:
-  - {fileID: 7018853979799094821}
-  - {fileID: -2166595650203150868}
-  - {fileID: 6229561227194418220}
-  StickNoteDatas:
-  - name: "\u4FBF\u7B7E"
-    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
-    guid: 452df5b0503519a4c9d808aeb6b1eeae
-    position: {x: 377.50134, y: -170.91423}
-    size: {x: 217, y: 99}
-  NodeGroupDatas:
-  - name: "\u8282\u70B9\u7F16\u7EC4"
-    guid: 349d878f52de56644ac944addc8df9c9
-    pos: {x: 97.00001, y: -218}
-    solution: "M \u9ED8\u8BA4"
-    guids:
-    - bb3a1a5d8a10b854fba5e50e6a2fc61b
-    - 0446c24e2c142cb49922fa9746df0e57
-    - 452df5b0503519a4c9d808aeb6b1eeae
-    - 852c8fe8b2d303d44bfa3fd54ff50451
---- !u!114 &6229561227194418220
+--- !u!114 &-6125790471012034708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,13 +17,70 @@ MonoBehaviour:
   nodeNameSpaceName: SevenStrikeModules.XGraph
   nodeClassName: BaseNode_
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_End.asset
-  actionNodeType: 2
+  actionNodeType: End
   icon: end
   graphNodeType: S_In_N_Out
-  nodeGraphPosition: {x: 625.46906, y: -119.99999}
-  nodeThemeSolution: "M \u9ED8\u8BA4"
-  nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
---- !u!114 &7018853979799094821
+  nodeGraphPosition: {x: 576.0869, y: -92.6087}
+  nodeThemeSolution: "B \u8584\u8377\u7EFF"
+  nodeThemeColor: {r: 0.5254902, g: 0.8, b: 0.37254903, a: 1}
+--- !u!114 &-5204011302898158809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
+  m_Name: BaseNode_Debug
+  m_EditorClassIdentifier: 
+  nodeName: "\u8C03\u8BD5"
+  nodeGUID: ede7cf5842ed7d142809bdb16e47b72c
+  nodeNameSpaceName: SevenStrikeModules.XGraph
+  nodeClassName: BaseNode_
+  nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Debug.asset
+  actionNodeType: Debug
+  icon: debug
+  graphNodeType: S_In_S_Out
+  nodeGraphPosition: {x: 360.08694, y: -158.6087}
+  nodeThemeSolution: "J \u6A58\u8272"
+  nodeThemeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  ChildNode: {fileID: 7517968206011419987}
+  Message: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceefca4de5ca61b4cbd21850e0b342e7, type: 3}
+  m_Name: ActionTree
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1162, y: 778}
+  LastGraphViewPosition: {x: 11, y: 397}
+  LastGraphViewZoom: 1.3225
+  ActionTreeNodes:
+  - {fileID: 1113639422760738239}
+  - {fileID: 7517968206011419987}
+  - {fileID: -6125790471012034708}
+  - {fileID: -5204011302898158809}
+  StickNoteDatas: []
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 349d878f52de56644ac944addc8df9c9
+    pos: {x: 136.99998, y: -244}
+    solution: "M \u66AE\u8272\u7EA2"
+    guids:
+    - bb3a1a5d8a10b854fba5e50e6a2fc61b
+    - 0446c24e2c142cb49922fa9746df0e57
+    - 852c8fe8b2d303d44bfa3fd54ff50451
+    - ede7cf5842ed7d142809bdb16e47b72c
+  relayNodes: []
+--- !u!114 &1113639422760738239
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,10 +97,35 @@ MonoBehaviour:
   nodeNameSpaceName: SevenStrikeModules.XGraph
   nodeClassName: BaseNode_
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Start.asset
-  actionNodeType: 1
+  actionNodeType: Start
   icon: start
   graphNodeType: N_In_S_Out
-  nodeGraphPosition: {x: 115.50135, y: -119.91423}
-  nodeThemeSolution: "M \u9ED8\u8BA4"
-  nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
-  ChildNode: {fileID: -2166595650203150868}
+  nodeGraphPosition: {x: 156.08694, y: -196.6087}
+  nodeThemeSolution: "B \u8584\u8377\u7EFF"
+  nodeThemeColor: {r: 0.5254902, g: 0.8, b: 0.37254903, a: 1}
+  ChildNode: {fileID: -5204011302898158809}
+--- !u!114 &7517968206011419987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
+  m_Name: BaseNode_Debug
+  m_EditorClassIdentifier: 
+  nodeName: "\u8C03\u8BD5"
+  nodeGUID: 0446c24e2c142cb49922fa9746df0e57
+  nodeNameSpaceName: SevenStrikeModules.XGraph
+  nodeClassName: BaseNode_
+  nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   BaseNode_Debug.asset
+  actionNodeType: Debug
+  icon: debug
+  graphNodeType: S_In_S_Out
+  nodeGraphPosition: {x: 360.08694, y: -33.608704}
+  nodeThemeSolution: "J \u6A58\u8272"
+  nodeThemeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  ChildNode: {fileID: -6125790471012034708}
+  Message: SDFERT

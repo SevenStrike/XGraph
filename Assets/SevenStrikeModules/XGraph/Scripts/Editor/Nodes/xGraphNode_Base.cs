@@ -98,6 +98,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<xGraphNode_Base> OnUnSelectedNode;
         /// <summary>
+        /// 视觉节点图标
+        /// </summary>
+        public Label IconLabel;
+        /// <summary>
         /// 指定节点图标
         /// </summary>
         public string icon;
@@ -277,7 +281,11 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Output()
         {
             // 绘制端口 - 输出
-            Port_Output.Port = CreatePort(Port_Output.Name, Orientation.Horizontal, Port_Output.Direction, Port_Output.Capacity, Port_Output.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : ActionTreeNode.nodeThemeColor);
+            Port_Output.Port = CreatePort(Port_Output.Name, Orientation.Horizontal, Port_Output.Direction, Port_Output.Capacity, Port_Output.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+
+            Port_Output.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
+            Port_Output.Port.Q<Label>().AddToClassList("PortText_Out");
+
             AppendElement(GraphNodeContainerType.OutputContainer, Port_Output.Port);
         }
 
@@ -287,7 +295,11 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Input()
         {
             // 绘制端口 - 输入
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Port_Input.Direction, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : ActionTreeNode.nodeThemeColor);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Port_Input.Direction, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+
+            Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
+            Port_Input.Port.Q<Label>().AddToClassList("PortText_In");
+
             AppendElement(GraphNodeContainerType.InputContainer, Port_Input.Port);
         }
 
@@ -312,10 +324,17 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Title()
         {
-            Label icon = new Label("");
-            icon.AddToClassList("Title_Icon");
-            icon.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
-            icon.style.unityBackgroundImageTintColor = util_Dashboard.Theme_Primary;
+            IconLabel = new Label("");
+            IconLabel.AddToClassList("Title_Icon");
+            IconLabel.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
+            // 应用配置文件的颜色到节点的标识颜色
+            graphView.ThemesList.Node.ForEach(colorData =>
+            {
+                if (colorData.solution == ActionTreeNode.nodeThemeSolution)
+                {
+                    IconLabel.style.unityBackgroundImageTintColor = ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white : ActionTreeNode.nodeThemeColor;
+                }
+            });
 
             Label label = titleContainer.Q<Label>();
             label.AddToClassList("Title_Label");
@@ -324,7 +343,7 @@ namespace SevenStrikeModules.XGraph
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
-            AppendElement(GraphNodeContainerType.TitleContainer, icon);
+            AppendElement(GraphNodeContainerType.TitleContainer, IconLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, label);
             AppendElement(GraphNodeContainerType.TitleContainer, element);
 
@@ -354,7 +373,7 @@ namespace SevenStrikeModules.XGraph
         public void UpdateMarkColor()
         {
             titleContainer.style.borderBottomColor = ActionTreeNode.nodeThemeColor;
-            titleContainer.style.borderBottomWidth = 4;
+            titleContainer.style.borderBottomWidth = 5;
         }
         /// <summary>
         /// 节点配色 - 隐藏

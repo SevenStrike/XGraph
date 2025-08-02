@@ -87,6 +87,53 @@ namespace SevenStrikeModules.XGraph
         public List<ThemeData_Node> Node = new List<ThemeData_Node>();
     }
 
+    public class CustomEdgeConnectorListener : EdgeManipulator, IEdgeConnectorListener
+    {
+        private xg_GraphView graphView;
+
+        public CustomEdgeConnectorListener(xg_GraphView graphView)
+        {
+            this.graphView = graphView;
+        }
+
+        public void OnDrop(GraphView graphView, Edge edge)
+        {
+            // 成功连接时的处理
+            var outputNode = edge.output.node as xGraphNode_Base;
+            var inputNode = edge.input.node as xGraphNode_Base;
+
+            if (outputNode != null && inputNode != null)
+            {
+                Debug.Log($"成功连接: {outputNode.ActionTreeNode.nodeName} -> {inputNode.ActionTreeNode.nodeName}");
+            }
+
+            // 添加边缘到GraphView
+            this.graphView.AddElement(edge);
+
+            // 将边缘连接到端口
+            edge.input.Connect(edge);
+            edge.output.Connect(edge);
+        }
+
+        public void OnDropOutsidePort(Edge edge, Vector2 position)
+        {
+            // 当连线在端口外释放时调用
+            if (edge.output != null)
+            {
+                var outputNode = edge.output.node as xGraphNode_Base;
+                Debug.Log($"连线取消: 从输出端口 [{outputNode?.ActionTreeNode.nodeName ?? "未知节点"}] 拖出但未连接");
+            }
+            else if (edge.input != null)
+            {
+                var inputNode = edge.input.node as xGraphNode_Base;
+                Debug.Log($"连线取消: 从输入端口 [{inputNode?.ActionTreeNode.nodeName ?? "未知节点"}] 拖出但未连接");
+            }
+
+            // 清理未完成的边缘
+            graphView.RemoveElement(edge);
+        }
+    }
+
     /// <summary>
     /// XGraph的GraphView基础件，[UxmlElement]用于在UIBuilder中出现GraphView的控件
     /// </summary>
@@ -202,7 +249,7 @@ namespace SevenStrikeModules.XGraph
             // 添加 xw_graphView 基础组件 - 内容框选
             this.AddManipulator(new RectangleSelector());
             // 启用节点之间的连线功能
-            this.AddManipulator(new EdgeManipulator());
+            this.AddManipulator(new CustomEdgeConnectorListener(this));
             // 实例化节点搜索框的主体
             AddNodesSearchBox();
             #endregion
@@ -217,9 +264,48 @@ namespace SevenStrikeModules.XGraph
 
             // 读取Group主题色方案
             LoadThemes();
+
+            // 注册双击连线的回调
+            RegisterCallback<MouseDownEvent>(OnMouseDown, TrickleDown.TrickleDown);
         }
         #endregion
+        private void OnMouseDown(MouseDownEvent evt)
+        {
+            if (evt.clickCount == 2 && evt.target is Edge edge)
+            {
+                // 获取连线两端
+                Port outputPort = edge.output;
+                Port inputPort = edge.input;
 
+                xGraphNode_Base node_out = (xGraphNode_Base)outputPort.node;
+                xGraphNode_Base node_in = (xGraphNode_Base)inputPort.node;
+                Debug.Log(node_in.ActionTreeNode.graphNodeType);
+                Debug.Log(node_out.ActionTreeNode.graphNodeType);
+
+                //// 在双击位置创建Relay Node
+                //Vector2 nodePosition = evt.mousePosition;
+                //var relayNode = new RelayNode();
+                //relayNode.SetPosition(new Rect(nodePosition, Vector2.zero));
+
+                //// 添加到GraphView
+                //AddElement(relayNode);
+
+                //// 断开原连线
+                //edge.input.Disconnect(edge);
+                //edge.output.Disconnect(edge);
+                //RemoveElement(edge);
+
+                //// 重新连接：原输出端口 -> Relay输入端口
+                //var newEdge1 = outputPort.ConnectTo(relayNode.InputPort);
+                //AddElement(newEdge1);
+
+                //// 重新连接：Relay输出端口 -> 原输入端口
+                //var newEdge2 = relayNode.OutputPort.ConnectTo(inputPort);
+                //AddElement(newEdge2);
+
+                evt.StopPropagation();
+            }
+        }
         #region 辅助方法
         /// <summary>
         /// 居中聚焦所有视觉节点
@@ -418,11 +504,14 @@ namespace SevenStrikeModules.XGraph
                                 xGraphNode_Base node = CurrentSelectedNodes[s];
                                 node.ActionTreeNode.nodeThemeSolution = dat.solution;
                                 node.ActionTreeNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
+                                // 改变图标颜色
+                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionTreeNode.nodeThemeColor;
+
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
-                                    node.Port_Input.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : node.ActionTreeNode.nodeThemeColor;
+                                    node.Port_Input.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionTreeNode.nodeThemeColor;
                                 if (node.Port_Output != null && node.Port_Output.Port != null)
-                                    node.Port_Output.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : node.ActionTreeNode.nodeThemeColor;
+                                    node.Port_Output.Port.portColor = node.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionTreeNode.nodeThemeColor;
                                 node.SetMarkColor();
                                 node.UpdateMarkColor();
                             }
@@ -431,11 +520,14 @@ namespace SevenStrikeModules.XGraph
                         {
                             nodebase.ActionTreeNode.nodeThemeSolution = dat.solution;
                             nodebase.ActionTreeNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
+                            // 改变图标颜色
+                            nodebase.IconLabel.style.unityBackgroundImageTintColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : nodebase.ActionTreeNode.nodeThemeColor;
+
                             // 改变连线颜色
                             if (nodebase.Port_Input != null && nodebase.Port_Input.Port != null)
-                                nodebase.Port_Input.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : nodebase.ActionTreeNode.nodeThemeColor;
+                                nodebase.Port_Input.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : nodebase.ActionTreeNode.nodeThemeColor;
                             if (nodebase.Port_Output != null && nodebase.Port_Output.Port != null)
-                                nodebase.Port_Output.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.gray : nodebase.ActionTreeNode.nodeThemeColor;
+                                nodebase.Port_Output.Port.portColor = nodebase.ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : nodebase.ActionTreeNode.nodeThemeColor;
                             nodebase.SetMarkColor();
                             nodebase.UpdateMarkColor();
                         }
@@ -716,7 +808,7 @@ namespace SevenStrikeModules.XGraph
             selection.ForEach(n =>
             {
                 if (n is xGraphNode_Base node)
-                    if (node.ActionTreeNode.actionNodeType != xg_ActionTreeType.StickNote)
+                    if (node.ActionTreeNode.actionNodeType != "StickNote")
                         gvs.Add(node);
                 if (n is Group gp)
                 {
@@ -1369,7 +1461,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="visual_nodeType"></param>
         /// <param h_name="action_name"></param>
         /// <returns></returns>
-        private ActionTree_Node_Base ActionTreeNodeCreate(string prefix_namespace, string prefix_class, Type type, xg_ActionTreeType action_nodeType, string icon, string visual_nodeType, string action_name)
+        private ActionTree_Node_Base ActionTreeNodeCreate(string prefix_namespace, string prefix_class, Type type, string action_nodeType, string icon, string visual_nodeType, string action_name)
         {
             ActionTree_Node_Base data = ScriptableObject.CreateInstance(type) as ActionTree_Node_Base;
             data.name = type.Name;
@@ -1392,10 +1484,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="action_nodeType"></param>
         /// <param name="icon"></param>
         /// <param name="visual_nodeType"></param>
-        public void Node_Create(string visualName, string prefix_namespace, string prefix_class, xg_ActionTreeType action_nodeType, string icon, string visual_nodeType)
+        public void Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, string visual_nodeType)
         {
             // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
-            if (action_nodeType == xg_ActionTreeType.StickNote)
+            if (action_nodeType == "StickNote")
             {
                 // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
                 StickNoteData stdata = new StickNoteData("便签", "点击此处更改内容", GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));

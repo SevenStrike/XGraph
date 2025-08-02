@@ -27,7 +27,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 行为节点 - 类型
         /// </summary>
-        [SerializeField] public xg_ActionTreeType actionNodeType;
+        [SerializeField] public string actionNodeType;
         /// <summary>
         /// 行为节点 - 图标
         /// </summary>

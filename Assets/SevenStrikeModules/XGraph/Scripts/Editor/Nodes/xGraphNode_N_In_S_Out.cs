@@ -10,7 +10,7 @@ namespace SevenStrikeModules.XGraph
             base.Initialize(graphView, pos, data);
 
             #region 端口设置
-            xGraph_NodePort port_info = new xGraph_NodePort("输出端", typeof(bool), Direction.Output, Port.Capacity.Single);
+            xGraph_NodePort port_info = new xGraph_NodePort("执行", typeof(bool), Direction.Output, Port.Capacity.Single);
             SetPortInfo(port_info);
             #endregion
         }
