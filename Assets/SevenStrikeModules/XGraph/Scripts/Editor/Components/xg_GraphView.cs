@@ -137,7 +137,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当前正在编辑的资源
         /// </summary>
-        public ActionTree_Nodes_Asset ActionTree;
+        public ActionTree_Nodes_Asset ActionTreeAsset;
         /// <summary>
         /// 读取菜单结构列表内容
         /// </summary>
@@ -271,7 +271,7 @@ namespace SevenStrikeModules.XGraph
         public void ClearGraphViewContents(bool DisplayActionTreeInspector = true)
         {
             // 清空克隆体的内容
-            ActionTree.Clear();
+            ActionTreeAsset.Clear();
 
             // 清空GraphView的所有节点
             Nodes_Clear();
@@ -287,7 +287,7 @@ namespace SevenStrikeModules.XGraph
 
             if (DisplayActionTreeInspector)
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                gv_GaphWindow.xw_InspectorView.UpdateSelection(ActionTree);
+                gv_GaphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
         }
         /// <summary>
         /// 切换Graphview背景主题
@@ -383,6 +383,7 @@ namespace SevenStrikeModules.XGraph
 
             bool isInGraphView = false;
             bool isInGraphNode = false;
+            bool isInStickNode = false;
             bool isInGraphGroup = false;
 
             #region  确认当前有点点击的物体是否是Group
@@ -411,7 +412,7 @@ namespace SevenStrikeModules.XGraph
                     ThemeData_Node dat = ThemesList.Node[i];
                     evt.menu.AppendAction($"T 节点配色/{dat.solution}", (action) =>
                     {
-                        //Undo.RecordObject(ActionTree, "Change NodeColor");
+                        //Undo.RecordObject(ActionTreeAsset, "Change NodeColor");
                         if (CurrentSelectedNodes.Count > 0)
                         {
                             for (int s = 0; s < CurrentSelectedNodes.Count; s++)
@@ -470,6 +471,13 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
+            #region  确认当前有点点击的物体是否是Stick节点
+            if (evt.target is xGraphNode_StickNote stick)
+            {
+                isInStickNode = true;
+            }
+            #endregion
+
             if (isInGraphView)
             {
                 #region 节点操作：添加节点
@@ -510,15 +518,12 @@ namespace SevenStrikeModules.XGraph
 
             evt.menu.AppendSeparator();
 
-            if (!isInGraphGroup && isInGraphNode)
+            if (!isInGraphGroup && isInGraphNode || isInStickNode)
             {
                 #region 节点操作：删除节点
                 evt.menu.AppendAction("S 删除节点", param =>
                 {
-                    selection.ForEach(n =>
-                    {
-                        Node_Delete(n);
-                    });
+                    Node_Delete();
                 });
                 #endregion
 
@@ -558,6 +563,7 @@ namespace SevenStrikeModules.XGraph
 
             OnChanged_CreateEdge(graphViewChange);
 
+            Debug.Log("Changed");
             return graphViewChange;
         }
         /// <summary>
@@ -581,7 +587,7 @@ namespace SevenStrikeModules.XGraph
                     if (n_parent != null && n_child != null)
                     {
                         // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
-                        ActionTree.AddNodeToChild(n_parent.ActionTreeNode, n_child.ActionTreeNode);
+                        ActionTreeAsset.AddNodeToChild(n_parent.ActionTreeNode, n_child.ActionTreeNode);
                     }
                     #endregion                   
                 });
@@ -612,7 +618,7 @@ namespace SevenStrikeModules.XGraph
                         if (n_parent != null && n_child != null)
                         {
                             // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
-                            ActionTree.RemoveChildNode(n_parent.ActionTreeNode, n_child.ActionTreeNode);
+                            ActionTreeAsset.RemoveChildNode(n_parent.ActionTreeNode, n_child.ActionTreeNode);
                         }
                         #endregion                        
                     }
@@ -623,7 +629,7 @@ namespace SevenStrikeModules.XGraph
                     if (nodeview != null)
                     {
                         // 从根节点中移除数据节点
-                        ActionTree.Remove(nodeview.ActionTreeNode);
+                        ActionTreeAsset.Remove(nodeview.ActionTreeNode);
                     }
                     #endregion
 
@@ -631,8 +637,8 @@ namespace SevenStrikeModules.XGraph
                     xGraphNode_StickNote stickview = element as xGraphNode_StickNote;
                     if (stickview != null)
                     {
-                        Undo.RecordObject(ActionTree, "Remove StickNote");
-                        ActionTree.StickNote_Remove(stickview.stickNoteData);
+                        Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
+                        ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
                     }
                     #endregion
 
@@ -640,14 +646,14 @@ namespace SevenStrikeModules.XGraph
                     Group group = element as Group;
                     if (group != null)
                     {
-                        Undo.RecordObject(ActionTree, "Remove Group");
+                        Undo.RecordObject(ActionTreeAsset, "Remove Group");
 
                         // 查找对应的 NodeGroupData
-                        NodeGroupData groupData = ActionTree.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+                        NodeGroupData groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
                         if (groupData != null)
                         {
                             // 从 NodeGroupDatas 中移除
-                            ActionTree.NodeGroup_Remove(groupData);
+                            ActionTreeAsset.NodeGroup_Remove(groupData);
                         }
 
                         // 清理状态跟踪数据
@@ -670,7 +676,7 @@ namespace SevenStrikeModules.XGraph
         internal void Node_Make_With_ActionTreeData(ActionTree_Nodes_Asset actiontree)
         {
             // 获取到数据根节点
-            ActionTree = actiontree;
+            ActionTreeAsset = actiontree;
 
             graphViewChanged -= OnGraphViewChanged;
             // 清空所有 NodeView
@@ -678,16 +684,16 @@ namespace SevenStrikeModules.XGraph
             graphViewChanged += OnGraphViewChanged;
 
             // 根据根节点的数据列表重建 NodeViews
-            ActionTree.ActionTreeNodes.ForEach(data =>
+            ActionTreeAsset.ActionTreeNodes.ForEach(data =>
             {
                 Node_Make(data.nodeGraphPosition, data).Draw();
             });
 
             // 根据行为树根节点的数据列表重建 Edges
-            ActionTree.ActionTreeNodes.ForEach(d =>
+            ActionTreeAsset.ActionTreeNodes.ForEach(d =>
             {
                 // 获取的目标数据节点的子数据节点
-                var children = ActionTree.GetChildrenNodes(d);
+                var children = ActionTreeAsset.GetChildrenNodes(d);
                 // c 为每一个子数据节点
                 children.ForEach(c =>
                 {
@@ -836,7 +842,7 @@ namespace SevenStrikeModules.XGraph
             if (group == null) return;
 
 #if UNITY_EDITOR
-            Undo.RegisterCompleteObjectUndo(ActionTree, "Delete Group");
+            Undo.RegisterCompleteObjectUndo(ActionTreeAsset, "Delete Group");
 #endif
 
             // 1. 保存所有子节点位置
@@ -851,10 +857,10 @@ namespace SevenStrikeModules.XGraph
             }
 
             // 3. 删除Group数据
-            var groupData = ActionTree.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+            var groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
             if (groupData != null)
             {
-                ActionTree.NodeGroup_Remove(groupData);
+                ActionTreeAsset.NodeGroup_Remove(groupData);
             }
 
             // 4. 从GraphView移除Group（此时已是空组）
@@ -867,7 +873,7 @@ namespace SevenStrikeModules.XGraph
             }
 
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(ActionTree);
+            EditorUtility.SetDirty(ActionTreeAsset);
 #endif
         }
         #endregion
@@ -921,8 +927,8 @@ namespace SevenStrikeModules.XGraph
                 else if (original is xGraphNode_StickNote xg_sticknote)
                 {
                     StickNoteData sickData = xg_sticknote.stickNoteData.Clone(true);
-                    Undo.RecordObject(ActionTree, "Duplicate StickNoteData");
-                    ActionTree.StickNoteDatas.Add(sickData);
+                    Undo.RecordObject(ActionTreeAsset, "Duplicate StickNoteData");
+                    ActionTreeAsset.StickNoteDatas.Add(sickData);
 
                     Node_Make_StickNote(sickData.position + new Vector2(50, 20), sickData).Draw();
                 }
@@ -980,16 +986,56 @@ namespace SevenStrikeModules.XGraph
                 AddToSelection(newNode);
             }
         }
-        private void Node_Delete(ISelectable selnode)
+        /// <summary>
+        /// 移除当前选择的所有节点及其相关的连线
+        /// </summary>
+        public void Node_Delete()
         {
-            if (selnode is xGraphNode_Base node)
-            {
+            // 获取当前选择的所有节点
+            var selectedNodes = selection.OfType<Node>().ToList();
 
-            }
-            if (selnode is Group gp)
+            // 如果没有选中的节点，直接返回
+            if (selectedNodes.Count == 0)
             {
-
+                Debug.LogWarning("没有选中的节点！");
+                return;
             }
+
+            // 创建一个 GraphViewChange 对象用于调用GraphView的OnGraphViewChanged事件
+            var graphViewChange = new GraphViewChange();
+            graphViewChange.elementsToRemove = new List<GraphElement>();
+
+            // 遍历所有选中的节点
+            foreach (var node in selectedNodes)
+            {
+                // 移除节点的所有连线
+                var edgesToRemove = edges.ToList()
+                    .Where(edge => edge.input.node == node || edge.output.node == node)
+                    .ToList();
+                foreach (var edge in edgesToRemove)
+                {
+                    // 移除连线
+                    RemoveElement(edge);
+                    graphViewChange.elementsToRemove.Add(edge); // 添加到 GraphViewChange
+                }
+
+                // 移除节点本身
+                RemoveElement(node);
+                graphViewChange.elementsToRemove.Add(node); // 添加到 GraphViewChange
+
+                // 与删除的节点的端口断开连接
+                foreach (var edge in edgesToRemove)
+                {
+                    edge.input.Disconnect(edge);
+                    edge.output.Disconnect(edge);
+                }
+            }
+
+            // 清空当前选择
+            ClearSelection();
+
+            // 调用 OnGraphViewChanged 方法
+            OnGraphViewChanged(graphViewChange);
         }
         /// <summary>
         /// 创建中继节点
@@ -1028,9 +1074,9 @@ namespace SevenStrikeModules.XGraph
                     //relay_in.ActionTreeNode.relaynodeGUID = relaydata.guid;
                     //relaydata.outputGuids.Add(relay_out.viewDataKey);
 
-                    //Undo.RecordObject(ActionTree, "Create RelayNode");
+                    //Undo.RecordObject(ActionTreeAsset, "Create RelayNode");
                     //// 加入到行为树根节点的中继列表中
-                    //ActionTree.RelayData_Add(relaydata);
+                    //ActionTreeAsset.RelayData_Add(relaydata);
 
                     //// 初始化中继节点（指定Graph视图和位置以及数据）
                     //relayNode.Initialize(this, localMousePosition, relaydata);
@@ -1252,7 +1298,7 @@ namespace SevenStrikeModules.XGraph
                     ThemeData_Group dat = ThemesList.Group[i];
                     evt.menu.AppendAction($"T 编组配色/{dat.solution}", d =>
                     {
-                        Undo.RecordObject(ActionTree, "Set Group Color");
+                        Undo.RecordObject(ActionTreeAsset, "Set Group Color");
 
                         if (CurrentSelectedGroups.Count > 1)
                         {
@@ -1261,7 +1307,7 @@ namespace SevenStrikeModules.XGraph
                                 Group gp = CurrentSelectedGroups[i];
 
                                 // 同步修改行为树根节点中的对应的编组数据的配色方案
-                                ActionTree.NodeGroupDatas.ForEach(data => { if (data.group == gp) { data.solution = dat.solution; } });
+                                ActionTreeAsset.NodeGroupDatas.ForEach(data => { if (data.group == gp) { data.solution = dat.solution; } });
 
                                 gp.Q<VisualElement>("headerContainer").style.backgroundColor = util_EditorUtility.Color_From_HexString(dat.title_bg_color);
                                 gp.Q<VisualElement>("centralContainer").style.backgroundColor = util_EditorUtility.Color_From_HexString(dat.content_bg_color);
@@ -1338,7 +1384,7 @@ namespace SevenStrikeModules.XGraph
             selectedNodes.ForEach(n => gp.AddElement(n));
 
             // 添加编组到行为树数据
-            ActionTree.NodeGroup_Add(gp_data);
+            ActionTreeAsset.NodeGroup_Add(gp_data);
 
             // 添加编组到GraphView
             AddElement(gp);
@@ -1350,18 +1396,18 @@ namespace SevenStrikeModules.XGraph
         /// <param solution="newName"></param>
         private void OnGroupChangedName(Group group, string newName)
         {
-            NodeGroupData groupData = ActionTree.NodeGroupDatas
+            NodeGroupData groupData = ActionTreeAsset.NodeGroupDatas
                 .FirstOrDefault(g => g.group == group);
 
             if (groupData != null && groupData.name != newName)
             {
 #if UNITY_EDITOR
-                Undo.RecordObject(ActionTree, "Rename Group");
+                Undo.RecordObject(ActionTreeAsset, "Rename Group");
 #endif
                 groupData.name = newName;
 
                 //#if UNITY_EDITOR
-                //                EditorUtility.SetDirty(ActionTree);
+                //                EditorUtility.SetDirty(ActionTreeAsset);
                 //#endif
             }
         }
@@ -1372,18 +1418,18 @@ namespace SevenStrikeModules.XGraph
         /// <param solution="newpos"></param>
         private void OnGroupChangedPosition(Group group, Vector2 newpos)
         {
-            NodeGroupData groupData = ActionTree.NodeGroupDatas
+            NodeGroupData groupData = ActionTreeAsset.NodeGroupDatas
                 .FirstOrDefault(g => g.group == group);
 
             if (groupData != null && groupData.pos != newpos)
             {
 #if UNITY_EDITOR
-                Undo.RecordObject(ActionTree, "Reposition Group");
+                Undo.RecordObject(ActionTreeAsset, "Reposition Group");
 #endif
                 groupData.pos = newpos;
 
                 //#if UNITY_EDITOR
-                //                EditorUtility.SetDirty(ActionTree);
+                //                EditorUtility.SetDirty(ActionTreeAsset);
                 //#endif
             }
         }
@@ -1396,7 +1442,7 @@ namespace SevenStrikeModules.XGraph
             if (target == null || !CurrentCreatedGroups.ContainsKey(target)) return;
 
             // 查找对应的 NodeGroupData
-            NodeGroupData groupData = ActionTree.NodeGroupDatas.FirstOrDefault(g => g.group == target);
+            NodeGroupData groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == target);
 
             var currentElements = new HashSet<object>(target.containedElements);
             var previousElements = CurrentCreatedGroups[target];
@@ -1493,9 +1539,9 @@ namespace SevenStrikeModules.XGraph
             }
 
             // 清空行为树中的编组数据
-            if (ClearGroupData && ActionTree != null)
+            if (ClearGroupData && ActionTreeAsset != null)
             {
-                ActionTree.NodeGroupDatas.Clear();
+                ActionTreeAsset.NodeGroupDatas.Clear();
             }
         }
         #endregion
@@ -1522,7 +1568,7 @@ namespace SevenStrikeModules.XGraph
             data.nodeName = action_name;
             data.nodeNameSpaceName = prefix_namespace;
             data.nodeClassName = prefix_class;
-            ActionTree.Create(data);
+            ActionTreeAsset.Create(data);
             return data;
         }
         /// <summary>
@@ -1539,10 +1585,10 @@ namespace SevenStrikeModules.XGraph
             // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             if (action_nodeType == "StickNote")
             {
-                Undo.RecordObject(ActionTree, "Create StickNote");
+                Undo.RecordObject(ActionTreeAsset, "Create StickNote");
                 // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
                 StickNoteData stdata = new StickNoteData("便签", "点击此处更改内容", GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));
-                ActionTree.StickNote_Add(stdata);
+                ActionTreeAsset.StickNote_Add(stdata);
 
                 // 创建新的节点并指定资源数据项
                 xGraphNode_StickNote visualstickNode = Node_Make_StickNote(gv_NodeCreatedPosition, stdata);
@@ -1670,7 +1716,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         private void OnNodeColorToggleChanged(bool state)
         {
-            ActionTree.ActionTreeNodes.ForEach(data =>
+            ActionTreeAsset.ActionTreeNodes.ForEach(data =>
             {
                 nodes.ForEach(nodes =>
                 {

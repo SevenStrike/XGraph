@@ -481,7 +481,7 @@
                     xw_graphView?.Node_Make_With_ActionTreeData(CloneTree);
 
                     /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
-                     *  而 xw_graphView?.Node_Make_With_ActionTreeData(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTree 的逻辑根源
+                     *  而 xw_graphView?.Node_Make_With_ActionTreeData(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
                      */
                     #region Node节点颜色标记的状态恢复
                     // 获取最后一次的移动式属性面板开关状态

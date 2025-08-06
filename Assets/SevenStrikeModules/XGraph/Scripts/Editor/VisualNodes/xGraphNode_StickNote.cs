@@ -74,7 +74,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="evt"></param>
         private void OnSizeChanged(GeometryChangedEvent evt)
         {
-            Undo.RecordObject(graphView.ActionTree, "Change Stick Size");
+            Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Size");
 
             Vector2 newSize = new Vector2(evt.newRect.width, evt.newRect.height);
 
@@ -92,7 +92,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(graphView.ActionTree, "Change Stick Position");
+            Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Position");
             base.SetPosition(newPos);
 
             if (stickNoteData != null)
