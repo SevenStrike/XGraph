@@ -115,7 +115,7 @@
         /// <summary>
         /// 当前选中的视觉节点
         /// </summary>
-        xGraphNode_Base xw_currentSelectedVisualNode;
+        visualnode_base xw_currentSelectedVisualNode;
         /// <summary>
         /// 此参数用于当取消选中视觉节点的时候的单次执行的判断开关，
         /// </summary>
@@ -137,11 +137,11 @@
         /// <summary>
         /// 原始行为树复制体，放置修改源资源，保证安全修改
         /// </summary>
-        public ActionTree_Nodes_Asset CloneTree;
+        public actionnode_asset CloneTree;
         /// <summary>
         /// 原始行为树
         /// </summary>
-        public ActionTree_Nodes_Asset SourceTree;
+        public actionnode_asset SourceTree;
         #endregion
 
         /// <summary>
@@ -162,7 +162,7 @@
         [OnOpenAsset(1)]
         public static bool OnOpenAssets(int id, int line)
         {
-            if (EditorUtility.InstanceIDToObject(id) is ActionTree_Nodes_Asset datatree)
+            if (EditorUtility.InstanceIDToObject(id) is actionnode_asset datatree)
             {
                 #region 加载窗口
                 // 注意：执行顺序强调 ！！！ GetWindow 方法会先触发执行 CreateGUI 方法然后再继续下面的代码
@@ -384,8 +384,8 @@
                         string path_clone = EditorPrefs.GetString("XGraph->ActionTreePath_Clone", "");
 
                         // 根据路径恢复加载节点方案资源
-                        var tree_source = AssetDatabase.LoadAssetAtPath<ActionTree_Nodes_Asset>(path_source);
-                        var tree_clone = AssetDatabase.LoadAssetAtPath<ActionTree_Nodes_Asset>(path_clone);
+                        var tree_source = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_source);
+                        var tree_clone = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_clone);
                         if (tree_clone != null)
                         {
                             // 打开窗口并加载资源
@@ -413,8 +413,8 @@
                     if (string.IsNullOrEmpty(path_source)) return;
 
                     // 根据路径恢复加载节点方案资源
-                    var tree_source = AssetDatabase.LoadAssetAtPath<ActionTree_Nodes_Asset>(path_source);
-                    var tree_clone = AssetDatabase.LoadAssetAtPath<ActionTree_Nodes_Asset>(path_clone);
+                    var tree_source = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_source);
+                    var tree_clone = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_clone);
                     if (tree_clone != null)
                     {
                         var window = GetWindow<xg_Window>();
@@ -429,7 +429,7 @@
         /// </summary>
         /// <param h_name="tree_source"></param>
         /// <param h_name="tree_clone"></param>
-        public void ReloadTreeFromPath(ActionTree_Nodes_Asset tree_source, ActionTree_Nodes_Asset tree_clone)
+        public void ReloadTreeFromPath(actionnode_asset tree_source, actionnode_asset tree_clone)
         {
             if (tree_source == null) return;
 
@@ -499,7 +499,7 @@
         /// 当选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeview"></param>
-        private void OnSelectNodeView(xGraphNode_Base nodeview)
+        private void OnSelectNodeView(visualnode_base nodeview)
         {
             if (nodeview == null) return;
 
@@ -524,7 +524,7 @@
         /// 当选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeviews"></param>
-        private void OnSelectionNodesView(List<xGraphNode_Base> nodeviews)
+        private void OnSelectionNodesView(List<visualnode_base> nodeviews)
         {
             if (nodeviews == null) return;
 
@@ -567,7 +567,7 @@
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
         /// <param h_name="nodeviews"></param>
-        private void OnRemovedSelectionNodesView(List<xGraphNode_Base> nodeviews)
+        private void OnRemovedSelectionNodesView(List<visualnode_base> nodeviews)
         {
             if (nodeviews == null) return;
             if (nodeviews.Count > 1 || nodeviews.Count == 0)
@@ -579,7 +579,7 @@
         /// 取消选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeview"></param>
-        private void OnUnSelectNodeView(xGraphNode_Base nodeview)
+        private void OnUnSelectNodeView(visualnode_base nodeview)
         {
             if (!xw_isUnSelectedNode)
             {
@@ -687,14 +687,14 @@
         public void ActionTree_Open()
         {
             // 准备预打开的资源类
-            ActionTree_Nodes_Asset tree = null;
+            actionnode_asset tree = null;
 
             #region 获取打开资源路径并获取目标资源
             string path = EditorUtility.OpenFilePanel("Select Tree Asset", "Assets", "asset");
             if (!string.IsNullOrEmpty(path))
             {
                 path = path.Replace(Application.dataPath, "Assets"); // 转为 Unity 相对路径
-                tree = AssetDatabase.LoadAssetAtPath<ActionTree_Nodes_Asset>(path);
+                tree = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path);
             }
             else
             {
@@ -982,9 +982,9 @@
             /* 撤销或重做操作时对节点视图进行刷新的逻辑*/
 
             // 检测并刷新所有视觉节点的位置
-            foreach (var dataNode in CloneTree.ActionTreeNodes)
+            foreach (var dataNode in CloneTree.ActionNodes)
             {
-                var visualNode = xw_graphView.GetNodeByGuid(dataNode.nodeGUID) as xGraphNode_Base;
+                var visualNode = xw_graphView.GetNodeByGuid(dataNode.nodeGUID) as visualnode_base;
                 if (visualNode != null)
                 {
                     // 如果该节点位置有变化则刷新该节点位置

@@ -1,6 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    public class BaseNode_Wait : ActionTree_Node_Wait
+    public class basenode_wait : actionnode_wait
     {
         public override void Execute()
         {

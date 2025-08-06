@@ -3,8 +3,8 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine;
 
-    [CustomEditor(typeof(BaseNode_Wait))]
-    public class BaseNode_WaitEditor : Editor
+    [CustomEditor(typeof(basenode_wait))]
+    public class editor_basenode_wait : Editor
     {
         //GUIStyle style_text 
 
@@ -24,11 +24,7 @@ namespace SevenStrikeModules.XGraph
             EditorGUILayout.Space(10);
             EditorGUILayout.EndHorizontal();
 
-
-
-
-
-            //base.OnInspectorGUI();
+            base.OnInspectorGUI();
         }
     }
 }

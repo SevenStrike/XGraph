@@ -1,12 +1,10 @@
 namespace SevenStrikeModules.XGraph
 {
-    using UnityEngine;
-
-    public class BaseNode_End : ActionTree_Node_End
+    public class basenode_end : actionnode_end
     {
         public override void Execute()
         {
-            
+
         }
     }
 }

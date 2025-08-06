@@ -3,22 +3,20 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
-    public class xGraphNode_M_In_S_Out : xGraphNode_Base
+    public class visualnode_m_in_1port_n_out : visualnode_base
     {
-        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionTree_Node_Base data = null)
+        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, actionnode_base data = null)
         {
             base.Initialize(graphView, pos, data);
 
             #region 端口设置
-            xGraph_NodePort port_info_in = new xGraph_NodePort("输入端", typeof(bool), Direction.Input, Port.Capacity.Multi);
-            xGraph_NodePort port_info_out = new xGraph_NodePort("输出端", typeof(bool), Direction.Output, Port.Capacity.Single);
-            SetPortInfo(port_info_in);
-            SetPortInfo(port_info_out);
+            xGraph_NodePort port_info = new xGraph_NodePort("in", typeof(bool), Port.Capacity.Multi);
+            SetPort_Input(port_info);
             #endregion
         }
 
         #region 节点绘制
-        public override xGraphNode_Base Draw()
+        public override visualnode_base Draw()
         {
             // 绘制主容器
             Draw_Main();
@@ -35,8 +33,8 @@ namespace SevenStrikeModules.XGraph
             // 绘制输入节点容器
             Draw_Input();
 
-            // 绘制输出节点容器
-            Draw_Output();
+            //// 绘制输出节点容器
+            //Draw_Output();
 
             // 绘制扩展容器
             Draw_Extension();

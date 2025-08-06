@@ -1,11 +1,11 @@
 namespace SevenStrikeModules.XGraph
 {
-    public abstract class ActionTree_Node_Wait : ActionTree_Node_Base
+    public abstract class actionnode_wait : actionnode_base
     {
         /// <summary>
         /// 子节点
         /// </summary>
-        public ActionTree_Node_Base ChildNode;
+        public actionnode_base ChildNode;
         /// <summary>
         /// 等待时间
         /// </summary>

@@ -1,22 +1,24 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
-    public class xGraphNode_N_In_M_Out : xGraphNode_Base
+    public class visualnode_n_in_s_out_1port : visualnode_base
     {
-        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionTree_Node_Base data = null)
+        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, actionnode_base data = null)
         {
             base.Initialize(graphView, pos, data);
 
             #region 端口设置
-            xGraph_NodePort port_info = new xGraph_NodePort("输出端", typeof(bool), Direction.Output, Port.Capacity.Multi);
-            SetPortInfo(port_info);
+            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
+            port_out.Add(new xGraph_NodePort("out", typeof(bool), Port.Capacity.Single));
+            SetPort_Output(port_out);
             #endregion
         }
 
         #region 节点绘制
-        public override xGraphNode_Base Draw()
+        public override visualnode_base Draw()
         {
             // 绘制主容器
             Draw_Main();

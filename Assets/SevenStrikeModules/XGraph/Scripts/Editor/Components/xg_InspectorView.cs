@@ -19,7 +19,7 @@ namespace SevenStrikeModules.XGraph
         /// 显示目标节点的属性控件
         /// </summary>
         /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(xGraphNode_Base nodeview)
+        internal void UpdateSelection(visualnode_base nodeview)
         {
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);
@@ -54,7 +54,7 @@ namespace SevenStrikeModules.XGraph
         /// 显示目标节点的属性控件
         /// </summary>
         /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(ActionTree_Nodes_Asset nodesasset)
+        internal void UpdateSelection(actionnode_asset nodesasset)
         {
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);

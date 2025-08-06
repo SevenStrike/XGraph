@@ -3,8 +3,8 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine;
 
-    [CustomEditor(typeof(ActionTree_Nodes_Asset))]
-    public class Editor_ActionTree_Nodes_Asset : Editor
+    [CustomEditor(typeof(actionnode_asset))]
+    public class editor_actionnode_asset : Editor
     {
         public override void OnInspectorGUI()
         {

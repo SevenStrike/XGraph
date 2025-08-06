@@ -2,12 +2,12 @@ namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
 
-    public abstract class ActionTree_Node_Composite : ActionTree_Node_Base
+    public abstract class actionnode_composite : actionnode_base
     {
         /// <summary>
         /// 子节点列表
         /// </summary>
-        public List<ActionTree_Node_Base> childNodes = new List<ActionTree_Node_Base>();
+        public List<actionnode_base> childNodes = new List<actionnode_base>();
 
         public override void Execute()
         {

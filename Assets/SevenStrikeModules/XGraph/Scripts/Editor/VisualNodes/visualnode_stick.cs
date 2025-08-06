@@ -5,7 +5,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class xGraphNode_StickNote : Node
+    public class visualnode_stick : Node
     {
         /// <summary>
         /// GraphView组件
@@ -30,15 +30,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public StickNoteData stickNoteData { get; set; }
+        public stickdata stickNoteData { get; set; }
 
         /// <summary>
-        /// 初始化节点 - StickNoteData
+        /// 初始化节点 - stickdata
         /// </summary>
         /// <param h_name="graphView"></param>
         /// <param h_name="pos"></param>
         /// <param h_name="data"></param>
-        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, StickNoteData data = null)
+        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, stickdata data = null)
         {
             // 指定可调整大小
             capabilities |= Capabilities.Resizable;
@@ -115,7 +115,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 绘制节点
         /// </summary>
-        public xGraphNode_StickNote Draw()
+        public visualnode_stick Draw()
         {
             // 绘制主容器
             Draw_Main();

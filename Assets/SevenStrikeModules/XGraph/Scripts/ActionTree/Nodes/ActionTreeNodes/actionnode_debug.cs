@@ -1,11 +1,11 @@
 namespace SevenStrikeModules.XGraph
 {
-    public abstract class ActionTree_Node_Start : ActionTree_Node_Base
+    public abstract class actionnode_debug : actionnode_base
     {
         /// <summary>
         /// 子节点
         /// </summary>
-        public ActionTree_Node_Base ChildNode;
+        public actionnode_base ChildNode;
 
         public override void Execute()
         {

@@ -8,55 +8,55 @@
                     "name": "开始",
                     "note": "开始行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "Start",
-                    "icon":"start",
-                    "visual_nodeType": "N_In_S_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "start",
+                    "icon": "start",
+                    "visual_nodeType": "n_in_s_out_1port"
                 },
                 {
                     "name": "结束",
                     "note": "结束行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "End",
-                    "icon":"end",
-                    "visual_nodeType": "S_In_N_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "end",
+                    "icon": "end",
+                    "visual_nodeType": "s_in_1port_n_out"
                 },
                 {
                     "name": "合成",
                     "note": "合成行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "Composite",
-                    "icon":"composite",
-                    "visual_nodeType": "S_In_M_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "composite",
+                    "icon": "composite",
+                    "visual_nodeType": "s_in_1port_m_out_1port"
                 },
                 {
                     "name": "等待",
                     "note": "等待行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "Wait",
-                    "icon":"wait",
-                    "visual_nodeType": "S_In_S_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "wait",
+                    "icon": "wait",
+                    "visual_nodeType": "s_in_1port_s_out_1port"
                 },
                 {
                     "name": "调试",
                     "note": "调试行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "Debug",
-                    "icon":"debug",
-                    "visual_nodeType": "S_In_S_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "debug",
+                    "icon": "debug",
+                    "visual_nodeType": "s_in_1port_s_out_1port"
                 },
                 {
                     "name": "便签",
                     "note": "注释便签",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "BaseNode_",
-                    "action_nodeType": "StickNote",
-                    "icon":"stick",
-                    "visual_nodeType": "N_In_N_Out"
+                    "prefix_class": "basenode_",
+                    "action_nodeType": "stick",
+                    "icon": "stick",
+                    "visual_nodeType": "n_in_n_out"
                 }
             ]
         }

@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Collections.Generic;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -25,21 +26,16 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Port.Capacity Capacity { get; set; }
         /// <summary>
-        /// 端口方向
-        /// </summary>
-        public Direction Direction { get; set; }
-        /// <summary>
         /// 构造器
         /// </summary>
         /// <param root_title="catergory_title"></param>
         /// <param root_title="type"></param>
         /// <param root_title="capacity"></param>
-        public xGraph_NodePort(string name, Type type, Direction direction, Port.Capacity capacity)
+        public xGraph_NodePort(string name, Type type, Port.Capacity capacity)
         {
             Name = name;
             Type = type;
             Capacity = capacity;
-            Direction = direction;
         }
 
         public xGraph_NodePort()
@@ -83,7 +79,7 @@ namespace SevenStrikeModules.XGraph
         ExtensionContainer = 6,
     }
 
-    public class xGraphNode_Base : Node
+    public class visualnode_base : Node
     {
         /// <summary>
         /// GraphView组件
@@ -92,11 +88,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当选中节点时的委托事件
         /// </summary>
-        public Action<xGraphNode_Base> OnSelectedNode;
+        public Action<visualnode_base> OnSelectedNode;
         /// <summary>
         /// 当选中节点时的委托事件
         /// </summary>
-        public Action<xGraphNode_Base> OnUnSelectedNode;
+        public Action<visualnode_base> OnUnSelectedNode;
         /// <summary>
         /// 视觉节点图标
         /// </summary>
@@ -114,7 +110,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 输出端口
         /// </summary>
-        public xGraph_NodePort Port_Output = new xGraph_NodePort();
+        public List<xGraph_NodePort> Port_Outputs = new List<xGraph_NodePort>();
         #endregion
 
         #region 节点信息
@@ -131,15 +127,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public ActionTree_Node_Base ActionTreeNode { get; set; }
+        public actionnode_base ActionTreeNode { get; set; }
 
         /// <summary>
-        /// 初始化节点 - ActionTree_Node_Base
+        /// 初始化节点 - actionnode_base
         /// </summary>
         /// <param h_name="graphView"></param>
         /// <param h_name="pos"></param>
         /// <param h_name="data"></param>
-        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionTree_Node_Base data = null)
+        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, actionnode_base data = null)
         {
             // 指定GraphView 组件
             this.graphView = graphView;
@@ -202,21 +198,17 @@ namespace SevenStrikeModules.XGraph
         }
 
         #region 端口设置
-        /// <summary>
-        /// 根据传入的端口信息中的Direction值设置节点的端口参数信息
-        /// </summary>
-        /// <param h_name="portInfo"></param>
-        /// <returns></returns>
-        public virtual xGraphNode_Base SetPortInfo(xGraph_NodePort portInfo)
-        {
-            if (portInfo.Direction == Direction.Input)
-                Port_Input = portInfo;
-            else
-                Port_Output = portInfo;
 
+        public virtual visualnode_base SetPort_Input(xGraph_NodePort portInfo)
+        {
+            Port_Input = portInfo;
             return this;
         }
-
+        public virtual visualnode_base SetPort_Output(List<xGraph_NodePort> portInfos)
+        {
+            Port_Outputs = portInfos;
+            return this;
+        }
         /// <summary>
         /// 创建端口
         /// </summary>
@@ -239,7 +231,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 绘制节点
         /// </summary>
-        public virtual xGraphNode_Base Draw()
+        public virtual visualnode_base Draw()
         {
             // 绘制主容器
             Draw_Main();
@@ -280,13 +272,16 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Output()
         {
-            // 绘制端口 - 输出
-            Port_Output.Port = CreatePort(Port_Output.Name, Orientation.Horizontal, Port_Output.Direction, Port_Output.Capacity, Port_Output.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+            Port_Outputs.ForEach(x =>
+            {
+                // 绘制端口 - 输出
+                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
 
-            Port_Output.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
-            Port_Output.Port.Q<Label>().AddToClassList("PortText_Out");
+                x.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
+                x.Port.Q<Label>().AddToClassList("PortText_Out");
 
-            AppendElement(GraphNodeContainerType.OutputContainer, Port_Output.Port);
+                AppendElement(GraphNodeContainerType.OutputContainer, x.Port);
+            });
         }
 
         /// <summary>
@@ -294,9 +289,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Input()
         {
-            // 绘制端口 - 输入
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Port_Input.Direction, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
 
+            // 样式指定
             Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
             Port_Input.Port.Q<Label>().AddToClassList("PortText_In");
 

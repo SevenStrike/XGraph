@@ -1,8 +1,8 @@
-using UnityEngine;
-
 namespace SevenStrikeModules.XGraph
 {
-    public class BaseNode_Debug : ActionTree_Node_Debug
+    using UnityEngine;
+
+    public class basenode_debug : actionnode_debug
     {
         public string Message;
 

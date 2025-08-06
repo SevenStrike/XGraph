@@ -1,6 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    public class BaseNode_Start : ActionTree_Node_Start
+    public class basenode_start : actionnode_start
     {
         public override void Execute()
         {
