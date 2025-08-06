@@ -8,10 +8,10 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
-    using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
     using Color = UnityEngine.Color;
     using Edge = UnityEditor.Experimental.GraphView.Edge;
 
+    #region 主题配置文件类结构
     [Serializable]
     public class ThemeData_Group
     {
@@ -87,6 +87,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public List<ThemeData_Node> Node = new List<ThemeData_Node>();
     }
+    #endregion
 
     /// <summary>
     /// XGraph的GraphView基础件，[UxmlElement]用于在UIBuilder中出现GraphView的控件
