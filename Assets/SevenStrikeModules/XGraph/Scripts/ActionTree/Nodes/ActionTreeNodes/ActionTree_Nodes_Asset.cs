@@ -8,6 +8,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
+    using UnityEngine.InputSystem.HID;
+    using static Unity.Burst.Intrinsics.X86.Avx;
+    using static UnityEditor.PlayerSettings;
     using Object = UnityEngine.Object;
 
     [System.Serializable]
@@ -149,15 +152,6 @@ namespace SevenStrikeModules.XGraph
 #endif
     }
 
-    [Serializable]
-    public class RelayNodeData
-    {
-        public string guid;           // 唯一标识
-        public Vector2 position;      // 节点位置
-        public string inputGuid;      // 输入连接的节点GUID
-        public string outputGuid;     // 输出连接的节点GUID
-    }
-
     [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionTree")]
     public class ActionTree_Nodes_Asset : ScriptableObject
     {
@@ -185,10 +179,6 @@ namespace SevenStrikeModules.XGraph
         /// 编组列表
         /// </summary>
         [SerializeField] public List<NodeGroupData> NodeGroupDatas = new List<NodeGroupData>();
-        /// <summary>
-        /// 中继器列表
-        /// </summary>
-        [SerializeField] public List<RelayNodeData> relayNodes = new List<RelayNodeData>();
 
         /// <summary>
         /// 刷新
@@ -345,14 +335,14 @@ namespace SevenStrikeModules.XGraph
             // 创建新的 ActionTree_Nodes_Asset
             ActionTree_Nodes_Asset newRoot = ScriptableObject.CreateInstance<ActionTree_Nodes_Asset>();
 
-            // 实例化新的 StickNoteDatas 并从原始资源复制项
+            // 实例化新的 StickNoteDatas 列表，并从原始资源复制项
             newRoot.StickNoteDatas = new List<StickNoteData>();
             foreach (var item in StickNoteDatas)
             {
                 newRoot.StickNoteDatas.Add(item.Clone(false));
             }
 
-            // 实例化新的 NodeGroupData 并从原始资源复制项
+            // 实例化新的 NodeGroupData 列表，并从原始资源复制项
             newRoot.NodeGroupDatas = new List<NodeGroupData>();
             foreach (var item in NodeGroupDatas)
             {
@@ -477,53 +467,88 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 为资源指定子资源
         /// </summary>
-        /// <param name="parentNode"></param>
-        /// <param name="childNode"></param>
-        public void AddNodeToChild(ActionTree_Node_Base parentNode, ActionTree_Node_Base childNode)
+        /// <param name="parent"></param>
+        /// <param name="child"></param>
+        public void AddNodeToChild(ActionTree_Node_Base parent, ActionTree_Node_Base child)
         {
-            //Debug.Log($"{parentNode.nodeName}       |  建立链接  √  |      {childNode.nodeName}");
+            //Debug.Log($"{parent.nodeName}       |  建立链接  √  |      {child.nodeName}");
 
             #region 特化处理 - Start
-            ActionTree_Node_Start start = parentNode as ActionTree_Node_Start;
+            ActionTree_Node_Start start = parent as ActionTree_Node_Start;
             if (start)
             {
 #if UNITY_EDITOR
                 Undo.RecordObject(start, "Connect_StartNode");
 #endif
-                start.ChildNode = childNode;
+                if (start.ChildNode != null)
+                {
+                    if (child.nodeGUID == start.ChildNode.nodeGUID)
+                    {
+                        Debug.Log("start节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                        return;
+                    }
+                }
+                start.ChildNode = child;
             }
             #endregion
 
             #region 特化处理 - Wait
-            ActionTree_Node_Wait wait = parentNode as ActionTree_Node_Wait;
+            ActionTree_Node_Wait wait = parent as ActionTree_Node_Wait;
             if (wait)
             {
 #if UNITY_EDITOR
                 Undo.RecordObject(wait, "Connect_WaitNode");
 #endif
-                wait.ChildNode = childNode;
+                if (wait.ChildNode != null)
+                {
+                    if (child.nodeGUID == wait.ChildNode.nodeGUID)
+                    {
+                        Debug.Log("wait节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                        return;
+                    }
+                }
+                wait.ChildNode = child;
             }
             #endregion
 
             #region 特化处理 - Debug
-            ActionTree_Node_Debug debug = parentNode as ActionTree_Node_Debug;
+            ActionTree_Node_Debug debug = parent as ActionTree_Node_Debug;
             if (debug)
             {
 #if UNITY_EDITOR
                 Undo.RecordObject(debug, "Connect_DebugNode");
 #endif
-                debug.ChildNode = childNode;
+                if (debug.ChildNode != null)
+                {
+                    if (child.nodeGUID == debug.ChildNode.nodeGUID)
+                    {
+                        Debug.Log("debug节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                        return;
+                    }
+                }
+                debug.ChildNode = child;
             }
             #endregion
 
             #region 特化处理 - Composite
-            ActionTree_Node_Composite comp = parentNode as ActionTree_Node_Composite;
+            ActionTree_Node_Composite comp = parent as ActionTree_Node_Composite;
             if (comp)
             {
 #if UNITY_EDITOR
                 Undo.RecordObject(comp, "Connect_CompositeNode");
 #endif
-                comp.childNodes.Add(childNode);
+                bool existChild = false;
+                comp.childNodes.ForEach(c =>
+                {
+                    if (child.nodeGUID == c.nodeGUID)
+                        existChild = true;
+                });
+                if (existChild)
+                {
+                    Debug.Log("comp 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                    return;
+                }
+                comp.childNodes.Add(child);
             }
             #endregion
         }
@@ -534,7 +559,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="child"></param>
         public void RemoveChildNode(ActionTree_Node_Base parent, ActionTree_Node_Base child)
         {
-            //Debug.Log($"{parent.nodeName}       |  断开链接  ×  |      {child.nodeName}");
+            //Debug.Log($"{parent.nodeName}       |  断开链接  ×  |      {c.nodeName}");
 
             #region 特化处理 - Start
             ActionTree_Node_Start start = parent as ActionTree_Node_Start;
@@ -590,21 +615,21 @@ namespace SevenStrikeModules.XGraph
         {
             List<ActionTree_Node_Base> nodes = new List<ActionTree_Node_Base>();
 
-            // 如果是 "ActionTree_Node_Start" 节点，那么就收集 "ActionTree_Node_Start" 节点下的 "childNode"
+            // 如果是 "ActionTree_Node_Start" 节点，那么就收集 "ActionTree_Node_Start" 节点下的 "child"
             ActionTree_Node_Start start = parent as ActionTree_Node_Start;
             if (start != null && start.ChildNode != null)
             {
                 nodes.Add(start.ChildNode);
             }
 
-            // 如果是 "ActionTree_Node_Wait" 节点，那么就收集 "ActionTree_Node_Wait" 节点下的 "childNode"
+            // 如果是 "ActionTree_Node_Wait" 节点，那么就收集 "ActionTree_Node_Wait" 节点下的 "child"
             ActionTree_Node_Wait wait = parent as ActionTree_Node_Wait;
             if (wait != null && wait.ChildNode != null)
             {
                 nodes.Add(wait.ChildNode);
             }
 
-            // 如果是 "ActionTree_Node_Debug" 节点，那么就收集 "ActionTree_Node_Debug" 节点下的 "childNode"
+            // 如果是 "ActionTree_Node_Debug" 节点，那么就收集 "ActionTree_Node_Debug" 节点下的 "child"
             ActionTree_Node_Debug debug = parent as ActionTree_Node_Debug;
             if (debug != null && debug.ChildNode != null)
             {

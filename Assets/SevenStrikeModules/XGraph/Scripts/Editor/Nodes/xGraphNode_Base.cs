@@ -373,7 +373,7 @@ namespace SevenStrikeModules.XGraph
         public void UpdateMarkColor()
         {
             titleContainer.style.borderBottomColor = ActionTreeNode.nodeThemeColor;
-            titleContainer.style.borderBottomWidth = 5;
+            titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>
         /// 节点配色 - 隐藏

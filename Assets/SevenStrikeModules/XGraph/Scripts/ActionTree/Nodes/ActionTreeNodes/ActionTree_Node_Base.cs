@@ -48,6 +48,10 @@ namespace SevenStrikeModules.XGraph
         /// 行为节点 - 在GraphView里的颜色标记
         /// </summary>
         [SerializeField] public Color nodeThemeColor = Color.clear;
+        /// <summary>
+        /// 中继节点 - guid
+        /// </summary>
+        [SerializeField] public string relaynodeGUID;
 
         /// <summary>
         /// 行为执行方法

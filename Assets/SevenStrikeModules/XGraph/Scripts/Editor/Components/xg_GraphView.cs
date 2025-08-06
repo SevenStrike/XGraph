@@ -8,6 +8,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
+    using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
     using Color = UnityEngine.Color;
     using Edge = UnityEditor.Experimental.GraphView.Edge;
 
@@ -87,53 +88,6 @@ namespace SevenStrikeModules.XGraph
         public List<ThemeData_Node> Node = new List<ThemeData_Node>();
     }
 
-    public class CustomEdgeConnectorListener : EdgeManipulator, IEdgeConnectorListener
-    {
-        private xg_GraphView graphView;
-
-        public CustomEdgeConnectorListener(xg_GraphView graphView)
-        {
-            this.graphView = graphView;
-        }
-
-        public void OnDrop(GraphView graphView, Edge edge)
-        {
-            // 成功连接时的处理
-            var outputNode = edge.output.node as xGraphNode_Base;
-            var inputNode = edge.input.node as xGraphNode_Base;
-
-            if (outputNode != null && inputNode != null)
-            {
-                Debug.Log($"成功连接: {outputNode.ActionTreeNode.nodeName} -> {inputNode.ActionTreeNode.nodeName}");
-            }
-
-            // 添加边缘到GraphView
-            this.graphView.AddElement(edge);
-
-            // 将边缘连接到端口
-            edge.input.Connect(edge);
-            edge.output.Connect(edge);
-        }
-
-        public void OnDropOutsidePort(Edge edge, Vector2 position)
-        {
-            // 当连线在端口外释放时调用
-            if (edge.output != null)
-            {
-                var outputNode = edge.output.node as xGraphNode_Base;
-                Debug.Log($"连线取消: 从输出端口 [{outputNode?.ActionTreeNode.nodeName ?? "未知节点"}] 拖出但未连接");
-            }
-            else if (edge.input != null)
-            {
-                var inputNode = edge.input.node as xGraphNode_Base;
-                Debug.Log($"连线取消: 从输入端口 [{inputNode?.ActionTreeNode.nodeName ?? "未知节点"}] 拖出但未连接");
-            }
-
-            // 清理未完成的边缘
-            graphView.RemoveElement(edge);
-        }
-    }
-
     /// <summary>
     /// XGraph的GraphView基础件，[UxmlElement]用于在UIBuilder中出现GraphView的控件
     /// </summary>
@@ -155,7 +109,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// xw_graphView 内容缩放 - 最大
         /// </summary>
-        private float gv_scaleGraph_Max = 2f;
+        private float gv_scaleGraph_Max = 3.5f;
         /// <summary>
         /// xw_graphView 创建节点的位置
         /// </summary>
@@ -249,7 +203,7 @@ namespace SevenStrikeModules.XGraph
             // 添加 xw_graphView 基础组件 - 内容框选
             this.AddManipulator(new RectangleSelector());
             // 启用节点之间的连线功能
-            this.AddManipulator(new CustomEdgeConnectorListener(this));
+            this.AddManipulator(new EdgeManipulator());
             // 实例化节点搜索框的主体
             AddNodesSearchBox();
             #endregion
@@ -266,46 +220,10 @@ namespace SevenStrikeModules.XGraph
             LoadThemes();
 
             // 注册双击连线的回调
-            RegisterCallback<MouseDownEvent>(OnMouseDown, TrickleDown.TrickleDown);
+            RegisterCallback<MouseDownEvent>(Node_AddRelay, TrickleDown.TrickleDown);
         }
         #endregion
-        private void OnMouseDown(MouseDownEvent evt)
-        {
-            if (evt.clickCount == 2 && evt.target is Edge edge)
-            {
-                // 获取连线两端
-                Port outputPort = edge.output;
-                Port inputPort = edge.input;
 
-                xGraphNode_Base node_out = (xGraphNode_Base)outputPort.node;
-                xGraphNode_Base node_in = (xGraphNode_Base)inputPort.node;
-                Debug.Log(node_in.ActionTreeNode.graphNodeType);
-                Debug.Log(node_out.ActionTreeNode.graphNodeType);
-
-                //// 在双击位置创建Relay Node
-                //Vector2 nodePosition = evt.mousePosition;
-                //var relayNode = new RelayNode();
-                //relayNode.SetPosition(new Rect(nodePosition, Vector2.zero));
-
-                //// 添加到GraphView
-                //AddElement(relayNode);
-
-                //// 断开原连线
-                //edge.input.Disconnect(edge);
-                //edge.output.Disconnect(edge);
-                //RemoveElement(edge);
-
-                //// 重新连接：原输出端口 -> Relay输入端口
-                //var newEdge1 = outputPort.ConnectTo(relayNode.InputPort);
-                //AddElement(newEdge1);
-
-                //// 重新连接：Relay输出端口 -> 原输入端口
-                //var newEdge2 = relayNode.OutputPort.ConnectTo(inputPort);
-                //AddElement(newEdge2);
-
-                evt.StopPropagation();
-            }
-        }
         #region 辅助方法
         /// <summary>
         /// 居中聚焦所有视觉节点
@@ -363,6 +281,7 @@ namespace SevenStrikeModules.XGraph
 
             // 清空GraphView的所有Group
             Groups_Clear();
+
             // 清空 Inspector 视图
             gv_GaphWindow.xw_InspectorView.ClearInspector();
 
@@ -386,11 +305,20 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据数据节点的GUID来获取目标视觉节点
         /// </summary>
-        /// <param h_name="dat"></param>
+        /// <param name="guid"></param>
         /// <returns></returns>
-        private xGraphNode_Base FindNodeView(ActionTree_Node_Base data)
+        private xGraphNode_Base FindNodeView(string guid)
         {
-            return GetNodeByGuid(data.nodeGUID) as xGraphNode_Base;
+            return GetNodeByGuid(guid) as xGraphNode_Base;
+        }
+        /// <summary>
+        /// 根据数据节点的GUID来获取目标视觉节点
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        private Node FindNode(string guid)
+        {
+            return GetNodeByGuid(guid) as Node;
         }
         /// <summary>
         /// 获取鼠标位置
@@ -453,22 +381,9 @@ namespace SevenStrikeModules.XGraph
 
             //Debug.Log(evt.target);
 
-            #region  确认当前有点点击的物体是否是GraphView框架
-            if (evt.target is xg_GraphView graphview)
-            {
-                evt.menu.AppendSeparator();
-                // 菜单 - 主题色切换
-                for (int i = 0; i < ThemesList.GraphviewBgGrid.Count; i++)
-                {
-                    ThemeData_GraphViewBgGrid dat = ThemesList.GraphviewBgGrid[i];
-                    evt.menu.AppendAction($"T 背景配色/{dat.solution}", (action) =>
-                    {
-                        SwitchGraphViewBgTheme(dat);
-                    });
-                }
-                return;
-            }
-            #endregion
+            bool isInGraphView = false;
+            bool isInGraphNode = false;
+            bool isInGraphGroup = false;
 
             #region  确认当前有点点击的物体是否是Group
             if (evt.target is VisualElement ele)
@@ -480,7 +395,7 @@ namespace SevenStrikeModules.XGraph
                     if (current is Group group)
                     {
                         // 如果找到可以确认这个元素属于一个Group，那么以下菜单都不会显示了，确保独立显示Group专属菜单
-                        return;
+                        isInGraphGroup = true;
                     }
                     current = current.parent; // 继续向上查找
                 }
@@ -533,48 +448,55 @@ namespace SevenStrikeModules.XGraph
                         }
                     });
                 }
+                isInGraphNode = true;
                 evt.menu.AppendSeparator();
             }
             #endregion
 
-            #region 节点操作：添加节点
-            evt.menu.AppendAction("A 添加节点", (action) =>
+            #region  确认当前有点点击的物体是否是GraphView框架
+            if (evt.target is xg_GraphView graphview)
             {
-                Vector2 screenMousePosition = action.eventInfo.mousePosition + gv_GaphWindow.position.position;
-                nodeCreationRequest(new NodeCreationContext()
+                isInGraphView = true;
+                evt.menu.AppendSeparator();
+                // 菜单 - 主题色切换
+                for (int i = 0; i < ThemesList.GraphviewBgGrid.Count; i++)
                 {
-                    // 将当前鼠标的坐标传递给搜索框的坐标
-                    screenMousePosition = screenMousePosition,
-                    index = -1
-                });
-            });
-            #endregion
-
-            #region 节点操作：清空节点
-            if (nodes.Count() > 0)
-            {
-                evt.menu.AppendAction("Z 清空节点", (action) =>
-                {
-                    ClearGraphViewContents();
-                });
+                    ThemeData_GraphViewBgGrid dat = ThemesList.GraphviewBgGrid[i];
+                    evt.menu.AppendAction($"T 背景配色/{dat.solution}", (action) =>
+                    {
+                        SwitchGraphViewBgTheme(dat);
+                    });
+                }
             }
             #endregion
+
+            if (isInGraphView)
+            {
+                #region 节点操作：添加节点
+                evt.menu.AppendAction("A 添加节点", (action) =>
+                {
+                    Vector2 screenMousePosition = action.eventInfo.mousePosition + gv_GaphWindow.position.position;
+                    nodeCreationRequest(new NodeCreationContext()
+                    {
+                        // 将当前鼠标的坐标传递给搜索框的坐标
+                        screenMousePosition = screenMousePosition,
+                        index = -1
+                    });
+                });
+                #endregion
+
+                #region 节点操作：清空节点
+                if (nodes.Count() > 0)
+                {
+                    evt.menu.AppendAction("Z 清空节点", (action) =>
+                    {
+                        ClearGraphViewContents();
+                    });
+                }
+                #endregion
+            }
 
             evt.menu.AppendSeparator();
-
-            #region 节点操作：克隆和复制
-            if (selection.Count != 0)
-            {
-                evt.menu.AppendAction("D 克隆节点", param =>
-                {
-                    Node_Duplicate();
-                });
-                evt.menu.AppendAction("C 复制节点", param =>
-                {
-                    Node_Copy();
-                });
-            }
-            #endregion
 
             #region 节点操作：粘贴节点
             if (gv_CopiedNodeList.Count > 0)
@@ -588,12 +510,39 @@ namespace SevenStrikeModules.XGraph
 
             evt.menu.AppendSeparator();
 
-            #region 节点操作：节点编组
-            evt.menu.AppendAction("G 节点编组", param =>
+            if (!isInGraphGroup && isInGraphNode)
             {
-                MakeGroup("节点编组", gv_NodeCreatedPosition);
-            });
-            #endregion
+                #region 节点操作：删除节点
+                evt.menu.AppendAction("S 删除节点", param =>
+                {
+                    selection.ForEach(n =>
+                    {
+                        Node_Delete(n);
+                    });
+                });
+                #endregion
+
+                #region 节点操作：节点编组
+                evt.menu.AppendAction("G 节点编组", param =>
+                {
+                    MakeGroup("节点编组", gv_NodeCreatedPosition);
+                });
+                #endregion
+
+                #region 节点操作：克隆和复制
+                if (selection.Count != 0)
+                {
+                    evt.menu.AppendAction("D 克隆节点", param =>
+                    {
+                        Node_Duplicate();
+                    });
+                    evt.menu.AppendAction("C 复制节点", param =>
+                    {
+                        Node_Copy();
+                    });
+                }
+                #endregion
+            }
         }
         #endregion
 
@@ -623,13 +572,18 @@ namespace SevenStrikeModules.XGraph
                 // 如果创建了连线，e 为连线
                 graphViewChange.edgesToCreate.ForEach(e =>
                 {
+                    #region 行为树节点连线逻辑
                     // e 连线的父级节点
                     xGraphNode_Base n_parent = e.output.node as xGraphNode_Base;
                     // e 连线的子级节点
                     xGraphNode_Base n_child = e.input.node as xGraphNode_Base;
 
-                    // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
-                    ActionTree.AddNodeToChild(n_parent.ActionTreeNode, n_child.ActionTreeNode);
+                    if (n_parent != null && n_child != null)
+                    {
+                        // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
+                        ActionTree.AddNodeToChild(n_parent.ActionTreeNode, n_child.ActionTreeNode);
+                    }
+                    #endregion                   
                 });
             }
         }
@@ -645,36 +599,44 @@ namespace SevenStrikeModules.XGraph
                 // 当有元素被移除的时候
                 graphViewChange.elementsToRemove.ForEach(element =>
                 {
-                    // ----- 如果移除的是 ---- "节点"
+                    #region 连线
+                    Edge edge = element as Edge;
+                    if (edge != null)
+                    {
+                        #region 判断连线源是否是行为树资源节点
+                        // 连线的父级节点
+                        xGraphNode_Base n_parent = edge.output.node as xGraphNode_Base;
+                        // 连线的子级节点
+                        xGraphNode_Base n_child = edge.input.node as xGraphNode_Base;
+
+                        if (n_parent != null && n_child != null)
+                        {
+                            // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
+                            ActionTree.RemoveChildNode(n_parent.ActionTreeNode, n_child.ActionTreeNode);
+                        }
+                        #endregion                        
+                    }
+                    #endregion
+
+                    #region 行为节点
                     xGraphNode_Base nodeview = element as xGraphNode_Base;
                     if (nodeview != null)
                     {
                         // 从根节点中移除数据节点
                         ActionTree.Remove(nodeview.ActionTreeNode);
                     }
+                    #endregion
 
-                    // ----- 如果移除的是 ---- "便签节点"
+                    #region 便签节点
                     xGraphNode_StickNote stickview = element as xGraphNode_StickNote;
                     if (stickview != null)
                     {
                         Undo.RecordObject(ActionTree, "Remove StickNote");
                         ActionTree.StickNote_Remove(stickview.stickNoteData);
                     }
+                    #endregion
 
-                    // ----- 如果移除的是 ---- "连线"
-                    Edge edge = element as Edge;
-                    if (edge != null)
-                    {
-                        // 连线的父级节点
-                        xGraphNode_Base n_parent = edge.output.node as xGraphNode_Base;
-                        // 连线的子级节点
-                        xGraphNode_Base n_child = edge.input.node as xGraphNode_Base;
-
-                        // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
-                        ActionTree.RemoveChildNode(n_parent.ActionTreeNode, n_child.ActionTreeNode);
-                    }
-
-                    // ----- 如果移除的是 ---- "编组"
+                    #region 编组
                     Group group = element as Group;
                     if (group != null)
                     {
@@ -694,12 +656,13 @@ namespace SevenStrikeModules.XGraph
                             CurrentCreatedGroups.Remove(group);
                         }
                     }
+                    #endregion
                 });
             }
         }
         #endregion
 
-        #region 视觉： 节点 / 便签 / 编组 重建
+        #region 视觉： 节点 / 便签 / 编组  -  重建
         /// <summary>
         /// 根据数据行为树根节点容器里的子资源来生成GraphView的视觉节点
         /// </summary>
@@ -728,8 +691,8 @@ namespace SevenStrikeModules.XGraph
                 // c 为每一个子数据节点
                 children.ForEach(c =>
                 {
-                    xGraphNode_Base n_parent = FindNodeView(d);
-                    xGraphNode_Base n_child = FindNodeView(c);
+                    xGraphNode_Base n_parent = FindNodeView(d.nodeGUID);
+                    xGraphNode_Base n_child = FindNodeView(c.nodeGUID);
 
                     Edge edge = n_parent.Port_Output.Port.ConnectTo(n_child.Port_Input.Port);
                     AddElement(edge);
@@ -1017,6 +980,82 @@ namespace SevenStrikeModules.XGraph
                 AddToSelection(newNode);
             }
         }
+        private void Node_Delete(ISelectable selnode)
+        {
+            if (selnode is xGraphNode_Base node)
+            {
+
+            }
+            if (selnode is Group gp)
+            {
+
+            }
+        }
+        /// <summary>
+        /// 创建中继节点
+        /// </summary>
+        /// <param name="evt"></param>
+        private void Node_AddRelay(MouseDownEvent evt)
+        {
+            if (evt.clickCount == 2 && evt.target is Edge edge)
+            {
+                // 在双击位置创建Relay Node
+                Vector2 nodePosition = evt.localMousePosition;
+                // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
+                Vector2 localMousePosition = contentViewContainer.WorldToLocal(nodePosition);
+                localMousePosition.x -= 50;
+
+                // 获取连线两端
+                Port outputPort = edge.output;
+                Port inputPort = edge.input;
+
+                #region 当双击两个行为节点中间的连线时，在中间创建一个中继节点
+                // 获取为：上级节点
+                xGraphNode_Base relay_in = outputPort.node as xGraphNode_Base;
+                // 获取为：下级节点
+                xGraphNode_Base relay_out = inputPort.node as xGraphNode_Base;
+
+
+                if (relay_in != null && relay_out != null)
+                {
+                    //var relayNode = new xGraphNode_Relay(relay_in.Port_Output.Capacity);
+
+                    //// 创建中继节点数据
+                    //RelayNodeData relaydata = new RelayNodeData();
+                    //relaydata.guid = UnityEditor.GUID.Generate().ToString();
+                    //relaydata.position = localMousePosition;
+                    //relaydata.inputGuid = relay_in.viewDataKey;
+                    //relay_in.ActionTreeNode.relaynodeGUID = relaydata.guid;
+                    //relaydata.outputGuids.Add(relay_out.viewDataKey);
+
+                    //Undo.RecordObject(ActionTree, "Create RelayNode");
+                    //// 加入到行为树根节点的中继列表中
+                    //ActionTree.RelayData_Add(relaydata);
+
+                    //// 初始化中继节点（指定Graph视图和位置以及数据）
+                    //relayNode.Initialize(this, localMousePosition, relaydata);
+
+                    //// 添加到GraphView
+                    //AddElement(relayNode);
+
+                    //// 断开原连线
+                    //edge.input.Disconnect(edge);
+                    //edge.output.Disconnect(edge);
+                    //RemoveElement(edge);
+
+                    //// 重新连接：原输出端口（父节点） -> Relay输入端口
+                    //var newEdge_parent = outputPort.ConnectTo(relayNode.InputPort);
+                    //AddElement(newEdge_parent);
+
+                    //// 重新连接：Relay输出端口 -> 原输入端口（子节点）
+                    //var newEdge_child = relayNode.OutputPort.ConnectTo(inputPort);
+                    //AddElement(newEdge_child);
+                }
+                #endregion
+
+                evt.StopPropagation();
+            }
+        }
         /// <summary>
         /// 清空视觉节点
         /// </summary>
@@ -1105,14 +1144,25 @@ namespace SevenStrikeModules.XGraph
         {
             var compatiblePorts = new List<Port>();
 
+            // 获取起始端口所属的节点
+            var startNode = startPort.node;
+
             // 遍历所有端口
             ports.ForEach(port =>
             {
-                // 确保不是同一个端口，且方向相反（输入连输出，输出连输入）
-                if (startPort != port && startPort.direction != port.direction)
-                {
-                    compatiblePorts.Add(port);
-                }
+                // 确保不是同一个端口
+                if (startPort == port)
+                    return;
+
+                // 确保方向相反（输入连输出，输出连输入）
+                if (startPort.direction == port.direction)
+                    return;
+
+                // 确保不是同一个节点的端口（防止自连接）
+                if (startNode == port.node)
+                    return;
+
+                compatiblePorts.Add(port);
             });
 
             return compatiblePorts;
@@ -1489,6 +1539,7 @@ namespace SevenStrikeModules.XGraph
             // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             if (action_nodeType == "StickNote")
             {
+                Undo.RecordObject(ActionTree, "Create StickNote");
                 // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
                 StickNoteData stdata = new StickNoteData("便签", "点击此处更改内容", GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));
                 ActionTree.StickNote_Add(stdata);
