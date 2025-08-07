@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
     using UnityEngine;
 
     public abstract class actionnode_base : ScriptableObject
@@ -48,6 +49,7 @@ namespace SevenStrikeModules.XGraph
         /// 行为节点 - 在GraphView里的颜色标记
         /// </summary>
         [SerializeField] public Color nodeThemeColor = Color.clear;
+        [SerializeField] public List<actionnode_base> relays = new List<actionnode_base>();
 
         /// <summary>
         /// 行为执行方法

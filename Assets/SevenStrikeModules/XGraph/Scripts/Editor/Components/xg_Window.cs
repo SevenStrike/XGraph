@@ -224,7 +224,7 @@
                 // 当 GraphView 组件不为空时
                 if (wnd.xw_graphView != null)
                 {
-                    wnd.xw_graphView.Node_Make_With_ActionTreeData(wnd.CloneTree);
+                    wnd.xw_graphView.Restructure_VisualNodes(wnd.CloneTree);
                     //Debug.Log("打开 XGraphView 并加载节点信息！");
                 }
                 #endregion
@@ -262,7 +262,7 @@
             // 在布局中找到 xw_graphView 组件
             xw_graphView = root.Q<xg_GraphView>();
             xw_graphView.gv_GaphWindow = this;
-            xw_graphView.RegisterNodeColorDisplayAction();
+            xw_graphView.Action_Register_NodeColorDisplayer();
 
             #region 注册GraphView事件
             // 创建节点时注册的（点击节点时）的回调，用于将与之对应的资源节点的属性展示在内置自定义Inspector面板上
@@ -478,10 +478,10 @@
                 EditorApplication.delayCall += () =>
                 {
                     reselement.SnapToNearestQuadrant();
-                    xw_graphView?.Node_Make_With_ActionTreeData(CloneTree);
+                    xw_graphView?.Restructure_VisualNodes(CloneTree);
 
                     /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
-                     *  而 xw_graphView?.Node_Make_With_ActionTreeData(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
+                     *  而 xw_graphView?.Restructure_VisualNodes(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
                      */
                     #region Node节点颜色标记的状态恢复
                     // 获取最后一次的移动式属性面板开关状态
@@ -514,10 +514,10 @@
             xw_InspectorView.UpdateSelection(nodeview);
 
             // 加载 RemoteInspector 面板标题文字
-            Set_InspectorView_Container_Title($"节点属性 - {nodeview.ActionTreeNode.nodeName}");
+            Set_InspectorView_Container_Title($"节点属性 - {nodeview.ActionNode.nodeName}");
 
-            xw_Set_CurrentGraphNodeIntro(nodeview.ActionTreeNode.GetInfo());
-            xw_Set_CurrentGraphNodePathText(nodeview.ActionTreeNode.GetPath());
+            xw_Set_CurrentGraphNodeIntro(nodeview.ActionNode.GetInfo());
+            xw_Set_CurrentGraphNodePathText(nodeview.ActionNode.GetPath());
             xw_isUnSelectedNode = false;
         }
         /// <summary>
@@ -541,10 +541,10 @@
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
                 // 加载 RemoteInspector 面板标题文字
-                Set_InspectorView_Container_Title($"节点属性 - {nodeviews[0].ActionTreeNode.nodeName}");
+                Set_InspectorView_Container_Title($"节点属性 - {nodeviews[0].ActionNode.nodeName}");
 
-                xw_Set_CurrentGraphNodeIntro(nodeviews[0].ActionTreeNode.GetInfo());
-                xw_Set_CurrentGraphNodePathText(nodeviews[0].ActionTreeNode.GetPath());
+                xw_Set_CurrentGraphNodeIntro(nodeviews[0].ActionNode.GetInfo());
+                xw_Set_CurrentGraphNodePathText(nodeviews[0].ActionNode.GetPath());
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -726,7 +726,7 @@
             // 当 GraphView 组件不为空时，根据资源结构加载节点信息！               
             if (xw_graphView != null)
             {
-                xw_graphView.Node_Make_With_ActionTreeData(CloneTree);
+                xw_graphView.Restructure_VisualNodes(CloneTree);
             }
         }
         /// <summary>
@@ -1011,7 +1011,7 @@
             xw_InspectorView.ClearInspector();
 
             // 2. 根据当前数据重新生成节点
-            xw_graphView.Node_Make_With_ActionTreeData(CloneTree);
+            xw_graphView.Restructure_VisualNodes(CloneTree);
 
             // 3. 刷新 Inspector 显示
             if (xw_currentSelectedVisualNode != null)

@@ -24,7 +24,7 @@ namespace SevenStrikeModules.XGraph
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);
 
-            var target = nodeview.ActionTreeNode;
+            var target = nodeview.ActionNode;
             if (target == null) return;
 
             // 尝试查找是否有自定义 Editor

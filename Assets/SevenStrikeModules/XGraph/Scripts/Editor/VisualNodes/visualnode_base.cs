@@ -127,7 +127,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public actionnode_base ActionTreeNode { get; set; }
+        public actionnode_base ActionNode { get; set; }
 
         /// <summary>
         /// 初始化节点 - actionnode_base
@@ -144,7 +144,7 @@ namespace SevenStrikeModules.XGraph
 
             // 携带数据
             if (data != null)
-                ActionTreeNode = data;
+                ActionNode = data;
 
             #region 基础参数设置
             this.icon = data.icon;
@@ -163,12 +163,12 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(this.ActionTreeNode, "Add Node");
+            Undo.RecordObject(this.ActionNode, "Add Node");
             base.SetPosition(newPos);
-            if (ActionTreeNode != null)
+            if (ActionNode != null)
             {
-                ActionTreeNode.nodeGraphPosition.x = newPos.xMin;
-                ActionTreeNode.nodeGraphPosition.y = newPos.yMin;
+                ActionNode.nodeGraphPosition.x = newPos.xMin;
+                ActionNode.nodeGraphPosition.y = newPos.yMin;
             }
         }
 
@@ -209,6 +209,7 @@ namespace SevenStrikeModules.XGraph
             Port_Outputs = portInfos;
             return this;
         }
+
         /// <summary>
         /// 创建端口
         /// </summary>
@@ -218,7 +219,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="capacity"></param>
         /// <param h_name="type"></param>
         /// <returns></returns>
-        protected Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
+        public virtual Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
         {
             Port port = InstantiatePort(orientation, direction, capacity, type);
             port.portName = name;
@@ -275,7 +276,7 @@ namespace SevenStrikeModules.XGraph
             Port_Outputs.ForEach(x =>
             {
                 // 绘制端口 - 输出
-                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.nodeThemeColor);
 
                 x.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
                 x.Port.Q<Label>().AddToClassList("PortText_Out");
@@ -289,7 +290,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Input()
         {
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionTreeNode.nodeThemeColor);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.nodeThemeColor);
 
             // 样式指定
             Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
@@ -325,9 +326,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             graphView.ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == ActionTreeNode.nodeThemeSolution)
+                if (colorData.solution == ActionNode.nodeThemeSolution)
                 {
-                    IconLabel.style.unityBackgroundImageTintColor = ActionTreeNode.nodeThemeSolution == "M 默认" ? Color.white : ActionTreeNode.nodeThemeColor;
+                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.nodeThemeSolution == "M 默认" ? Color.white : ActionNode.nodeThemeColor;
                 }
             });
 
@@ -360,14 +361,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void SetMarkColor()
         {
-            titleContainer.style.borderBottomColor = ActionTreeNode.nodeThemeColor;
+            titleContainer.style.borderBottomColor = ActionNode.nodeThemeColor;
         }
         /// <summary>
         /// 刷新节点配色
         /// </summary>
         public void UpdateMarkColor()
         {
-            titleContainer.style.borderBottomColor = ActionTreeNode.nodeThemeColor;
+            titleContainer.style.borderBottomColor = ActionNode.nodeThemeColor;
             titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>
