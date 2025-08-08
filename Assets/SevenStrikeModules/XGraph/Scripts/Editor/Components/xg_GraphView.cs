@@ -549,21 +549,85 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
+            OnChanged_RemovedElement(graphViewChange);
+
+            OnChanged_CreateEdge(graphViewChange);
+
+            return graphViewChange;
+        }
+        /// <summary>
+        /// 当有连线被创建时
+        /// </summary>
+        /// <param assetName="graphViewChange"></param>
+        private void OnChanged_CreateEdge(GraphViewChange graphViewChange)
+        {
+            // 当有连线被创建时
+            if (graphViewChange.edgesToCreate != null)
+            {
+                // 如果创建了连线，e 为连线
+                graphViewChange.edgesToCreate.ForEach(e =>
+                {
+                    // e 连线的父级节点
+                    visualnode_base n_parent = e.output.node as visualnode_base;
+                    // e 连线的子级节点
+                    visualnode_base n_child = e.input.node as visualnode_base;
+
+                    // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
+                    ActionTreeAsset.AddNodeToChild(n_parent.ActionNode, n_child.ActionNode);
+                });
+            }
+        }
+        /// <summary>
+        /// 当有节点被移除时
+        /// </summary>
+        /// <param assetName="graphViewChange"></param>
+        private void OnChanged_RemovedElement(GraphViewChange graphViewChange)
+        {
             // 当有节点被移除时
             if (graphViewChange.elementsToRemove != null)
             {
                 // 当有元素被移除的时候
                 graphViewChange.elementsToRemove.ForEach(element =>
                 {
-                    #region 编组
+                    // ----- 如果移除的是 ---- "节点"
+                    visualnode_base nodeview = element as visualnode_base;
+                    if (nodeview != null)
+                    {
+                        // 从根节点中移除数据节点
+                        ActionTreeAsset.Remove(nodeview.ActionNode);
+                    }
+
+                    // ----- 如果移除的是 ---- "便签节点"
+                    visualnode_stick stickview = element as visualnode_stick;
+                    if (stickview != null)
+                    {
+                        Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
+                        ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
+                    }
+
+                    // ----- 如果移除的是 ---- "连线"
+                    Edge edge = element as Edge;
+                    if (edge != null)
+                    {
+                        // 连线的父级节点
+                        visualnode_base n_parent = edge.output.node as visualnode_base;
+                        // 连线的子级节点
+                        visualnode_base n_child = edge.input.node as visualnode_base;
+
+                        // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
+                        ActionTreeAsset.RemoveChildNode(n_parent.ActionNode, n_child.ActionNode);
+                    }
+
+                    // ----- 如果移除的是 ---- "编组"
                     Group group = element as Group;
                     if (group != null)
                     {
-                        // 查找对应的 groupdata
+                        Undo.RecordObject(ActionTreeAsset, "Remove Group");
+
+                        // 查找对应的 NodeGroupData
                         groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
                         if (groupData != null)
                         {
-                            Undo.RecordObject(ActionTreeAsset, "Remove Group");
                             // 从 NodeGroupDatas 中移除
                             ActionTreeAsset.NodeGroup_Remove(groupData);
                         }
@@ -574,20 +638,8 @@ namespace SevenStrikeModules.XGraph
                             CurrentCreatedGroups.Remove(group);
                         }
                     }
-                    #endregion
                 });
             }
-
-            // 当有连线被创建时
-            if (graphViewChange.edgesToCreate != null)
-            {
-                // 如果创建了连线，e 为连线
-                graphViewChange.edgesToCreate.ForEach(e =>
-                {
-
-                });
-            }
-            return graphViewChange;
         }
         #endregion
 
