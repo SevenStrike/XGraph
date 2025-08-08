@@ -1,6 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
@@ -8,9 +7,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
-    using UnityEngine.InputSystem.HID;
-    using static Unity.Burst.Intrinsics.X86.Avx;
-    using static UnityEditor.PlayerSettings;
     using Object = UnityEngine.Object;
 
     [System.Serializable]
@@ -346,7 +342,9 @@ namespace SevenStrikeModules.XGraph
             newRoot.NodeGroupDatas = new List<groupdata>();
             foreach (var item in NodeGroupDatas)
             {
+#if UNITY_EDITOR
                 newRoot.NodeGroupDatas.Add(item.Clone(false));
+#endif
             }
 
             newRoot.name = this.name + "_CloneRoot";
