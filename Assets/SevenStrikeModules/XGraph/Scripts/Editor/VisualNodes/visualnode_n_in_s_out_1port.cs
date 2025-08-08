@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
@@ -21,11 +22,20 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 注册GraphView的变化状态
-            graphView.graphViewChanged -= OnGraphViewChanged;
-            graphView.graphViewChanged += OnGraphViewChanged;
+            RegisterGraphViewChanged(graphView);
             #endregion
         }
 
+        #region GraphView视图操作有改变时
+        /// <summary>
+        /// 注册GraphView的变化状态
+        /// </summary>
+        /// <param name="graphView"></param>
+        private void RegisterGraphViewChanged(xg_GraphView graphView)
+        {
+            graphView.graphViewChanged -= OnGraphViewChanged;
+            graphView.graphViewChanged += OnGraphViewChanged;
+        }
         /// <summary>
         /// 当GraphView视图内有变化时
         /// </summary>
@@ -37,7 +47,6 @@ namespace SevenStrikeModules.XGraph
             On_CreateEdge(graphViewChange);
             return graphViewChange;
         }
-
         /// <summary>
         /// 当GraphView视图内有变化  -  移除了元素时（含所有元素类型：节点、组、连线等）
         /// </summary>
@@ -58,7 +67,33 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
+        /// <summary>
+        /// 当GraphView视图内有变化  -  创建了连线时
+        /// </summary>
+        /// <param name="graphViewChange"></param>
+        private void On_CreateEdge(GraphViewChange graphViewChange)
+        {
+            if (graphViewChange.edgesToCreate != null)
+            {
+                // 如果创建了连线
+                graphViewChange.edgesToCreate.ForEach(edge =>
+                {
+                    // edge 连线的子级节点
+                    visualnode_base n_child = edge.input.node as visualnode_base;
 
+                    if (n_child != null)
+                    {
+                        // 如果该视觉节点的行为数据类型为： start
+                        if (ActionNode is actionnode_start start)
+                        {
+                            Undo.RecordObject(start, "Remove_Start_ChildNode");
+                            // 将连线的 input 端赋值给 start 的子节点
+                            start.ChildNode = n_child.ActionNode;
+                        }
+                    }
+                });
+            }
+        }
         /// <summary>
         /// GraphView 移除连线时
         /// </summary>
@@ -80,6 +115,7 @@ namespace SevenStrikeModules.XGraph
                         // 如果删除的连线的 output 端的节点的行为 Guid 等于 start 的Guid
                         if (n_parent.ActionNode.nodeGUID == start.nodeGUID)
                         {
+                            Undo.RecordObject(start, "Remove_Start_ChildNode");
                             // 清空 start 的子节点
                             start.ChildNode = null;
                         }
@@ -88,55 +124,36 @@ namespace SevenStrikeModules.XGraph
                 #endregion
             }
         }
-
         /// <summary>
         /// GraphView 移除节点时
         /// </summary>
         /// <param name="element"></param>
         private void Remove_Node(GraphElement element)
         {
-            visualnode_base visualnode = element as visualnode_base;
-            if (visualnode != null)
+            visualnode_base remove_node = element as visualnode_base;
+            if (remove_node != null)
             {
+                // 如果删除的节点 Guid 等于 自身的Guid就从行为树根资源中移除该节点资源
+                if (remove_node.ActionNode.nodeGUID == ActionNode.nodeGUID)
+                {
+                    Undo.RecordObject(graphView.ActionTreeAsset, "Remove_Start_Node");
+                    graphView.ActionTreeAsset.Remove(ActionNode);
+                }
+
                 // 如果该视觉节点的行为数据类型为： start
                 if (ActionNode is actionnode_start start)
                 {
                     // 如果删除的节点 Guid 等于 start 的子节点的Guid
-                    if (start.ChildNode != null && visualnode.ActionNode.nodeGUID == start.ChildNode.nodeGUID)
+                    if (start.ChildNode != null && remove_node.ActionNode.nodeGUID == start.ChildNode.nodeGUID)
                     {
+                        Undo.RecordObject(start, "Remove_Start_ChildNode");
                         // 清空 start 的子节点
                         start.ChildNode = null;
                     }
                 }
             }
         }
-
-        /// <summary>
-        /// 当GraphView视图内有变化  -  创建了连线时
-        /// </summary>
-        /// <param name="graphViewChange"></param>
-        private void On_CreateEdge(GraphViewChange graphViewChange)
-        {
-            if (graphViewChange.edgesToCreate != null)
-            {
-                // 如果创建了连线，edge 为连线
-                graphViewChange.edgesToCreate.ForEach(edge =>
-                {
-                    // edge 连线的子级节点
-                    visualnode_base n_child = edge.input.node as visualnode_base;
-
-                    if (n_child != null)
-                    {
-                        // 如果该视觉节点的行为数据类型为： start
-                        if (ActionNode is actionnode_start start)
-                        {
-                            // 将连线的 input 端赋值给 start 的子节点
-                            start.ChildNode = n_child.ActionNode;
-                        }
-                    }
-                });
-            }
-        }
+        #endregion
 
         #region 节点绘制
         public override visualnode_base Draw()

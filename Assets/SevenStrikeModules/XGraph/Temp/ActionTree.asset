@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-141144539888115152
+--- !u!114 &-2216953491618273498
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: basenode_start
   m_EditorClassIdentifier: 
   nodeName: "\u5F00\u59CB"
-  nodeGUID: 7429504fb2a2b3a4ca3e2806cbe70db4
+  nodeGUID: 65256d36772763d4fbcb2f6e93add535
   nodeNameSpaceName: SevenStrikeModules.XGraph
   nodeClassName: basenode_
   nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_start.asset
   actionNodeType: start
   icon: start
   graphNodeType: n_in_s_out_1port
-  nodeGraphPosition: {x: 139, y: 234}
-  nodeThemeSolution: "M \u66AE\u5149\u7EA2"
-  nodeThemeColor: {r: 0.8, g: 0.21176471, b: 0.21176471, a: 1}
+  nodeGraphPosition: {x: 139, y: 262}
+  nodeThemeSolution: "B \u8584\u8377\u7EFF"
+  nodeThemeColor: {r: 0.5254902, g: 0.8, b: 0.37254903, a: 1}
   relays: []
-  ChildNode: {fileID: 2589646179829970237}
+  ChildNode: {fileID: 3051077296229035315}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38,14 +38,33 @@ MonoBehaviour:
   m_Name: ActionTree
   m_EditorClassIdentifier: 
   LastGraphWindowSize: {x: 1270, y: 847}
-  LastGraphViewPosition: {x: 58, y: -23}
+  LastGraphViewPosition: {x: 69, y: 174}
   LastGraphViewZoom: 1
   ActionNodes:
-  - {fileID: -141144539888115152}
-  - {fileID: 2589646179829970237}
-  StickNoteDatas: []
-  NodeGroupDatas: []
---- !u!114 &2589646179829970237
+  - {fileID: 3051077296229035315}
+  - {fileID: -2216953491618273498}
+  StickNoteDatas:
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: ee0cc27ede2c73c4bb0fa02f40962dc6
+    position: {x: 139, y: 93}
+    size: {x: 207, y: 146}
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: 3be217eb486577942bfddef460bbedff
+    position: {x: 415, y: 151}
+    size: {x: 200, y: 88}
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 663eccb69568f6145b36fe14b123c736
+    pos: {x: 120, y: 46}
+    solution: "M \u9ED8\u8BA4"
+    guids:
+    - 4f93dd8bd82f4da4c8491c03d2721a4c
+    - 65256d36772763d4fbcb2f6e93add535
+    - ee0cc27ede2c73c4bb0fa02f40962dc6
+    - 3be217eb486577942bfddef460bbedff
+--- !u!114 &3051077296229035315
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,7 +84,7 @@ MonoBehaviour:
   actionNodeType: end
   icon: end
   graphNodeType: s_in_1port_n_out
-  nodeGraphPosition: {x: 448, y: 372}
-  nodeThemeSolution: "M \u9ED8\u8BA4"
-  nodeThemeColor: {r: 0, g: 0, b: 0, a: 0}
+  nodeGraphPosition: {x: 415, y: 309}
+  nodeThemeSolution: "C \u8D64\u7130\u8272"
+  nodeThemeColor: {r: 1, g: 0.42745098, b: 0.20392157, a: 1}
   relays: []

@@ -66,6 +66,10 @@ namespace SevenStrikeModules.XGraph
 
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
+
+            #region 注册GraphView的变化状态
+            RegisterGraphViewChanged(graphView);
+            #endregion
         }
 
         /// <summary>
@@ -110,6 +114,58 @@ namespace SevenStrikeModules.XGraph
         {
             return true;
         }
+
+        #region GraphView视图操作有改变时
+        /// <summary>
+        /// 注册GraphView的变化状态
+        /// </summary>
+        /// <param name="graphView"></param>
+        private void RegisterGraphViewChanged(xg_GraphView graphView)
+        {
+            graphView.graphViewChanged -= OnGraphViewChanged;
+            graphView.graphViewChanged += OnGraphViewChanged;
+        }
+        /// <summary>
+        /// 当GraphView视图内有变化时
+        /// </summary>
+        /// <param name="graphViewChange"></param>
+        public GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
+        {
+            Debug.Log("ChangedSTC");
+            On_RemovedElement(graphViewChange);
+            return graphViewChange;
+        }
+        /// <summary>
+        /// 当GraphView视图内有变化  -  移除了元素时（含所有元素类型：节点、组、连线等）
+        /// </summary>
+        /// <param name="graphViewChange"></param>
+        private void On_RemovedElement(GraphViewChange graphViewChange)
+        {
+            // 当有元素被移除时
+            if (graphViewChange.elementsToRemove != null)
+            {
+                // 遍历被移除的元素
+                graphViewChange.elementsToRemove.ForEach(element =>
+                {
+                    // 如果移除的元素为：节点
+                    Remove_Node(element);
+                });
+            }
+        }
+        /// <summary>
+        /// GraphView 移除节点时
+        /// </summary>
+        /// <param name="element"></param>
+        private void Remove_Node(GraphElement element)
+        {
+            visualnode_stick stickview = element as visualnode_stick;
+            if (stickview != null)
+            {
+                Undo.RecordObject(graphView.ActionTreeAsset, "Remove Stick");
+                graphView.ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
+            }
+        }
+        #endregion
 
         #region 节点绘制
         /// <summary>

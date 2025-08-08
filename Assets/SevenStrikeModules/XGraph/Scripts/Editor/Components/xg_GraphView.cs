@@ -549,111 +549,46 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
-            OnChanged_RemovedElement(graphViewChange);
+            // 当有节点被移除时
+            if (graphViewChange.elementsToRemove != null)
+            {
+                // 当有元素被移除的时候
+                graphViewChange.elementsToRemove.ForEach(element =>
+                {
+                    #region 编组
+                    Group group = element as Group;
+                    if (group != null)
+                    {
+                        Undo.RecordObject(ActionTreeAsset, "Remove Group");
 
-            OnChanged_CreateEdge(graphViewChange);
+                        // 查找对应的 groupdata
+                        groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+                        if (groupData != null)
+                        {
+                            // 从 NodeGroupDatas 中移除
+                            ActionTreeAsset.NodeGroup_Remove(groupData);
+                        }
 
+                        // 清理状态跟踪数据
+                        if (CurrentCreatedGroups.ContainsKey(group))
+                        {
+                            CurrentCreatedGroups.Remove(group);
+                        }
+                    }
+                    #endregion
+                });
+            }
+
+            // 当有连线被创建时
+            if (graphViewChange.edgesToCreate != null)
+            {
+                // 如果创建了连线，e 为连线
+                graphViewChange.edgesToCreate.ForEach(e =>
+                {
+
+                });
+            }
             return graphViewChange;
-        }
-        /// <summary>
-        /// 当有连线被创建时
-        /// </summary>
-        /// <param assetName="graphViewChange"></param>
-        private void OnChanged_CreateEdge(GraphViewChange graphViewChange)
-        {
-            //// 当有连线被创建时
-            //if (graphViewChange.edgesToCreate != null)
-            //{
-            //// 如果创建了连线，e 为连线
-            //graphViewChange.edgesToCreate.ForEach(e =>
-            //{
-            //    #region 行为树节点连线逻辑
-            //    // e 连线的父级节点
-            //    visualnode_base n_parent = e.output.node as visualnode_base;
-            //    // e 连线的子级节点
-            //    visualnode_base n_child = e.input.node as visualnode_base;
-
-            //    if (n_parent != null && n_child != null)
-            //    {
-            //        // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
-            //        ActionTreeAsset.AddNodeToChild(n_parent.ActionNode, n_child.ActionNode);
-            //    }
-            //    #endregion                   
-            //});
-            //}
-        }
-        /// <summary>
-        /// 当有节点被移除时
-        /// </summary>
-        /// <param assetName="graphViewChange"></param>
-        private void OnChanged_RemovedElement(GraphViewChange graphViewChange)
-        {
-            //// 当有节点被移除时
-            //if (graphViewChange.elementsToRemove != null)
-            //{
-            //    // 当有元素被移除的时候
-            //    graphViewChange.elementsToRemove.ForEach(element =>
-            //    {
-            //        #region 连线
-            //        Edge edge = element as Edge;
-            //        if (edge != null)
-            //        {
-            //            #region 判断连线源是否是行为树资源节点
-            //            // 连线的父级节点
-            //            visualnode_base n_parent = edge.output.node as visualnode_base;
-            //            // 连线的子级节点
-            //            visualnode_base n_child = edge.input.node as visualnode_base;
-
-            //            if (n_parent != null && n_child != null)
-            //            {
-            //                // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
-            //                ActionTreeAsset.RemoveChildNode(n_parent.ActionNode, n_child.ActionNode);
-            //            }
-            //            #endregion                        
-            //        }
-            //        #endregion
-
-            //        #region 行为节点
-            //        visualnode_base nodeview = element as visualnode_base;
-            //        if (nodeview != null)
-            //        {
-            //            // 从根节点中移除数据节点
-            //            ActionTreeAsset.Remove(nodeview.ActionNode);
-            //        }
-            //        #endregion
-
-            //        #region 便签节点
-            //        visualnode_stick stickview = element as visualnode_stick;
-            //        if (stickview != null)
-            //        {
-            //            Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
-            //            ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
-            //        }
-            //        #endregion
-
-            //        #region 编组
-            //        Group group = element as Group;
-            //        if (group != null)
-            //        {
-            //            Undo.RecordObject(ActionTreeAsset, "Remove Group");
-
-            //            // 查找对应的 groupdata
-            //            groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
-            //            if (groupData != null)
-            //            {
-            //                // 从 NodeGroupDatas 中移除
-            //                ActionTreeAsset.NodeGroup_Remove(groupData);
-            //            }
-
-            //            // 清理状态跟踪数据
-            //            if (CurrentCreatedGroups.ContainsKey(group))
-            //            {
-            //                CurrentCreatedGroups.Remove(group);
-            //            }
-            //        }
-            //        #endregion
-            //    });
-            //}
         }
         #endregion
 
@@ -826,48 +761,7 @@ namespace SevenStrikeModules.XGraph
             // 3. 处理其他元素的删除
             return base.DeleteSelection(); // 调用原始逻辑删除非Group元素
         }
-        /// <summary>
-        /// 安全删除Group（保留内部节点）
-        /// </summary>
-        private void DeleteGroup(Group group)
-        {
-            if (group == null) return;
 
-#if UNITY_EDITOR
-            Undo.RegisterCompleteObjectUndo(ActionTreeAsset, "Delete Group");
-#endif
-
-            // 1. 保存所有子节点位置
-            var childPositions = group.containedElements
-                .OfType<GraphElement>()
-                .ToDictionary(e => e, e => e.GetPosition());
-
-            // 2. 解除所有父子关系（但不删除子元素）
-            foreach (var child in group.containedElements.ToList())
-            {
-                group.RemoveElement(child);
-            }
-
-            // 3. 删除Group数据
-            var groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
-            if (groupData != null)
-            {
-                ActionTreeAsset.NodeGroup_Remove(groupData);
-            }
-
-            // 4. 从GraphView移除Group（此时已是空组）
-            RemoveElement(group);
-
-            // 5. 恢复子节点位置（防止Unity自动调整）
-            foreach (var kvp in childPositions)
-            {
-                kvp.Key.SetPosition(kvp.Value);
-            }
-
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(ActionTreeAsset);
-#endif
-        }
         #endregion
 
         #region 节点操作
@@ -1117,7 +1011,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 连线逻辑
+        #region 连线规则
         /// <summary>
         /// GraphView 组件视图内的端口连线规则
         /// </summary>
@@ -1164,7 +1058,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 创建编组
+        #region 编组逻辑
         /// <summary>
         /// 初始化编组并注册相关事件
         /// </summary>
@@ -1482,6 +1376,48 @@ namespace SevenStrikeModules.XGraph
                 ActionTreeAsset.NodeGroupDatas.Clear();
             }
         }
+        /// <summary>
+        /// 安全删除Group（保留内部节点）
+        /// </summary>
+        private void DeleteGroup(Group group)
+        {
+            if (group == null) return;
+
+#if UNITY_EDITOR
+            Undo.RegisterCompleteObjectUndo(ActionTreeAsset, "Delete Group");
+#endif
+
+            // 1. 保存所有子节点位置
+            var childPositions = group.containedElements
+                .OfType<GraphElement>()
+                .ToDictionary(e => e, e => e.GetPosition());
+
+            // 2. 解除所有父子关系（但不删除子元素）
+            foreach (var child in group.containedElements.ToList())
+            {
+                group.RemoveElement(child);
+            }
+
+            // 3. 删除Group数据
+            var groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+            if (groupData != null)
+            {
+                ActionTreeAsset.NodeGroup_Remove(groupData);
+            }
+
+            // 4. 从GraphView移除Group（此时已是空组）
+            RemoveElement(group);
+
+            // 5. 恢复子节点位置（防止Unity自动调整）
+            foreach (var kvp in childPositions)
+            {
+                kvp.Key.SetPosition(kvp.Value);
+            }
+
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(ActionTreeAsset);
+#endif
+        }
         #endregion
 
         #region 行为树节点创建（由创建菜单调用）
@@ -1521,7 +1457,7 @@ namespace SevenStrikeModules.XGraph
         public void Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, string visual_nodeType)
         {
             // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
-            if (action_nodeType == "StickNote")
+            if (action_nodeType == "stick")
             {
                 Undo.RecordObject(ActionTreeAsset, "Create StickNote");
                 // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
