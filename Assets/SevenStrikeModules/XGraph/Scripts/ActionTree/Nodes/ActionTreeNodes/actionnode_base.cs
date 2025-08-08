@@ -8,27 +8,27 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 行为节点 - 名称
         /// </summary>
-        [SerializeField] public string nodeName;
+        [SerializeField] public string identifyName;
         /// <summary>
         /// 行为节点 - guid
         /// </summary>
-        [SerializeField] public string nodeGUID;
+        [SerializeField] public string guid;
         /// <summary>
         /// 行为节点 - guid
         /// </summary>
-        [SerializeField] public string nodeNameSpaceName;
+        [SerializeField] public string namespaces;
         /// <summary>
         /// 行为节点 - guid
         /// </summary>
-        [SerializeField] public string nodeClassName;
+        [SerializeField] public string classes;
         /// <summary>
         /// 行为节点 - 相对路径
         /// </summary>
-        [SerializeField] public string nodePath;
+        [SerializeField] public string path;
         /// <summary>
         /// 行为节点 - 类型
         /// </summary>
-        [SerializeField] public string actionNodeType;
+        [SerializeField] public string actionType;
         /// <summary>
         /// 行为节点 - 图标
         /// </summary>
@@ -36,7 +36,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 行为节点 - 类型
         /// </summary>
-        [SerializeField] public string graphNodeType = "None";
+        [SerializeField] public string visualType = "None";
         /// <summary>
         /// 行为节点 - 在GraphView里的位置记录
         /// </summary>
@@ -44,11 +44,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 行为节点 - 在GraphView里的颜色标记方案名称
         /// </summary>
-        [SerializeField] public string nodeThemeSolution = "M 默认";
+        [SerializeField] public string themeSolution = "M 默认";
         /// <summary>
         /// 行为节点 - 在GraphView里的颜色标记
         /// </summary>
-        [SerializeField] public Color nodeThemeColor = Color.clear;
+        [SerializeField] public Color themeColor = Color.clear;
         [SerializeField] public List<actionnode_base> relays = new List<actionnode_base>();
 
         /// <summary>
@@ -59,12 +59,12 @@ namespace SevenStrikeModules.XGraph
 
         public string GetInfo()
         {
-            return $"{nodeNameSpaceName}.{nodeClassName}{actionNodeType.ToString()}   /   {graphNodeType.ToString()}   /   {nodeName}";
+            return $"{namespaces}.{classes}{actionType.ToString()}   /   {visualType.ToString()}   /   {identifyName}";
         }
 
         public string GetPath()
         {
-            return $"{nodePath}";
+            return $"{path}";
         }
     }
 }

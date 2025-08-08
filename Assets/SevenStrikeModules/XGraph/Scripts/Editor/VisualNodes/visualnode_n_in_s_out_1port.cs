@@ -42,7 +42,6 @@ namespace SevenStrikeModules.XGraph
         /// <param name="graphViewChange"></param>
         public GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
-            Debug.Log("ChangedXSD");
             On_RemovedElement(graphViewChange);
             On_CreateEdge(graphViewChange);
             return graphViewChange;
@@ -78,15 +77,16 @@ namespace SevenStrikeModules.XGraph
                 // 如果创建了连线
                 graphViewChange.edgesToCreate.ForEach(edge =>
                 {
-                    // edge 连线的子级节点
-                    visualnode_base n_child = edge.input.node as visualnode_base;
-
-                    if (n_child != null)
+                    // 如果该视觉节点的行为数据类型为： start
+                    if (ActionNode is actionnode_start start)
                     {
-                        // 如果该视觉节点的行为数据类型为： start
-                        if (ActionNode is actionnode_start start)
+                        visualnode_base n_parent = edge.output.node as visualnode_base;
+                        // edge 连线的子级节点
+                        visualnode_base n_child = edge.input.node as visualnode_base;
+
+                        if (n_parent.ActionNode.guid == start.guid && n_child != null)
                         {
-                            Undo.RecordObject(start, "Remove_Start_ChildNode");
+                            Undo.RecordObject(start, "Create_Start_ChildNode");
                             // 将连线的 input 端赋值给 start 的子节点
                             start.ChildNode = n_child.ActionNode;
                         }
@@ -104,16 +104,16 @@ namespace SevenStrikeModules.XGraph
             if (edge != null)
             {
                 #region 判断连线源是否是行为树资源节点
-                // 连线的父级节点
-                visualnode_base n_parent = edge.output.node as visualnode_base;
-
-                if (n_parent != null)
+                // 如果该视觉节点的行为数据类型为： start
+                if (ActionNode is actionnode_start start)
                 {
-                    // 如果该视觉节点的行为数据类型为： start
-                    if (ActionNode is actionnode_start start)
+                    // 连线的父级节点
+                    visualnode_base n_child = edge.input.node as visualnode_base;
+
+                    if (n_child != null)
                     {
                         // 如果删除的连线的 output 端的节点的行为 Guid 等于 start 的Guid
-                        if (n_parent.ActionNode.nodeGUID == start.nodeGUID)
+                        if (n_child.ActionNode.guid == start.ChildNode.guid)
                         {
                             Undo.RecordObject(start, "Remove_Start_ChildNode");
                             // 清空 start 的子节点
@@ -134,17 +134,18 @@ namespace SevenStrikeModules.XGraph
             if (remove_node != null)
             {
                 // 如果删除的节点 Guid 等于 自身的Guid就从行为树根资源中移除该节点资源
-                if (remove_node.ActionNode.nodeGUID == ActionNode.nodeGUID)
+                if (remove_node.ActionNode.guid == ActionNode.guid)
                 {
                     Undo.RecordObject(graphView.ActionTreeAsset, "Remove_Start_Node");
                     graphView.ActionTreeAsset.Remove(ActionNode);
+                    return;
                 }
 
                 // 如果该视觉节点的行为数据类型为： start
                 if (ActionNode is actionnode_start start)
                 {
                     // 如果删除的节点 Guid 等于 start 的子节点的Guid
-                    if (start.ChildNode != null && remove_node.ActionNode.nodeGUID == start.ChildNode.nodeGUID)
+                    if (start.ChildNode != null && remove_node.ActionNode.guid == start.ChildNode.guid)
                     {
                         Undo.RecordObject(start, "Remove_Start_ChildNode");
                         // 清空 start 的子节点

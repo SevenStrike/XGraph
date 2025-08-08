@@ -23,7 +23,7 @@ namespace SevenStrikeModules.XGraph
                 return;
             }
 
-            var start = assetNode.ActionNodes.Find(n => n.actionNodeType == "start");
+            var start = assetNode.ActionNodes.Find(n => n.actionType == "start");
             if (start == null)
             {
                 Debug.LogError("缺少 Start 节点！");
@@ -46,7 +46,7 @@ namespace SevenStrikeModules.XGraph
 
             var start = assetNode.ActionNodes.Find(n =>
             {
-                return n.actionNodeType == "start";
+                return n.actionType == "start";
             });
             yield return ExecuteNode(start);
 

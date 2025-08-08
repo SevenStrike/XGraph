@@ -148,9 +148,9 @@ namespace SevenStrikeModules.XGraph
 
             #region 基础参数设置
             this.icon = data.icon;
-            this.viewDataKey = data != null ? data.nodeGUID : "";
+            this.viewDataKey = data != null ? data.guid : "";
             // 设置节点标题
-            this.title = this.nodeTitle = data != null ? data.nodeName : "";
+            this.title = this.nodeTitle = data != null ? data.identifyName : "";
             #endregion
 
             // 设置节点的生成位置
@@ -276,7 +276,7 @@ namespace SevenStrikeModules.XGraph
             Port_Outputs.ForEach(x =>
             {
                 // 绘制端口 - 输出
-                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.nodeThemeColor);
+                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.themeColor);
 
                 x.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
                 x.Port.Q<Label>().AddToClassList("PortText_Out");
@@ -290,7 +290,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Input()
         {
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.nodeThemeColor);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : ActionNode.themeColor);
 
             // 样式指定
             Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
@@ -326,9 +326,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             graphView.ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == ActionNode.nodeThemeSolution)
+                if (colorData.solution == ActionNode.themeSolution)
                 {
-                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.nodeThemeSolution == "M 默认" ? Color.white : ActionNode.nodeThemeColor;
+                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
                 }
             });
 
@@ -361,14 +361,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void SetMarkColor()
         {
-            titleContainer.style.borderBottomColor = ActionNode.nodeThemeColor;
+            titleContainer.style.borderBottomColor = ActionNode.themeColor;
         }
         /// <summary>
         /// 刷新节点配色
         /// </summary>
         public void UpdateMarkColor()
         {
-            titleContainer.style.borderBottomColor = ActionNode.nodeThemeColor;
+            titleContainer.style.borderBottomColor = ActionNode.themeColor;
             titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>

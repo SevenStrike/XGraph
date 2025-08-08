@@ -36,7 +36,6 @@ namespace SevenStrikeModules.XGraph
         /// <param name="graphViewChange"></param>
         public GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
-            Debug.Log("ChangedEnd");
             On_RemovedElement(graphViewChange);
             return graphViewChange;
         }
@@ -67,7 +66,7 @@ namespace SevenStrikeModules.XGraph
             if (remove_node != null)
             {
                 // 如果删除的节点 Guid 等于 自身的Guid就从行为树根资源中移除该节点资源
-                if (remove_node.ActionNode.nodeGUID == ActionNode.nodeGUID)
+                if (remove_node.ActionNode.guid == ActionNode.guid)
                 {
                     Undo.RecordObject(graphView.ActionTreeAsset, "Remove_End_Node");
                     graphView.ActionTreeAsset.Remove(ActionNode);

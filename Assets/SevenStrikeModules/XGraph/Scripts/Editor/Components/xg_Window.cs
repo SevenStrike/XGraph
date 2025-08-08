@@ -514,7 +514,7 @@
             xw_InspectorView.UpdateSelection(nodeview);
 
             // 加载 RemoteInspector 面板标题文字
-            Set_InspectorView_Container_Title($"节点属性 - {nodeview.ActionNode.nodeName}");
+            Set_InspectorView_Container_Title($"节点属性 - {nodeview.ActionNode.identifyName}");
 
             xw_Set_CurrentGraphNodeIntro(nodeview.ActionNode.GetInfo());
             xw_Set_CurrentGraphNodePathText(nodeview.ActionNode.GetPath());
@@ -541,7 +541,7 @@
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
                 // 加载 RemoteInspector 面板标题文字
-                Set_InspectorView_Container_Title($"节点属性 - {nodeviews[0].ActionNode.nodeName}");
+                Set_InspectorView_Container_Title($"节点属性 - {nodeviews[0].ActionNode.identifyName}");
 
                 xw_Set_CurrentGraphNodeIntro(nodeviews[0].ActionNode.GetInfo());
                 xw_Set_CurrentGraphNodePathText(nodeviews[0].ActionNode.GetPath());
@@ -984,7 +984,7 @@
             // 检测并刷新所有视觉节点的位置
             foreach (var dataNode in CloneTree.ActionNodes)
             {
-                var visualNode = xw_graphView.GetNodeByGuid(dataNode.nodeGUID) as visualnode_base;
+                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as visualnode_base;
                 if (visualNode != null)
                 {
                     // 如果该节点位置有变化则刷新该节点位置

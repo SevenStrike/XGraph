@@ -248,9 +248,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == node.ActionNode.nodeThemeSolution)
+                if (colorData.solution == node.ActionNode.themeSolution)
                 {
-                    node.ActionNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(colorData.nodecolor);
+                    node.ActionNode.themeColor = util_EditorUtility.Color_From_HexString(colorData.nodecolor);
                 }
             });
 
@@ -417,20 +417,20 @@ namespace SevenStrikeModules.XGraph
                                 visualnode_base node = CurrentSelectedNodes[s];
 
                                 Undo.RecordObject(node.ActionNode, "Change NodeColor");
-                                node.ActionNode.nodeThemeSolution = dat.solution;
-                                node.ActionNode.nodeThemeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
+                                node.ActionNode.themeSolution = dat.solution;
+                                node.ActionNode.themeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
 
                                 // 改变图标颜色
-                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.nodeThemeColor;
+                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
 
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
-                                    node.Port_Input.Port.portColor = node.ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.nodeThemeColor;
+                                    node.Port_Input.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
                                 if (node.Port_Outputs != null)
                                 {
                                     node.Port_Outputs.ForEach(x =>
                                     {
-                                        x.Port.portColor = node.ActionNode.nodeThemeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.nodeThemeColor;
+                                        x.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
                                     });
                                 }
                                 node.SetMarkColor();
@@ -559,12 +559,11 @@ namespace SevenStrikeModules.XGraph
                     Group group = element as Group;
                     if (group != null)
                     {
-                        Undo.RecordObject(ActionTreeAsset, "Remove Group");
-
                         // 查找对应的 groupdata
                         groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
                         if (groupData != null)
                         {
+                            Undo.RecordObject(ActionTreeAsset, "Remove Group");
                             // 从 NodeGroupDatas 中移除
                             ActionTreeAsset.NodeGroup_Remove(groupData);
                         }
@@ -621,8 +620,8 @@ namespace SevenStrikeModules.XGraph
                 // c 为每一个子数据节点
                 children.ForEach(c =>
                 {
-                    visualnode_base n_parent = FindNodeView(d.nodeGUID);
-                    visualnode_base n_child = FindNodeView(c.nodeGUID);
+                    visualnode_base n_parent = FindNodeView(d.guid);
+                    visualnode_base n_child = FindNodeView(c.guid);
 
                     n_parent.Port_Outputs.ForEach(p =>
                     {
@@ -670,7 +669,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 查找普通节点
                     var node = nodes.ToList().FirstOrDefault(n =>
-                        n is visualnode_base baseNode && baseNode.ActionNode.nodeGUID == guid);
+                        n is visualnode_base baseNode && baseNode.ActionNode.guid == guid);
 
                     if (node != null)
                     {
@@ -704,7 +703,7 @@ namespace SevenStrikeModules.XGraph
             selection.ForEach(n =>
             {
                 if (n is visualnode_base node)
-                    if (node.ActionNode.actionNodeType != "StickNote")
+                    if (node.ActionNode.actionType != "StickNote")
                         gvs.Add(node);
                 if (n is Group gp)
                 {
@@ -801,14 +800,14 @@ namespace SevenStrikeModules.XGraph
                     // 待复制的源节点的类名
                     string class_name = node.GetType().Name;
                     // 待复制的源节点的行为节点名
-                    string actiontype_name = node.actionNodeType.ToString();
+                    string actiontype_name = node.actionType.ToString();
                     // 待复制的源节点的类名的前缀
                     string prefix_class = class_name.Substring(0, class_name.Length - actiontype_name.Length);
 
                     //Debug.Log($"{prefix_namespace} - {class_name} - {actiontype_name} - {prefix_class}");
 
                     // 克隆出新的节点
-                    Node_Create(node.nodeName, prefix_namespace, prefix_class, node.actionNodeType, node.icon, node.graphNodeType);
+                    Node_Create(node.identifyName, prefix_namespace, prefix_class, node.actionType, node.icon, node.visualType);
                 }
                 else if (original is visualnode_stick xg_sticknote)
                 {
@@ -953,12 +952,12 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public visualnode_base Node_Make(Vector2 pos, actionnode_base data = null)
         {
-            if (data.graphNodeType == "None")
+            if (data.visualType == "None")
                 return null;
 
             #region 根据枚举类型创建 NodeView
             // 根据枚举名称获取 NodeView 节点类
-            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.visualnode_{data.graphNodeType}");
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.visualnode_{data.visualType}");
             // 创建 NodeView 类型的实例为 visualNode 基类
             visualnode_base node = Activator.CreateInstance(type_nodeview) as visualnode_base;
             #endregion
@@ -1198,7 +1197,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (n is visualnode_base node)
                 {
-                    nodes_guid.Add(node.ActionNode.nodeGUID);
+                    nodes_guid.Add(node.ActionNode.guid);
                 }
                 else if (n is visualnode_stick stick)
                 {
@@ -1215,6 +1214,7 @@ namespace SevenStrikeModules.XGraph
             // 添加选中节点到编组
             selectedNodes.ForEach(n => gp.AddElement(n));
 
+            Undo.RecordObject(ActionTreeAsset, "Create Group");
             // 添加编组到行为树数据
             ActionTreeAsset.NodeGroup_Add(gp_data);
 
@@ -1275,6 +1275,7 @@ namespace SevenStrikeModules.XGraph
 
             // 查找对应的 groupdata
             groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == target);
+            Undo.RecordObject(ActionTreeAsset, "Group Guids Changed");
 
             var currentElements = new HashSet<object>(target.containedElements);
             var previousElements = CurrentCreatedGroups[target];
@@ -1291,8 +1292,8 @@ namespace SevenStrikeModules.XGraph
                 string guid = null;
                 if (item is visualnode_base node)
                 {
-                    guid = node.ActionNode.nodeGUID;
-                    //Debug.Log($"Group '{target.title}' 移入节点: {data.ActionNode.nodeName}");
+                    guid = node.ActionNode.guid;
+                    //Debug.Log($"Group '{target.title}' 移入节点: {data.ActionNode.identifyName}");
                 }
                 else if (item is visualnode_stick stick)
                 {
@@ -1312,8 +1313,8 @@ namespace SevenStrikeModules.XGraph
                 string guid = null;
                 if (item is visualnode_base node)
                 {
-                    guid = node.ActionNode.nodeGUID;
-                    //Debug.Log($"Group '{target.title}' 移出节点: {data.ActionNode.nodeName}");
+                    guid = node.ActionNode.guid;
+                    //Debug.Log($"Group '{target.title}' 移出节点: {data.ActionNode.identifyName}");
                 }
                 else if (item is visualnode_stick stick)
                 {
@@ -1435,13 +1436,13 @@ namespace SevenStrikeModules.XGraph
         {
             actionnode_base data = ScriptableObject.CreateInstance(type) as actionnode_base;
             data.name = type.Name;
-            data.nodeGUID = GUID.Generate().ToString();
-            data.actionNodeType = action_nodeType;
+            data.guid = GUID.Generate().ToString();
+            data.actionType = action_nodeType;
             data.icon = icon;
-            data.graphNodeType = visual_nodeType;
-            data.nodeName = action_name;
-            data.nodeNameSpaceName = prefix_namespace;
-            data.nodeClassName = prefix_class;
+            data.visualType = visual_nodeType;
+            data.identifyName = action_name;
+            data.namespaces = prefix_namespace;
+            data.classes = prefix_class;
             ActionTreeAsset.Create(data);
             return data;
         }
@@ -1620,7 +1621,7 @@ namespace SevenStrikeModules.XGraph
             {
                 nodes.ForEach(nodes =>
                 {
-                    if (data.nodeGUID == nodes.viewDataKey)
+                    if (data.guid == nodes.viewDataKey)
                     {
                         if (nodes is visualnode_base bs)
                         {

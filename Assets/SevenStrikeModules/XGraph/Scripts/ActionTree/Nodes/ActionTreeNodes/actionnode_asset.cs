@@ -209,7 +209,7 @@ namespace SevenStrikeModules.XGraph
             string re_path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(ActionNodes[^1]));
             string opt_path = re_path.Replace("Temp", $"{this.name}");
             string combine_path = $"{opt_path}   >   {ActionNodes[^1].name}.asset";
-            ActionNodes[^1].nodePath = combine_path;
+            ActionNodes[^1].path = combine_path;
 #endif
             return node;
         }
@@ -471,7 +471,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="child"></param>
         public void AddNodeToChild(actionnode_base parent, actionnode_base child)
         {
-            //Debug.Log($"{parent.nodeName}       |  建立链接  √  |      {child.nodeName}");
+            //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
 
             #region 特化处理 - Start
             actionnode_start start = parent as actionnode_start;
@@ -482,7 +482,7 @@ namespace SevenStrikeModules.XGraph
 #endif
                 if (start.ChildNode != null)
                 {
-                    if (child.nodeGUID == start.ChildNode.nodeGUID)
+                    if (child.guid == start.ChildNode.guid)
                     {
                         Debug.Log("start节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                         return;
@@ -501,7 +501,7 @@ namespace SevenStrikeModules.XGraph
 #endif
                 if (wait.ChildNode != null)
                 {
-                    if (child.nodeGUID == wait.ChildNode.nodeGUID)
+                    if (child.guid == wait.ChildNode.guid)
                     {
                         Debug.Log("wait节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                         return;
@@ -520,7 +520,7 @@ namespace SevenStrikeModules.XGraph
 #endif
                 if (debug.ChildNode != null)
                 {
-                    if (child.nodeGUID == debug.ChildNode.nodeGUID)
+                    if (child.guid == debug.ChildNode.guid)
                     {
                         Debug.Log("debug节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                         return;
@@ -540,7 +540,7 @@ namespace SevenStrikeModules.XGraph
                 bool existChild = false;
                 comp.childNodes.ForEach(c =>
                 {
-                    if (child.nodeGUID == c.nodeGUID)
+                    if (child.guid == c.guid)
                         existChild = true;
                 });
                 if (existChild)
@@ -559,7 +559,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="child"></param>
         public void RemoveChildNode(actionnode_base parent, actionnode_base child)
         {
-            //Debug.Log($"{parent.nodeName}       |  断开链接  ×  |      {c.nodeName}");
+            //Debug.Log($"{parent.identifyName}       |  断开链接  ×  |      {c.identifyName}");
 
             #region 特化处理 - Start
             actionnode_start start = parent as actionnode_start;

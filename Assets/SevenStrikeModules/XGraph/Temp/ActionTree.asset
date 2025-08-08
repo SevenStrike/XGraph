@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2216953491618273498
+--- !u!114 &-4250033882987562881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,22 +9,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed0502ddbc3936d44b8cacd5eb391990, type: 3}
-  m_Name: basenode_start
+  m_Script: {fileID: 11500000, guid: 8a31c353e3f246c41b9f77c89186d2ac, type: 3}
+  m_Name: basenode_end
   m_EditorClassIdentifier: 
-  nodeName: "\u5F00\u59CB"
-  nodeGUID: 65256d36772763d4fbcb2f6e93add535
-  nodeNameSpaceName: SevenStrikeModules.XGraph
-  nodeClassName: basenode_
-  nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_start.asset
-  actionNodeType: start
-  icon: start
-  graphNodeType: n_in_s_out_1port
-  nodeGraphPosition: {x: 139, y: 262}
-  nodeThemeSolution: "B \u8584\u8377\u7EFF"
-  nodeThemeColor: {r: 0.5254902, g: 0.8, b: 0.37254903, a: 1}
+  identifyName: "\u7ED3\u675F"
+  guid: ac161fee4b356c244b5a1d34cdec6513
+  namespaces: SevenStrikeModules.XGraph
+  classes: basenode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_end.asset
+  actionType: end
+  icon: end
+  visualType: s_in_1port_n_out
+  nodeGraphPosition: {x: 363.86957, y: 354}
+  themeSolution: "M \u9ED8\u8BA4"
+  themeColor: {r: 0, g: 0, b: 0, a: 0}
   relays: []
-  ChildNode: {fileID: 3051077296229035315}
+--- !u!114 &-578842754941054081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a7a8799d769afa45b1f5e196bb29e23, type: 3}
+  m_Name: basenode_composite
+  m_EditorClassIdentifier: 
+  identifyName: "\u5408\u6210"
+  guid: c4ef0118f1fcacc4a9e33f1b99849aaf
+  namespaces: SevenStrikeModules.XGraph
+  classes: basenode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_composite.asset
+  actionType: composite
+  icon: composite
+  visualType: s_in_1port_m_out_1port
+  nodeGraphPosition: {x: 363.86957, y: 177}
+  themeSolution: "Q \u9752\u8272"
+  themeColor: {r: 0.22352941, g: 1, b: 0.67058825, a: 1}
+  relays: []
+  childNodes:
+  - {fileID: -4250033882987562881}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37,34 +62,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
   m_Name: ActionTree
   m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1270, y: 847}
-  LastGraphViewPosition: {x: 69, y: 174}
-  LastGraphViewZoom: 1
+  LastGraphWindowSize: {x: 1607, y: 910}
+  LastGraphViewPosition: {x: 121, y: 94}
+  LastGraphViewZoom: 1.15
   ActionNodes:
-  - {fileID: 3051077296229035315}
-  - {fileID: -2216953491618273498}
-  StickNoteDatas:
-  - name: "\u4FBF\u7B7E"
-    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
-    guid: ee0cc27ede2c73c4bb0fa02f40962dc6
-    position: {x: 139, y: 93}
-    size: {x: 207, y: 146}
-  - name: "\u4FBF\u7B7E"
-    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
-    guid: 3be217eb486577942bfddef460bbedff
-    position: {x: 415, y: 151}
-    size: {x: 200, y: 88}
+  - {fileID: 5264627621670516616}
+  - {fileID: -578842754941054081}
+  - {fileID: 4686848927494710579}
+  - {fileID: -4250033882987562881}
+  StickNoteDatas: []
   NodeGroupDatas:
   - name: "\u8282\u70B9\u7F16\u7EC4"
-    guid: 663eccb69568f6145b36fe14b123c736
-    pos: {x: 120, y: 46}
+    guid: 88899e052a24d844685f8b3907015893
+    pos: {x: 89, y: 13.000008}
     solution: "M \u9ED8\u8BA4"
     guids:
-    - 4f93dd8bd82f4da4c8491c03d2721a4c
-    - 65256d36772763d4fbcb2f6e93add535
-    - ee0cc27ede2c73c4bb0fa02f40962dc6
-    - 3be217eb486577942bfddef460bbedff
---- !u!114 &3051077296229035315
+    - c4ef0118f1fcacc4a9e33f1b99849aaf
+    - 44ba8a43fc16547419fa866dcfceb467
+    - ac161fee4b356c244b5a1d34cdec6513
+    - e47f151b92bbea44e885e6058d836ed1
+--- !u!114 &4686848927494710579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,18 +90,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a31c353e3f246c41b9f77c89186d2ac, type: 3}
-  m_Name: basenode_end
+  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
+  m_Name: basenode_debug
   m_EditorClassIdentifier: 
-  nodeName: "\u7ED3\u675F"
-  nodeGUID: 4f93dd8bd82f4da4c8491c03d2721a4c
-  nodeNameSpaceName: SevenStrikeModules.XGraph
-  nodeClassName: basenode_
-  nodePath: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_end.asset
-  actionNodeType: end
-  icon: end
-  graphNodeType: s_in_1port_n_out
-  nodeGraphPosition: {x: 415, y: 309}
-  nodeThemeSolution: "C \u8D64\u7130\u8272"
-  nodeThemeColor: {r: 1, g: 0.42745098, b: 0.20392157, a: 1}
+  identifyName: "\u8C03\u8BD5"
+  guid: 44ba8a43fc16547419fa866dcfceb467
+  namespaces: SevenStrikeModules.XGraph
+  classes: basenode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_debug.asset
+  actionType: debug
+  icon: debug
+  visualType: s_in_1port_s_out_1port
+  nodeGraphPosition: {x: 107.86957, y: 205}
+  themeSolution: "M \u66AE\u5149\u7EA2"
+  themeColor: {r: 0.8, g: 0.21176471, b: 0.21176471, a: 1}
   relays: []
+  ChildNode: {fileID: -578842754941054081}
+  Message: 
+--- !u!114 &5264627621670516616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0502ddbc3936d44b8cacd5eb391990, type: 3}
+  m_Name: basenode_start
+  m_EditorClassIdentifier: 
+  identifyName: "\u5F00\u59CB"
+  guid: e47f151b92bbea44e885e6058d836ed1
+  namespaces: SevenStrikeModules.XGraph
+  classes: basenode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   basenode_start.asset
+  actionType: start
+  icon: start
+  visualType: n_in_s_out_1port
+  nodeGraphPosition: {x: 107.86957, y: 60}
+  themeSolution: "N \u67E0\u6AAC\u9EC4"
+  themeColor: {r: 0.8784314, g: 0.8156863, b: 0.36078432, a: 1}
+  relays: []
+  ChildNode: {fileID: 4686848927494710579}
