@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8931145030144162572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a7a8799d769afa45b1f5e196bb29e23, type: 3}
+  m_Name: INode_Composite
+  m_EditorClassIdentifier: 
+  identifyName: "\u5408\u6210"
+  guid: 4b739b173f120014aa97a9a3a1e295d2
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Composite.asset
+  actionNodeType: Composite
+  icon: composite
+  visualNodeType: VNode_S_In_1Port_M_Out_1Port
+  nodeGraphPosition: {x: 487, y: 311}
+  themeSolution: "M \u9ED8\u8BA4"
+  themeColor: {r: 0, g: 0, b: 0, a: 0}
+  childNodes:
+  - {fileID: -6829678425204729422}
+  - {fileID: 2993457177091919078}
+--- !u!114 &-6830760709729776837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0502ddbc3936d44b8cacd5eb391990, type: 3}
+  m_Name: INode_Start
+  m_EditorClassIdentifier: 
+  identifyName: "\u5F00\u59CB"
+  guid: 8c1e2b63271d8d9499b624c10bc472af
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Start.asset
+  actionNodeType: Start
+  icon: start
+  visualNodeType: VNode_N_In_S_Out_1Port
+  nodeGraphPosition: {x: 274, y: 229}
+  themeSolution: "C \u8D64\u7130\u8272"
+  themeColor: {r: 1, g: 0.42745098, b: 0.20392157, a: 1}
+  childNode: {fileID: -8931145030144162572}
+--- !u!114 &-6829678425204729422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: 4c9269fccf15bfe4a8dd87f50a63ceab
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 762, y: 406}
+  themeSolution: "M \u9ED8\u8BA4"
+  themeColor: {r: 0, g: 0, b: 0, a: 0}
+  childNodes:
+  - {fileID: 704150221495777573}
+--- !u!114 &-2518801534770139631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a31c353e3f246c41b9f77c89186d2ac, type: 3}
+  m_Name: INode_End
+  m_EditorClassIdentifier: 
+  identifyName: "\u7ED3\u675F"
+  guid: 5337a04606131024c88111e400e3c276
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_End.asset
+  actionNodeType: End
+  icon: end
+  visualNodeType: VNode_S_In_1Port_N_Out
+  nodeGraphPosition: {x: 1101, y: 154}
+  themeSolution: "B \u5B9D\u77F3\u84DD"
+  themeColor: {r: 0.14509805, g: 0.5137255, b: 1, a: 1}
+--- !u!114 &-2066066454507960606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: 70e8609f232e4ed4d8725a399a204f61
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 936, y: 139}
+  themeSolution: "M \u9ED8\u8BA4"
+  themeColor: {r: 0, g: 0, b: 0, a: 0}
+  childNodes:
+  - {fileID: -2518801534770139631}
+--- !u!114 &-444948064527652692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: 4b42994056505fa408e861cf6bded8b8
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 936, y: 202}
+  themeSolution: "J \u6A58\u8272"
+  themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  childNodes:
+  - {fileID: -2066066454507960606}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
+  m_Name: CloneTree
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1397, y: 796}
+  LastGraphViewPosition: {x: -223, y: 71}
+  LastGraphViewZoom: 1
+  ActionNodes:
+  - {fileID: -6830760709729776837}
+  - {fileID: -2518801534770139631}
+  - {fileID: -8931145030144162572}
+  - {fileID: 704150221495777573}
+  - {fileID: -444948064527652692}
+  - {fileID: -2066066454507960606}
+  - {fileID: -6829678425204729422}
+  - {fileID: 4117736456266766020}
+  - {fileID: 3254333021173245377}
+  - {fileID: 2993457177091919078}
+  StickNoteDatas:
+  - name: 4b7
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: 34a2249e14f62164cabfc50cdbd1c1f8
+    position: {x: 487, y: 197}
+    size: {x: 186, y: 93}
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 77d6f35e8373c0b4dbc354dfc2f47356
+    pos: {x: 743, y: 97}
+    solution: "S \u795E\u79D8\u7D2B"
+    guids:
+    - 241d5c2b52caee947ba48758d15185a0
+    - cdae88e20f718c64f918e29cc6d90e5a
+    - 99ce13cac5548fb4eb6d1b2af1bd253e
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 2b7d0c9766a79c64898708123c52e896
+    pos: {x: 917, y: 92}
+    solution: "G \u5DE5\u4E1A\u84DD"
+    guids:
+    - 5337a04606131024c88111e400e3c276
+    - 70e8609f232e4ed4d8725a399a204f61
+    - 4b42994056505fa408e861cf6bded8b8
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: c3810146a8b5db9488a36d2d1a3419ec
+    pos: {x: 255, y: 150}
+    solution: "M \u66AE\u8272\u7EA2"
+    guids:
+    - 8c1e2b63271d8d9499b624c10bc472af
+    - 4b739b173f120014aa97a9a3a1e295d2
+    - 34a2249e14f62164cabfc50cdbd1c1f8
+--- !u!114 &704150221495777573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
+  m_Name: INode_Debug
+  m_EditorClassIdentifier: 
+  identifyName: "\u8C03\u8BD5"
+  guid: 35e9e515115be094eb44c6a61456ef04
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Debug.asset
+  actionNodeType: Debug
+  icon: debug
+  visualNodeType: VNode_S_In_1Port_S_Out_1Port
+  nodeGraphPosition: {x: 936, y: 406}
+  themeSolution: "Q \u9752\u8272"
+  themeColor: {r: 0.22352941, g: 1, b: 0.67058825, a: 1}
+  childNode: {fileID: 0}
+  Message: End
+--- !u!114 &2993457177091919078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: 99ce13cac5548fb4eb6d1b2af1bd253e
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 762, y: 274}
+  themeSolution: "J \u6A58\u8272"
+  themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  childNodes:
+  - {fileID: 3254333021173245377}
+--- !u!114 &3254333021173245377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: cdae88e20f718c64f918e29cc6d90e5a
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 762, y: 209}
+  themeSolution: "J \u6A58\u8272"
+  themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  childNodes:
+  - {fileID: 4117736456266766020}
+--- !u!114 &4117736456266766020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: INode_Relay
+  m_EditorClassIdentifier: 
+  identifyName: "\u4E2D\u7EE7"
+  guid: 241d5c2b52caee947ba48758d15185a0
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   INode_Relay.asset
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 762, y: 144}
+  themeSolution: "J \u6A58\u8272"
+  themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
+  childNodes:
+  - {fileID: -444948064527652692}
