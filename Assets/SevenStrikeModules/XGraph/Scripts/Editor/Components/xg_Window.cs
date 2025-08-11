@@ -115,7 +115,7 @@
         /// <summary>
         /// 当前选中的视觉节点
         /// </summary>
-        visualnode_base xw_currentSelectedVisualNode;
+        VNode_Base xw_currentSelectedVisualNode;
         /// <summary>
         /// 此参数用于当取消选中视觉节点的时候的单次执行的判断开关，
         /// </summary>
@@ -137,11 +137,11 @@
         /// <summary>
         /// 原始行为树复制体，放置修改源资源，保证安全修改
         /// </summary>
-        public actionnode_asset CloneTree;
+        public ActionNode_Asset CloneTree;
         /// <summary>
         /// 原始行为树
         /// </summary>
-        public actionnode_asset SourceTree;
+        public ActionNode_Asset SourceTree;
         #endregion
 
         /// <summary>
@@ -162,7 +162,7 @@
         [OnOpenAsset(1)]
         public static bool OnOpenAssets(int id, int line)
         {
-            if (EditorUtility.InstanceIDToObject(id) is actionnode_asset datatree)
+            if (EditorUtility.InstanceIDToObject(id) is ActionNode_Asset datatree)
             {
                 #region 加载窗口
                 // 注意：执行顺序强调 ！！！ GetWindow 方法会先触发执行 CreateGUI 方法然后再继续下面的代码
@@ -384,8 +384,8 @@
                         string path_clone = EditorPrefs.GetString("XGraph->ActionTreePath_Clone", "");
 
                         // 根据路径恢复加载节点方案资源
-                        var tree_source = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_source);
-                        var tree_clone = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_clone);
+                        var tree_source = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_source);
+                        var tree_clone = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_clone);
                         if (tree_clone != null)
                         {
                             // 打开窗口并加载资源
@@ -413,8 +413,8 @@
                     if (string.IsNullOrEmpty(path_source)) return;
 
                     // 根据路径恢复加载节点方案资源
-                    var tree_source = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_source);
-                    var tree_clone = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path_clone);
+                    var tree_source = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_source);
+                    var tree_clone = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_clone);
                     if (tree_clone != null)
                     {
                         var window = GetWindow<xg_Window>();
@@ -429,13 +429,13 @@
         /// </summary>
         /// <param h_name="tree_source"></param>
         /// <param h_name="tree_clone"></param>
-        public void ReloadTreeFromPath(actionnode_asset tree_source, actionnode_asset tree_clone)
+        public void ReloadTreeFromPath(ActionNode_Asset tree_source, ActionNode_Asset tree_clone)
         {
             if (tree_source == null) return;
 
             // 清理旧数据 
-            xw_graphView?.Nodes_Clear();
-            xw_graphView?.Edges_Clear();
+            xw_graphView?.Node_Clear();
+            xw_graphView?.EdgesClear();
             xw_graphView?.Groups_Clear();
 
             #region 恢复上一次退出 GraphView 时记录的内视图位置以及缩放等级
@@ -499,7 +499,7 @@
         /// 当选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeview"></param>
-        private void OnSelectNodeView(visualnode_base nodeview)
+        private void OnSelectNodeView(VNode_Base nodeview)
         {
             if (nodeview == null) return;
 
@@ -524,7 +524,7 @@
         /// 当选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeviews"></param>
-        private void OnSelectionNodesView(List<visualnode_base> nodeviews)
+        private void OnSelectionNodesView(List<VNode_Base> nodeviews)
         {
             if (nodeviews == null) return;
 
@@ -567,7 +567,7 @@
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
         /// <param h_name="nodeviews"></param>
-        private void OnRemovedSelectionNodesView(List<visualnode_base> nodeviews)
+        private void OnRemovedSelectionNodesView(List<VNode_Base> nodeviews)
         {
             if (nodeviews == null) return;
             if (nodeviews.Count > 1 || nodeviews.Count == 0)
@@ -579,7 +579,7 @@
         /// 取消选中视觉节点时执行
         /// </summary>
         /// <param h_name="nodeview"></param>
-        private void OnUnSelectNodeView(visualnode_base nodeview)
+        private void OnUnSelectNodeView(VNode_Base nodeview)
         {
             if (!xw_isUnSelectedNode)
             {
@@ -687,14 +687,14 @@
         public void ActionTree_Open()
         {
             // 准备预打开的资源类
-            actionnode_asset tree = null;
+            ActionNode_Asset tree = null;
 
             #region 获取打开资源路径并获取目标资源
             string path = EditorUtility.OpenFilePanel("Select Tree Asset", "Assets", "asset");
             if (!string.IsNullOrEmpty(path))
             {
                 path = path.Replace(Application.dataPath, "Assets"); // 转为 Unity 相对路径
-                tree = AssetDatabase.LoadAssetAtPath<actionnode_asset>(path);
+                tree = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path);
             }
             else
             {
@@ -745,7 +745,7 @@
         /// <summary>
         /// 拖动目标VisualElement方法
         /// </summary>
-        /// <param h_name="target"></param>
+        /// <param h_name="sourceNode"></param>
         /// <param h_name="handle"></param>
         private void RegisterDrag(VisualElement target, VisualElement handle, string saveKey_pos, string saveKey_size)
         {
@@ -984,7 +984,7 @@
             // 检测并刷新所有视觉节点的位置
             foreach (var dataNode in CloneTree.ActionNodes)
             {
-                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as visualnode_base;
+                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as VNode_Base;
                 if (visualNode != null)
                 {
                     // 如果该节点位置有变化则刷新该节点位置
@@ -999,10 +999,10 @@
 
             // 1. 重新读取数据并重建所有视觉节点，清空旧节点和连线
             // 清空GraphView的所有节点
-            xw_graphView.Nodes_Clear();
+            xw_graphView.Node_Clear();
 
             // 清空GraphView的所有连线
-            xw_graphView.Edges_Clear();
+            xw_graphView.EdgesClear();
 
             // 清空GraphView的所有Group
             xw_graphView.Groups_Clear(false);

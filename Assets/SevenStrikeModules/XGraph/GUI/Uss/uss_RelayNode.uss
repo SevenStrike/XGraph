@@ -1,0 +1,115 @@
+#title-label.Title_Label
+{
+     height: 20px;
+     width: 20px;
+     -unity-text-align: middle-left;
+     font-size: 13px;
+     padding-left: 0;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 10px;
+}
+
+.Title_Icon
+{
+     left: 0px;
+     top: 3px;
+     height: 18px;
+     width: 18px;
+     margin: 0px;
+     padding: 0px;
+     align-self: center;
+     -unity-text-align: center;
+}
+
+.Extension_Label
+{
+     color: darkgrey;
+     height: 30px;
+     width: 30px;
+     font-size: 11px;
+     -unity-text-align: middle-left;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 10px;
+     padding-left: 5px;
+}
+
+.port.output > #type.PortText_Out
+{
+     display: none;
+     font-size: 12px;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+}
+
+.port.input > #type.PortText_In
+{
+     display: none;
+     font-size: 12px;
+     --unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+}
+
+.port.output.Port_Out
+{
+     width: auto;
+     height: 15px;
+}
+
+.port.input.Port_In
+{
+     width: auto;
+     height: 15px;
+}
+
+#contents > #top
+{
+     background-color: rgb(128, 128, 128);
+}
+
+#contents > #top > #input
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#contents > #top
+{
+     background-color: rgba(60, 60, 60, 0.95);
+}
+
+#node-border
+{
+     background-color: rgba(60, 60, 60, 0.95);
+}
+
+#title
+{
+     display: none;
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#divider.horizontal
+{
+     display: none;
+}
+
+#divider.vertical
+{
+     display: flex;
+     height: auto;
+     top: 0;
+     width: 25px;
+     background-color: rgba(255,255,255, 0);
+     border-right-color: rgba(255,255,255, 0);
+}
+
+#contents > #top > #output
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+.ExtensionContainer
+{
+     background-color: rgba(31, 31, 31, 0.95);
+}
