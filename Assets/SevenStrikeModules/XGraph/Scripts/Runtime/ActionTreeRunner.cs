@@ -62,46 +62,33 @@ namespace SevenStrikeModules.XGraph
 
             switch (ActionNode)
             {
-                // 组合节点：顺序执行所有子节点
                 case ActionNode_Composite composite:
                     ActionNode.Execute();
                     foreach (var child in composite.childNodes)
                         yield return ExecuteNode(child);
                     break;
-
-                // 组合节点：顺序执行所有子节点
                 case ActionNode_Relay relay:
                     ActionNode.Execute();
                     foreach (var child in relay.childNodes)
                         yield return ExecuteNode(child);
                     break;
-
-                // 等待节点：先等待，再继续子节点
                 case ActionNode_Wait wait:
                     ActionNode.Execute();
                     yield return new WaitForSeconds(wait.Time);
                     foreach (var child in wait.childNodes)
                         yield return ExecuteNode(child);
                     break;
-
-                // 调试信息节点：打印信息并继续子节点
                 case ActionNode_Debug debug:
                     ActionNode.Execute();
                     yield return ExecuteNode(debug.childNode);
                     break;
-
-                // 开始节点：继续子节点
                 case ActionNode_Start start:
                     ActionNode.Execute();
                     yield return ExecuteNode(start.childNode);
                     break;
-
-                // 结束节点：仅打印信息
                 case ActionNode_End end:
                     ActionNode.Execute();
                     break;
-
-                // 其他普通节点：执行后按 GetNextNode 继续
                 default:
                     ActionNode.Execute();
                     yield return ExecuteNode(GetNextNode(ActionNode));

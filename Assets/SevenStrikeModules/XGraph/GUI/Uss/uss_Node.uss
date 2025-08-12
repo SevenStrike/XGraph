@@ -1,13 +1,30 @@
-#title-label.Title_Label
+.unity-base-text-field.Title_TextField
 {
      height: 20px;
-     width: 80px;
-     -unity-text-align: middle-left;
-     font-size: 13px;
-     padding-left: 0;
+     width: auto;
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
-     letter-spacing: 10px;
+     padding-left: 0;
+     letter-spacing: 6px;
+     margin-left: 2px;
+     top: 5px
+}
+
+.Title_TextInput
+{
+     -unity-text-align: middle-left;
+     font-size: 15px;
+     background-color: rgba(0,0,0,0);
+     border-bottom-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+}
+
+.Title_TextElement
+{
+     -unity-text-align: middle-left;
+     font-size: 12px;
 }
 
 .Title_Icon

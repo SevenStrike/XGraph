@@ -5,6 +5,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
+    using UnityEngine.UI;
     using UnityEngine.UIElements;
 
     public class xGraph_NodePort
@@ -333,15 +334,25 @@ namespace SevenStrikeModules.XGraph
                 }
             });
 
-            Label label = titleContainer.Q<Label>();
-            label.AddToClassList("Title_Label");
+            TextField input_title = new TextField()
+            {
+                multiline = false,
+            };
+            input_title.value = "节点标题";
+            input_title.AddToClassList("Title_TextField");
+
+            VisualElement input = input_title.Q<VisualElement>("unity-text-input");
+            input.AddToClassList("Title_TextInput");
+
+            TextElement textelement = input.Q<TextElement>();
+            textelement.AddToClassList("Title_TextElement");
 
             VisualElement element = titleContainer.Q<VisualElement>("title-button-container");
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
             AppendElement(GraphNodeContainerType.TitleContainer, IconLabel);
-            AppendElement(GraphNodeContainerType.TitleContainer, label);
+            AppendElement(GraphNodeContainerType.TitleContainer, input_title);
             AppendElement(GraphNodeContainerType.TitleContainer, element);
 
             //UpdateMarkColor();

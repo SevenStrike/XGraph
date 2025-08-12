@@ -1,12 +1,8 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEngine;
-    using static UnityEditor.Rendering.FilterWindow;
 
     public partial class xg_GraphView
     {
@@ -51,6 +47,12 @@ namespace SevenStrikeModules.XGraph
             {
                 // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
                 ActionTreeAsset.ChildNode_Add(vbs_parent.ActionNode, vbs_child.ActionNode);
+            }
+
+            VNode_Relay relay_child = edge.input.node as VNode_Relay;
+            if (relay_child != null)
+            {
+                relay_child.Connected();
             }
         }
 
@@ -118,6 +120,12 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
                     ActionTreeAsset.ChildNode_Remove(node_parent.ActionNode, node_child.ActionNode);
+                }
+
+                VNode_Relay relay_child = edge.input.node as VNode_Relay;
+                if (relay_child != null)
+                {
+                    relay_child.Disconnected();
                 }
             }
         }

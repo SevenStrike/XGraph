@@ -7,21 +7,52 @@ namespace SevenStrikeModules.XGraph
 
     public class VNode_Relay : VNode_Base
     {
+        Label lab;
+        public Texture2D tex_logo_connected;
+        public Texture2D tex_logo_disconnected;
+
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
             base.Initialize(graphView, pos, data);
 
+            tex_logo_connected = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
+            tex_logo_disconnected = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/emptyrelay.png");
+
             // 设置节点的容器样式
             SetNodeStyle("uss_RelayNode");
 
+            VisualElement nodeborder = this.Q<VisualElement>("node-border");
+            nodeborder.AddToClassList("node_nodeborder");
+
+            VisualElement selectionborder = this.Q<VisualElement>("selection-border");
+            selectionborder.AddToClassList("node_selectionborder");
+
             #region 端口设置
-            xGraph_NodePort port_in = new xGraph_NodePort("Ri", typeof(bool), Port.Capacity.Single);
+            xGraph_NodePort port_in = new xGraph_NodePort("", typeof(bool), Port.Capacity.Single);
             SetPort_Input(port_in);
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-            port_out.Add(new xGraph_NodePort("Ro", typeof(bool), Port.Capacity.Multi));
+            port_out.Add(new xGraph_NodePort("", typeof(bool), Port.Capacity.Multi));
             SetPort_Output(port_out);
             #endregion
+        }
+
+        public void CheckConnected()
+        {
+            if (Port_Input.Port.connected)
+                Connected();
+            else
+                Disconnected();
+        }
+
+        public void Connected()
+        {
+            IconLabel.style.backgroundImage = tex_logo_connected;
+        }
+
+        public void Disconnected()
+        {
+            IconLabel.style.backgroundImage = tex_logo_disconnected;
         }
 
         #region 节点绘制
@@ -56,15 +87,18 @@ namespace SevenStrikeModules.XGraph
             VisualElement divider = topContainer.Q<VisualElement>("divider");
             IconLabel = new Label("");
             IconLabel.AddToClassList("Title_Icon");
-            IconLabel.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
-            // 应用配置文件的颜色到节点的标识颜色
-            graphView.ThemesList.Node.ForEach(colorData =>
-            {
-                if (colorData.solution == ActionNode.themeSolution)
-                {
-                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
-                }
-            });
+            IconLabel.style.backgroundImage = tex_logo_connected;
+
+            #region 应用配置文件的颜色到节点的标识颜色
+            //graphView.ThemesList.Node.ForEach(colorData =>
+            //{
+            //    if (colorData.solution == ActionNode.themeSolution)
+            //    {
+            //        IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
+            //    }
+            //});
+            #endregion
+
             divider.Add(IconLabel);
 
             base.Draw_Top();

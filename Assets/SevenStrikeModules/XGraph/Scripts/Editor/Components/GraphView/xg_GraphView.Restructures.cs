@@ -26,7 +26,10 @@ namespace SevenStrikeModules.XGraph
             // 根据根节点的数据列表重建 NodeViews
             ActionTreeAsset.ActionNodes.ForEach(data =>
             {
-                Node_Make(data.nodeGraphPosition, data).Draw().RefreshExpandedState();
+                if (data.actionNodeType == "Relay")
+                    Node_MakeRelay(data.nodeGraphPosition, data).Draw().RefreshExpandedState();
+                else
+                    Node_Make(data.nodeGraphPosition, data).Draw().RefreshExpandedState();
             });
 
             // 根据行为树根节点的数据列表重建 Edges
@@ -39,6 +42,12 @@ namespace SevenStrikeModules.XGraph
                 {
                     VNode_Base n_parent = FindNodeView(d.guid);
                     VNode_Base n_child = FindNodeView(c.guid);
+
+                    if (n_parent is VNode_Relay relay)
+                    {
+                        Debug.Log(relay.Port_Input.Port.connected);
+                        relay.CheckConnected();
+                    }
 
                     n_parent.Port_Outputs.ForEach(p =>
                     {

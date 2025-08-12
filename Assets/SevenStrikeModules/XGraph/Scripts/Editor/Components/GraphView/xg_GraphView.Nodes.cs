@@ -209,6 +209,7 @@ namespace SevenStrikeModules.XGraph
             // 初始化节点并将data数据容器赋值过来便于后面使用
             relay.Initialize(this, pos, data);
 
+
             // 刷新节点主题配色
             RefreshTheme_GraphNode(relay);
 
