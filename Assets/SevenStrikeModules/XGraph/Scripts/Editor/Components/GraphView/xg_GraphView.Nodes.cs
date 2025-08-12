@@ -22,6 +22,10 @@ namespace SevenStrikeModules.XGraph
             {
                 AddToSelection(node);
             }
+            foreach (var node in ActionTreeAsset.NodeGroupDatas)
+            {
+                AddToSelection(node.group);
+            }
         }
         /// <summary>
         /// 实现视觉节点复制逻辑
@@ -248,7 +252,7 @@ namespace SevenStrikeModules.XGraph
         public ActionNode_Base InstantiateActionNode(string prefix_namespace, string prefix_class, Type type, string action_nodeType, string icon, string visual_nodeType, string action_name)
         {
             ActionNode_Base data = ScriptableObject.CreateInstance(type) as ActionNode_Base;
-            data.name = type.Name;
+            data.name = action_name;
             data.guid = GUID.Generate().ToString();
             data.actionNodeType = action_nodeType;
             data.icon = icon;

@@ -338,8 +338,9 @@ namespace SevenStrikeModules.XGraph
             {
                 multiline = false,
             };
-            input_title.value = "节点标题";
+            input_title.value = ActionNode.identifyName;
             input_title.AddToClassList("Title_TextField");
+            input_title.RegisterCallback<ChangeEvent<string>>(OnTitleChanged);
 
             VisualElement input = input_title.Q<VisualElement>("unity-text-input");
             input.AddToClassList("Title_TextInput");
@@ -356,6 +357,11 @@ namespace SevenStrikeModules.XGraph
             AppendElement(GraphNodeContainerType.TitleContainer, element);
 
             //UpdateMarkColor();
+        }
+
+        private void OnTitleChanged(ChangeEvent<string> evt)
+        {
+            ActionNode.name = ActionNode.identifyName = evt.newValue;
         }
 
         /// <summary>

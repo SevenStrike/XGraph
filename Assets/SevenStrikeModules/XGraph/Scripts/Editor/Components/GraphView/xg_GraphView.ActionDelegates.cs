@@ -45,7 +45,7 @@ namespace SevenStrikeModules.XGraph
                     "Relay",
                     "relay",
                     "VNode_Relay",
-                    "中继");
+                    "延展");
 
                 VNode_Relay relaynode = Node_MakeRelay(localMousePosition, data);
                 relaynode.Draw();

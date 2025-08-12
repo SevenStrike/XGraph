@@ -2,11 +2,11 @@
     "root_title": "节点列表",
     "root_types": [
         {
-            "catergory_title": "基础测试",
+            "catergory_title": "基础",
             "catergory_nodes": [
                 {
                     "name": "开始",
-                    "note": "开始行为",
+                    "note": "流程的开始行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Start",
@@ -15,7 +15,7 @@
                 },
                 {
                     "name": "结束",
-                    "note": "结束行为",
+                    "note": "流程的结束行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "End",
@@ -24,7 +24,7 @@
                 },
                 {
                     "name": "合成",
-                    "note": "合成行为",
+                    "note": "多行为分支调用",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Composite",
@@ -33,7 +33,7 @@
                 },
                 {
                     "name": "等待",
-                    "note": "等待行为",
+                    "note": "根据延时等待",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Wait",
@@ -42,7 +42,7 @@
                 },
                 {
                     "name": "调试",
-                    "note": "调试行为",
+                    "note": "用于调试行为节点",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Debug",
@@ -51,7 +51,7 @@
                 },
                 {
                     "name": "便签",
-                    "note": "注释便签",
+                    "note": "备注内容 / 解释性内容",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Stick",
@@ -60,7 +60,7 @@
                 },
                 {
                     "name": "延展",
-                    "note": "延展连线",
+                    "note": "将节点串联延展",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
                     "prefix_class": "INode_",
                     "action_nodeType": "Relay",
