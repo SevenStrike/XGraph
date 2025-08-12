@@ -1,9 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
+    using static UnityEditor.Rendering.FilterWindow;
 
     public partial class xg_GraphView
     {
@@ -113,7 +116,7 @@ namespace SevenStrikeModules.XGraph
                 // 连线的起点是 v-Base 终点是 v-Base
                 if (node_parent != null && node_child != null)
                 {
-                    // 将 "n_child" 从 "n_parent" 的 "child" 数据节点变量中移除
+                    // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
                     ActionTreeAsset.ChildNode_Remove(node_parent.ActionNode, node_child.ActionNode);
                 }
             }
@@ -137,12 +140,14 @@ namespace SevenStrikeModules.XGraph
         /// <param name="element"></param>
         private void Removed_Node(GraphElement element)
         {
+            #region 延展节点
             VNode_Base nodeview = element as VNode_Base;
             if (nodeview != null)
             {
                 // 从根节点中移除数据节点
                 ActionTreeAsset.Remove(nodeview.ActionNode);
             }
+            #endregion          
         }
     }
 }

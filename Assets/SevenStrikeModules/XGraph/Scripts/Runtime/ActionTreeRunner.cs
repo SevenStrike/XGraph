@@ -80,7 +80,8 @@ namespace SevenStrikeModules.XGraph
                 case ActionNode_Wait wait:
                     ActionNode.Execute();
                     yield return new WaitForSeconds(wait.Time);
-                    yield return ExecuteNode(wait.childNode);
+                    foreach (var child in wait.childNodes)
+                        yield return ExecuteNode(child);
                     break;
 
                 // 调试信息节点：打印信息并继续子节点
@@ -115,7 +116,6 @@ namespace SevenStrikeModules.XGraph
             return current switch
             {
                 ActionNode_Start s => s.childNode,
-                ActionNode_Wait w => w.childNode,
                 ActionNode_Debug a => a.childNode,
                 _ => null
             };

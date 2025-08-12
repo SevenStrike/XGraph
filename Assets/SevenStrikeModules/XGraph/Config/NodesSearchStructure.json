@@ -38,7 +38,7 @@
                     "prefix_class": "INode_",
                     "action_nodeType": "Wait",
                     "icon": "wait",
-                    "visual_nodeType": "VNode_S_In_1Port_S_Out_1Port"
+                    "visual_nodeType": "VNode_S_In_1Port_M_Out_1Port"
                 },
                 {
                     "name": "调试",

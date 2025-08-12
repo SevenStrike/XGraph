@@ -297,21 +297,27 @@ namespace SevenStrikeModules.XGraph
                     (dictionary[source] as ActionNode_Start).childNode = dictionary[s.childNode];
                 }
 
-                if (source is ActionNode_Wait w && w.childNode != null)
-                {
-                    (dictionary[source] as ActionNode_Wait).childNode = dictionary[w.childNode];
-                }
-
                 if (source is ActionNode_Debug d && d.childNode != null)
                 {
                     (dictionary[source] as ActionNode_Debug).childNode = dictionary[d.childNode];
                 }
 
-                if (source is ActionNode_Composite composite && composite.childNodes != null)
+                if (source is ActionNode_Wait w && w.childNodes != null)
+                {
+                    //(dictionary[source] as ActionNode_Wait).childNode = dictionary[w.childNode];
+                    var newComposite = dictionary[source] as ActionNode_Wait;
+                    newComposite.childNodes.Clear();
+                    foreach (var node in w.childNodes)
+                    {
+                        newComposite.childNodes.Add(dictionary[node]);
+                    }
+                }
+
+                if (source is ActionNode_Composite c && c.childNodes != null)
                 {
                     var newComposite = dictionary[source] as ActionNode_Composite;
                     newComposite.childNodes.Clear();
-                    foreach (var node in composite.childNodes)
+                    foreach (var node in c.childNodes)
                     {
                         newComposite.childNodes.Add(dictionary[node]);
                     }
@@ -366,7 +372,7 @@ namespace SevenStrikeModules.XGraph
                 if (newTreeNode is ActionNode_Start newStart)
                     newStart.childNode = null;
                 else if (newTreeNode is ActionNode_Wait newWait)
-                    newWait.childNode = null;
+                    newWait.childNodes.Clear();
                 else if (newTreeNode is ActionNode_Debug newDebug)
                     newDebug.childNode = null;
                 else if (newTreeNode is ActionNode_Composite newComp)
@@ -395,9 +401,12 @@ namespace SevenStrikeModules.XGraph
                 else if (node is ActionNode_Wait originalWait)
                 {
                     var newWait = newParentNode as ActionNode_Wait;
-                    if (originalWait.childNode != null && originalRootDic.TryGetValue(originalWait.childNode, out var newNode))
+                    foreach (var originalChild in originalWait.childNodes)
                     {
-                        newWait.childNode = newNode;
+                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
+                        {
+                            newWait.childNodes.Add(newChild);
+                        }
                     }
                 }
 
@@ -480,9 +489,9 @@ namespace SevenStrikeModules.XGraph
 
             // 如果是 "ActionNode_Wait" 节点，那么就收集 "ActionNode_Wait" 节点下的 "child"
             ActionNode_Wait wait = parent as ActionNode_Wait;
-            if (wait != null && wait.childNode != null)
+            if (wait != null && wait.childNodes != null)
             {
-                nodes.Add(wait.childNode);
+                nodes = wait.childNodes;
             }
 
             // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "child"
@@ -537,15 +546,18 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(wait, "Connect_WaitNode");
 #endif
-                if (wait.childNode != null)
+                bool existChild = false;
+                wait.childNodes.ForEach(c =>
                 {
-                    if (child.guid == wait.childNode.guid)
-                    {
-                        Debug.Log("wait节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
-                        return;
-                    }
+                    if (child.guid == c.guid)
+                        existChild = true;
+                });
+                if (existChild)
+                {
+                    Debug.Log("wait 节点已经存在添加的指定资源！忽略它！");
+                    return;
                 }
-                wait.childNode = child;
+                wait.childNodes.Add(child);
             }
             #endregion
 
@@ -638,7 +650,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(wait, "RemoveConnect_WaitNode");
 #endif
-                wait.childNode = null;
+                wait.childNodes.Remove(child);
             }
             #endregion
 
