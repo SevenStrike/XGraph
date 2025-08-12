@@ -336,7 +336,7 @@ namespace SevenStrikeModules.XGraph
 
             TextField input_title = new TextField()
             {
-                multiline = false,
+                multiline = false
             };
             input_title.value = ActionNode.identifyName;
             input_title.AddToClassList("Title_TextField");

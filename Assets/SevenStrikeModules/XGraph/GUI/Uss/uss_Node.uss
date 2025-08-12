@@ -6,8 +6,11 @@
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
      padding-left: 0;
      letter-spacing: 6px;
-     margin-left: 2px;
-     top: 5px
+     top: 5px;
+     left: 15px;
+     -unity-text-align: middle-left;
+     margin-right: 15px;
+     flex-grow: 1;
 }
 
 .Title_TextInput
@@ -33,7 +36,7 @@
      top: 8px;
      height: 18px;
      width: 18px;
-     margin-right: 15px;
+     margin-right: 0px;
      -unity-text-align: middle-left;
 }
 
@@ -94,6 +97,7 @@
 #node-border
 {
      background-color: rgba(60, 60, 60, 0.95);
+     min-width: 150px;
 }
 
 #title
