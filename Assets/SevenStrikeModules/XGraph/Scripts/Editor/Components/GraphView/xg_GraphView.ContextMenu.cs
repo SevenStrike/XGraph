@@ -1,13 +1,18 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Linq;
+    using System.Reflection;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.Graphs;
     using UnityEngine;
+    using UnityEngine.Rendering;
     using UnityEngine.UIElements;
 
     public partial class xg_GraphView
     {
+        Color sd;
         /// <summary>
         /// 实现 GraphView 视图内的鼠标右键上下文菜单
         /// </summary>
@@ -43,6 +48,71 @@ namespace SevenStrikeModules.XGraph
             #region  确认当前有点点击的物体是否是GraphNode
             if (evt.target is VNode_Base nodebase)
             {
+                // 菜单 - 自定主题色切换
+                evt.menu.AppendAction($"T 节点配色/A 自定颜色", (action) =>
+                {
+                    var t = typeof(EditorWindow).Assembly.GetTypes().FirstOrDefault(ty => ty.Name == "ColorPicker");
+                    var m = t?.GetMethod("Show", new[] { typeof(Action<Color>), typeof(Color), typeof(bool), typeof(bool) });
+                    if (m == null)
+                    {
+                        Debug.LogWarning("Could not invoke Color Picker for ShaderGraph.");
+                        return;
+                    }
+
+                    VNode_Base node = CurrentSelectedNodes.First();
+
+                    var defaultColor = Color.gray;
+                    defaultColor = node.ActionNode.themeColor;
+                    defaultColor.a = 1.0f;
+
+                    void ApplyColor(Color pickedColor)
+                    {
+                        foreach (var selectable in selection)
+                        {
+                            if (selectable is VNode_Base node)
+                            {
+                                Undo.RecordObject(node.ActionNode, "Change NodeColor");
+                                node.ActionNode.themeSolution = "自定义";
+                                node.ActionNode.themeColor = pickedColor;
+
+                                // 改变图标颜色
+                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+
+                                // 改变连线颜色
+                                if (node.Port_Input != null && node.Port_Input.Port != null)
+                                {
+                                    node.Port_Input.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+
+                                    var edges = node.Port_Input.Port.connections.ToList();
+                                    // 遍历所有连线
+                                    foreach (var edge in edges)
+                                    {
+                                        edge.edgeControl.inputColor = pickedColor;
+                                    }
+                                }
+                                if (node.Port_Outputs != null)
+                                {
+                                    node.Port_Outputs.ForEach(x =>
+                                    {
+                                        x.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+
+                                        var edges = x.Port.connections.ToList();
+                                        // 遍历所有连线
+                                        foreach (var edge in edges)
+                                        {
+                                            edge.edgeControl.outputColor = pickedColor;
+                                        }
+                                    });
+                                }
+                                node.UpdateMarkColor();
+                                if (gv_GaphWindow.xw_toggle_DisplayNodeColor.value)
+                                    node.MarkColor_Dislay();
+                            }
+                        }
+                    }
+                    m.Invoke(null, new object[] { (Action<Color>)ApplyColor, Color.white, true, false });
+                });
+
                 // 菜单 - 主题色切换
                 for (int i = 0; i < ThemesList.Node.Count; i++)
                 {
@@ -64,20 +134,36 @@ namespace SevenStrikeModules.XGraph
 
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
+                                {
                                     node.Port_Input.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                    var edges = node.Port_Input.Port.connections.ToList();
+                                    // 遍历所有连线
+                                    foreach (var edge in edges)
+                                    {
+                                        edge.edgeControl.inputColor = node.ActionNode.themeColor;
+                                    }
+                                }
                                 if (node.Port_Outputs != null)
                                 {
                                     node.Port_Outputs.ForEach(x =>
                                     {
                                         x.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                        var edges = x.Port.connections.ToList();
+                                        // 遍历所有连线
+                                        foreach (var edge in edges)
+                                        {
+                                            edge.edgeControl.outputColor = node.ActionNode.themeColor;
+                                        }
                                     });
                                 }
-                                node.SetMarkColor();
                                 node.UpdateMarkColor();
+                                if (gv_GaphWindow.xw_toggle_DisplayNodeColor.value)
+                                    node.MarkColor_Dislay();
                             }
                         }
                     });
                 }
+
                 isInGraphNode = true;
                 evt.menu.AppendSeparator();
             }

@@ -340,7 +340,7 @@ namespace SevenStrikeModules.XGraph
             };
             input_title.value = ActionNode.identifyName;
             input_title.AddToClassList("Title_TextField");
-            input_title.RegisterCallback<ChangeEvent<string>>(OnTitleChanged);
+            input_title.RegisterCallback<BlurEvent>(OnTitlteBlur);
 
             VisualElement input = input_title.Q<VisualElement>("unity-text-input");
             input.AddToClassList("Title_TextInput");
@@ -355,13 +355,19 @@ namespace SevenStrikeModules.XGraph
             AppendElement(GraphNodeContainerType.TitleContainer, IconLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, input_title);
             AppendElement(GraphNodeContainerType.TitleContainer, element);
-
-            //UpdateMarkColor();
         }
 
-        private void OnTitleChanged(ChangeEvent<string> evt)
+        /// <summary>
+        /// 节点名称设置
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnTitlteBlur(BlurEvent evt)
         {
-            ActionNode.name = ActionNode.identifyName = evt.newValue;
+            TextField textField = (evt.target as TextField);
+            Undo.RecordObject(ActionNode, "Change ActionNode Name");
+
+            if (textField.value != ActionNode.name && textField.value != ActionNode.identifyName)
+                ActionNode.name = ActionNode.identifyName = textField.value;
         }
 
         /// <summary>
@@ -377,17 +383,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 设置节点配色
         /// </summary>
-        public void SetMarkColor()
-        {
-            titleContainer.style.borderBottomColor = ActionNode.themeColor;
-        }
-        /// <summary>
-        /// 刷新节点配色
-        /// </summary>
         public void UpdateMarkColor()
         {
             titleContainer.style.borderBottomColor = ActionNode.themeColor;
-            titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>
         /// 节点配色 - 隐藏
@@ -401,7 +399,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void MarkColor_Dislay()
         {
-            UpdateMarkColor();
+            titleContainer.style.borderBottomColor = ActionNode.themeColor;
+            titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>
         /// 设置节点的样式应用
