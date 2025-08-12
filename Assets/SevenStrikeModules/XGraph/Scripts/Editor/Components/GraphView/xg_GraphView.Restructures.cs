@@ -43,9 +43,9 @@ namespace SevenStrikeModules.XGraph
                     VNode_Base n_parent = FindNodeView(d.guid);
                     VNode_Base n_child = FindNodeView(c.guid);
 
+                    // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
                     if (n_parent is VNode_Relay relay)
                     {
-                        Debug.Log(relay.Port_Input.Port.connected);
                         relay.CheckConnected();
                     }
 
