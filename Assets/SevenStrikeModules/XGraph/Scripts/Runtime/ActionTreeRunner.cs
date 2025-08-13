@@ -91,14 +91,14 @@ namespace SevenStrikeModules.XGraph
                     break;
                 default:
                     ActionNode.Execute();
-                    yield return ExecuteNode(GetNextNode(ActionNode));
+                    yield return ExecuteNode(GetNextAction(ActionNode));
                     break;
             }
         }
         #endregion
 
         #region 获取下一节点
-        private ActionNode_Base GetNextNode(ActionNode_Base current)
+        private ActionNode_Base GetNextAction(ActionNode_Base current)
         {
             return current switch
             {
