@@ -6,6 +6,10 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 | **欢迎加入技术研讨群，在这里可以和我以及大家一起探讨插件的优化以及相关的技术实现思路，同时在做项目时遇到的众多问题以及瓶颈<br>阻碍都可以互相探讨学习**|![](Docs/qqgroups.jpg) |
 <br>
 
+> ##### 这个编辑器不仅是一个工具，更是一个行为逻辑的设计平台，让开发者能够专注于创意的实现，而不是繁琐的代码细节
+
+![s](Docs/graph.png)
+
 ### 📦 核心功能与特色
 ---
 #### - ✅ 可视化节点编辑
@@ -37,31 +41,29 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 ---
 **✅ VNode_Base 不直接存储业务逻辑，而是通过 ActionNode_Base ActionNode 绑定数据节点**
 
-||基类|派生具体类|
+||视觉节点类|端口类型|
 |:-:|:-|:-|
-|⚙️|**VNode_M_In_1Port_N_Out** |	多输入端口，无输出端口|
-|⚙️|**VNode_M_In_1Port_S_Out_1Port** |	多输入端口，单输出端口|
-|⚙️|**VNode_N_In_M_Out_1Port** |	无输入端口，多输出端口|
+|⚙️|**VNode_M_In_1Port_N_Out** |	多输入，无输出|
+|⚙️|**VNode_M_In_1Port_S_Out_1Port** |	多输入，单输出|
+|⚙️|**VNode_N_In_M_Out_1Port** |	无输入，多输出|
 |⚙️|**VNode_N_In_N_Out** |	无输入输出端口（纯数据节点）|
-|⚙️|**VNode_N_In_S_Out_1Port** |	无输入端口，单输出端口|
+|⚙️|**VNode_N_In_S_Out_1Port** |	无输入，单输出|
+|⚙️|**VNode_S_In_1Port_M_Out_1Port** |	单输入，多输出|
+|⚙️|**VNode_S_In_1Port_N_Out** |	单输入，无输出|
+|⚙️|**VNode_S_In_1Port_S_Out_1Port** |	单输入，单输出|
 |⚙️|**VNode_Relay** |	中继节点（带连接状态图标）|
-|⚙️|**VNode_S_In_1Port_M_Out_1Port** |	单输入端口，多输出端口|
-|⚙️|**VNode_S_In_1Port_N_Out** |	单输入端口，无输出端口|
-|⚙️|**VNode_S_In_1Port_S_Out_1Port** |	单输入端口，单输出端口|
 |⚙️|**VNode_Stick** |	便签节点（非功能节点，用于注释）|
 
 **✅ 节点类型划分清晰，组合、等待、中继都使用 List<> 支持多子节点；目前所有 Execute() 为空或仅 Debug，需要你在具体派生类里填充业务逻辑**
-||基类|派生具体类|关键字段|外观|
+||行为节点|派生具体类|关键字段|外观|
 |-|:-:|:-:|:-:|:-:|
 |⚙️|**ActionNode_Base**|**所有节点**|guid|-|
 |⚙️|**ActionNode_Start**|**INode_Start**|childNode|![](Docs/start.png)|
 |⚙️|**ActionNode_End**|**INode_End**|childNode|![](Docs/end.png)|
 |⚙️|**ActionNode_Debug**|**INode_Debug**|childNode|![](Docs/debug.png)|
-|⚙️|**ActionNode_Wait**|**INode_Wait**|childNode/Time|![](Docs/wait.png)|
+|⚙️|**ActionNode_Wait**|**INode_Wait**|childNodes/Time|![](Docs/wait.png)|
 |⚙️|**ActionNode_Composite**|**INode_Composite**|childNodes|![](Docs/comp.png)|
 |⚙️|**ActionNode_Relay**|**INode_Relay**|childNodes|![](Docs/relay.png)|
-
-
 
 ### 📦 适用场景
 ---
@@ -97,7 +99,3 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 - 运行时支持实时查看节点执行情况，便于调试
 #### ⚙️ 数据驱动
 - 行为树数据以资源形式保存，便于版本控制和团队协作
-
-> ##### 这个编辑器不仅是一个工具，更是一个行为逻辑的设计平台，让开发者能够专注于创意的实现，而不是繁琐的代码细节
-
-![s](Docs/graph.png)
