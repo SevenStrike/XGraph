@@ -44,7 +44,43 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 - 自定义节点类型：通过继承 ActionNode_Base 和 VNode_Base 可轻松扩展新节点
 - 自定义 Inspector：可通过 Editor_{NodeType} 命名规则为节点提供专属 Inspector 面板
 - 事件回调：提供 OnSelectedNode、OnUnSelectedNode 等事件，便于扩展交互逻辑
-  
+
+### 📦 与Unity GraphToolKit的区别
+---
+**✅ UGT 像乐高万能积木，但拼特定城堡时你得先自己刻零件；XGraph是“直接给你城堡说明书”，换主题只要换贴纸**
+
+**✅ 如果业务高度垂直且快速迭代，XGraph方案匹配度 > 90%；只有未来需要**跨领域复用（技能+剧情+UI+Shader 共用同一套图）**时，UGT 的“万能积木”优势才会反超**
+
+||维度|XGraph|Unity GraphToolKit|
+|:-:|:-|:-|:-|
+|⭕️|业务语义|内置在节点基类里（Start/Wait/Debug/Composite…），换游戏也只要继承并重写 Execute()|零语义，必须再写一套“行为树解释器/编译器”|
+|⭕️|快速迁移|把旧的 ActionNode_Wait 改成 ActionNode_WaitSkill 即可，零改动上层逻辑|必须新建 SkillGraphStencil + SkillInterpreter + SkillBlackboard…|
+|⭕️|规则差异|同一套节点即可表达[剧情、技能、AI]三种逻辑，靠派生类切换|每套规则都要新建 GraphModel + Interpreter，项目一多就爆炸|
+|⭕️|版本升级成本|只要改节点脚本，不碰可视化层|每升级一次 Unity，Stencil 与 Interpreter 都可能要跟着重写|
+
+### 📦 与Unity GraphToolKit的实战对比
+---
+**✅ 示例 1：剧情对话里插一个 2 秒停顿**
+|需求|XGraph|Unity GraphToolKit|
+|:-:|:-:|:-:|
+|描述|在 NPC 说“你好”之后空 2 秒再说下一句|同左|
+|步骤|在 GraphView 拖一个 Wait 节点|新建 DialogueStencil|
+|结果|直接 Play 即可看到停顿|还要挂 Interpreter、绑定 GraphAsse|
+
+**✅ 示例 2：技能树里增加“抽三张牌”节点**
+|需求|XGraph|Unity GraphToolKit|
+|:-:|:-:|:-:|
+|描述|玩家释放技能时，从牌库再抽 3 张牌|同左|
+|步骤|右键 → Create → ActionNode_DrawCard|新建 SkillStencil|
+|结果|无需改 UI，节点直接可用|需要 3 个新文件 + 1 个黑板的注册|
+
+**✅ 示例 3：关卡脚本热更新（策划改数值）**
+|需求|XGraph|Unity GraphToolKit|
+|:-:|:-:|:-:|
+|描述|把某个 Wait 节点从 3 秒改成 5 秒，策划自己改|同左|
+|步骤|双击 .asset → 找到 Wait 节点 → 把 3 改成 5 → <br>Ctrl+S → 运行即生效|必须在 Graph 窗口里改|
+|结果|数值就是节点字段，零代码改动|需要程序重新发版|
+
 ### 📦 节点概览
 ---
 **✅ VNode_Base 不直接存储业务逻辑，而是通过 ActionNode_Base ActionNode 绑定数据节点**
