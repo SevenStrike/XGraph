@@ -1,4 +1,8 @@
 ## XGraph 流程图插件
+[![license](https://img.shields.io/badge/license-AGPLv3.0-red.svg)](https://gitee.com/SevenStrike/XTween/blob/main/LICENSE)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/SevenStrike/XGraph)
+[![supported](https://img.shields.io/badge/Supported-Unity-success.svg)](https://unity.com/)
+
 ### 概述
 ------------
 XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为行为树（Behavior Tree）、状态机（State Machine）、任务流（Task Flow）等图形化逻辑设计而开发。它采用 GraphView 作为核心框架，结合 ScriptableObject 数据存储，提供了一套完整的节点编辑、连线、编组、撤销/重做、主题定制等功能，适用于游戏 AI、任务系统、对话系统等复杂逻辑的可视化编辑。该插件具有 模块化设计，支持 数据与视图分离，并提供了 可扩展的架构，开发者可以轻松自定义节点类型、UI 样式以及交互逻辑。
