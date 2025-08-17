@@ -60,26 +60,40 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 
 ### 📦 与Unity GraphToolKit的实战对比
 ---
-**✅ 示例 1：剧情对话里插一个 2 秒停顿**
-|需求|XGraph|Unity GraphToolKit|
-|:-:|:-:|:-:|
-|描述|在 NPC 说“你好”之后空 2 秒再说下一句|同左|
-|步骤|在 GraphView 拖一个 Wait 节点|新建 DialogueStencil|
-|结果|直接 Play 即可看到停顿|还要挂 Interpreter、绑定 GraphAsse|
+#### 🎯 例如：在关卡编辑器里加一个节点：播放特效后自动等待 1 秒，然后继续往下执行
+<br>
 
-**✅ 示例 2：技能树里增加“抽三张牌”节点**
-|需求|XGraph|Unity GraphToolKit|
-|:-:|:-:|:-:|
-|描述|玩家释放技能时，从牌库再抽 3 张牌|同左|
-|步骤|右键 → Create → ActionNode_DrawCard|新建 SkillStencil|
-|结果|无需改 UI，节点直接可用|需要 3 个新文件 + 1 个黑板的注册|
+**✅ XGraph**
+|步骤|操作内容|文件|代码/配置量|耗时
+|:-:|:-:|:-:|:-:|:-:|
+|新建行为节点脚本|右键 ▸ Create ▸ C# Script ▸ ActionNode_PlayEffect|1个 .cs|继承 ActionNode_Base，字段 public GameObject EffectPrefab; public float WaitTime = 1f;，重写 Execute() → 播放 + 协程等待，≈20 行|45秒|
+| 新建图形节点（可选）|若需要特殊 UI，继承 VNode_PlayEffect 重写 Draw_Extension() 加预览图|0-1个 .cs|0-15 行|30 秒（可选，不改也能用）|
+|使用|打开 GraphView ▸ 右键 ▸ Add Node ▸ PlayEffect ▸ 拖入特效预制体 ▸ 连好线|0个 .cs|纯可视化|15 秒|
+|**总耗时**||**1-2个 .cs**|**20-35 行**|**≈ 90 秒**|
 
-**✅ 示例 3：关卡脚本热更新（策划改数值）**
-|需求|XGraph|Unity GraphToolKit|
+**✅ Unity GraphToolKit**
+|步骤|操作内容|文件|代码/配置量|耗时
+|:-:|:-:|:-:|:-:|:-:|
+|新建 GraphModel（若已有可复用）|新建 PlayEffectGraphModel : GraphModel|1个 .cs|注册节点、端口、Stencil ≈50 行|3-5分|
+|新建节点数据|新建 PlayEffectNode : INode|1个 .cs|字段 EffectPrefab, WaitTime + Port 声明	≈ 30行|2分|
+|新建运行时节点|新建 RuntimePlayEffect : RuntimeNode|1个 .cs|持有数据 + 协程逻辑 ≈ 30行|2分|
+|新建解释器/编译器|在 Interpreter 或 CodeGen 里加 case PlayEffectNode:|1个 .cs|switch-case + 执行逻辑 ≈ 20行|2分|
+|新建 UI（可选）|若要自定义 Inspector，写 PlayEffectInspector|0-1个 .cs|UI Toolkit 代码|1-3分|
+|使用|打开 Graph Window ▸ 添加 PlayEffect ▸ 拖预制体 ▸ 连线|0个 .cs|纯可视化|30秒|
+|总耗时||4-6个 .cs|纯可视化 ≈130-180 行|≈ 10-15分|
+
+**✅ 对比总结**
+|维度|XGraph|UGT|
 |:-:|:-:|:-:|
-|描述|把某个 Wait 节点从 3 秒改成 5 秒，策划自己改|同左|
-|步骤|双击 .asset → 找到 Wait 节点 → 把 3 改成 5 → <br>Ctrl+S → 运行即生效|必须在 Graph 窗口里改|
-|结果|数值就是节点字段，零代码改动|需要程序重新发版|
+|新增节点文件数| 1-2 个|4-6 个|
+|核心代码行数| 20-35 行|130-180 行|
+|心智模型| “节点即逻辑”|“节点 + 模型 + 解释器 + UI”|
+|策划能否独立改参数|直接改字段|取决于你把数值放节点还是解释器|
+|热更新（仅调数值）|改字段即生效|可能需重编解释器|
+|总耗时| ≈ 1-2 分钟|≈ 10-15 分钟|
+
+- #### 对于高度垂直、频繁迭代的业务（关卡、剧情、技能、AI），XGraph 的“节点即逻辑”设计把新增成本压到最低；
+- #### UGT 的优势在跨领域复用与极致性能，但单点需求的落地速度远不及 XGraph
 
 ### 📦 节点概览
 ---
