@@ -95,6 +95,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<VNode_Base> OnUnSelectedNode;
         /// <summary>
+        /// 视觉节点标题图标
+        /// </summary>
+        public Label TitleIconLabel;
+        /// <summary>
         /// 视觉节点图标
         /// </summary>
         public Label IconLabel;
@@ -102,6 +106,9 @@ namespace SevenStrikeModules.XGraph
         /// 指定节点图标
         /// </summary>
         public string icon;
+
+        public Texture2D tex_logo_dir_sequential;
+        public Texture2D tex_logo_dir_concurrent;
 
         #region 端口
         /// <summary>
@@ -138,6 +145,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="data"></param>
         public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
+            tex_logo_dir_sequential = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
+            tex_logo_dir_concurrent = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/concurrent.png");
+
             // 指定GraphView 组件
             this.graphView = graphView;
 
@@ -306,7 +316,23 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Top()
         {
+            VisualElement divider = topContainer.Q<VisualElement>("divider");
+            divider.style.borderRightWidth = 0;
+            IconLabel = new Label("");
+            IconLabel.AddToClassList("Seperate_Icon");
+            CheckExecutionModel();
 
+            #region 应用配置文件的颜色到节点的标识颜色
+            graphView.ThemesList.Node.ForEach(colorData =>
+            {
+                if (colorData.solution == ActionNode.themeSolution)
+                {
+                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
+                }
+            });
+            #endregion
+
+            divider.Add(IconLabel);
         }
 
         /// <summary>
@@ -322,15 +348,15 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Title()
         {
-            IconLabel = new Label("");
-            IconLabel.AddToClassList("Title_Icon");
-            IconLabel.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
+            TitleIconLabel = new Label("");
+            TitleIconLabel.AddToClassList("Title_Icon");
+            TitleIconLabel.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
             // 应用配置文件的颜色到节点的标识颜色
             graphView.ThemesList.Node.ForEach(colorData =>
             {
                 if (colorData.solution == ActionNode.themeSolution)
                 {
-                    IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
+                    TitleIconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
                 }
             });
 
@@ -352,7 +378,7 @@ namespace SevenStrikeModules.XGraph
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
-            AppendElement(GraphNodeContainerType.TitleContainer, IconLabel);
+            AppendElement(GraphNodeContainerType.TitleContainer, TitleIconLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, input_title);
             AppendElement(GraphNodeContainerType.TitleContainer, element);
         }
@@ -444,6 +470,30 @@ namespace SevenStrikeModules.XGraph
                     RefreshExpandedState();
                     break;
             }
+        }
+        /// <summary>
+        /// 执行模式
+        /// </summary>
+        public void CheckExecutionModel()
+        {
+            if (ActionNode.isConcurrentExecution)
+                SetConcurrent();
+            else
+                SetSequential();
+        }
+        /// <summary>
+        /// 设置为并发模式
+        /// </summary>
+        public void SetConcurrent()
+        {
+            IconLabel.style.backgroundImage = tex_logo_dir_concurrent;
+        }
+        /// <summary>
+        /// 设置为顺序模式
+        /// </summary>
+        public void SetSequential()
+        {
+            IconLabel.style.backgroundImage = tex_logo_dir_sequential;
         }
         #endregion
     }

@@ -40,6 +40,15 @@
      -unity-text-align: middle-left;
 }
 
+.Seperate_Icon
+{
+     left: -9px;
+     top: -2px;
+     height: 18px;
+     width: 18px;
+     -unity-text-align: middle-center;
+}
+
 .Extension_Label
 {
      color: darkgrey;
@@ -115,8 +124,8 @@
      display: flex;
      height: 10px;
      top: 40%;
-     background-color: rgba(255,255,255, 0.2);
-     border-right-color: rgba(255,255,255, 0.2);
+     background-color: rgba(255,255,255, 0);
+     border-right-color: rgba(255,255,255, 0);
 }
 
 #contents > #top > #output

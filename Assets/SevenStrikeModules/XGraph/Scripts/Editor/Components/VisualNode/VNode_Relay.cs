@@ -7,7 +7,6 @@ namespace SevenStrikeModules.XGraph
 
     public class VNode_Relay : VNode_Base
     {
-        Label lab;
         public Texture2D tex_logo_connected;
         public Texture2D tex_logo_disconnected;
 
@@ -89,19 +88,7 @@ namespace SevenStrikeModules.XGraph
             IconLabel.AddToClassList("Title_Icon");
             IconLabel.style.backgroundImage = tex_logo_connected;
 
-            #region 应用配置文件的颜色到节点的标识颜色
-            //graphView.ThemesList.Node.ForEach(colorData =>
-            //{
-            //    if (colorData.solution == ActionNode.themeSolution)
-            //    {
-            //        IconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
-            //    }
-            //});
-            #endregion
-
             divider.Add(IconLabel);
-
-            base.Draw_Top();
         }
         #endregion
     }

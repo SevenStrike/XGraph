@@ -12,7 +12,6 @@ namespace SevenStrikeModules.XGraph
 
     public partial class xg_GraphView
     {
-        Color sd;
         /// <summary>
         /// 实现 GraphView 视图内的鼠标右键上下文菜单
         /// </summary>
@@ -76,7 +75,7 @@ namespace SevenStrikeModules.XGraph
                                 node.ActionNode.themeColor = pickedColor;
 
                                 // 改变图标颜色
-                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                node.TitleIconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
 
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
@@ -132,6 +131,9 @@ namespace SevenStrikeModules.XGraph
                                 // 改变图标颜色
                                 node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
 
+                                // 改变图标颜色
+                                node.TitleIconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
                                 {
@@ -163,6 +165,32 @@ namespace SevenStrikeModules.XGraph
                         }
                     });
                 }
+
+                // 执行模式切换
+                evt.menu.AppendAction($"E 执行模式/S 顺序", (action) =>
+                {
+                    if (CurrentSelectedNodes.Count > 0)
+                    {
+                        for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                        {
+                            VNode_Base node = CurrentSelectedNodes[s];
+                            node.ActionNode.isConcurrentExecution = false;
+                            node.CheckExecutionModel();
+                        }
+                    }
+                });
+                evt.menu.AppendAction($"E 执行模式/C 并发", (action) =>
+                {
+                    if (CurrentSelectedNodes.Count > 0)
+                    {
+                        for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                        {
+                            VNode_Base node = CurrentSelectedNodes[s];
+                            node.ActionNode.isConcurrentExecution = true;
+                            node.CheckExecutionModel();
+                        }
+                    }
+                });
 
                 isInGraphNode = true;
                 evt.menu.AppendSeparator();

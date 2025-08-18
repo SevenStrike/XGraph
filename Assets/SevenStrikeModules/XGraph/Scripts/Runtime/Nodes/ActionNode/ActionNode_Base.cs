@@ -49,6 +49,10 @@ namespace SevenStrikeModules.XGraph
         /// 行为节点 - 在GraphView里的颜色标记
         /// </summary>
         [SerializeField] public Color themeColor = Color.clear;
+        /// <summary>
+        /// 并发执行开关
+        /// </summary>
+        [SerializeField] public bool isConcurrentExecution = false;
 
         /// <summary>
         /// 行为执行方法
