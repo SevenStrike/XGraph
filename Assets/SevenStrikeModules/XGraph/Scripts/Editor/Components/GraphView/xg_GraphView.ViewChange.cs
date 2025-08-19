@@ -125,6 +125,7 @@ namespace SevenStrikeModules.XGraph
                 VNode_Relay relay_child = edge.input.node as VNode_Relay;
                 if (relay_child != null)
                 {
+                    Undo.RecordObject(relay_child.ActionNode, "Remove RelayConnector");
                     relay_child.Disconnected();
                 }
             }

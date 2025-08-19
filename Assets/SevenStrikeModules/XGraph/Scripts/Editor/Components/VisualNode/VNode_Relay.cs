@@ -7,14 +7,12 @@ namespace SevenStrikeModules.XGraph
 
     public class VNode_Relay : VNode_Base
     {
-        public Texture2D tex_logo_connected;
         public Texture2D tex_logo_disconnected;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
             base.Initialize(graphView, pos, data);
 
-            tex_logo_connected = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
             tex_logo_disconnected = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/emptyrelay.png");
 
             // 设置节点的容器样式
@@ -46,7 +44,7 @@ namespace SevenStrikeModules.XGraph
 
         public void Connected()
         {
-            IconLabel.style.backgroundImage = tex_logo_connected;
+            CheckExecutionModel();
         }
 
         public void Disconnected()
@@ -86,7 +84,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement divider = topContainer.Q<VisualElement>("divider");
             IconLabel = new Label("");
             IconLabel.AddToClassList("Title_Icon");
-            IconLabel.style.backgroundImage = tex_logo_connected;
+            IconLabel.style.backgroundImage = tex_logo_dir_sequential;
 
             divider.Add(IconLabel);
         }
