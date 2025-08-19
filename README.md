@@ -31,12 +31,21 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 - ScriptableObject 存储：所有节点数据均以 .asset 文件存储，便于版本管理和团队协作
 - 克隆机制（Clone Tree）：编辑时自动创建副本，避免直接修改原始资源，确保数据安全
 - 自动保存视图状态（窗口尺寸、缩放、滚动位置等）
-  
+
+![](Docs/ScriptableObjects.png)
+
 #### - ✅ 灵活的 UI 系统
 - 可拖拽调整的 Inspector 面板（支持吸附到屏幕边缘）
 - 主题系统（Themes）：可自定义节点、编组、背景的配色方案
 - 节点搜索框：支持按类别快速查找并创建节点
-    
+  
+![](Docs/searchbox.png)
+
+#### - ✅ 并行/顺序
+- 行为执行方式支持 并行执行 & 顺序执行
+
+![](Docs/ExecuteMode.png)
+
 #### - ✅ 撤销/重做
 - 深度集成 Unity 的 Undo 系统，支持节点移动、连线、删除等操作的撤销与恢复
   
