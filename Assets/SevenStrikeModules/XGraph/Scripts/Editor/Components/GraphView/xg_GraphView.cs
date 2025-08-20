@@ -321,7 +321,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 获取鼠标位置
         /// </summary>
-        /// <param h_name="screenMousePosition"></param>
+        /// <param h_name="screenMousePosition">asdsadasdsad</param>
         /// <returns></returns>
         public Vector2 GetLocalMousePosition(Vector2 screenMousePosition)
         {
@@ -330,7 +330,6 @@ namespace SevenStrikeModules.XGraph
 
             // 将光标在当前窗口内的坐标转换为光标在节点视图内的坐标
             Vector2 local_mouse_pos = contentViewContainer.WorldToLocal(window_mouse_pos);
-
             return local_mouse_pos;
         }
         /// <summary>

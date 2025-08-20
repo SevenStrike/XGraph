@@ -5,6 +5,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.VersionControl;
 #endif
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -148,7 +149,30 @@ namespace SevenStrikeModules.XGraph
 #endif
     }
 
-    [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionTree")]
+    [System.Serializable]
+    public class BlackboardVariable
+    {
+        public string name;
+        public BlackboardVarType type;
+        public string stringValue;
+        public float floatValue;
+        public int intValue;
+        public bool boolValue;
+        public Vector2 vector2Value;
+        public Vector3 vector3Value;
+        public Vector4 vector4Value;
+        public UnityEngine.Object objectValue;
+    }
+
+    /// <summary>
+    /// 黑板值类型
+    /// </summary>
+    public enum BlackboardVarType
+    {
+        String, Float, Int, Bool, Vector2, Vector3, Vector4, Object
+    }
+
+    [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionGraphAsset")]
     public class ActionNode_Asset : ScriptableObject
     {
         /// <summary>
@@ -175,6 +199,10 @@ namespace SevenStrikeModules.XGraph
         /// 编组列表
         /// </summary>
         [SerializeField] public List<groupdata> NodeGroupDatas = new List<groupdata>();
+        /// <summary>
+        /// 黑板值列表
+        /// </summary>
+        [SerializeField] public List<BlackboardVariable> BlackboardVariables = new List<BlackboardVariable>();
 
         /// <summary>
         /// 刷新
@@ -735,28 +763,6 @@ namespace SevenStrikeModules.XGraph
         {
             NodeGroupDatas.Remove(data);
         }
-        #endregion
-
-        #region 快速清除子资源
-#if UNITY_EDITOR
-        [MenuItem("Assets/XGraph/清空所有子级资源")]
-        public static void at_ClearChildNodes()
-        {
-            Object obj = Selection.activeObject;
-            if (obj is ActionNode_Asset tree)
-            {
-                tree.Clear();
-            }
-        }
-
-        [MenuItem("Assets/XGraph/复位编辑器窗口配置")]
-        public static void at_ClearGraphWindowConfigs()
-        {
-            EditorPrefs.DeleteKey("XGraph_InspectorViewPosition");
-            EditorPrefs.DeleteKey("XGraph_InspectorViewSize");
-            EditorPrefs.DeleteKey("XGraph_InspectorViewDisplay");
-        }
-#endif
-        #endregion
+        #endregion       
     }
 }

@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEditor;
     using UnityEngine;
 
     public static class util_Dashboard
@@ -135,6 +136,55 @@ namespace SevenStrikeModules.XGraph
             else
                 ColorUtility.TryParseHtmlString("#" + hex, out nowColor);
             return nowColor;
+        }
+
+        [MenuItem("Assets/XGraph/C 清空所有子级资源", priority = 50, validate = true)]
+        private static bool validate_util_ClearChildNodes()
+        {
+            bool invalid = true;
+            // 获取当前选中的对象
+            var objs = Selection.objects;
+            if (objs != null)
+            {
+                foreach (var item in objs)
+                {
+                    if (item is ActionNode_Asset asset)
+                    {
+                        if (asset == null)
+                        {
+                            invalid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            return invalid;
+        }
+        [MenuItem("Assets/XGraph/C 清空所有子级资源")]
+        public static void util_ClearChildNodes()
+        {
+            // 获取当前选中的对象
+            var objs = Selection.objects;
+            if (objs != null && objs.Length > 0)
+            {
+                foreach (var item in objs)
+                {
+                    if (item is ActionNode_Asset asset)
+                    {
+                        asset.Clear();
+                    }
+                }
+            }
+        }
+        [MenuItem("Assets/XGraph/F 复位编辑器黑板和属性面板配置")]
+        public static void util_ClearGraphWindowConfigs()
+        {
+            EditorPrefs.DeleteKey("XGraph_InspectorViewPosition");
+            EditorPrefs.DeleteKey("XGraph_InspectorViewSize");
+            EditorPrefs.DeleteKey("XGraph_InspectorViewDisplay");
+            EditorPrefs.DeleteKey("XGraph_BlackBoardViewPosition");
+            EditorPrefs.DeleteKey("XGraph_BlackBoardViewSize");
+            EditorPrefs.DeleteKey("XGraph_BlackBoardViewDisplay");
         }
     }
 }

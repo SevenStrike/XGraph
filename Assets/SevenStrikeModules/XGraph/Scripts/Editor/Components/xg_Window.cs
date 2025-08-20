@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEngine;
@@ -62,6 +63,14 @@
         /// 移动式属性视图容器组件
         /// </summary>
         internal VisualElement xw_InspectorView_Container;
+        /// <summary>
+        /// InspectorView 属性视图组件（移动式）
+        /// </summary>
+        internal xg_BlackBoardView xw_BlackBoardView;
+        /// <summary>
+        /// 黑板视图容器组件
+        /// </summary>
+        internal VisualElement xw_BlackBoardView_Container;
         #endregion
 
         #region 控件
@@ -70,9 +79,17 @@
         /// </summary>
         internal Label xw_label_InspectorView_Container_Title;
         /// <summary>
+        ///  xw_graphView 控件 - 黑板视图容器组件的标题
+        /// </summary>
+        internal Label xw_label_BlackBoardView_Container_Title;
+        /// <summary>
         /// 用于显示和隐藏移动式属性视图容器组件
         /// </summary>
         internal Toggle xw_toggle_InspectorViewDisplay;
+        /// <summary>
+        /// 用于显示和隐藏黑板视图容器组件
+        /// </summary>
+        internal Toggle xw_toggle_BlackBoardViewDisplay;
         /// <summary>
         /// 用于显示和隐藏节点的颜色标记
         /// </summary>
@@ -124,6 +141,8 @@
         /// GraphView窗口图标
         /// </summary>
         private Texture2D xw_graph_icon = null;
+        private Vector2 dragOffset_InspectorView;
+        private Vector2 dragOffset_BlackBoard;
         #endregion
 
         #region 委托
@@ -183,23 +202,39 @@
 
                 #region 移动式属性面板的状态恢复
                 // 获取最后一次的移动式属性面板开关状态
-                bool remote_toggle = wnd.LoadInspectorView_Display("XGraph_InspectorViewDisplay");
+                bool inspector_view_toggle = wnd.Element_State_Load("XGraph_InspectorViewDisplay");
                 // 设置 InspectorView Remote 容器可见性
-                wnd.xw_Set_InspectorViewRemoteVisibility(remote_toggle);
+                wnd.Element_Visibility_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
                 // 设置移动式属性视图容器可见性按钮开关状态
-                wnd.xw_toggle_InspectorViewDisplay.value = remote_toggle;
+                wnd.xw_toggle_InspectorViewDisplay.value = inspector_view_toggle;
                 EditorApplication.delayCall += () =>
                 {
-                    if (remote_toggle)
+                    if (inspector_view_toggle)
                     {
                         wnd.xw_InspectorView.UpdateSelection(wnd.CloneTree);
                     }
                 };
                 #endregion
 
+                #region 黑板面板的状态恢复
+                // 获取最后一次的黑板面板开关状态
+                bool blackboard_view_toggle = wnd.Element_State_Load("XGraph_BlackBoardViewDisplay");
+                // 设置 BlackBoardView Remote 容器可见性
+                wnd.Element_Visibility_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
+                // 设置黑板视图容器可见性按钮开关状态
+                wnd.xw_toggle_BlackBoardViewDisplay.value = blackboard_view_toggle;
+                EditorApplication.delayCall += () =>
+                {
+                    if (blackboard_view_toggle)
+                    {
+                        wnd.xw_BlackBoardView.UpdateSelection(wnd.CloneTree);
+                    }
+                };
+                #endregion
+
                 #region Node节点颜色标记的状态恢复
                 // 获取最后一次的Node节点颜色标记状态
-                bool nodeColorDisplayState = wnd.LoadNodeColorDisplay("XGraph_DisplayNodeColor");
+                bool nodeColorDisplayState = wnd.Element_State_Load("XGraph_DisplayNodeColor");
                 // 设置Node节点颜色标记按钮开关状态
                 wnd.xw_toggle_DisplayNodeColor.value = nodeColorDisplayState;
                 EditorApplication.delayCall += () =>
@@ -209,8 +244,9 @@
                 };
                 #endregion
 
-                // 加载 InspectorView 面板标题文字
-                wnd.Set_InspectorView_Container_Title($"{wnd.SourceTree.name} 行为根节点属性");
+                // 加载 View 面板标题文字
+                wnd.Element_Label_Set(wnd.xw_label_InspectorView_Container_Title, $"{wnd.SourceTree.name} 行为根节点属性");
+                wnd.Element_Label_Set(wnd.xw_label_BlackBoardView_Container_Title, $"{wnd.SourceTree.name} 黑板属性");
 
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
                 EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
@@ -258,7 +294,7 @@
             lab_graphIcon.style.unityBackgroundImageTintColor = util_Dashboard.Theme_Primary;
             #endregion
 
-            #region 找到并获取 GraphView | InspectorView | SplitView 组件
+            #region 找到并获取 GraphView | InspectorView | BlackBoardView | SplitView 组件
             // 在布局中找到 xw_graphView 组件
             xw_graphView = root.Q<xg_GraphView>();
             xw_graphView.gv_GaphWindow = this;
@@ -275,41 +311,66 @@
             xw_graphView.OnRemoveSelectionNodes = OnRemovedSelectionNodesView;
             #endregion
 
-            #region InspectorView 初始化
+            #region BlackBoardView ---------- 初始化
+            // 在布局中找到 InspectorView 容器组件
+            xw_BlackBoardView_Container = root.Q<VisualElement>("BlackBoardView_Container");
+            // 设置 InspectorView 容器组件最小尺寸
+            xg_ResizableElement ele_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
+            ele_blackboard.SetMinSize(new Vector2(250, 320));
+
+            // 加载 BlackBoardView 面板位置
+            Element_Position_Load("XGraph_BlackBoardViewPosition", ele_blackboard, "左上");
+            // 加载 BlackBoardView 面板尺寸
+            Element_Size_Load("XGraph_BlackBoardViewSize", ele_blackboard);
+
+            // 在布局中找到 BlackBoardView 组件
+            xw_BlackBoardView = root.Q<xg_BlackBoardView>("BlackBoardView");
+            xw_BlackBoardView.BringToFront();
+
+            // 添加拖动支持
+            Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
+
+            // 在布局中找到 BlackBoardView Remote 容器标题组件
+            xw_label_BlackBoardView_Container_Title = root.Q<Label>("BlackBoardView_Container_Title");
+            xw_label_BlackBoardView_Container_Title.SendToBack();
+            #endregion
+
+            #region InspectorView ---------- 初始化
             // 在布局中找到 InspectorView 容器组件
             xw_InspectorView_Container = root.Q<VisualElement>("InspectorView_Container");
 
             // 设置 InspectorView 容器组件最小尺寸
-            xg_ResizableElement reselement = (xg_ResizableElement)xw_InspectorView_Container;
-            reselement.SetMinSize(new Vector2(250, 320));
+            xg_ResizableElement ele_inspector = (xg_ResizableElement)xw_InspectorView_Container;
+            ele_inspector.SetMinSize(new Vector2(250, 320));
 
             // 加载 InspectorView 面板位置
-            LoadInspectorView_Position("XGraph_InspectorViewPosition", reselement);
+            Element_Position_Load("XGraph_InspectorViewPosition", ele_inspector, "右上");
 
             // 加载 InspectorView 面板尺寸
-            LoadInspectorView_Size("XGraph_InspectorViewSize", reselement);
+            Element_Size_Load("XGraph_InspectorViewSize", ele_inspector);
 
             // 在布局中找到 InspectorView 组件
             xw_InspectorView = root.Q<xg_InspectorView>("InspectorView");
             xw_InspectorView.SendToBack();
 
             // 添加拖动支持
-            RegisterDrag(reselement, reselement, "XGraph_InspectorViewPosition", "XGraph_InspectorViewSize");
+            Element_Drag(ele_inspector, ele_inspector, "XGraph_InspectorViewPosition", "XGraph_InspectorViewSize", dragOffset_InspectorView);
 
             // 在布局中找到 InspectorView Remote 容器标题组件
             xw_label_InspectorView_Container_Title = root.Q<Label>("InspectorView_Container_Title");
             xw_label_InspectorView_Container_Title.SendToBack();
             #endregion
 
+            #endregion
+
             EditorApplication.delayCall += () =>
             {
                 EditorApplication.delayCall += () =>
                 {
-                    reselement.SnapToNearestQuadrant();
+                    ele_inspector.SnapToNearestQuadrant();
+                    ele_blackboard.SnapToNearestQuadrant();
                 };
             };
-
-            #endregion
 
             #region 找到并获取 GraphTitle | GraphMarkText | GraphNodeIntro 文字组件
             xw_label_graphTitle = root.Q<Label>("graphTitle");
@@ -330,6 +391,8 @@
             xw_btn_FrameAll.clicked += xw_btn_FrameAll_clicked;
             xw_toggle_InspectorViewDisplay = root.Q<Toggle>("toggle_InspectorViewDisplay");
             xw_toggle_InspectorViewDisplay.RegisterValueChangedCallback(xw_toggle_inspectorDisplay_changed);
+            xw_toggle_BlackBoardViewDisplay = root.Q<Toggle>("toggle_BlackBoardViewDisplay");
+            xw_toggle_BlackBoardViewDisplay.RegisterValueChangedCallback(xw_toggle_BlackBoardDisplay_changed);
             xw_toggle_DisplayNodeColor = root.Q<Toggle>("toggle_DisplayNodeColor");
             xw_toggle_DisplayNodeColor.RegisterValueChangedCallback(xw_toggle_DisplayNodeColor_changed);
             #endregion
@@ -444,40 +507,55 @@
 
             #region 移动式属性面板的状态恢复
             // 获取最后一次的移动式属性面板开关状态
-            bool remote_toggle = LoadInspectorView_Display("XGraph_InspectorViewDisplay");
+            bool remote_toggle = Element_State_Load("XGraph_InspectorViewDisplay");
             // 设置 InspectorView Remote 容器可见性
-            xw_Set_InspectorViewRemoteVisibility(remote_toggle);
+            Element_Visibility_Set(xw_InspectorView_Container, remote_toggle);
             // 设置移动式属性视图容器可见性按钮开关状态
             xw_toggle_InspectorViewDisplay.value = remote_toggle;
             if (remote_toggle)
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
                 xw_InspectorView.UpdateSelection(tree_clone);
+
+            xg_ResizableElement element_inspector = (xg_ResizableElement)xw_InspectorView_Container;
+            // 加载 RemoteInspector 面板位置
+            Element_Position_Load("XGraph_InspectorViewPosition", element_inspector, "右上");
+            // 加载 RemoteInspector 面板尺寸
+            Element_Size_Load("XGraph_InspectorViewSize", element_inspector);
             #endregion
 
+            #region 黑板面板的状态恢复
+            // 获取最后一次的移动式属性面板开关状态
+            bool blackboard_toggle = Element_State_Load("XGraph_BlackBoardViewDisplay");
+            // 设置 InspectorView Remote 容器可见性
+            Element_Visibility_Set(xw_BlackBoardView_Container, blackboard_toggle);
+            // 设置移动式属性视图容器可见性按钮开关状态
+            xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
+            if (blackboard_toggle)
+                // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
+                xw_BlackBoardView.UpdateSelection(tree_clone);
 
-            // 加载 RemoteInspector 面板标题文字
-            Set_InspectorView_Container_Title($"{SourceTree.name} 行为根节点属性");
-
-            xg_ResizableElement reselement = (xg_ResizableElement)xw_InspectorView_Container;
-
+            xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
             // 加载 RemoteInspector 面板位置
-            LoadInspectorView_Position("XGraph_InspectorViewPosition", reselement);
-
+            Element_Position_Load("XGraph_BlackBoardViewPosition", element_blackboard, "左上");
             // 加载 RemoteInspector 面板尺寸
+            Element_Size_Load("XGraph_BlackBoardViewSize", element_blackboard);
+            #endregion
 
-            LoadInspectorView_Size("XGraph_InspectorViewSize", reselement);
+            // 加载 Inspector 面板标题文字
+            Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
+            // 加载 BlackBoard 面板标题文字
+            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 黑板属性");
 
             // 重新加载行为树资源
             SourceTree = tree_source;
             CloneTree = tree_clone;
-
 
             // 延迟重建可视化行为树结构
             EditorApplication.delayCall += () =>
             {
                 EditorApplication.delayCall += () =>
                 {
-                    reselement.SnapToNearestQuadrant();
+                    element_inspector.SnapToNearestQuadrant();
                     xw_graphView?.Restructure_VisualNodes(CloneTree);
 
                     /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
@@ -485,7 +563,7 @@
                      */
                     #region Node节点颜色标记的状态恢复
                     // 获取最后一次的移动式属性面板开关状态
-                    bool nodeColor_toggle = LoadNodeColorDisplay("XGraph_DisplayNodeColor");
+                    bool nodeColor_toggle = Element_State_Load("XGraph_DisplayNodeColor");
                     // 设置移动式属性视图容器可见性按钮开关状态
                     xw_toggle_DisplayNodeColor.value = nodeColor_toggle;
                     #endregion
@@ -513,11 +591,12 @@
             // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
             xw_InspectorView.UpdateSelection(nodeview);
 
-            // 加载 RemoteInspector 面板标题文字
-            Set_InspectorView_Container_Title($"节点属性 - {nodeview.ActionNode.identifyName}");
-
-            xw_Set_CurrentGraphNodeIntro(nodeview.ActionNode.GetInfo());
-            xw_Set_CurrentGraphNodePathText(nodeview.ActionNode.GetPath());
+            // 加载 Inspector 面板标题文字
+            Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - {nodeview.ActionNode.identifyName}");
+            // 显示当前选中的节点的类型信息
+            Element_Label_Set(xw_label_graph_CurrentNodeName, nodeview.ActionNode.GetInfo());
+            // 显示当前选中的节点的挂载资源路径
+            Element_Label_Set(xw_label_graph_CurrentNodePath, nodeview.ActionNode.GetPath());
             xw_isUnSelectedNode = false;
         }
         /// <summary>
@@ -540,11 +619,12 @@
                 // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
-                // 加载 RemoteInspector 面板标题文字
-                Set_InspectorView_Container_Title($"节点属性 - {nodeviews[0].ActionNode.identifyName}");
-
-                xw_Set_CurrentGraphNodeIntro(nodeviews[0].ActionNode.GetInfo());
-                xw_Set_CurrentGraphNodePathText(nodeviews[0].ActionNode.GetPath());
+                // 加载 Inspector 面板标题文字
+                Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - {nodeviews[0].ActionNode.identifyName}");
+                // 显示当前选中的节点的类型信息
+                Element_Label_Set(xw_label_graph_CurrentNodeName, nodeviews[0].ActionNode.GetInfo());
+                // 显示当前选中的节点的挂载资源路径
+                Element_Label_Set(xw_label_graph_CurrentNodePath, nodeviews[0].ActionNode.GetPath());
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -556,11 +636,12 @@
                 // 清空 Inspector 视图
                 xw_InspectorView.ClearInspector();
 
-                // 加载 RemoteInspector 面板标题文字
-                Set_InspectorView_Container_Title($"节点属性 - 多选状态");
-
-                xw_Set_CurrentGraphNodeIntro("-");
-                xw_Set_CurrentGraphNodePathText("-");
+                // 加载 Inspector 面板标题文字
+                Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - 多选状态");
+                // 当前选中的节点的类型信息 - 混合状态
+                Element_Label_Set(xw_label_graph_CurrentNodeName, "-");
+                // 当前选中的节点的挂载资源路径 - 混合状态
+                Element_Label_Set(xw_label_graph_CurrentNodePath, "-");
             }
         }
         /// <summary>
@@ -591,13 +672,15 @@
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
                 xw_InspectorView.UpdateSelection(CloneTree);
 
-                // 加载 RemoteInspector 面板标题文字
-                Set_InspectorView_Container_Title($"{SourceTree.name} 行为根节点属性");
+                // 加载 Inspector 面板标题文字
+                Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
 
                 xw_currentSelectedVisualNode = null;
 
-                xw_Set_CurrentGraphNodeIntro(null);
-                xw_Set_CurrentGraphNodePathText(null);
+                // 节点的类型信息 - 清空
+                Element_Label_Set(xw_label_graph_CurrentNodeName, null);
+                // 节点的挂载资源路径 - 清空
+                Element_Label_Set(xw_label_graph_CurrentNodePath, null);
             }
         }
         #endregion
@@ -640,7 +723,7 @@
             bool state = evt.newValue;
 
             // 设置 InspectorView 容器可见性
-            xw_Set_InspectorViewRemoteVisibility(state);
+            Element_Visibility_Set(xw_InspectorView_Container, state);
 
             // 如果打开开关的话，就让 InspectorView 更新节点属性显示（前提是当前存在节点被选中）
             xw_InspectorView.Clear();
@@ -653,9 +736,29 @@
             }
 
             // 记录 InspectorView 开关状态到行为树根节点变量
-            SaveInspectorView_Display("XGraph_InspectorViewDisplay");
+            Element_State_Save("XGraph_InspectorViewDisplay", xw_toggle_InspectorViewDisplay.value);
         }
+        /// <summary>
+        /// toggle_BlackBoardDisplay 开关改变状态时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void xw_toggle_BlackBoardDisplay_changed(ChangeEvent<bool> evt)
+        {
+            bool state = evt.newValue;
 
+            // 设置 InspectorView 容器可见性
+            Element_Visibility_Set(xw_BlackBoardView_Container, state);
+
+            // 如果打开开关的话，就让 InspectorView 更新节点属性显示（前提是当前存在节点被选中）
+            xw_BlackBoardView.Clear();
+            if (state)
+            {
+                xw_BlackBoardView.UpdateSelection(CloneTree);
+            }
+
+            // 记录 BlackBoardView 开关状态到行为树根节点变量
+            Element_State_Save("XGraph_BlackBoardViewDisplay", xw_toggle_BlackBoardViewDisplay.value);
+        }
         /// <summary>
         /// toggle_DisplayNodeColor 开关改变状态时
         /// </summary>
@@ -668,7 +771,7 @@
                 OnNodeColorToggleChanged(state);
 
             // 记录 InspectorView 开关状态到行为树根节点变量
-            SaveNodeColorDisplay("XGraph_DisplayNodeColor");
+            Element_State_Save("XGraph_DisplayNodeColor", xw_toggle_DisplayNodeColor.value);
         }
         #endregion
 
@@ -714,8 +817,10 @@
             SourceTree = tree;
             CloneTree = tree.Clone();
 
-            // 加载 RemoteInspector 面板标题文字
-            Set_InspectorView_Container_Title($"{SourceTree.name} 行为根节点属性");
+            // 加载 Inspector 面板标题文字
+            Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
+            // 加载 BlackBoard 面板标题文字
+            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 黑板属性");
 
             EditorApplication.delayCall += () =>
             {
@@ -739,15 +844,36 @@
         }
         #endregion
 
-        #region InspectorView 面板行为逻辑
-        private Vector2 dragOffset;
+        #region 窗口变化回调
+        /// <summary>
+        /// 当窗口尺寸变化时
+        /// </summary>
+        private void OnWindowResizingUpdate()
+        {
+            // 检测窗口尺寸变化
+            if (position.size != lastWindowSize)
+            {
+                lastWindowSize = position.size;
+                isWindowResizing = true;
 
+                // 保存新位置
+                Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
+                Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
+            }
+            else if (isWindowResizing)
+            {
+                isWindowResizing = false;
+            }
+        }
+        #endregion
+
+        #region 元素控制
         /// <summary>
         /// 拖动目标VisualElement方法
         /// </summary>
         /// <param h_name="sourceNode"></param>
         /// <param h_name="handle"></param>
-        private void RegisterDrag(VisualElement target, VisualElement handle, string saveKey_pos, string saveKey_size)
+        private void Element_Drag(VisualElement target, VisualElement handle, string saveKey_pos, string saveKey_size, Vector2 offset)
         {
             // 鼠标按下
             handle.RegisterCallback<PointerDownEvent>(evt =>
@@ -756,7 +882,7 @@
                 {
                     // ✅ 关键：用当前容器左上角相对于鼠标点击位置的偏移
                     Vector2 mouseInTarget = target.WorldToLocal(evt.position);
-                    dragOffset = mouseInTarget;
+                    offset = mouseInTarget;
                     target.CapturePointer(evt.pointerId);
                     evt.StopPropagation();
                 }
@@ -773,7 +899,7 @@
                     Vector2 mouseInParent = parent.WorldToLocal(evt.position);
 
                     // ✅ 计算目标左上角的新位置
-                    Vector2 newPos = mouseInParent - dragOffset;
+                    Vector2 newPos = mouseInParent - offset;
 
                     // ✅ 限制边界（防止拖出父容器）
                     newPos.x = Mathf.Clamp(newPos.x, 0, parent.layout.width - target.layout.width);
@@ -794,9 +920,62 @@
             });
         }
         /// <summary>
-        /// 记录元素位置和定位方式
+        /// 控制元素 - 可见性
         /// </summary>
-        private void SaveInspectorView_Position(VisualElement element, string key)
+        /// <param name="state"></param>
+        private void Element_Visibility_Set(VisualElement element, bool state)
+        {
+            // 如果为 True 则将 InspectorView Remote 容器的可见性设为：Visiblity，即：可见，否则就是不可见：Hidden
+            if (state)
+            {
+                element.style.visibility = Visibility.Visible;
+            }
+            else
+            {
+                element.style.visibility = Visibility.Hidden;
+            }
+        }
+        /// <summary>
+        /// 控件元素 - 文字设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="text"></param>
+        public void Element_Label_Set(Label label, string text)
+        {
+            label.text = text;
+        }
+        /// <summary>
+        /// 控制元素 - 读取Prefs并控制开关状态
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private bool Element_State_Load(string key)
+        {
+            if (EditorPrefs.HasKey(key))
+            {
+                var state = EditorPrefs.GetBool(key);
+                return state;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        ///  控制元素 - 记录开关状态到Prefs
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        private void Element_State_Save(string key, bool value)
+        {
+            EditorPrefs.SetBool(key, value);
+        }
+        /// <summary>
+        ///  控制元素 - 记录位置坐标信息到Prefs
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="key"></param>
+        private void Element_Position_Save(VisualElement element, string key)
         {
             // 创建一个位置数据结构，记录所有可能的定位值
             var posData = new PositionData
@@ -815,9 +994,11 @@
             EditorPrefs.SetString(key, json);
         }
         /// <summary>
-        /// 读取元素位置并根据记录的定位方式恢复
+        ///  控制元素 - 读取Prefs到位置坐标
         /// </summary>
-        public void LoadInspectorView_Position(string key, VisualElement element)
+        /// <param name="key"></param>
+        /// <param name="element"></param>
+        public void Element_Position_Load(string key, VisualElement element, string DefaultAnchor)
         {
             if (EditorPrefs.HasKey(key))
             {
@@ -856,20 +1037,46 @@
             }
             else
             {
-                // 默认右上角
-                element.style.left = StyleKeyword.Auto;
-                element.style.right = 20;  // 右边距
-                element.style.top = 40;    // 顶部距离
-                element.style.bottom = StyleKeyword.Auto;
+                if (DefaultAnchor == "右上")
+                {
+                    // 默认右上角
+                    element.style.left = StyleKeyword.Auto;
+                    element.style.right = 15;
+                    element.style.top = 10;
+                    element.style.bottom = StyleKeyword.Auto;
+                }
+                if (DefaultAnchor == "左上")
+                {
+                    // 默认左上角
+                    element.style.left = 15;
+                    element.style.right = StyleKeyword.Auto;
+                    element.style.top = 10;
+                    element.style.bottom = StyleKeyword.Auto;
+                }
+                if (DefaultAnchor == "左下")
+                {
+                    // 默认左下角
+                    element.style.left = 15;
+                    element.style.right = StyleKeyword.Auto;
+                    element.style.top = StyleKeyword.Auto;
+                    element.style.bottom = 10;
+                }
+                if (DefaultAnchor == "右下")
+                {
+                    // 默认右下角
+                    element.style.left = StyleKeyword.Auto;
+                    element.style.right = 15;
+                    element.style.top = StyleKeyword.Auto;
+                    element.style.bottom = 10;
+                }
             }
         }
-
         /// <summary>
-        /// 记录元素尺寸
+        ///  控制元素 - 记录尺寸信息到Prefs
         /// </summary>
-        /// <param h_name="element"></param>
-        /// <param h_name="key"></param>
-        private void SaveInspectorView_Size(VisualElement element, string key)
+        /// <param name="element"></param>
+        /// <param name="key"></param>
+        private void Element_Size_Save(VisualElement element, string key)
         {
             var pos = new Vector2(
                 element.resolvedStyle.width,
@@ -878,11 +1085,11 @@
             EditorPrefs.SetString(key, JsonUtility.ToJson(pos));
         }
         /// <summary>
-        /// 读取元素尺寸
+        ///  控制元素 - 读取Prefs到尺寸
         /// </summary>
-        /// <param h_name="key"></param>
-        /// <param h_name="element"></param>
-        public void LoadInspectorView_Size(string key, VisualElement element)
+        /// <param name="key"></param>
+        /// <param name="element"></param>
+        public void Element_Size_Load(string key, VisualElement element)
         {
             if (EditorPrefs.HasKey(key))
             {
@@ -893,80 +1100,8 @@
             else
             {
                 // 默认右上角
-                element.style.width = 320;
-                element.style.height = 400;
-            }
-        }
-
-        /// <summary>
-        /// 读取InspectorView开关状态
-        /// </summary>
-        /// <param h_name="key"></param>
-        /// <returns></returns>
-        private bool LoadInspectorView_Display(string key)
-        {
-            if (EditorPrefs.HasKey(key))
-            {
-                var state = EditorPrefs.GetBool(key);
-                return state;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        /// <summary>
-        /// 记录InspectorView开关状态
-        /// </summary>
-        /// <param h_name="element"></param>
-        /// <param h_name="key"></param>
-        private void SaveInspectorView_Display(string key)
-        {
-            EditorPrefs.SetBool(key, xw_toggle_InspectorViewDisplay.value);
-        }
-
-        /// <summary>
-        /// 读取NodeColorDisplay开关状态
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        private bool LoadNodeColorDisplay(string key)
-        {
-            if (EditorPrefs.HasKey(key))
-            {
-                var state = EditorPrefs.GetBool(key);
-                return state;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        /// <summary>
-        /// 记录NodeColorDisplay开关状态
-        /// </summary>
-        /// <param name="key"></param>
-        private void SaveNodeColorDisplay(string key)
-        {
-            EditorPrefs.SetBool(key, xw_toggle_DisplayNodeColor.value);
-        }
-
-        /// <summary>
-        /// 当窗口尺寸变化时
-        /// </summary>
-        private void OnWindowResizingUpdate()
-        {
-            // 检测窗口尺寸变化
-            if (position.size != lastWindowSize)
-            {
-                lastWindowSize = position.size;
-                isWindowResizing = true;
-                // 保存新位置
-                SaveInspectorView_Position(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
-            }
-            else if (isWindowResizing)
-            {
-                isWindowResizing = false;
+                element.style.width = 250;
+                element.style.height = 370;
             }
         }
         #endregion
@@ -1007,8 +1142,9 @@
             // 清空GraphView的所有Group
             xw_graphView.Groups_Clear(false);
 
-            // 清空 Inspector 视图
+            // 清空 View 视图
             xw_InspectorView.ClearInspector();
+            xw_BlackBoardView.ClearInspector();
 
             // 2. 根据当前数据重新生成节点
             xw_graphView.Restructure_VisualNodes(CloneTree);
@@ -1019,47 +1155,10 @@
             else
                 xw_InspectorView.UpdateSelection(CloneTree);
 
+            // 3. 刷新 BlackBoard 显示
+            xw_InspectorView.UpdateSelection(CloneTree);
+
             //Debug.Log("执行撤销逻辑");
-        }
-        /// <summary>
-        /// InspectorView Container 标题文字设置
-        /// </summary>
-        /// <param h_name="text"></param>
-        public void Set_InspectorView_Container_Title(string text)
-        {
-            xw_label_InspectorView_Container_Title.text = text;
-        }
-        /// <summary>
-        /// 设置当前选中节点的简要信息展示文字内容
-        /// </summary>
-        /// <param h_name="text"></param>
-        private void xw_Set_CurrentGraphNodeIntro(string text)
-        {
-            xw_label_graph_CurrentNodeName.text = text;
-        }
-        /// <summary>
-        /// 设置当前选中节点的路径文字内容
-        /// </summary>
-        /// <param h_name="text"></param>
-        private void xw_Set_CurrentGraphNodePathText(string text)
-        {
-            xw_label_graph_CurrentNodePath.text = text;
-        }
-        /// <summary>
-        /// 设置 InspectorView Remote 容器可见性
-        /// </summary>
-        /// <param h_name="state"></param>
-        private void xw_Set_InspectorViewRemoteVisibility(bool state)
-        {
-            // 如果为 True 则将 InspectorView Remote 容器的可见性设为：Visiblity，即：可见，否则就是不可见：Hidden
-            if (state)
-            {
-                xw_InspectorView_Container.style.visibility = Visibility.Visible;
-            }
-            else
-            {
-                xw_InspectorView_Container.style.visibility = Visibility.Hidden;
-            }
         }
         /// <summary>
         /// GraphView窗口关闭时的逻辑操作
@@ -1073,10 +1172,16 @@
                 SourceTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
                 SourceTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
             }
-            // 保存 InspectorRemote 面板的位置
-            SaveInspectorView_Position(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
-            // 保存 InspectorRemote 面板的尺寸
-            SaveInspectorView_Size(xw_InspectorView_Container, "XGraph_InspectorViewSize");
+
+            // 保存 InspectorView 面板的位置
+            Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
+            // 保存 InspectorView 面板的尺寸
+            Element_Size_Save(xw_InspectorView_Container, "XGraph_InspectorViewSize");
+
+            // 保存 BlackBoardView 面板的位置
+            Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
+            // 保存 BlackBoardView 面板的尺寸
+            Element_Size_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewSize");
 
             xw_DeleteCloneTreeAsset();
         }
