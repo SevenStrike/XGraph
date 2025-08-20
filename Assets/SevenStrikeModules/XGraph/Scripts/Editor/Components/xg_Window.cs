@@ -247,7 +247,7 @@
 
                 // 加载 View 面板标题文字
                 wnd.Element_Label_Set(wnd.xw_label_InspectorView_Container_Title, $"{wnd.SourceTree.name} 行为根节点属性");
-                wnd.Element_Label_Set(wnd.xw_label_BlackBoardView_Container_Title, $"{wnd.SourceTree.name} 黑板属性");
+                wnd.Element_Label_Set(wnd.xw_label_BlackBoardView_Container_Title, $"{wnd.SourceTree.name} 属性黑板");
 
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
                 EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
@@ -555,7 +555,7 @@
             // 加载 Inspector 面板标题文字
             Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
             // 加载 BlackBoard 面板标题文字
-            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 黑板属性");
+            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 属性黑板");
 
             // 重新加载行为树资源
             SourceTree = tree_source;
@@ -833,7 +833,7 @@
             // 加载 Inspector 面板标题文字
             Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
             // 加载 BlackBoard 面板标题文字
-            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 黑板属性");
+            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 属性黑板");
 
             EditorApplication.delayCall += () =>
             {

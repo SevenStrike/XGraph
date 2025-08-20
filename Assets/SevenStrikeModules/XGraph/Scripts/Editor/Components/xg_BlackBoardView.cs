@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEngine;
     using UnityEngine.UIElements;
 
     /// <summary>
@@ -36,6 +37,12 @@ namespace SevenStrikeModules.XGraph
         /// 按钮添加属性
         /// </summary>
         public Button btn_addparam;
+
+        public xg_BlackBoardView()
+        {
+            var uss_BlackBoardView = util_EditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_BlackBoardView.uss");
+            styleSheets.Add(uss_BlackBoardView);
+        }
 
         /// <summary>
         /// 清空面板内容
