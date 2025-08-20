@@ -17,6 +17,9 @@ namespace SevenStrikeModules.XGraph
 
             On_CreateEdge(graphViewChange);
 
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
+
             return graphViewChange;
         }
 

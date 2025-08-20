@@ -103,12 +103,12 @@ namespace SevenStrikeModules.XGraph
             }
             if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
             {
-                gv_GaphWindow.ActionTree_SaveAndReplace();
+                gv_GraphWindow.ActionTree_SaveAndReplace();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.O && (evt.ctrlKey || evt.commandKey))
             {
-                gv_GaphWindow.ActionTree_Open();
+                gv_GraphWindow.ActionTree_Open();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.G && (evt.ctrlKey || evt.commandKey))
@@ -118,12 +118,12 @@ namespace SevenStrikeModules.XGraph
             }
             if (evt.keyCode == KeyCode.C && ((evt.ctrlKey && evt.shiftKey) || evt.commandKey))
             {
-                gv_GaphWindow.ActionTree_Clear();
+                gv_GraphWindow.ActionTree_Clear();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.Escape)
             {
-                gv_GaphWindow.Close();
+                gv_GraphWindow.Close();
                 evt.StopPropagation();
             }
         }
@@ -133,7 +133,7 @@ namespace SevenStrikeModules.XGraph
         public void Action_Register_NodeColorDisplayer()
         {
             #region 注册XGraphWindow委托
-            gv_GaphWindow.OnNodeColorToggleChanged += Action_On_NodeColorDisplayer_Changed;
+            gv_GraphWindow.OnNodeColorToggleChanged += Action_On_NodeColorDisplayer_Changed;
             #endregion
         }
         /// <summary>
@@ -142,7 +142,7 @@ namespace SevenStrikeModules.XGraph
         public void Action_Unregister_NodeColorDisplayer()
         {
             #region 注册XGraphWindow委托
-            gv_GaphWindow.OnNodeColorToggleChanged -= Action_On_NodeColorDisplayer_Changed;
+            gv_GraphWindow.OnNodeColorToggleChanged -= Action_On_NodeColorDisplayer_Changed;
             #endregion
         }
         /// <summary>

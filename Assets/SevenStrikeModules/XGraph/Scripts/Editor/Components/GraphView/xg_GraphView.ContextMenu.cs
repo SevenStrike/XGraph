@@ -104,7 +104,7 @@ namespace SevenStrikeModules.XGraph
                                     });
                                 }
                                 node.UpdateMarkColor();
-                                if (gv_GaphWindow.xw_toggle_DisplayNodeColor.value)
+                                if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
                                     node.MarkColor_Dislay();
                             }
                         }
@@ -159,7 +159,7 @@ namespace SevenStrikeModules.XGraph
                                     });
                                 }
                                 node.UpdateMarkColor();
-                                if (gv_GaphWindow.xw_toggle_DisplayNodeColor.value)
+                                if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
                                     node.MarkColor_Dislay();
                             }
                         }
@@ -226,7 +226,7 @@ namespace SevenStrikeModules.XGraph
                 #region 节点操作：添加节点
                 evt.menu.AppendAction("A 添加节点", (action) =>
                 {
-                    Vector2 screenMousePosition = action.eventInfo.mousePosition + gv_GaphWindow.position.position;
+                    Vector2 screenMousePosition = action.eventInfo.mousePosition + gv_GraphWindow.position.position;
                     nodeCreationRequest(new NodeCreationContext()
                     {
                         // 将当前鼠标的坐标传递给搜索框的坐标

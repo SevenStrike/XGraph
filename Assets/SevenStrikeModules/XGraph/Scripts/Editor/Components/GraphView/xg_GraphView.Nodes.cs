@@ -26,6 +26,9 @@ namespace SevenStrikeModules.XGraph
             {
                 AddToSelection(node.group);
             }
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
         }
         /// <summary>
         /// 实现视觉节点复制逻辑
@@ -67,6 +70,9 @@ namespace SevenStrikeModules.XGraph
                     Node_MakeStick(sickData.position + new Vector2(50, 20), sickData).Draw();
                 }
             }
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
         }
         /// <summary>
         /// 移除当前选择的所有节点及其相关的连线
@@ -129,6 +135,9 @@ namespace SevenStrikeModules.XGraph
             {
                 RemoveElement(node);
             }
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
         }
         /// <summary>
         /// 创建视觉节点
@@ -165,6 +174,10 @@ namespace SevenStrikeModules.XGraph
             node.RefreshExpandedState();
             node.RefreshPorts();
             #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
+
             return node;
         }
         /// <summary>
@@ -192,6 +205,10 @@ namespace SevenStrikeModules.XGraph
             node.RefreshExpandedState();
             node.RefreshPorts();
             #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
+
             return node;
         }
         /// <summary>
@@ -225,6 +242,9 @@ namespace SevenStrikeModules.XGraph
             relay.OnSelectedNode = OnSelectedNode;
             relay.OnUnSelectedNode = OnUnSelectedNode;
             #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_UpdateBlackBoardInfo();
 
             return relay;
         }

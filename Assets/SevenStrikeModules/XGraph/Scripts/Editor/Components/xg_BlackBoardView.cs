@@ -1,7 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
-    using UnityEditor;
     using UnityEngine.UIElements;
 
     /// <summary>
@@ -10,92 +8,47 @@ namespace SevenStrikeModules.XGraph
     [UxmlElement]
     public partial class xg_BlackBoardView : VisualElement
     {
-        private ListView ListView { get; set; }
-
-
-
         /// <summary>
-        /// 编辑器主体
+        /// params列表
         /// </summary>
-        private Editor editor;
-
+        public ListView ParamsList;
         /// <summary>
-        /// 显示目标节点的属性控件
+        /// 标题容器
         /// </summary>
-        /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(VNode_Base nodeview)
-        {
-            Clear();
-            UnityEngine.Object.DestroyImmediate(editor);
-
-            var target = nodeview.ActionNode;
-            if (target == null) return;
-
-            // 尝试查找是否有自定义 Editor
-            string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
-            if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
-            {
-                editor = Editor.CreateEditor(target, editorType);
-            }
-            else
-            {
-                // 回退到默认编辑器
-                editor = Editor.CreateEditor(target);
-            }
-
-            if (editor != null)
-            {
-                IMGUIContainer container = new IMGUIContainer(() =>
-                {
-                    editor.OnInspectorGUI();
-                });
-                Add(container);
-            }
-        }
-
+        public VisualElement titlecontainer;
         /// <summary>
-        /// 显示目标节点的属性控件
+        /// 头部统计信息容器
         /// </summary>
-        /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(ActionNode_Asset nodesasset)
-        {
-            Clear();
-            UnityEngine.Object.DestroyImmediate(editor);
-
-            var target = nodesasset;
-            if (target == null)
-                return;
-            // 尝试查找是否有自定义 Editor
-            string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
-            if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
-            {
-                editor = Editor.CreateEditor(target, editorType);
-            }
-            else
-            {
-                // 回退到默认编辑器
-                editor = Editor.CreateEditor(target);
-            }
-
-            if (editor != null)
-            {
-                IMGUIContainer container = new IMGUIContainer(() =>
-                {
-                    editor.OnInspectorGUI();
-                });
-                Add(container);
-            }
-        }
+        public VisualElement graphstatistic;
+        /// <summary>
+        /// 标题图标
+        /// </summary>
+        public Label icon_title;
+        /// <summary>
+        /// 标题文字
+        /// </summary>
+        public Label label_title;
+        /// <summary>
+        /// 标题副文本
+        /// </summary>
+        public Label label_sub;
+        /// <summary>
+        /// 按钮添加属性
+        /// </summary>
+        public Button btn_addparam;
 
         /// <summary>
         /// 清空面板内容
         /// </summary>
         internal void ClearInspector()
         {
-            Clear();
-            editor = null;
+            ParamsList.Clear();
+        }
+
+        internal void UpdateGraphInfos(string name, string sub)
+        {
+            label_title.text = name;
+            label_sub.text = sub;
         }
     }
 }

@@ -227,7 +227,8 @@
                 {
                     if (blackboard_view_toggle)
                     {
-                        wnd.xw_BlackBoardView.UpdateSelection(wnd.CloneTree);
+                        // 刷新 BlackBoard 显示
+                        wnd.xw_UpdateBlackBoardInfo();
                     }
                 };
                 #endregion
@@ -297,7 +298,7 @@
             #region 找到并获取 GraphView | InspectorView | BlackBoardView | SplitView 组件
             // 在布局中找到 xw_graphView 组件
             xw_graphView = root.Q<xg_GraphView>();
-            xw_graphView.gv_GaphWindow = this;
+            xw_graphView.gv_GraphWindow = this;
             xw_graphView.Action_Register_NodeColorDisplayer();
 
             #region 注册GraphView事件
@@ -323,15 +324,22 @@
             // 加载 BlackBoardView 面板尺寸
             Element_Size_Load("XGraph_BlackBoardViewSize", ele_blackboard);
 
-            // 在布局中找到 BlackBoardView 组件
-            xw_BlackBoardView = root.Q<xg_BlackBoardView>("BlackBoardView");
+            // 在布局中找到 BlackBoardView 的组件
+            xw_BlackBoardView = xw_BlackBoardView_Container.Q<xg_BlackBoardView>("BlackBoardView");
+            xw_BlackBoardView.ParamsList = xw_BlackBoardView_Container.Q<ListView>("ParamsList");
+            xw_BlackBoardView.titlecontainer = xw_BlackBoardView_Container.Q<VisualElement>("titleContainer");
+            xw_BlackBoardView.graphstatistic = xw_BlackBoardView_Container.Q<VisualElement>("GraphStatistic");
+            xw_BlackBoardView.icon_title = xw_BlackBoardView_Container.Q<Label>("icon");
+            xw_BlackBoardView.label_title = xw_BlackBoardView_Container.Q<Label>("text");
+            xw_BlackBoardView.label_sub = xw_BlackBoardView_Container.Q<Label>("sub");
+            xw_BlackBoardView.btn_addparam = xw_BlackBoardView_Container.Q<Button>("btnadd");
             xw_BlackBoardView.BringToFront();
 
             // 添加拖动支持
             Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
 
             // 在布局中找到 BlackBoardView Remote 容器标题组件
-            xw_label_BlackBoardView_Container_Title = root.Q<Label>("BlackBoardView_Container_Title");
+            xw_label_BlackBoardView_Container_Title = xw_BlackBoardView_Container.Q<Label>("BlackBoardView_Container_Title");
             xw_label_BlackBoardView_Container_Title.SendToBack();
             #endregion
 
@@ -531,8 +539,11 @@
             // 设置移动式属性视图容器可见性按钮开关状态
             xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
             if (blackboard_toggle)
-                // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                xw_BlackBoardView.UpdateSelection(tree_clone);
+            // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
+            {
+                // 刷新 BlackBoard 显示
+                xw_UpdateBlackBoardInfo();
+            }
 
             xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
             // 加载 RemoteInspector 面板位置
@@ -746,14 +757,14 @@
         {
             bool state = evt.newValue;
 
-            // 设置 InspectorView 容器可见性
+            // 设置 BlackBoardView 容器可见性
             Element_Visibility_Set(xw_BlackBoardView_Container, state);
 
-            // 如果打开开关的话，就让 InspectorView 更新节点属性显示（前提是当前存在节点被选中）
+            // 如果打开开关的话，就让 BlackBoardView 更新节点属性显示
             xw_BlackBoardView.Clear();
             if (state)
             {
-                xw_BlackBoardView.UpdateSelection(CloneTree);
+                xw_UpdateBlackBoardInfo();
             }
 
             // 记录 BlackBoardView 开关状态到行为树根节点变量
@@ -783,6 +794,8 @@
         {
             // 清空GraphView的所有节点
             xw_graphView.ClearGraphViewContents();
+            // 刷新 BlackBoard 显示
+            xw_UpdateBlackBoardInfo();
         }
         /// <summary>
         /// 打开行为树资源
@@ -859,6 +872,9 @@
                 // 保存新位置
                 Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
                 Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
+
+                // 刷新 BlackBoard 显示
+                xw_UpdateBlackBoardInfo();
             }
             else if (isWindowResizing)
             {
@@ -1132,7 +1148,7 @@
 
             if (CloneTree == null || xw_graphView == null) return;
 
-            // 1. 重新读取数据并重建所有视觉节点，清空旧节点和连线
+            // 重新读取数据并重建所有视觉节点，清空旧节点和连线
             // 清空GraphView的所有节点
             xw_graphView.Node_Clear();
 
@@ -1146,19 +1162,16 @@
             xw_InspectorView.ClearInspector();
             xw_BlackBoardView.ClearInspector();
 
-            // 2. 根据当前数据重新生成节点
+            // 根据当前数据重新生成节点
             xw_graphView.Restructure_VisualNodes(CloneTree);
 
-            // 3. 刷新 Inspector 显示
+            // 刷新 Inspector 显示
             if (xw_currentSelectedVisualNode != null)
                 xw_InspectorView.UpdateSelection(xw_currentSelectedVisualNode);
             else
                 xw_InspectorView.UpdateSelection(CloneTree);
 
-            // 3. 刷新 BlackBoard 显示
-            xw_InspectorView.UpdateSelection(CloneTree);
-
-            //Debug.Log("执行撤销逻辑");
+            xw_UpdateBlackBoardInfo();
         }
         /// <summary>
         /// GraphView窗口关闭时的逻辑操作
@@ -1222,6 +1235,14 @@
             // 水印文字显示
             if (xw_label_graphMarkText != null)
                 xw_label_graphMarkText.text = SourceTree.name;
+        }
+        /// <summary>
+        /// 刷新 BlackBoard 显示
+        /// </summary>
+        public void xw_UpdateBlackBoardInfo()
+        {
+            // 刷新 BlackBoard 显示
+            xw_BlackBoardView.UpdateGraphInfos(CloneTree.name, $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}");
         }
         /// <summary>
         /// 设置工具栏前端图标

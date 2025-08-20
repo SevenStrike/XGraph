@@ -98,7 +98,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// XGraph 主窗口
         /// </summary>
-        public xg_Window gv_GaphWindow;
+        public xg_Window gv_GraphWindow;
         /// <summary>
         /// 节点搜索框
         /// </summary>
@@ -281,11 +281,11 @@ namespace SevenStrikeModules.XGraph
             Groups_Clear();
 
             // 清空 Inspector 视图
-            gv_GaphWindow.xw_InspectorView.ClearInspector();
+            gv_GraphWindow.xw_InspectorView.ClearInspector();
 
             if (DisplayActionTreeInspector)
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                gv_GaphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
+                gv_GraphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
         }
         /// <summary>
         /// 切换Graphview背景主题
@@ -326,7 +326,7 @@ namespace SevenStrikeModules.XGraph
         public Vector2 GetLocalMousePosition(Vector2 screenMousePosition)
         {
             // 将光标的屏幕坐标转换为光标在当前窗口内的坐标
-            Vector2 window_mouse_pos = screenMousePosition - gv_GaphWindow.position.position;
+            Vector2 window_mouse_pos = screenMousePosition - gv_GraphWindow.position.position;
 
             // 将光标在当前窗口内的坐标转换为光标在节点视图内的坐标
             Vector2 local_mouse_pos = contentViewContainer.WorldToLocal(window_mouse_pos);

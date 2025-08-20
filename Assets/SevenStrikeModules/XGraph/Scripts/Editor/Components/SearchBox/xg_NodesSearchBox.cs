@@ -113,10 +113,6 @@ namespace SevenStrikeModules.XGraph
         /// xw_graphView 主视图
         /// </summary>
         private xg_GraphView graphView;
-        /// <summary>
-        /// 缩进图标
-        /// </summary>
-        private Texture2D indentIcon;
 
         /// <summary>
         /// 初始化节点搜索框
@@ -125,10 +121,6 @@ namespace SevenStrikeModules.XGraph
         public void Init(xg_GraphView graphView)
         {
             this.graphView = graphView;
-
-            indentIcon = new Texture2D(1, 1);
-            indentIcon.SetPixel(0, 0, Color.clear);
-            indentIcon.Apply();
         }
 
         /// <summary>
@@ -167,7 +159,8 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 节点二级分类
                     searchBox_Node item = list[s].catergory_nodes[i];
-                    entries.Add(new SearchTreeEntry(new GUIContent(item.name, indentIcon))
+                    Texture2D icon = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{item.icon}.png");
+                    entries.Add(new SearchTreeEntry(new GUIContent($"   {item.name}", icon))
                     {
                         level = 3,
                         // 需要使用自定义的结构体装箱：行为树节点类型 & 可视化节点类型，传递给菜单项执行OnSelectEntry的时候的创建节点时必要的参数
