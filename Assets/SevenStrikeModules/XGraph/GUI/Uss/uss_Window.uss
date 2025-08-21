@@ -18,7 +18,7 @@
      bottom: 15px;
 }
 
-.btn_addBlackBoardParam
+.unity-button.btn_addBlackBoardParam
 {
      position: absolute;
      left: auto;
@@ -27,7 +27,41 @@
      background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
      width: 30px;
      height: 30px;
-     background-color: rgba(0, 0, 0, 0);
+     background-color: rgba(0, 0, 0, 0.1);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.unity-button:hover:enabled.btn_addBlackBoardParam
+{
+     position: absolute;
+     left: auto;
+     right: 15px;
+     top: 5px;
+     -unity-background-image-tint-color: rgba(255,255,255,0.7);
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
+     width: 30px;
+     height: 30px;
+     background-color: rgba(0, 0, 0, 0.1);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.unity-button:active:enabled.btn_addBlackBoardParam
+{
+     position: absolute;
+     left: auto;
+     right: 15px;
+     top: 5px;
+     -unity-background-image-tint-color: rgba(59, 254, 155,1);
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
+     width: 30px;
+     height: 30px;
+     background-color: rgba(0, 0, 0, 0.25);
      border-left-color: rgba(0, 0, 0, 0);
      border-right-color: rgba(0, 0, 0, 0);
      border-top-color: rgba(0, 0, 0, 0);

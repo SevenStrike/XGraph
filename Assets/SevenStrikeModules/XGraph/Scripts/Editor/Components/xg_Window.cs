@@ -333,6 +333,7 @@
             xw_BlackBoardView.label_title = xw_BlackBoardView_Container.Q<Label>("text");
             xw_BlackBoardView.label_sub = xw_BlackBoardView_Container.Q<Label>("sub");
             xw_BlackBoardView.btn_addparam = xw_BlackBoardView_Container.Q<Button>("btnadd");
+            xw_BlackBoardView.btn_addparam.clicked += xw_btn_addparam_clicked;
             xw_BlackBoardView.BringToFront();
 
             // 添加拖动支持
@@ -697,6 +698,10 @@
         #endregion
 
         #region 控件逻辑
+        private void xw_btn_addparam_clicked()
+        {
+            Debug.Log("Add Param");
+        }
         /// <summary>
         /// 清空按钮逻辑
         /// </summary>
@@ -1242,7 +1247,7 @@
         public void xw_UpdateBlackBoardInfo()
         {
             // 刷新 BlackBoard 显示
-            xw_BlackBoardView.UpdateGraphInfos(CloneTree.name, $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}");
+            xw_BlackBoardView.UpdateGraphInfos(SourceTree.name, $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}");
         }
         /// <summary>
         /// 设置工具栏前端图标
