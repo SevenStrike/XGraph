@@ -1,6 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
+    using UnityEditor;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
     using UnityEngine.UIElements;
 
     /// <summary>
@@ -9,10 +12,11 @@ namespace SevenStrikeModules.XGraph
     [UxmlElement]
     public partial class xg_BlackBoardView : VisualElement
     {
+        #region 组件
         /// <summary>
         /// params列表
         /// </summary>
-        public ListView ParamsList;
+        public ListView BlackBoard_List;
         /// <summary>
         /// 标题容器
         /// </summary>
@@ -37,21 +41,113 @@ namespace SevenStrikeModules.XGraph
         /// 按钮添加属性
         /// </summary>
         public Button btn_addparam;
+        /// <summary>
+        /// 列表模版
+        /// </summary>
+        public VisualTreeAsset ListViewTemplate;
+        #endregion
 
+        #region 参数
+        private bool IsInitialized;
+        #endregion
+
+        GameObject[] sceneobjs;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
         public xg_BlackBoardView()
         {
+            // 指定样式
             var uss_BlackBoardView = util_EditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_BlackBoardView.uss");
             styleSheets.Add(uss_BlackBoardView);
+
+            // 获取Item模版
+            ListViewTemplate = util_EditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_ListViewItem.uxml");
         }
 
+        /// <summary>
+        /// 初始化ListView组件
+        /// </summary>
+        public void InitializeListView()
+        {
+            BlackBoard_List = this.Q<ListView>("ParamsList");
+            BlackBoard_List.makeItem = ParamListItem_Make;
+            BlackBoard_List.bindItem = ParamListItem_Bind;
+            BlackBoard_List.selectionChanged += act_selectionChanged;
+            IsInitialized = true;
+        }
+        /// <summary>
+        /// 选择列表项时
+        /// </summary>
+        /// <param name="enumerable"></param>
+        private void act_selectionChanged(IEnumerable<object> enumerable)
+        {
+            foreach (var obj in enumerable)
+            {
+                EditorGUIUtility.PingObject(obj as UnityEngine.Object);
+            }
+        }
+        /// <summary>
+        /// 获取列表项模版
+        /// </summary>
+        /// <returns></returns>
+        private TemplateContainer ParamListItem_TemplateGet()
+        {
+            return ListViewTemplate.CloneTree();
+        }
+        /// <summary>
+        /// 指定列表项的组成结构
+        /// </summary>
+        /// <returns></returns>
+        private VisualElement ParamListItem_Make()
+        {
+            return ParamListItem_TemplateGet().Q<VisualElement>("container");
+        }
+        /// <summary>
+        /// 绑定列表项
+        /// </summary>
+        /// <param text_name="element"></param>
+        /// <param text_name="index"></param>
+        private void ParamListItem_Bind(VisualElement element, int index)
+        {
+            VisualElement ele_pill = element.Q<VisualElement>("pill");
+
+            VisualElement icon = ele_pill.Q<VisualElement>("icon");
+            Label text_name = ele_pill.Q<Label>("text");
+
+            VisualElement ele_des = element.Q<VisualElement>("description");
+            Label text_des = element.Q<Label>("text");
+
+            var obj = sceneobjs[index];
+            text_name.text = obj.name;
+        }
+        /// <summary>
+        /// 添加ListViewItem
+        /// </summary>
+        public void ParamListItem_Add()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            sceneobjs = scene.GetRootGameObjects();
+
+            // 设置数据源并刷新
+            BlackBoard_List.itemsSource = sceneobjs;
+
+            BlackBoard_List.Rebuild();
+            BlackBoard_List.RefreshItems();
+        }
         /// <summary>
         /// 清空面板内容
         /// </summary>
         internal void ClearInspector()
         {
-            ParamsList.Clear();
-        }
 
+        }
+        /// <summary>
+        /// 更新黑板标题信息
+        /// </summary>
+        /// <param text_name="name"></param>
+        /// <param text_name="sub"></param>
         internal void UpdateGraphInfos(string name, string sub)
         {
             label_title.text = name;

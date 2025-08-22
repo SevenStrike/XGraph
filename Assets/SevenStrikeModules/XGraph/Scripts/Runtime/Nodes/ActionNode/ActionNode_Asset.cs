@@ -227,7 +227,7 @@ namespace SevenStrikeModules.XGraph
 
             // 添加到资源文件下
             AssetDatabase.AddObjectToAsset(node, this);
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
 
             // 创建后获取该行为树节点相对行为树资源根节点的路径
             string re_path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(ActionNodes[^1]));
@@ -249,7 +249,7 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(this, "Removed ChildAction");
             ActionNodes.Remove(node);
             Undo.DestroyObjectImmediate(node);
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 #endif
         }
@@ -275,7 +275,7 @@ namespace SevenStrikeModules.XGraph
 
             // 刷新资源状态
             EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 #endif
         }
@@ -485,7 +485,7 @@ namespace SevenStrikeModules.XGraph
             if (!AssetDatabase.AssetPathExists(path_target))
             {
                 AssetDatabase.CreateFolder(path_root, "Temp");
-                AssetDatabase.SaveAssets();
+                //AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
 
@@ -496,7 +496,7 @@ namespace SevenStrikeModules.XGraph
                 AssetDatabase.AddObjectToAsset(treenode, root);
             }
 
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
 #endif
         }
         /// <summary>
@@ -723,7 +723,7 @@ namespace SevenStrikeModules.XGraph
         {
             StickNoteDatas.Clear();
 #if UNITY_EDITOR
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
 #endif
         }
         /// <summary>
@@ -752,7 +752,7 @@ namespace SevenStrikeModules.XGraph
         {
             NodeGroupDatas.Clear();
 #if UNITY_EDITOR
-            AssetDatabase.SaveAssets();
+            //AssetDatabase.SaveAssets();
 #endif
         }
         /// <summary>

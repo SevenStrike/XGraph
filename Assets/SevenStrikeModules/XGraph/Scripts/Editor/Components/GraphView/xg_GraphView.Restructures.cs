@@ -43,18 +43,24 @@ namespace SevenStrikeModules.XGraph
                     VNode_Base n_parent = FindNodeView(d.guid);
                     VNode_Base n_child = FindNodeView(c.guid);
 
-                    // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
-                    if (n_parent is VNode_Relay relay)
-                    {
-                        relay.CheckConnected();
-                    }
-
                     n_parent.Port_Outputs.ForEach(p =>
                     {
                         Edge edge = p.Port.ConnectTo(n_child.Port_Input.Port);
                         AddElement(edge);
                     });
                 });
+            });
+
+            // 根据行为树根节点的数据列表重建 Edges
+            ActionTreeAsset.ActionNodes.ForEach(d =>
+            {
+                // 获取延展节点
+                VNode_Base n_parent = FindNodeView(d.guid);
+                // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
+                if (n_parent is VNode_Relay relay)
+                {
+                    relay.CheckConnected();
+                }
             });
 
             // 根据行为树根节点里的便签列表数据来生成GraphView的视觉便签节点

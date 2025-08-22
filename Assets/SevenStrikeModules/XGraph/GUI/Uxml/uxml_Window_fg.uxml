@@ -38,9 +38,6 @@
                 <engine:VisualElement name="divide" style="border-top-width: 1px; border-top-color: rgba(255, 255, 255, 0.15); margin-top: 10px; margin-bottom: 10px; padding-left: 0; margin-left: 10px; margin-right: 10px;" />
                 <engine:Label text="节点图简要信息" name="sub" style="margin-top: 0; margin-right: 10px; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 10px; padding-bottom: 0; padding-left: 10px; color: rgba(255, 255, 255, 0.4); font-size: 12px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&amp;guid=30c4cdc2715665b41af12828367f2426&amp;type=3#SS_Editor_Light&quot;); text-overflow: ellipsis; overflow: hidden;" />
             </engine:VisualElement>
-            <SevenStrikeModules.XGraph.xg_BlackBoardView name="BlackBoardView" style="width: 100%; height: 100%; padding-left: 10px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px;">
-                <engine:ListView name="ParamsList" item-template="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uxml/uxml_ListViewItem.uxml?fileID=9197481963319205126&amp;guid=73f1edd04877a154b9bda82c31671487&amp;type=3#uxml_ListViewItem" fixed-item-height="35" reorderable="true" selection-type="Multiple" style="width: 100%; height: 100%;" />
-            </SevenStrikeModules.XGraph.xg_BlackBoardView>
         </SevenStrikeModules.XGraph.xg_ResizableElement>
     </engine:VisualElement>
 </engine:UXML>

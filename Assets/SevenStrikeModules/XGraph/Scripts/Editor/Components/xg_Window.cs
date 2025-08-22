@@ -5,6 +5,7 @@
     using System.IO;
     using UnityEditor;
     using UnityEditor.Callbacks;
+    using UnityEditor.SceneManagement;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -326,7 +327,10 @@
 
             // 在布局中找到 BlackBoardView 的组件
             xw_BlackBoardView = xw_BlackBoardView_Container.Q<xg_BlackBoardView>("BlackBoardView");
-            xw_BlackBoardView.ParamsList = xw_BlackBoardView_Container.Q<ListView>("ParamsList");
+
+            // BlackBoardView 的ListView组件初始化
+            xw_BlackBoardView.InitializeListView();
+
             xw_BlackBoardView.titlecontainer = xw_BlackBoardView_Container.Q<VisualElement>("titleContainer");
             xw_BlackBoardView.graphstatistic = xw_BlackBoardView_Container.Q<VisualElement>("GraphStatistic");
             xw_BlackBoardView.icon_title = xw_BlackBoardView_Container.Q<Label>("icon");
@@ -335,6 +339,7 @@
             xw_BlackBoardView.btn_addparam = xw_BlackBoardView_Container.Q<Button>("btnadd");
             xw_BlackBoardView.btn_addparam.clicked += xw_btn_addparam_clicked;
             xw_BlackBoardView.BringToFront();
+
 
             // 添加拖动支持
             Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
@@ -701,6 +706,7 @@
         private void xw_btn_addparam_clicked()
         {
             Debug.Log("Add Param");
+            xw_BlackBoardView.ParamListItem_Add();
         }
         /// <summary>
         /// 清空按钮逻辑
@@ -765,8 +771,6 @@
             // 设置 BlackBoardView 容器可见性
             Element_Visibility_Set(xw_BlackBoardView_Container, state);
 
-            // 如果打开开关的话，就让 BlackBoardView 更新节点属性显示
-            xw_BlackBoardView.Clear();
             if (state)
             {
                 xw_UpdateBlackBoardInfo();
@@ -1202,6 +1206,14 @@
             Element_Size_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewSize");
 
             xw_DeleteCloneTreeAsset();
+
+            // 在保存前检查并清理可能的预览场景
+            if (EditorSceneManager.previewSceneCount > 50) // 设置一个合理的阈值
+            {
+                // 强制垃圾回收和资源清理
+                EditorUtility.UnloadUnusedAssetsImmediate();
+                GC.Collect();
+            }
         }
         /// <summary>
         /// 移除临时使用的TreeAsset
