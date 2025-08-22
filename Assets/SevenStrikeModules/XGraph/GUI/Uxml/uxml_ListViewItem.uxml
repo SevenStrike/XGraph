@@ -1,11 +1,12 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <engine:VisualElement name="container" style="background-size: 100% 100%; background-color: rgba(0, 0, 0, 0); width: auto; height: auto; justify-content: flex-start; margin-bottom: 0; margin-right: 0; padding-right: 5px; flex-grow: 0; flex-shrink: 0; flex-direction: row;">
-        <engine:VisualElement name="pill" picking-mode="Ignore" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(20, 20, 20); border-right-color: rgb(20, 20, 20); border-top-color: rgb(20, 20, 20); border-bottom-color: rgb(20, 20, 20); flex-direction: row; flex-shrink: 0; align-items: center; height: 30px; background-color: rgb(39, 39, 39);">
-            <engine:VisualElement name="icon" picking-mode="Ignore" style="width: 5px; height: 5px; background-color: rgb(59, 254, 155); position: relative; align-self: auto; flex-shrink: 0; flex-grow: 0; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; top: auto; left: auto; justify-content: center; margin-left: 10px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); flex-direction: column; align-items: flex-start; margin-top: 0; margin-right: 0; margin-bottom: 0;" />
-            <engine:Label text="Vector4" name="text" picking-mode="Ignore" style="position: relative; color: rgb(255, 255, 255); align-self: auto; flex-grow: 1; -unity-text-align: middle-right; margin-right: 10px; margin-top: 0; padding-right: 0; height: 10px; top: auto; margin-left: 10px; margin-bottom: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;" />
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_ListViewItem.uss?fileID=7433441132597879392&amp;guid=b8e8fc8fd2a44be4ab7d1ddce8ba9e6a&amp;type=3#uss_ListViewItem" />
+    <engine:VisualElement name="container" class="item_container">
+        <engine:VisualElement name="pill" picking-mode="Ignore" class="item_container_pill">
+            <engine:VisualElement name="icon" picking-mode="Ignore" class="item_icon" />
+            <engine:Label text="Vector4" name="text" picking-mode="Ignore" class="item_label_title" />
         </engine:VisualElement>
-        <engine:VisualElement name="description" picking-mode="Ignore" style="flex-direction: row; flex-grow: 1; width: 100%;">
-            <engine:Label text="---------------------" name="text" picking-mode="Ignore" style="-unity-text-align: middle-right; color: rgb(255, 255, 255); font-size: 12px; margin-top: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; text-overflow: clip; overflow: hidden; width: auto; padding-left: 0; margin-left: 30px; align-items: stretch; flex-grow: 1; margin-right: 0; padding-right: 0;" />
+        <engine:VisualElement name="description" picking-mode="Ignore" class="item_container_des">
+            <engine:Label text="---------------------" name="text" picking-mode="Ignore" class="item_label_des" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

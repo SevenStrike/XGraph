@@ -47,10 +47,6 @@ namespace SevenStrikeModules.XGraph
         public VisualTreeAsset ListViewTemplate;
         #endregion
 
-        #region 参数
-        private bool IsInitialized;
-        #endregion
-
         GameObject[] sceneobjs;
 
         /// <summary>
@@ -59,7 +55,7 @@ namespace SevenStrikeModules.XGraph
         public xg_BlackBoardView()
         {
             // 指定样式
-            var uss_BlackBoardView = util_EditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_BlackBoardView.uss");
+            var uss_BlackBoardView = util_EditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_ListViewItem.uss");
             styleSheets.Add(uss_BlackBoardView);
 
             // 获取Item模版
@@ -71,22 +67,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void InitializeListView()
         {
+            // 在此模块下寻找 ListView 组件
             BlackBoard_List = this.Q<ListView>("ParamsList");
+            // 创造 ListView 的模版样式
             BlackBoard_List.makeItem = ParamListItem_Make;
+            // 绑定 ListView 数据
             BlackBoard_List.bindItem = ParamListItem_Bind;
+            // ListView 每一项点击的动作
             BlackBoard_List.selectionChanged += act_selectionChanged;
-            IsInitialized = true;
-        }
-        /// <summary>
-        /// 选择列表项时
-        /// </summary>
-        /// <param name="enumerable"></param>
-        private void act_selectionChanged(IEnumerable<object> enumerable)
-        {
-            foreach (var obj in enumerable)
-            {
-                EditorGUIUtility.PingObject(obj as UnityEngine.Object);
-            }
         }
         /// <summary>
         /// 获取列表项模版
@@ -121,6 +109,17 @@ namespace SevenStrikeModules.XGraph
 
             var obj = sceneobjs[index];
             text_name.text = obj.name;
+        }
+        /// <summary>
+        /// 选择列表项时
+        /// </summary>
+        /// <param name="enumerable"></param>
+        private void act_selectionChanged(IEnumerable<object> enumerable)
+        {
+            foreach (var obj in enumerable)
+            {
+                EditorGUIUtility.PingObject(obj as UnityEngine.Object);
+            }
         }
         /// <summary>
         /// 添加ListViewItem
