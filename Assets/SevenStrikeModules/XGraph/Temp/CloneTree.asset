@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
+  m_Name: CloneTree
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1469, y: 926}
+  LastGraphViewPosition: {x: 345, y: 290}
+  LastGraphViewZoom: 1
+  ActionNodes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  StickNoteDatas:
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: 61e11a8ca279be14d967cb5d632cfb65
+    position: {x: -117.74991, y: 205.00002}
+    size: {x: 260, y: 110}
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: e10e674b989aaf741bb7bf5d01e20bf1
+    position: {x: 74, y: -152.32}
+    size: {x: 260, y: 110}
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 6972d68f6e98699418938c875dc46a11
+    pos: {x: 605, y: 42}
+    solution: "Y \u70DF\u7070\u84DD"
+    guids:
+    - 95a9d46a1e82981479e654c9e547e2e1
+    - bf7ce50c38bbf034fbb65bf627cabfd0
+    - 7bd6e656b1f10264397263a367671f58
+    - 00f81050022e91640bf3a279113c5fde
+    - baf0e7c102ce5d4449dd1297dd62c834
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: e7ddbe5dbafd88e40be74d16620e7499
+    pos: {x: -97, y: -15}
+    solution: "L \u4EAE\u8272\u7CFB"
+    guids:
+    - 98fc863e26c6f2d49b05fccaaa9a5c1e
+    - 6f7b4311fad4a5747ae27926ebbd1025
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: a79d21c61a7901948b0e9b4c85b26fad
+    pos: {x: 360, y: -75}
+    solution: "M \u66AE\u8272\u7EA2"
+    guids:
+    - 48a51ad3013f28847a4554a4600b6955
+    - 6a950d483fe11334a92d5ad63a223433
+  BlackboardVariables:
+  - name: Var - Object
+    type: 7
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Bool
+    type: 3
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Float
+    type: 1
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Int
+    type: 2
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Vector2
+    type: 4
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - String
+    type: 0
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Vector3
+    type: 5
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}
+  - name: Var - Vector4
+    type: 6
+    stringValue: 
+    floatValue: 0
+    intValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    vector4Value: {x: 0, y: 0, z: 0, w: 0}
+    objectValue: {fileID: 0}

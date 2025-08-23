@@ -5,6 +5,7 @@
     using System.IO;
     using UnityEditor;
     using UnityEditor.Callbacks;
+    using UnityEditor.Hardware;
     using UnityEditor.SceneManagement;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -228,8 +229,10 @@
                 {
                     if (blackboard_view_toggle)
                     {
-                        // 刷新 BlackBoard 显示
+                        // 刷新 BlackBoard 标题显示
                         wnd.xw_UpdateBlackBoardInfo();
+                        // 刷新 BlackBoard 属性列表
+                        wnd.xw_UpdateBlackBoardVariables();
                     }
                 };
                 #endregion
@@ -329,17 +332,17 @@
             xw_BlackBoardView = xw_BlackBoardView_Container.Q<xg_BlackBoardView>("BlackBoardView");
             xw_BlackBoardView.graphWindow = this;
 
-            // BlackBoardView 的ListView组件初始化
-            xw_BlackBoardView.InitializeListView();
-
             xw_BlackBoardView.titlecontainer = xw_BlackBoardView_Container.Q<VisualElement>("titleContainer");
             xw_BlackBoardView.graphstatistic = xw_BlackBoardView_Container.Q<VisualElement>("GraphStatistic");
             xw_BlackBoardView.icon_title = xw_BlackBoardView_Container.Q<Label>("icon");
             xw_BlackBoardView.label_title = xw_BlackBoardView_Container.Q<Label>("text");
             xw_BlackBoardView.label_sub = xw_BlackBoardView_Container.Q<Label>("sub");
-            xw_BlackBoardView.btn_addparam = xw_BlackBoardView_Container.Q<Button>("btnadd");
-            xw_BlackBoardView.btn_addparam.clicked += xw_btn_addparam_clicked;
+            xw_BlackBoardView.btn_AddVariable = xw_BlackBoardView_Container.Q<Button>("btnadd");
+
             xw_BlackBoardView.BringToFront();
+
+            // BlackBoardView 的ListView组件初始化
+            xw_BlackBoardView.Initialize();
 
             // 添加拖动支持
             Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
@@ -703,11 +706,6 @@
         #endregion
 
         #region 控件逻辑
-        private void xw_btn_addparam_clicked()
-        {
-            Debug.Log("Add Param");
-            xw_BlackBoardView.ParamListItem_Add();
-        }
         /// <summary>
         /// 清空按钮逻辑
         /// </summary>
@@ -1172,7 +1170,7 @@
 
             // 清空 View 视图
             xw_InspectorView.ClearInspector();
-            xw_BlackBoardView.ClearInspector();
+            xw_BlackBoardView.ClearVariables();
 
             // 根据当前数据重新生成节点
             xw_graphView.Restructure_VisualNodes(CloneTree);
@@ -1257,12 +1255,19 @@
                 xw_label_graphMarkText.text = SourceTree.name;
         }
         /// <summary>
-        /// 刷新 BlackBoard 显示
+        /// 刷新 BlackBoard 标题信息显示
         /// </summary>
         public void xw_UpdateBlackBoardInfo()
         {
-            // 刷新 BlackBoard 显示
-            xw_BlackBoardView.UpdateGraphInfos(SourceTree.name, $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}");
+            xw_BlackBoardView.label_title.text = SourceTree.name;
+            xw_BlackBoardView.label_sub.text = $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}";
+        }
+        /// <summary>
+        /// 刷新 BlackBoard 属性列表
+        /// </summary>
+        public void xw_UpdateBlackBoardVariables()
+        {
+            xw_BlackBoardView.VariableListView_Rebuild(CloneTree.BlackboardVariables);
         }
         /// <summary>
         /// 设置工具栏前端图标

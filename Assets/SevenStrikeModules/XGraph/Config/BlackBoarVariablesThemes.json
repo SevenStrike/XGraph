@@ -1,0 +1,36 @@
+{
+    "VariableThemes": [
+        {
+            "type": "String",
+            "color": "#FFFFFF"
+        },
+        {
+            "type": "Float",
+            "color": "#91FF00"
+        },
+        {
+            "type": "Int",
+            "color": "#805DFF"
+        },
+        {
+            "type": "Bool",
+            "color": "#FFA927"
+        },
+        {
+            "type": "Vector2",
+            "color": "#FF54E2"
+        },
+        {
+            "type": "Vector3",
+            "color": "#27FFBE"
+        },
+        {
+            "type": "Vector4",
+            "color": "#FF3C3C"
+        },
+        {
+            "type": "Object",
+            "color": "#47AEFF"
+        }
+    ]
+}

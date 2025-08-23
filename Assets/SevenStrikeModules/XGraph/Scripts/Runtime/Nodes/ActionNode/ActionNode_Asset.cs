@@ -224,7 +224,14 @@ namespace SevenStrikeModules.XGraph
     /// </summary>
     public enum BlackboardVarType
     {
-        String, Float, Int, Bool, Vector2, Vector3, Vector4, Object
+        String = 0,
+        Float = 1,
+        Int = 2,
+        Bool = 3,
+        Vector2 = 4,
+        Vector3 = 5,
+        Vector4 = 6,
+        Object = 7
     }
 
     [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionGraphAsset")]
