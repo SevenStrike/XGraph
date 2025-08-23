@@ -1,145 +1,201 @@
-.ToolbarButon {
-    width: 40px;
-    -unity-text-align: middle-center;
-    -unity-font-style: normal;
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
-    letter-spacing: 20px;
+.ToolbarButon
+{
+     width: 40px;
+     -unity-text-align: middle-center;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     letter-spacing: 20px;
 }
 
-.MarkText {
-    position: absolute;
-    top: auto;
-    left: 30px;
-    font-size: 30px;
-    color: rgba(139, 139, 139, 0.17);
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
-    bottom: 15px;
+.MarkText
+{
+     position: absolute;
+     top: auto;
+     left: 30px;
+     font-size: 30px;
+     color: rgba(139, 139, 139, 0.17);
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     bottom: 15px;
 }
 
-.BlackBoard_Icon {
-    margin-top: 0;
-    margin-right: 10px;
-    margin-bottom: 0;
-    margin-left: 10px;
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: 0;
-    padding-left: 0;
-    width: 32px;
-    height: 32px;
-    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Icon.png?fileID=2800000&guid=8284d08a7854be04da1ce19338e8f6c7&type=3#Icon");
-    background-color: rgba(255, 255, 255, 0);
-    -unity-background-image-tint-color: rgb(255, 255, 255);
+.BlackBoard_Icon
+{
+     margin-top: 0;
+     margin-right: 10px;
+     margin-bottom: 0;
+     margin-left: 10px;
+     padding-top: 0;
+     padding-right: 0;
+     padding-bottom: 0;
+     padding-left: 0;
+     width: 32px;
+     height: 32px;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Icon.png?fileID=2800000&guid=8284d08a7854be04da1ce19338e8f6c7&type=3#Icon");
+     background-color: rgba(255, 255, 255, 0);
+     -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
-.BlackBoard_AssetName {
-    color: rgb(255, 255, 255);
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/ARIALBD.TTF?fileID=12800000&guid=7d1ddad0ffa00ed4298aab1fff7fb1cd&type=3#ARIALBD");
-    font-size: 17px;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 0;
-    padding-right: 15px;
-    padding-bottom: 0;
-    padding-left: 0;
-    width: auto;
-    left: auto;
-    max-width: none;
-    flex-wrap: nowrap;
-    text-overflow: ellipsis;
-    -unity-text-align: middle-left;
+.BlackBoard_AssetName
+{
+     color: rgb(255, 255, 255);
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/ARIALBD.TTF?fileID=12800000&guid=7d1ddad0ffa00ed4298aab1fff7fb1cd&type=3#ARIALBD");
+     font-size: 17px;
+     margin-top: 0;
+     margin-right: 0;
+     margin-bottom: 0;
+     margin-left: 0;
+     padding-top: 0;
+     padding-right: 15px;
+     padding-bottom: 0;
+     padding-left: 0;
+     width: auto;
+     left: auto;
+     max-width: none;
+     flex-wrap: nowrap;
+     text-overflow: ellipsis;
+     -unity-text-align: middle-left;
 }
 
-.unity-button.btn_addBlackBoardParam {
-    position: absolute;
-    left: auto;
-    right: auto;
-    top: auto;
-    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-left-color: rgba(0, 0, 0, 0);
-    border-right-color: rgba(0, 0, 0, 0);
-    border-top-color: rgba(0, 0, 0, 0);
-    border-bottom-color: rgba(0, 0, 0, 0);
-    flex-direction: row-reverse;
-    flex-shrink: 0;
-    flex-grow: 0;
-    bottom: auto;
+.unity-button.btn_addBlackBoardParam
+{
+     position: absolute;
+     left: auto;
+     right: auto;
+     top: auto;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
+     width: 30px;
+     height: 30px;
+     background-color: rgba(0, 0, 0, 0.1);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
+     flex-direction: row-reverse;
+     flex-shrink: 0;
+     flex-grow: 0;
+     bottom: auto;
 }
 
-.unity-button:hover:enabled.btn_addBlackBoardParam {
-    position: absolute;
-    left: auto;
-    right: 15px;
-    top: 5px;
-    -unity-background-image-tint-color: rgba(255, 255, 255, 0.7);
-    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-left-color: rgba(0, 0, 0, 0);
-    border-right-color: rgba(0, 0, 0, 0);
-    border-top-color: rgba(0, 0, 0, 0);
-    border-bottom-color: rgba(0, 0, 0, 0);
+.unity-button:hover:enabled.btn_addBlackBoardParam
+{
+     position: absolute;
+     left: auto;
+     right: 15px;
+     top: 5px;
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.7);
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
+     width: 30px;
+     height: 30px;
+     background-color: rgba(0, 0, 0, 0.1);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
 }
 
-.unity-button:active:enabled.btn_addBlackBoardParam {
-    position: absolute;
-    left: auto;
-    right: 15px;
-    top: 5px;
-    -unity-background-image-tint-color: rgb(59, 254, 155);
-    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border-left-color: rgba(0, 0, 0, 0);
-    border-right-color: rgba(0, 0, 0, 0);
-    border-top-color: rgba(0, 0, 0, 0);
-    border-bottom-color: rgba(0, 0, 0, 0);
+.unity-button:active:enabled.btn_addBlackBoardParam
+{
+     position: absolute;
+     left: auto;
+     right: 15px;
+     top: 5px;
+     -unity-background-image-tint-color: rgb(59, 254, 155);
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Add.png?fileID=2800000&guid=046083fdec292bc4fa9d875b5c8ff1ab&type=3#Add");
+     width: 30px;
+     height: 30px;
+     background-color: rgba(0, 0, 0, 0.25);
+     border-left-color: rgba(0, 0, 0, 0);
+     border-right-color: rgba(0, 0, 0, 0);
+     border-top-color: rgba(0, 0, 0, 0);
+     border-bottom-color: rgba(0, 0, 0, 0);
 }
 
-.BlackBoard_Divide {
-    border-top-width: 1px;
-    border-top-color: rgba(255, 255, 255, 0.15);
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-left: 0;
-    margin-left: 10px;
-    margin-right: 10px;
+.BlackBoard_Divide
+{
+     border-top-width: 1px;
+     border-top-color: rgba(255, 255, 255, 0.15);
+     margin-top: 10px;
+     margin-bottom: 10px;
+     padding-left: 0;
+     margin-left: 10px;
+     margin-right: 10px;
 }
 
-.BlackBoard_Sub {
-    margin-top: 0;
-    margin-right: 10px;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 0;
-    padding-right: 10px;
-    padding-bottom: 0;
-    padding-left: 10px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 12px;
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
-    text-overflow: ellipsis;
-    position: relative;
+.BlackBoard_Sub
+{
+     margin-top: 0;
+     margin-right: 10px;
+     margin-bottom: 0;
+     margin-left: 0;
+     padding-top: 0;
+     padding-right: 10px;
+     padding-bottom: 0;
+     padding-left: 10px;
+     color: rgba(255, 255, 255, 0.4);
+     font-size: 12px;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     text-overflow: ellipsis;
+     position: relative;
 }
 
-.BlackBoard_Sub {
-    margin-top: 0;
-    margin-right: 10px;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-top: 0;
-    padding-right: 10px;
-    padding-bottom: 0;
-    padding-left: 10px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 12px;
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
-    text-overflow: ellipsis;
+.BlackBoard_Sub
+{
+     margin-top: 0;
+     margin-right: 10px;
+     margin-bottom: 0;
+     margin-left: 0;
+     padding-top: 0;
+     padding-right: 10px;
+     padding-bottom: 0;
+     padding-left: 10px;
+     color: rgba(255, 255, 255, 0.4);
+     font-size: 12px;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     text-overflow: ellipsis;
+}
+
+.BlackBoard_Container_Title
+{
+     color: rgba(255, 255, 255, 0.7);
+     margin-left: 0;
+     margin-right: 0;
+     margin-top: 0;
+     margin-bottom: 0;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     font-size: 13px;
+     -unity-font-style: normal;
+     background-color: rgb(29, 29, 29);
+     padding-top: 6px;
+     padding-right: 15px;
+     padding-bottom: 6px;
+     padding-left: 15px;
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 0;
+     border-bottom-left-radius: 0;
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
+.InspectorView_Container_Title
+{
+     color: rgba(255, 255, 255, 0.7);
+     margin-left: 0;
+     margin-right: 0;
+     margin-top: 0;
+     margin-bottom: 0;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     font-size: 13px;
+     -unity-font-style: normal;
+     background-color: rgb(29, 29, 29);
+     padding-top: 6px;
+     padding-right: 15px;
+     padding-bottom: 6px;
+     padding-left: 15px;
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 0;
+     border-bottom-left-radius: 0;
+     overflow: hidden;
+     text-overflow: ellipsis;
 }

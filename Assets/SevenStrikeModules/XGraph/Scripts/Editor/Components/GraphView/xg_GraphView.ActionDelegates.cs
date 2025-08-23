@@ -73,6 +73,9 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
+            // 清空 BlackBoard_List 选中状态
+            gv_GraphWindow.xw_BlackBoardView.BlackBoard_List.ClearSelection();
+
             //e.StopPropagation();
         }
         /// <summary>
@@ -169,5 +172,6 @@ namespace SevenStrikeModules.XGraph
             });
             NodeColorDisplay = state;
         }
+
     }
 }

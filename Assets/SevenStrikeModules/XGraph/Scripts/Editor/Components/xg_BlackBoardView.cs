@@ -75,7 +75,17 @@ namespace SevenStrikeModules.XGraph
             BlackBoard_List.bindItem = ParamListItem_Bind;
             // ListView 每一项点击的动作
             BlackBoard_List.selectionChanged += act_selectionChanged;
+            BlackBoard_List.itemsChosen += BlackBoard_List_itemsChosen;
         }
+
+        private void BlackBoard_List_itemsChosen(IEnumerable<object> obj)
+        {
+            BlackBoard_List.selectedIndex = -1;
+            BlackBoard_List.selectionType = SelectionType.None;
+            BlackBoard_List.ClearSelection();
+        }
+
+
         /// <summary>
         /// 获取列表项模版
         /// </summary>
@@ -100,15 +110,15 @@ namespace SevenStrikeModules.XGraph
         private void ParamListItem_Bind(VisualElement element, int index)
         {
             VisualElement ele_pill = element.Q<VisualElement>("pill");
-
             VisualElement icon = ele_pill.Q<VisualElement>("icon");
             Label text_name = ele_pill.Q<Label>("text");
 
             VisualElement ele_des = element.Q<VisualElement>("description");
-            Label text_des = element.Q<Label>("text");
+            Label text_des = ele_des.Q<Label>("text");
 
             var obj = sceneobjs[index];
             text_name.text = obj.name;
+            text_des.text = obj.transform.position.ToString();
         }
         /// <summary>
         /// 选择列表项时

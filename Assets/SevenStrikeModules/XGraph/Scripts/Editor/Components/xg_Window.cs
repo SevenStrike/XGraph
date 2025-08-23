@@ -342,7 +342,7 @@
 
 
             // 添加拖动支持
-            Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
+            //Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
 
             // 在布局中找到 BlackBoardView Remote 容器标题组件
             xw_label_BlackBoardView_Container_Title = xw_BlackBoardView_Container.Q<Label>("BlackBoardView_Container_Title");

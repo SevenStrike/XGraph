@@ -48,7 +48,7 @@
 .item_label_des
 {
      -unity-text-align: middle-right;
-     color: rgb(255, 255, 255);
+     color: rgba(255, 255, 255,0.4);
      font-size: 12px;
      margin-top: 0;
      padding-top: 0;
@@ -106,4 +106,20 @@
      flex-grow: 0;
      flex-shrink: 0;
      flex-direction: row;
+}
+
+.item_container:hover .item_container_pill
+{
+     border-top-color: rgba(59, 254, 155,0.4);
+     border-bottom-color: rgba(59, 254, 155,0.4);
+     border-left-color: rgba(59, 254, 155,0.4);
+     border-right-color: rgba(59, 254, 155,0.4);
+}
+
+.item_container:checked .item_container_pill
+{
+     border-top-color: rgba(59, 254, 155,1);
+     border-bottom-color: rgba(59, 254, 155,1);
+     border-left-color: rgba(59, 254, 155,1);
+     border-right-color: rgba(59, 254, 155,1);
 }
