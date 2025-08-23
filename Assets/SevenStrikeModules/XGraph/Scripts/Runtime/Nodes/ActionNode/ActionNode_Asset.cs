@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
@@ -8,6 +9,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.VersionControl;
 #endif
     using UnityEngine;
+    using static UnityEditor.PlayerSettings;
     using Object = UnityEngine.Object;
 
     [System.Serializable]
@@ -162,6 +164,59 @@ namespace SevenStrikeModules.XGraph
         public Vector3 vector3Value;
         public Vector4 vector4Value;
         public UnityEngine.Object objectValue;
+
+        /// <summary>
+        /// 黑板属性克隆
+        /// </summary>
+        /// <returns></returns>
+        public BlackboardVariable Clone()
+        {
+            var clone = new BlackboardVariable();
+            clone.name = name;
+            clone.type = type;
+            clone.stringValue = stringValue;
+            clone.floatValue = floatValue;
+            clone.intValue = intValue;
+            clone.boolValue = boolValue;
+            clone.vector2Value = vector2Value;
+            clone.vector3Value = vector3Value;
+            clone.vector4Value = vector4Value;
+            clone.objectValue = objectValue;
+            return clone;
+        }
+
+        /// <summary>
+        /// 黑板属性构造
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="stringValue"></param>
+        /// <param name="floatValue"></param>
+        /// <param name="intValue"></param>
+        /// <param name="boolValue"></param>
+        /// <param name="vector2Value"></param>
+        /// <param name="vector3Value"></param>
+        /// <param name="vector4Value"></param>
+        /// <param name="objectValue"></param>
+        /// <returns></returns>
+        public BlackboardVariable(string name = null, BlackboardVarType type = BlackboardVarType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
+        {
+            this.name = name;
+            this.type = type;
+            this.stringValue = stringValue;
+            this.floatValue = floatValue;
+            this.intValue = intValue;
+            this.boolValue = boolValue;
+            this.vector2Value = vector2Value;
+            this.vector3Value = vector3Value;
+            this.vector4Value = vector4Value;
+            this.objectValue = objectValue;
+        }
+
+        /// <summary>
+        /// 黑板属性构造
+        /// </summary>
+        public BlackboardVariable() { }
     }
 
     /// <summary>
@@ -305,6 +360,13 @@ namespace SevenStrikeModules.XGraph
                 NodeGroupDatas.Add(group.Clone(false));
             }
 
+            // 覆盖原有的黑板数据列表
+            BlackboardVariables = new List<BlackboardVariable>();
+            foreach (var bbv in root.BlackboardVariables)
+            {
+                BlackboardVariables.Add(bbv.Clone());
+            }
+
             // 创建新节点副本并添加到原始资源中
             Dictionary<ActionNode_Base, ActionNode_Base> dictionary = new Dictionary<ActionNode_Base, ActionNode_Base>();
             foreach (var sourceNode in root.ActionNodes)
@@ -378,6 +440,15 @@ namespace SevenStrikeModules.XGraph
             {
 #if UNITY_EDITOR
                 newRoot.NodeGroupDatas.Add(item.Clone(false));
+#endif
+            }
+
+            // 实例化新的 blackboardVariable 列表，并从原始资源复制项
+            newRoot.BlackboardVariables = new List<BlackboardVariable>();
+            foreach (var bbv in BlackboardVariables)
+            {
+#if UNITY_EDITOR
+                newRoot.BlackboardVariables.Add(bbv.Clone());
 #endif
             }
 
@@ -629,6 +700,7 @@ namespace SevenStrikeModules.XGraph
                 comp.childNodes.Add(child);
             }
             #endregion
+
             #region 特化处理 - Relay
             ActionNode_Relay relay = parent as ActionNode_Relay;
             if (relay)
@@ -750,7 +822,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeGroup_Clear()
         {
-            NodeGroupDatas.Clear();
+            BlackboardVariables.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif

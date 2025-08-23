@@ -327,6 +327,7 @@
 
             // 在布局中找到 BlackBoardView 的组件
             xw_BlackBoardView = xw_BlackBoardView_Container.Q<xg_BlackBoardView>("BlackBoardView");
+            xw_BlackBoardView.graphWindow = this;
 
             // BlackBoardView 的ListView组件初始化
             xw_BlackBoardView.InitializeListView();
@@ -340,9 +341,8 @@
             xw_BlackBoardView.btn_addparam.clicked += xw_btn_addparam_clicked;
             xw_BlackBoardView.BringToFront();
 
-
             // 添加拖动支持
-            //Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
+            Element_Drag(ele_blackboard, ele_blackboard, "XGraph_BlackBoardViewPosition", "XGraph_BlackBoardViewSize", dragOffset_BlackBoard);
 
             // 在布局中找到 BlackBoardView Remote 容器标题组件
             xw_label_BlackBoardView_Container_Title = xw_BlackBoardView_Container.Q<Label>("BlackBoardView_Container_Title");
@@ -903,14 +903,17 @@
             // 鼠标按下
             handle.RegisterCallback<PointerDownEvent>(evt =>
             {
-                if (evt.button == 0)
-                {
-                    // ✅ 关键：用当前容器左上角相对于鼠标点击位置的偏移
-                    Vector2 mouseInTarget = target.WorldToLocal(evt.position);
-                    offset = mouseInTarget;
-                    target.CapturePointer(evt.pointerId);
-                    evt.StopPropagation();
-                }
+                if (evt.button != 0) return;
+
+                // 如果 ListView 没有初始化，或者当前点击在 ListView 内部，就放行
+                if (xw_BlackBoardView.BlackBoard_List != null && xw_BlackBoardView.BlackBoard_List.worldBound.Contains(evt.position))
+                    return; // 让事件继续冒泡给 ListView
+
+                // ✅ 关键：用当前容器左上角相对于鼠标点击位置的偏移
+                Vector2 mouseInTarget = target.WorldToLocal(evt.position);
+                offset = mouseInTarget;
+                target.CapturePointer(evt.pointerId);
+                evt.StopPropagation();
             });
             // 鼠标拖动
             handle.RegisterCallback<PointerMoveEvent>(evt =>

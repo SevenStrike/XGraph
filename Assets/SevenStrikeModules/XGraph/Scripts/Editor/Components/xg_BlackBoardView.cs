@@ -13,6 +13,7 @@ namespace SevenStrikeModules.XGraph
     public partial class xg_BlackBoardView : VisualElement
     {
         #region 组件
+        public xg_Window graphWindow;
         /// <summary>
         /// params列表
         /// </summary>
@@ -46,8 +47,6 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualTreeAsset ListViewTemplate;
         #endregion
-
-        GameObject[] sceneobjs;
 
         /// <summary>
         /// 构造器
@@ -116,9 +115,9 @@ namespace SevenStrikeModules.XGraph
             VisualElement ele_des = element.Q<VisualElement>("description");
             Label text_des = ele_des.Q<Label>("text");
 
-            var obj = sceneobjs[index];
+            var obj = graphWindow.CloneTree.BlackboardVariables[index];
             text_name.text = obj.name;
-            text_des.text = obj.transform.position.ToString();
+            text_des.text = obj.type.ToString();
         }
         /// <summary>
         /// 选择列表项时
@@ -136,11 +135,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void ParamListItem_Add()
         {
-            Scene scene = SceneManager.GetActiveScene();
-            sceneobjs = scene.GetRootGameObjects();
-
             // 设置数据源并刷新
-            BlackBoard_List.itemsSource = sceneobjs;
+            BlackBoard_List.itemsSource = graphWindow.CloneTree.BlackboardVariables;
 
             BlackBoard_List.Rebuild();
             BlackBoard_List.RefreshItems();
