@@ -1,15 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.VersionControl;
 #endif
     using UnityEngine;
-    using static UnityEditor.PlayerSettings;
     using Object = UnityEngine.Object;
 
     [System.Serializable]
@@ -155,7 +152,7 @@ namespace SevenStrikeModules.XGraph
     public class BlackboardVariable
     {
         public string name;
-        public BlackboardVarType type;
+        public BlackboardVariableType type;
         public string stringValue;
         public float floatValue;
         public int intValue;
@@ -199,7 +196,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="vector4Value"></param>
         /// <param name="objectValue"></param>
         /// <returns></returns>
-        public BlackboardVariable(string name = null, BlackboardVarType type = BlackboardVarType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
+        public BlackboardVariable(string name = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
         {
             this.name = name;
             this.type = type;
@@ -222,15 +219,39 @@ namespace SevenStrikeModules.XGraph
     /// <summary>
     /// 黑板值类型
     /// </summary>
-    public enum BlackboardVarType
+    public enum BlackboardVariableType
     {
+        /// <summary>
+        /// 值 - 字符串
+        /// </summary>
         String = 0,
+        /// <summary>
+        /// 值 - 浮点
+        /// </summary>
         Float = 1,
+        /// <summary>
+        /// 值 - 整数
+        /// </summary>
         Int = 2,
+        /// <summary>
+        /// 值 - 布尔开关
+        /// </summary>
         Bool = 3,
+        /// <summary>
+        /// 值 - 2维向量
+        /// </summary>
         Vector2 = 4,
+        /// <summary>
+        /// 值 - 3维向量
+        /// </summary>
         Vector3 = 5,
+        /// <summary>
+        /// 值 - 4维向量
+        /// </summary>
         Vector4 = 6,
+        /// <summary>
+        /// 值 - 物体
+        /// </summary>
         Object = 7
     }
 

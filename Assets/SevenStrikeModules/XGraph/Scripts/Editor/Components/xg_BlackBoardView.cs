@@ -101,7 +101,7 @@ namespace SevenStrikeModules.XGraph
             BlackBoard_List.selectionChanged += VariableListItem_SelectionChanged;
 
             // 注册添加属性按钮动作
-            btn_AddVariable.RegisterCallback<ClickEvent>(VariableListView_AddMenuOpen);
+            btn_AddVariable.RegisterCallback<ClickEvent>(VariableListView_OpenAddVariablesMenu);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace SevenStrikeModules.XGraph
         /// 添加属性的按钮的事件
         /// </summary>
         /// <param name="evt"></param>
-        private void VariableListView_AddMenuOpen(ClickEvent evt)
+        private void VariableListView_OpenAddVariablesMenu(ClickEvent evt)
         {
             // 获取按钮引用
             Button button = evt.target as Button;
@@ -175,7 +175,7 @@ namespace SevenStrikeModules.XGraph
             if (button != null)
             {
                 // 获取按钮在屏幕上的位置
-                Vector2 screenPosition = button.localBound.position;
+                Vector2 screenPosition = button.worldBound.position;
 
                 // 调整位置，让菜单出现在按钮下方
                 screenPosition.y += button.worldBound.height;
@@ -184,10 +184,14 @@ namespace SevenStrikeModules.XGraph
                 var menu = new GenericMenu();
 
                 // 添加菜单项
-                menu.AddItem(new GUIContent("添加整数参数"), false, () => Debug.Log("int"));
-                menu.AddItem(new GUIContent("添加浮点数参数"), false, () => Debug.Log("float"));
-                menu.AddItem(new GUIContent("添加字符串参数"), false, () => Debug.Log("string"));
-                menu.AddItem(new GUIContent("添加布尔参数"), false, () => Debug.Log("bool"));
+                menu.AddItem(new GUIContent("添加 - 字符串参数"), false, () => Debug.Log("String"));
+                menu.AddItem(new GUIContent("添加 - 浮点数参数"), false, () => Debug.Log("Float"));
+                menu.AddItem(new GUIContent("添加 - 整数参数"), false, () => Debug.Log("Int"));
+                menu.AddItem(new GUIContent("添加 - 布尔参数"), false, () => Debug.Log("Bool"));
+                menu.AddItem(new GUIContent("添加 - 2维向量参数"), false, () => Debug.Log("Vector2"));
+                menu.AddItem(new GUIContent("添加 - 3维向量参数"), false, () => Debug.Log("Vector3"));
+                menu.AddItem(new GUIContent("添加 - 4维向量参数"), false, () => Debug.Log("Vector4"));
+                menu.AddItem(new GUIContent("添加 - 物体参数"), false, () => Debug.Log("Object"));
                 // 显示菜单
                 menu.DropDown(new Rect(screenPosition, Vector2.zero));
             }
