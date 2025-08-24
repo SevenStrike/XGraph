@@ -1,10 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.SceneManagement;
 #endif
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -151,6 +153,7 @@ namespace SevenStrikeModules.XGraph
     [System.Serializable]
     public class BlackboardVariable
     {
+#if UNITY_EDITOR
         public string name;
         public BlackboardVariableType type;
         public string stringValue;
@@ -161,12 +164,17 @@ namespace SevenStrikeModules.XGraph
         public Vector3 vector3Value;
         public Vector4 vector4Value;
         public UnityEngine.Object objectValue;
+        public string guid;
+        /// <summary>
+        /// 所有用到属性的节点的guid列表，用于重建节点图连线关系
+        /// </summary>
+        public List<string> guidsconnector = new List<string>();
 
         /// <summary>
         /// 黑板属性克隆
         /// </summary>
         /// <returns></returns>
-        public BlackboardVariable Clone()
+        public BlackboardVariable Clone(bool guid_create)
         {
             var clone = new BlackboardVariable();
             clone.name = name;
@@ -179,6 +187,7 @@ namespace SevenStrikeModules.XGraph
             clone.vector3Value = vector3Value;
             clone.vector4Value = vector4Value;
             clone.objectValue = objectValue;
+            clone.guid = guid_create ? UnityEditor.GUID.Generate().ToString() : guid;
             return clone;
         }
 
@@ -208,12 +217,27 @@ namespace SevenStrikeModules.XGraph
             this.vector3Value = vector3Value;
             this.vector4Value = vector4Value;
             this.objectValue = objectValue;
+            this.guid = UnityEditor.GUID.Generate().ToString();
+        }
+
+        /// <summary>
+        /// 黑板属性构造
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public BlackboardVariable(string name = null, BlackboardVariableType type = BlackboardVariableType.String)
+        {
+            this.name = name;
+            this.type = type;
+            this.guid = UnityEditor.GUID.Generate().ToString();
         }
 
         /// <summary>
         /// 黑板属性构造
         /// </summary>
         public BlackboardVariable() { }
+#endif
     }
 
     /// <summary>
@@ -392,7 +416,7 @@ namespace SevenStrikeModules.XGraph
             BlackboardVariables = new List<BlackboardVariable>();
             foreach (var bbv in root.BlackboardVariables)
             {
-                BlackboardVariables.Add(bbv.Clone());
+                BlackboardVariables.Add(bbv.Clone(false));
             }
 
             // 创建新节点副本并添加到原始资源中
@@ -442,8 +466,8 @@ namespace SevenStrikeModules.XGraph
                 }
             }
 
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(this);
+            AssetDatabase.SaveAssetIfDirty(root);
 #endif
         }
         /// <summary>
@@ -476,7 +500,7 @@ namespace SevenStrikeModules.XGraph
             foreach (var bbv in BlackboardVariables)
             {
 #if UNITY_EDITOR
-                newRoot.BlackboardVariables.Add(bbv.Clone());
+                newRoot.BlackboardVariables.Add(bbv.Clone(false));
 #endif
             }
 
@@ -561,6 +585,8 @@ namespace SevenStrikeModules.XGraph
                 }
             }
             SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
+
+            AssetDatabase.SaveAssetIfDirty(newRoot);
 
             return newRoot;
         }
@@ -863,6 +889,6 @@ namespace SevenStrikeModules.XGraph
         {
             NodeGroupDatas.Remove(data);
         }
-        #endregion       
+        #endregion
     }
 }

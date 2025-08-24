@@ -2,11 +2,10 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
+    using System.Linq;
     using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.SceneManagement;
     using UnityEngine.UIElements;
 
     public class VariableTheme
@@ -31,7 +30,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// params列表
         /// </summary>
-        public ListView BlackBoard_List;
+        public ListView VariableList;
         /// <summary>
         /// 标题容器
         /// </summary>
@@ -89,45 +88,48 @@ namespace SevenStrikeModules.XGraph
         public void Initialize()
         {
             // 在此模块下寻找 ListView 组件
-            BlackBoard_List = this.Q<ListView>("ParamsList");
+            VariableList = this.Q<ListView>("VariableList");
 
             // 创造 ListView 的模版样式
-            BlackBoard_List.makeItem = VariableListItem_Make;
+            VariableList.makeItem = GetElement;
 
             // 绑定 ListView 数据
-            BlackBoard_List.bindItem = VariableListItem_Bind;
+            VariableList.bindItem = BindData;
 
-            // ListView 每一项点击的动作
-            BlackBoard_List.selectionChanged += VariableListItem_SelectionChanged;
+            // ListView 每一项点击切换的动作
+            VariableList.selectionChanged += SelectionChanged;
+
+            // ListView 每一项选中时的按键动作
+            VariableList.RegisterCallback<KeyDownEvent>(KeyControl);
 
             // 注册添加属性按钮动作
-            btn_AddVariable.RegisterCallback<ClickEvent>(VariableListView_OpenAddVariablesMenu);
+            btn_AddVariable.RegisterCallback<ClickEvent>(AddVariablesMenu);
         }
 
         /// <summary>
         /// 获取列表项模版
         /// </summary>
         /// <returns></returns>
-        private TemplateContainer VariableListItem_TemplateGet()
+        private TemplateContainer GetTemplate()
         {
             return ListViewTemplate.CloneTree();
         }
 
         /// <summary>
-        /// 指定列表项的组成结构
+        /// 获取列表项的模版跟物体作为列表项的基础样式和元素组成结构
         /// </summary>
         /// <returns></returns>
-        private VisualElement VariableListItem_Make()
+        private VisualElement GetElement()
         {
-            return VariableListItem_TemplateGet().Q<VisualElement>("container");
+            return GetTemplate().Q<VisualElement>("container");
         }
 
         /// <summary>
-        /// 绑定列表项
+        /// 绑定列表项的数据
         /// </summary>
         /// <param text_name="element"></param>
         /// <param text_name="index"></param>
-        private void VariableListItem_Bind(VisualElement element, int index)
+        private void BindData(VisualElement element, int index)
         {
             VisualElement ele_pill = element.Q<VisualElement>("pill");
             VisualElement icon = ele_pill.Q<VisualElement>("icon");
@@ -154,20 +156,20 @@ namespace SevenStrikeModules.XGraph
         /// 重建黑板的所有属性
         /// </summary>
         /// <param name="vars"></param>
-        public void VariableListView_Rebuild(List<BlackboardVariable> vars)
+        public void Restructure(List<BlackboardVariable> vars)
         {
             // 设置数据源并刷新
-            BlackBoard_List.itemsSource = vars;
+            VariableList.itemsSource = vars;
 
-            BlackBoard_List.Rebuild();
-            BlackBoard_List.RefreshItems();
+            VariableList.Rebuild();
+            VariableList.RefreshItems();
         }
 
         /// <summary>
         /// 添加属性的按钮的事件
         /// </summary>
         /// <param name="evt"></param>
-        private void VariableListView_OpenAddVariablesMenu(ClickEvent evt)
+        private void AddVariablesMenu(ClickEvent evt)
         {
             // 获取按钮引用
             Button button = evt.target as Button;
@@ -184,14 +186,38 @@ namespace SevenStrikeModules.XGraph
                 var menu = new GenericMenu();
 
                 // 添加菜单项
-                menu.AddItem(new GUIContent("添加 - 字符串参数"), false, () => Debug.Log("String"));
-                menu.AddItem(new GUIContent("添加 - 浮点数参数"), false, () => Debug.Log("Float"));
-                menu.AddItem(new GUIContent("添加 - 整数参数"), false, () => Debug.Log("Int"));
-                menu.AddItem(new GUIContent("添加 - 布尔参数"), false, () => Debug.Log("Bool"));
-                menu.AddItem(new GUIContent("添加 - 2维向量参数"), false, () => Debug.Log("Vector2"));
-                menu.AddItem(new GUIContent("添加 - 3维向量参数"), false, () => Debug.Log("Vector3"));
-                menu.AddItem(new GUIContent("添加 - 4维向量参数"), false, () => Debug.Log("Vector4"));
-                menu.AddItem(new GUIContent("添加 - 物体参数"), false, () => Debug.Log("Object"));
+                menu.AddItem(new GUIContent("添加 - 字符串参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.String));
+                });
+                menu.AddItem(new GUIContent("添加 - 浮点数参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Float));
+                });
+                menu.AddItem(new GUIContent("添加 - 整数参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Int));
+                });
+                menu.AddItem(new GUIContent("添加 - 布尔参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Bool));
+                });
+                menu.AddItem(new GUIContent("添加 - 2维向量参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Vector2));
+                });
+                menu.AddItem(new GUIContent("添加 - 3维向量参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Vector3));
+                });
+                menu.AddItem(new GUIContent("添加 - 4维向量参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Vector4));
+                });
+                menu.AddItem(new GUIContent("添加 - 物体参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Object));
+                });
                 // 显示菜单
                 menu.DropDown(new Rect(screenPosition, Vector2.zero));
             }
@@ -201,22 +227,136 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
+        /// 添加黑板属性
+        /// </summary>
+        /// <param name="vars"></param>
+        public void AddVariable(BlackboardVariable vars)
+        {
+            // 确保ListView的Item不为空
+            if (VariableList.itemsSource == null)
+                VariableList.itemsSource = new List<BlackboardVariable>();
+
+            Undo.RecordObject(graphWindow.CloneTree, "Added BlackBoardVariable");
+
+            // 添加属性数据源并刷新
+            VariableList.itemsSource.Add(vars);
+
+            VariableList.Rebuild();
+            VariableList.RefreshItems();
+
+            // 每次添加完属性后将焦点给到GraphView窗口控件，便于能正确识别Ctrl+S保存节点图
+            graphWindow.xw_graphView.Focus();
+        }
+
+        /// <summary>
+        /// 移除当前选择的黑板属性
+        /// </summary>
+        public void Remove_CurrentSelectedVariable()
+        {
+            Undo.RecordObject(graphWindow.CloneTree, "Removed BlackBoardVariable");
+            // 设置数据源并刷新
+            VariableList.itemsSource.RemoveAt(VariableList.selectedIndex);
+
+            VariableList.Rebuild();
+            VariableList.RefreshItems();
+        }
+
+        /// <summary>
+        /// 移除当前所选的黑板属性
+        /// </summary>
+        public void Remove_CurrentSelectedVariables()
+        {
+            Undo.RecordObject(graphWindow.CloneTree, "Removed BlackBoardVariables");
+
+            foreach (var item in VariableList.selectedItems)
+            {
+                // 设置数据源并刷新
+                VariableList.itemsSource.Remove(item);
+            }
+
+            VariableList.Rebuild();
+            VariableList.RefreshItems();
+        }
+
+        /// <summary>
+        /// 创建黑板的属性
+        /// </summary>
+        /// <param name="type"></param>
+        public BlackboardVariable Variable_Create(BlackboardVariableType type)
+        {
+            BlackboardVariable vare = new BlackboardVariable();
+            vare.type = type;
+            vare.name = type.ToString();
+#if UNITY_EDITOR
+            vare.guid = UnityEditor.GUID.Generate().ToString();
+            Undo.RecordObject(graphWindow.CloneTree, "Create BlackboardVariable");
+#endif
+            Debug.Log($"创建了： {vare.type.ToString()} 到黑板中！");
+
+            return vare;
+        }
+
+        /// <summary>
         /// 选择列表项时
         /// </summary>
         /// <param name="enumerable"></param>
-        private void VariableListItem_SelectionChanged(IEnumerable<object> enumerable)
+        private void SelectionChanged(IEnumerable<object> enumerable)
         {
-            foreach (var obj in enumerable)
+            // 当选择了属性时让 InspectorView显示属性值
+            if (enumerable.Count() > 0)
             {
-                EditorGUIUtility.PingObject(obj as UnityEngine.Object);
+                foreach (var obj in enumerable)
+                {
+                    BlackboardVariable vare = obj as BlackboardVariable;
+                    graphWindow.Element_Label_Set(graphWindow.xw_label_InspectorView_Container_Title, $"黑板属性 - {vare.name}");
+                    graphWindow.xw_InspectorView.UpdateSelection(vare);
+                }
+            }
+            // 当取消选择属性时让 InspectorView显示当前行为树根节点属性
+            else
+            {
+                graphWindow.InspectorViewAction_SetTitle($"{graphWindow.SourceTree.name} 行为根节点属性");
+                graphWindow.xw_InspectorView.UpdateSelection(graphWindow.CloneTree);
             }
         }
 
         /// <summary>
-        /// 清空所有属性
+        /// 列表项的按键动作
         /// </summary>
-        internal void ClearVariables()
+        /// <param name="evt"></param>
+        private void KeyControl(KeyDownEvent evt)
         {
+            if (evt.keyCode == KeyCode.Delete)
+            {
+                if (VariableList.selectedIndices.Count() == 1)
+                    Remove_CurrentSelectedVariable();
+                else
+                    Remove_CurrentSelectedVariables();
+                evt.StopPropagation();
+            }
+            if (evt.keyCode == KeyCode.D && (evt.ctrlKey || evt.commandKey))
+            {
+                List<BlackboardVariable> vares = new List<BlackboardVariable>();
+                foreach (var item in VariableList.selectedItems)
+                {
+                    BlackboardVariable vare = item as BlackboardVariable;
+                    if (vare != null)
+                        vares.Add(vare);
+                    Debug.Log(vare.type);
+                }
+
+                vares.ForEach(v =>
+                {
+                    AddVariable(v);
+                });
+
+                evt.StopPropagation();
+            }
+            if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
+            {
+                graphWindow.ActionTree_SaveAndReplace();
+                evt.StopPropagation();
+            }
 
         }
     }

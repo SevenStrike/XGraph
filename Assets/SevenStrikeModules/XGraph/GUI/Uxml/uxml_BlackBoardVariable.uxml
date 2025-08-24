@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_ListViewItem.uss?fileID=7433441132597879392&amp;guid=b8e8fc8fd2a44be4ab7d1ddce8ba9e6a&amp;type=3#uss_ListViewItem" />
+    <engine:VisualElement name="container" class="item_container">
+        <engine:VisualElement name="pill" picking-mode="Ignore" class="item_container_pill">
+            <engine:VisualElement name="icon" picking-mode="Ignore" class="item_icon" />
+            <engine:Label text="Vector4" name="text" picking-mode="Ignore" class="item_label_title" />
+        </engine:VisualElement>
+        <engine:VisualElement name="description" picking-mode="Ignore" class="item_container_des">
+            <engine:Label text="---------------------" name="text" picking-mode="Ignore" class="item_label_des" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

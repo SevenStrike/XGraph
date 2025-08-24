@@ -1,5 +1,6 @@
 ﻿namespace SevenStrikeModules.XGraph
 {
+    using Codice.CM.Common.Tree;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -216,6 +217,7 @@
                         wnd.xw_InspectorView.UpdateSelection(wnd.CloneTree);
                     }
                 };
+                wnd.InspectorViewAction_SetTitle($"{wnd.SourceTree.name} 行为根节点属性");
                 #endregion
 
                 #region 黑板面板的状态恢复
@@ -227,14 +229,12 @@
                 wnd.xw_toggle_BlackBoardViewDisplay.value = blackboard_view_toggle;
                 EditorApplication.delayCall += () =>
                 {
-                    if (blackboard_view_toggle)
-                    {
-                        // 刷新 BlackBoard 标题显示
-                        wnd.xw_UpdateBlackBoardInfo();
-                        // 刷新 BlackBoard 属性列表
-                        wnd.xw_UpdateBlackBoardVariables();
-                    }
+                    // 刷新 BlackBoard 标题显示
+                    wnd.xw_UpdateBlackBoardInfo();
+                    // 刷新 BlackBoard 属性列表
+                    wnd.xw_BlackBoardVariablesRestructure();
                 };
+                wnd.BlackBoardViewAction_SetTitle($"{wnd.SourceTree.name} 属性黑板");
                 #endregion
 
                 #region Node节点颜色标记的状态恢复
@@ -250,8 +250,6 @@
                 #endregion
 
                 // 加载 View 面板标题文字
-                wnd.Element_Label_Set(wnd.xw_label_InspectorView_Container_Title, $"{wnd.SourceTree.name} 行为根节点属性");
-                wnd.Element_Label_Set(wnd.xw_label_BlackBoardView_Container_Title, $"{wnd.SourceTree.name} 属性黑板");
 
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
                 EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
@@ -319,6 +317,7 @@
             #region BlackBoardView ---------- 初始化
             // 在布局中找到 InspectorView 容器组件
             xw_BlackBoardView_Container = root.Q<VisualElement>("BlackBoardView_Container");
+
             // 设置 InspectorView 容器组件最小尺寸
             xg_ResizableElement ele_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
             ele_blackboard.SetMinSize(new Vector2(250, 320));
@@ -538,6 +537,9 @@
             Element_Position_Load("XGraph_InspectorViewPosition", element_inspector, "右上");
             // 加载 RemoteInspector 面板尺寸
             Element_Size_Load("XGraph_InspectorViewSize", element_inspector);
+
+            // 加载 BlackBoard 面板标题文字
+            InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
             #endregion
 
             #region 黑板面板的状态恢复
@@ -547,24 +549,21 @@
             Element_Visibility_Set(xw_BlackBoardView_Container, blackboard_toggle);
             // 设置移动式属性视图容器可见性按钮开关状态
             xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
-            if (blackboard_toggle)
-            // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-            {
-                // 刷新 BlackBoard 显示
-                xw_UpdateBlackBoardInfo();
-            }
+
+            // 刷新 BlackBoard 显示
+            xw_UpdateBlackBoardInfo();
+            // 刷新 BlackBoard 属性列表
+            xw_BlackBoardVariablesRestructure();
 
             xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
-            // 加载 RemoteInspector 面板位置
+            // 加载 BlackBoard 面板位置
             Element_Position_Load("XGraph_BlackBoardViewPosition", element_blackboard, "左上");
-            // 加载 RemoteInspector 面板尺寸
+            // 加载 BlackBoard 面板尺寸
             Element_Size_Load("XGraph_BlackBoardViewSize", element_blackboard);
-            #endregion
 
-            // 加载 Inspector 面板标题文字
-            Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
             // 加载 BlackBoard 面板标题文字
-            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 属性黑板");
+            BlackBoardViewAction_SetTitle($"{SourceTree.name} 属性黑板");
+            #endregion
 
             // 重新加载行为树资源
             SourceTree = tree_source;
@@ -612,11 +611,10 @@
             xw_InspectorView.UpdateSelection(nodeview);
 
             // 加载 Inspector 面板标题文字
-            Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - {nodeview.ActionNode.identifyName}");
+            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionNode.identifyName}");
+
             // 显示当前选中的节点的类型信息
-            Element_Label_Set(xw_label_graph_CurrentNodeName, nodeview.ActionNode.GetInfo());
-            // 显示当前选中的节点的挂载资源路径
-            Element_Label_Set(xw_label_graph_CurrentNodePath, nodeview.ActionNode.GetPath());
+            InspectorViewAction_SetNodeInfo(nodeview.ActionNode.GetInfo(), nodeview.ActionNode.GetPath());
             xw_isUnSelectedNode = false;
         }
         /// <summary>
@@ -640,11 +638,10 @@
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
                 // 加载 Inspector 面板标题文字
-                Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - {nodeviews[0].ActionNode.identifyName}");
+                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionNode.identifyName}");
+
                 // 显示当前选中的节点的类型信息
-                Element_Label_Set(xw_label_graph_CurrentNodeName, nodeviews[0].ActionNode.GetInfo());
-                // 显示当前选中的节点的挂载资源路径
-                Element_Label_Set(xw_label_graph_CurrentNodePath, nodeviews[0].ActionNode.GetPath());
+                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionNode.GetInfo(), nodeviews[0].ActionNode.GetPath());
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -657,11 +654,8 @@
                 xw_InspectorView.ClearInspector();
 
                 // 加载 Inspector 面板标题文字
-                Element_Label_Set(xw_label_InspectorView_Container_Title, $"节点属性 - 多选状态");
-                // 当前选中的节点的类型信息 - 混合状态
-                Element_Label_Set(xw_label_graph_CurrentNodeName, "-");
-                // 当前选中的节点的挂载资源路径 - 混合状态
-                Element_Label_Set(xw_label_graph_CurrentNodePath, "-");
+                InspectorViewAction_SetTitle($"节点属性 - 多选状态");
+                InspectorViewAction_SetNodeInfo("-", "-");
             }
         }
         /// <summary>
@@ -693,17 +687,35 @@
                 xw_InspectorView.UpdateSelection(CloneTree);
 
                 // 加载 Inspector 面板标题文字
-                Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
+                InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
 
                 xw_currentSelectedVisualNode = null;
 
                 // 节点的类型信息 - 清空
-                Element_Label_Set(xw_label_graph_CurrentNodeName, null);
-                // 节点的挂载资源路径 - 清空
-                Element_Label_Set(xw_label_graph_CurrentNodePath, null);
+                InspectorViewAction_SetNodeInfo(null, null);
             }
         }
         #endregion
+
+        public void InspectorViewAction_SetTitle(string Title)
+        {
+            // 加载 Inspector 面板标题文字
+            Element_Label_Set(xw_label_InspectorView_Container_Title, Title);
+        }
+
+        public void BlackBoardViewAction_SetTitle(string Title)
+        {
+            // 加载 Inspector 面板标题文字
+            Element_Label_Set(xw_label_BlackBoardView_Container_Title, Title);
+        }
+
+        public void InspectorViewAction_SetNodeInfo(string name, string path)
+        {
+            // 节点的类型信息 - 清空
+            Element_Label_Set(xw_label_graph_CurrentNodeName, name);
+            // 节点的挂载资源路径 - 清空
+            Element_Label_Set(xw_label_graph_CurrentNodePath, path);
+        }
 
         #region 控件逻辑
         /// <summary>
@@ -838,9 +850,10 @@
             CloneTree = tree.Clone();
 
             // 加载 Inspector 面板标题文字
-            Element_Label_Set(xw_label_InspectorView_Container_Title, $"{SourceTree.name} 行为根节点属性");
+            InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
+
             // 加载 BlackBoard 面板标题文字
-            Element_Label_Set(xw_label_BlackBoardView_Container_Title, $"{SourceTree.name} 属性黑板");
+            BlackBoardViewAction_SetTitle($"{SourceTree.name} 属性黑板");
 
             EditorApplication.delayCall += () =>
             {
@@ -904,7 +917,7 @@
                 if (evt.button != 0) return;
 
                 // 如果 ListView 没有初始化，或者当前点击在 ListView 内部，就放行
-                if (xw_BlackBoardView.BlackBoard_List != null && xw_BlackBoardView.BlackBoard_List.worldBound.Contains(evt.position))
+                if (xw_BlackBoardView.VariableList != null && xw_BlackBoardView.VariableList.worldBound.Contains(evt.position))
                     return; // 让事件继续冒泡给 ListView
 
                 // ✅ 关键：用当前容器左上角相对于鼠标点击位置的偏移
@@ -1158,7 +1171,6 @@
 
             if (CloneTree == null || xw_graphView == null) return;
 
-            // 重新读取数据并重建所有视觉节点，清空旧节点和连线
             // 清空GraphView的所有节点
             xw_graphView.Node_Clear();
 
@@ -1170,7 +1182,7 @@
 
             // 清空 View 视图
             xw_InspectorView.ClearInspector();
-            xw_BlackBoardView.ClearVariables();
+            //xw_BlackBoardView.ClearVariables();
 
             // 根据当前数据重新生成节点
             xw_graphView.Restructure_VisualNodes(CloneTree);
@@ -1181,7 +1193,10 @@
             else
                 xw_InspectorView.UpdateSelection(CloneTree);
 
+            // 刷新 BlackBoard 标题显示
             xw_UpdateBlackBoardInfo();
+            // 刷新 BlackBoard 属性列表
+            xw_BlackBoardVariablesRestructure();
         }
         /// <summary>
         /// GraphView窗口关闭时的逻辑操作
@@ -1207,14 +1222,6 @@
             Element_Size_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewSize");
 
             xw_DeleteCloneTreeAsset();
-
-            // 在保存前检查并清理可能的预览场景
-            if (EditorSceneManager.previewSceneCount > 50) // 设置一个合理的阈值
-            {
-                // 强制垃圾回收和资源清理
-                EditorUtility.UnloadUnusedAssetsImmediate();
-                GC.Collect();
-            }
         }
         /// <summary>
         /// 移除临时使用的TreeAsset
@@ -1263,11 +1270,11 @@
             xw_BlackBoardView.label_sub.text = $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}";
         }
         /// <summary>
-        /// 刷新 BlackBoard 属性列表
+        /// 读取 BlackBoardVariables 属性列表
         /// </summary>
-        public void xw_UpdateBlackBoardVariables()
+        public void xw_BlackBoardVariablesRestructure()
         {
-            xw_BlackBoardView.VariableListView_Rebuild(CloneTree.BlackboardVariables);
+            xw_BlackBoardView.Restructure(CloneTree.BlackboardVariables);
         }
         /// <summary>
         /// 设置工具栏前端图标

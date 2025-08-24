@@ -86,6 +86,21 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
+        /// 显示目标黑板变量的属性控件
+        /// </summary>
+        /// <param root_title="nodesasset"></param>
+        internal void UpdateSelection(BlackboardVariable vare)
+        {
+            Clear();
+            UnityEngine.Object.DestroyImmediate(editor);
+
+            Label lab = new Label();
+            lab.style.fontSize = 25;
+            lab.text = vare.name;
+            Add(lab);
+        }
+
+        /// <summary>
         /// 清空面板内容
         /// </summary>
         internal void ClearInspector()
