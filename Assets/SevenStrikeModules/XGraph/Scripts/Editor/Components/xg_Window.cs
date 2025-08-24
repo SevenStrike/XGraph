@@ -249,8 +249,6 @@
                 };
                 #endregion
 
-                // 加载 View 面板标题文字
-
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
                 EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
                 EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
