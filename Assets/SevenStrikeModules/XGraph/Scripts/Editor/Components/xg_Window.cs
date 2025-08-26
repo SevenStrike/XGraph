@@ -220,19 +220,19 @@
                 wnd.InspectorViewAction_SetTitle($"{wnd.SourceTree.name} 行为根节点属性");
                 #endregion
 
-                #region 黑板面板的状态恢复
+                #region 黑板属性面板的状态恢复
                 // 获取最后一次的黑板面板开关状态
                 bool blackboard_view_toggle = wnd.Element_State_Load("XGraph_BlackBoardViewDisplay");
-                // 设置 BlackBoardView Remote 容器可见性
+                // 设置 BlackBoardView  容器可见性
                 wnd.Element_Visibility_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
                 // 设置黑板视图容器可见性按钮开关状态
                 wnd.xw_toggle_BlackBoardViewDisplay.value = blackboard_view_toggle;
                 EditorApplication.delayCall += () =>
                 {
                     // 刷新 BlackBoard 标题显示
-                    wnd.xw_UpdateBlackBoardInfo();
+                    wnd.xw_BlackBoard_UpdateTitleInfo();
                     // 刷新 BlackBoard 属性列表
-                    wnd.xw_BlackBoardVariablesRestructure();
+                    wnd.xw_BlackBoard_VariablesRestructure();
                 };
                 wnd.BlackBoardViewAction_SetTitle($"{wnd.SourceTree.name} 属性黑板");
                 #endregion
@@ -510,6 +510,8 @@
         {
             if (tree_source == null) return;
 
+            xw_graphView.UnregisterGroupEvent();
+
             // 清理旧数据 
             xw_graphView?.Node_Clear();
             xw_graphView?.EdgesClear();
@@ -540,7 +542,7 @@
             InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
             #endregion
 
-            #region 黑板面板的状态恢复
+            #region 黑板属性面板的状态恢复
             // 获取最后一次的移动式属性面板开关状态
             bool blackboard_toggle = Element_State_Load("XGraph_BlackBoardViewDisplay");
             // 设置 InspectorView Remote 容器可见性
@@ -549,9 +551,9 @@
             xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
 
             // 刷新 BlackBoard 显示
-            xw_UpdateBlackBoardInfo();
+            xw_BlackBoard_UpdateTitleInfo();
             // 刷新 BlackBoard 属性列表
-            xw_BlackBoardVariablesRestructure();
+            xw_BlackBoard_VariablesRestructure();
 
             xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
             // 加载 BlackBoard 面板位置
@@ -566,6 +568,8 @@
             // 重新加载行为树资源
             SourceTree = tree_source;
             CloneTree = tree_clone;
+
+            xw_graphView.RegisterGroupEvent();
 
             // 延迟重建可视化行为树结构
             EditorApplication.delayCall += () =>
@@ -781,7 +785,7 @@
 
             if (state)
             {
-                xw_UpdateBlackBoardInfo();
+                xw_BlackBoard_UpdateTitleInfo();
             }
 
             // 记录 BlackBoardView 开关状态到行为树根节点变量
@@ -812,7 +816,7 @@
             // 清空GraphView的所有节点
             xw_graphView.ClearGraphViewContents();
             // 刷新 BlackBoard 显示
-            xw_UpdateBlackBoardInfo();
+            xw_BlackBoard_UpdateTitleInfo();
         }
         /// <summary>
         /// 打开行为树资源
@@ -892,7 +896,7 @@
                 Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
 
                 // 刷新 BlackBoard 显示
-                xw_UpdateBlackBoardInfo();
+                xw_BlackBoard_UpdateTitleInfo();
             }
             else if (isWindowResizing)
             {
@@ -1169,6 +1173,8 @@
 
             if (CloneTree == null || xw_graphView == null) return;
 
+            xw_graphView.UnregisterGroupEvent();
+
             // 清空GraphView的所有节点
             xw_graphView.Node_Clear();
 
@@ -1182,6 +1188,9 @@
             xw_InspectorView.ClearInspector();
             //xw_BlackBoardView.ClearVariables();
 
+
+            xw_graphView.RegisterGroupEvent();
+
             // 根据当前数据重新生成节点
             xw_graphView.Restructure_VisualNodes(CloneTree);
 
@@ -1192,9 +1201,9 @@
                 xw_InspectorView.UpdateSelection(CloneTree);
 
             // 刷新 BlackBoard 标题显示
-            xw_UpdateBlackBoardInfo();
+            xw_BlackBoard_UpdateTitleInfo();
             // 刷新 BlackBoard 属性列表
-            xw_BlackBoardVariablesRestructure();
+            xw_BlackBoard_VariablesRestructure();
         }
         /// <summary>
         /// GraphView窗口关闭时的逻辑操作
@@ -1262,7 +1271,7 @@
         /// <summary>
         /// 刷新 BlackBoard 标题信息显示
         /// </summary>
-        public void xw_UpdateBlackBoardInfo()
+        public void xw_BlackBoard_UpdateTitleInfo()
         {
             xw_BlackBoardView.label_title.text = SourceTree.name;
             xw_BlackBoardView.label_sub.text = $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}";
@@ -1270,7 +1279,7 @@
         /// <summary>
         /// 读取 BlackBoardVariables 属性列表
         /// </summary>
-        public void xw_BlackBoardVariablesRestructure()
+        public void xw_BlackBoard_VariablesRestructure()
         {
             xw_BlackBoardView.Restructure(CloneTree.BlackboardVariables);
         }

@@ -2,12 +2,9 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.Graphs;
     using UnityEngine;
-    using UnityEngine.Rendering;
     using UnityEngine.UIElements;
 
     public partial class xg_GraphView
@@ -75,7 +72,7 @@ namespace SevenStrikeModules.XGraph
                                 node.ActionNode.themeColor = pickedColor;
 
                                 // 改变图标颜色
-                                node.TitleIconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                node.TitleIconLabel.style.unityBackgroundImageTintColor = pickedColor;
 
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
@@ -129,15 +126,15 @@ namespace SevenStrikeModules.XGraph
                                 node.ActionNode.themeColor = util_EditorUtility.Color_From_HexString(dat.nodecolor);
 
                                 // 改变图标颜色
-                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                node.IconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeColor;
 
                                 // 改变图标颜色
-                                node.TitleIconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                node.TitleIconLabel.style.unityBackgroundImageTintColor = node.ActionNode.themeColor;
 
                                 // 改变连线颜色
                                 if (node.Port_Input != null && node.Port_Input.Port != null)
                                 {
-                                    node.Port_Input.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                    node.Port_Input.Port.portColor = node.ActionNode.themeColor;
                                     var edges = node.Port_Input.Port.connections.ToList();
                                     // 遍历所有连线
                                     foreach (var edge in edges)
@@ -149,7 +146,7 @@ namespace SevenStrikeModules.XGraph
                                 {
                                     node.Port_Outputs.ForEach(x =>
                                     {
-                                        x.Port.portColor = node.ActionNode.themeSolution == "M 默认" ? Color.white * 0.7f : node.ActionNode.themeColor;
+                                        x.Port.portColor = node.ActionNode.themeColor;
                                         var edges = x.Port.connections.ToList();
                                         // 遍历所有连线
                                         foreach (var edge in edges)
@@ -192,6 +189,41 @@ namespace SevenStrikeModules.XGraph
                     }
                 });
 
+                // 设置节点头像
+                if (nodebase.ActionNode.actionNodeType != "Relay")
+                {
+                    if (nodebase.ActionNode.HasAvatar)
+                    {
+                        evt.menu.AppendSeparator();
+                        evt.menu.AppendAction($"R 清空头像", (action) =>
+                        {
+                            if (CurrentSelectedNodes.Count > 0)
+                            {
+                                for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                                {
+                                    VNode_Base node = CurrentSelectedNodes[s];
+                                    node.NodeAvatar_Remove();
+                                    node.UnregisterAvatarClicked();
+                                }
+                            }
+                        });
+                        evt.menu.AppendAction($"W 替换头像", (action) =>
+                        {
+                            EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
+                            monitoringObjectPicker = true;
+                            evt.StopPropagation();
+                        });
+                    }
+                    else
+                    {
+                        evt.menu.AppendAction($"Z 设置头像", (action) =>
+                        {
+                            EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
+                            monitoringObjectPicker = true;
+                            evt.StopPropagation();
+                        });
+                    }
+                }
                 isInGraphNode = true;
                 evt.menu.AppendSeparator();
             }
@@ -291,6 +323,8 @@ namespace SevenStrikeModules.XGraph
                 }
                 #endregion
             }
+
+            evt.StopPropagation();
         }
     }
 }

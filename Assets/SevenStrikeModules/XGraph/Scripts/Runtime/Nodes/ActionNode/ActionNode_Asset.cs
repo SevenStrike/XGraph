@@ -9,6 +9,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.SceneManagement;
 #endif
     using UnityEngine;
+    using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
 
     [System.Serializable]
@@ -104,9 +105,17 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public Group group;
         /// <summary>
+        /// 编组内容容器组件
+        /// </summary>
+        [SerializeField] public VisualElement groupcontainer;
+        /// <summary>
         /// 编组内的所有节点的识别ID码
         /// </summary>
         public List<string> guids = new List<string>();
+        /// <summary>
+        /// 编组中是否包含节点
+        /// </summary>
+        public bool hasAvatarNodes;
 
         /// <summary>
         /// 编组克隆
@@ -119,9 +128,12 @@ namespace SevenStrikeModules.XGraph
             clone.name = name;
             clone.guid = guid_create ? GUID.Generate().ToString() : guid;
             clone.pos = pos;
-            clone.guids = guids;
+            clone.guids = new List<string>();
+            guids.ForEach(guid => clone.guids.Add(guid));
             clone.solution = solution;
             clone.group = null;
+            clone.groupcontainer = null;
+            clone.hasAvatarNodes = hasAvatarNodes;
             return clone;
         }
 
@@ -138,7 +150,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="pos"></param>
         /// <param name="guids"></param>
         /// <param name="group"></param>
-        public groupdata(string name, string guid, Vector2 pos, List<string> guids, string solution, Group group)
+        public groupdata(string name, string guid, Vector2 pos, List<string> guids, string solution, Group group, VisualElement groupcontainer)
         {
             this.name = name;
             this.guid = guid;
@@ -146,6 +158,7 @@ namespace SevenStrikeModules.XGraph
             this.guids = guids;
             this.solution = solution;
             this.group = group;
+            this.groupcontainer = groupcontainer;
         }
 #endif
     }

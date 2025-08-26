@@ -88,6 +88,11 @@ namespace SevenStrikeModules.XGraph
 
             divider.Add(IconLabel);
         }
+
+        public override void Draw_Main()
+        {
+
+        }
         #endregion
     }
 }

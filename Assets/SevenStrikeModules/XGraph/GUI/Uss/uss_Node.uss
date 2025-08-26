@@ -1,13 +1,43 @@
 .unity-base-text-field.Title_TextField
 {
+     display: none;
+     position: relative;
+     height: 25px;
+     width: auto;
+     font-size: 13px;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     padding-left: 0;
+     padding-top: 1px;
+     letter-spacing: 6px;
+     top: 4px;
+     left: 12px;
+     -unity-text-align: middle-left;
+     margin-right: 15px;
+     flex-grow: 1;
+     border-top-width: 1px;
+     border-bottom-width: 1px;
+     border-left-width: 1px;
+     border-right-width: 1px;
+     border-top-color: ##888;
+     border-bottom-color: ##888;
+     border-left-color: #888;
+     border-right-color: ##888;
+     border-radius: 5px 5px 5px 5px;
+}
+
+.unity-text-element.Title_Label
+{
+     position: relative;
+     font-size: 13px;
      height: 20px;
      width: auto;
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
      padding-left: 0;
      letter-spacing: 6px;
-     top: 5px;
-     left: 15px;
+     top: 6px;
+     left: 20px;
      -unity-text-align: middle-left;
      margin-right: 15px;
      flex-grow: 1;
@@ -37,6 +67,17 @@
      height: 18px;
      width: 18px;
      margin-right: 0px;
+     -unity-text-align: middle-left;
+}
+
+.Avatar_Icon
+{
+     position: absolute;
+     top: -50px;
+     right: 0px;
+     height: 60px;
+     width: 60px;
+     background-color: transparent;
      -unity-text-align: middle-left;
 }
 

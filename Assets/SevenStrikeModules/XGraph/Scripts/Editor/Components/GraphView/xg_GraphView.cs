@@ -7,6 +7,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
+    using UnityEngine.Rendering;
     using UnityEngine.UIElements;
     using Color = UnityEngine.Color;
     using Edge = UnityEditor.Experimental.GraphView.Edge;
@@ -167,6 +168,7 @@ namespace SevenStrikeModules.XGraph
         /// 节点颜色标记开关
         /// </summary>
         private bool NodeColorDisplay = false;
+        private bool monitoringObjectPicker = false;
 
         #region GraphView构造
         /// <summary>
@@ -212,17 +214,40 @@ namespace SevenStrikeModules.XGraph
             #region 注册事件委托
             // 注册处理快捷键
             RegisterCallback<KeyDownEvent>(Action_KeyDown);
-
             // 注册鼠标点击事件
             RegisterCallback<PointerDownEvent>(Action_PointerDown, TrickleDown.TrickleDown);
             #endregion
 
             // 读取Group主题色方案
             LoadThemes();
+
+            RegisterGroupEvent();
+
+            #region 快速选择头像专用隐藏式GUI
+            var imguiContainer = new IMGUIContainer(OnGUI);
+            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
+            Add(imguiContainer);
+            #endregion
         }
         #endregion
 
         #region 辅助方法
+        /// <summary>
+        /// 注册当元素移入 / 移出编组时委托
+        /// </summary>
+        public void RegisterGroupEvent()
+        {
+            elementsAddedToGroup += On_Group_AddedElements;
+            elementsRemovedFromGroup += On_Group_RemoveElements;
+        }
+        /// <summary>
+        /// 注销当元素移入 / 移出编组时委托
+        /// </summary>
+        public void UnregisterGroupEvent()
+        {
+            elementsAddedToGroup = null;
+            elementsRemovedFromGroup = null;
+        }
         /// <summary>
         /// 居中聚焦所有视觉节点
         /// </summary>
@@ -474,6 +499,32 @@ namespace SevenStrikeModules.XGraph
 
             return compatiblePorts;
         }
-        #endregion      
+        #endregion
+
+        #region 弹出选择头像面板
+        private void OnGUI()
+        {
+            if (monitoringObjectPicker && Event.current != null)
+            {
+                if (Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+                    if (selectedTexture != null)
+                    {
+                        if (CurrentSelectedNodes.Count > 0)
+                        {
+                            for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                            {
+                                VNode_Base node = CurrentSelectedNodes[s];
+                                node.RegisterAvatarClicked();
+                                node.NodeAvatar_Set(selectedTexture);
+                            }
+                        }
+                    }
+                    monitoringObjectPicker = false;
+                }
+            }
+        }
+        #endregion
     }
 }

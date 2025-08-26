@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -75,8 +76,6 @@ namespace SevenStrikeModules.XGraph
 
             // 清空 VariableList 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
-
-            //e.StopPropagation();
         }
         /// <summary>
         /// 处理快捷键
@@ -106,6 +105,7 @@ namespace SevenStrikeModules.XGraph
             }
             if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
             {
+                CollectGroupsPosition();
                 gv_GraphWindow.ActionTree_SaveAndReplace();
                 evt.StopPropagation();
             }
@@ -129,6 +129,8 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.Close();
                 evt.StopPropagation();
             }
+
+            //evt.StopPropagation();
         }
         /// <summary>
         /// 注册XGraphWindow的 节点颜色标记开关状态委托
@@ -172,6 +174,5 @@ namespace SevenStrikeModules.XGraph
             });
             NodeColorDisplay = state;
         }
-
     }
 }

@@ -168,11 +168,11 @@
     "Node": [
         {
             "solution": "M 默认",
-            "nodecolor": "#00000000"
+            "nodecolor": "#AFAFAF"
         },
         {
             "solution": "L 亮色",
-            "nodecolor": "#DEDEDE"
+            "nodecolor": "#FFFFFF"
         },
         {
             "solution": "H 灰色",
@@ -180,7 +180,7 @@
         },
         {
             "solution": "V 暗色",
-            "nodecolor": "#1A1A1A"
+            "nodecolor": "#161616"
         },
         {
             "solution": "J 橘色",

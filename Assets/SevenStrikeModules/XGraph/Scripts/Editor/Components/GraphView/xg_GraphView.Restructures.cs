@@ -19,20 +19,29 @@ namespace SevenStrikeModules.XGraph
             ActionTreeAsset = actiontree;
 
             graphViewChanged -= OnGraphViewChanged;
+
             // 清空所有 NodeView
             DeleteElements(graphElements);
+
             graphViewChanged += OnGraphViewChanged;
 
-            // 根据根节点的数据列表重建 NodeViews
+            // 根据根节点的数据列表  -  重建 Nodes
             ActionTreeAsset.ActionNodes.ForEach(data =>
             {
                 if (data.actionNodeType == "Relay")
+                {
                     Node_MakeRelay(data.nodeGraphPosition, data).Draw().RefreshExpandedState();
+                }
                 else
-                    Node_Make(data.nodeGraphPosition, data).Draw().RefreshExpandedState();
+                {
+                    VNode_Base vNode_Base = Node_Make(data.nodeGraphPosition, data).Draw();
+                    // 检查头像设置情况
+                    vNode_Base.CheckAvatarChanged();
+                    vNode_Base.RefreshExpandedState();
+                }
             });
 
-            // 根据行为树根节点的数据列表重建 Edges
+            // 根据行为树根节点的数据列表  -  重建 Edges
             ActionTreeAsset.ActionNodes.ForEach(d =>
             {
                 // 获取的目标数据节点的子数据节点
@@ -51,7 +60,7 @@ namespace SevenStrikeModules.XGraph
                 });
             });
 
-            // 根据行为树根节点的数据列表重建 Edges
+            // 根据行为树根节点的数据列表  -  重建 Edges
             ActionTreeAsset.ActionNodes.ForEach(d =>
             {
                 // 获取延展节点

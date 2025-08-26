@@ -1,12 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
+    using static UnityEditor.Rendering.FilterWindow;
 
     public partial class xg_GraphView
     {
@@ -53,11 +53,6 @@ namespace SevenStrikeModules.XGraph
             // 获取标题Label并注册改变内容事件
             Label group_element_title = group.Q<Label>("titleLabel");
             group_element_title.AddToClassList("group_title");
-
-            group_element_title.RegisterCallback<ChangeEvent<string>>(evt =>
-            {
-                OnGroupChangedName(group, group_element_title.text);
-            });
 
             // 应用配置文件的颜色到编组标题的文字颜色和背景颜色
             ThemesList.Group.ForEach(colorData =>
@@ -109,19 +104,14 @@ namespace SevenStrikeModules.XGraph
                         }
                     });
                 }
+                evt.StopPropagation();
             }));
 
-            // 注册编组位置改变事件
-            group.RegisterCallback<GeometryChangedEvent>(evt =>
+            group_element_title.RegisterCallback<ChangeEvent<string>>(evt =>
             {
-                if (evt.oldRect.position != evt.newRect.position)
-                {
-                    OnGroupChangedPosition(group, group.GetPosition().position);
-                }
+                ChangeGroupName(group, group_element_title.text);
+                evt.StopPropagation();
             });
-
-            // 注册编组变化事件
-            group.RegisterCallback<GeometryChangedEvent>(OnGroupChangedState);
 
             // 初始化状态跟踪
             CurrentCreatedGroups[group] = new HashSet<object>();
@@ -130,10 +120,11 @@ namespace SevenStrikeModules.XGraph
             if (groupData != null)
             {
                 groupData.group = group;
+                groupData.groupcontainer = group.Q<VisualElement>("contentContainerPlaceholder");
             }
 
             // 刷新 BlackBoard 信息显示
-            gv_GraphWindow.xw_UpdateBlackBoardInfo();
+            gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
 
             return group;
         }
@@ -161,7 +152,7 @@ namespace SevenStrikeModules.XGraph
             });
 
             // 创建编组数据
-            groupdata gp_data = new groupdata(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null);
+            groupdata gp_data = new groupdata(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
 
             // 初始化编组
             Group gp = CreateGroup(title, localMousePosition, gp_data);
@@ -181,7 +172,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param solution="group"></param>
         /// <param solution="newName"></param>
-        private void OnGroupChangedName(Group group, string newName)
+        private void ChangeGroupName(Group group, string newName)
         {
             groupdata groupData = ActionTreeAsset.NodeGroupDatas
                 .FirstOrDefault(g => g.group == group);
@@ -199,92 +190,35 @@ namespace SevenStrikeModules.XGraph
             }
         }
         /// <summary>
-        /// 同步编组 - 位置
+        /// 检查编组中是否存在节点
         /// </summary>
-        /// <param solution="group"></param>
-        /// <param solution="newpos"></param>
-        private void OnGroupChangedPosition(Group group, Vector2 newpos)
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool HasNodes(Group group)
         {
-            groupdata groupData = ActionTreeAsset.NodeGroupDatas
-                .FirstOrDefault(g => g.group == group);
-
-            if (groupData != null && groupData.pos != newpos)
-            {
-#if UNITY_EDITOR
-                Undo.RecordObject(ActionTreeAsset, "Reposition Group");
-#endif
-                groupData.pos = newpos;
-
-                //#if UNITY_EDITOR
-                //                EditorUtility.SetDirty(ActionTreeAsset);
-                //#endif
-            }
+            return group.containedElements.OfType<Node>().Any();
         }
         /// <summary>
-        /// Group 变化事件处理
+        /// 检查编组下的节点是否包含AvaterSet
         /// </summary>
-        private void OnGroupChangedState(GeometryChangedEvent evt)
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool HasMarkIconNodes(Group group)
         {
-            Group target = evt.target as Group;
-            if (target == null || !CurrentCreatedGroups.ContainsKey(target)) return;
-
-            // 查找对应的 groupdata
-            groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == target);
-            Undo.RecordObject(ActionTreeAsset, "Group Guids Changed");
-
-            var currentElements = new HashSet<object>(target.containedElements);
-            var previousElements = CurrentCreatedGroups[target];
-
-            var addedElements = new HashSet<object>(currentElements);
-            addedElements.ExceptWith(previousElements);
-
-            var removedElements = new HashSet<object>(previousElements);
-            removedElements.ExceptWith(currentElements);
-
-            // 处理移入的节点
-            foreach (var item in addedElements)
+            IEnumerable<Node> nodes = group.containedElements.OfType<Node>();
+            bool hasmark = false;
+            foreach (var node in nodes)
             {
-                string guid = null;
-                if (item is VNode_Base node)
+                if (node is VNode_Base bs)
                 {
-                    guid = node.ActionNode.guid;
-                    //Debug.Log($"Group '{sourceNode.title}' 移入节点: {data.RelayData.identifyName}");
-                }
-                else if (item is VNode_Stick stick)
-                {
-                    guid = stick.stickNoteData.guid;
-                    //Debug.Log($"Group '{sourceNode.title}' 移入便签: {stick.stickNoteData.solution}");
-                }
-
-                if (!string.IsNullOrEmpty(guid) && !groupData.guids.Contains(guid))
-                {
-                    groupData.guids.Add(guid);
+                    if (bs.ActionNode.HasAvatar)
+                    {
+                        hasmark = true;
+                        break;
+                    }
                 }
             }
-
-            // 处理移出的节点
-            foreach (var item in removedElements)
-            {
-                string guid = null;
-                if (item is VNode_Base node)
-                {
-                    guid = node.ActionNode.guid;
-                    //Debug.Log($"Group '{sourceNode.title}' 移出节点: {data.RelayData.identifyName}");
-                }
-                else if (item is VNode_Stick stick)
-                {
-                    guid = stick.stickNoteData.guid;
-                    //Debug.Log($"Group '{sourceNode.title}' 移出便签: {stick.stickNoteData.solution}");
-                }
-
-                if (!string.IsNullOrEmpty(guid))
-                {
-                    groupData.guids.Remove(guid);
-                }
-            }
-
-            // 更新状态跟踪
-            CurrentCreatedGroups[target] = currentElements;
+            return hasmark;
         }
         /// <summary>
         /// 清空所有视觉编组（保留组内节点）
@@ -374,5 +308,133 @@ namespace SevenStrikeModules.XGraph
             EditorUtility.SetDirty(ActionTreeAsset);
 #endif
         }
+        /// <summary>
+        /// 收集所有编组的位置信息
+        /// </summary>
+        private void CollectGroupsPosition()
+        {
+            ActionTreeAsset.NodeGroupDatas.ForEach(g =>
+            {
+                g.pos = g.group.GetPosition().position;
+            });
+        }
+        /// <summary>
+        /// 根据group寻找GroupData
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        private groupdata FindGroupData(Group group)
+        {
+            return ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+        }
+        /// <summary>
+        /// 检查编组内是否存在设置了头像的节点
+        /// </summary>
+        /// <param name="groupData"></param>
+        private void CheckHasAvatarNode(groupdata groupData)
+        {
+            // 检查编组中是否存在设置了Avatar的节点
+            groupData.hasAvatarNodes = HasMarkIconNodes(groupData.group);
+
+            // 如果有Avatar的节点那么编组内边距为60，否则为15
+            if (groupData.hasAvatarNodes)
+            {
+                groupData.groupcontainer.style.paddingTop = 60;
+            }
+            else
+            {
+                groupData.groupcontainer.style.paddingTop = 15;
+            }
+        }
+
+        #region 回调
+        /// <summary>
+        /// 当节点拖入编组
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="nodes"></param>
+        public void On_Group_AddedElements(Group group, IEnumerable<GraphElement> nodes)
+        {
+            // 查找对应的 groupdata
+            groupdata groupData = FindGroupData(group);
+            Undo.RecordObject(ActionTreeAsset, "Group AddedElements");
+
+            // ---------------------处理  移入  的节点
+            foreach (var item in nodes)
+            {
+                string guid = null;
+                if (item is VNode_Base node)
+                {
+                    // 获取移入的节点的guid
+                    guid = node.ActionNode.guid;
+
+                    // 注册委托 - 节点头像设置
+                    node.OnNodeAvatar_Set += ((n) =>
+                    {
+                        // 检查编组内是否存在设置了头像的节点
+                        CheckHasAvatarNode(groupData);
+                    });
+                    // 注册委托 - 节点头像移除
+                    node.On_NodeAvatar_Clear += ((n) =>
+                    {
+                        // 检查编组内是否存在设置了头像的节点
+                        CheckHasAvatarNode(groupData);
+                    });
+                }
+                else if (item is VNode_Stick stick)
+                {
+                    // 获取移入的节点的guid
+                    guid = stick.stickNoteData.guid;
+                }
+
+                // 不重复的节点Guids数据加入
+                if (!string.IsNullOrEmpty(guid) && !groupData.guids.Contains(guid))
+                {
+                    groupData.guids.Add(guid);
+                }
+            }
+            CheckHasAvatarNode(groupData);
+        }
+        /// <summary>
+        /// 当节点移出编组
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="nodes"></param>
+        public void On_Group_RemoveElements(Group group, IEnumerable<GraphElement> nodes)
+        {
+            // 查找对应的 groupdata
+            groupdata groupData = FindGroupData(group);
+            Undo.RecordObject(ActionTreeAsset, "Group RemovedElements");
+
+            // ---------------------处理  移出  的节点
+            foreach (var item in nodes)
+            {
+                string guid = null;
+                if (item is VNode_Base node)
+                {
+                    // 获取移出的节点的guid
+                    guid = node.ActionNode.guid;
+
+                    // 清空委托 - 节点头像设置
+                    node.OnNodeAvatar_Set = null;
+                    // 清空委托 - 节点头像移除
+                    node.On_NodeAvatar_Clear = null;
+                }
+                else if (item is VNode_Stick stick)
+                {
+                    // 获取移出的节点的guid
+                    guid = stick.stickNoteData.guid;
+                }
+
+                // 包含节点Guids数据移除
+                if (!string.IsNullOrEmpty(guid) && groupData.guids.Contains(guid))
+                {
+                    groupData.guids.Remove(guid);
+                }
+            }
+            // 检查编组内是否存在设置了头像的节点
+            CheckHasAvatarNode(groupData);
+        }
+        #endregion
     }
 }

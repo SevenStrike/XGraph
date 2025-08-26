@@ -1,6 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System.Collections.Generic;
+    using System;
     using UnityEngine;
 
     public abstract class ActionNode_Base : ScriptableObject
@@ -53,6 +53,15 @@ namespace SevenStrikeModules.XGraph
         /// 并发执行开关
         /// </summary>
         [SerializeField] public bool isConcurrentExecution = false;
+        /// <summary>
+        /// 设定头像状态
+        /// </summary>
+        [SerializeField] public bool HasAvatar = false;
+        /// <summary>
+        /// 设定头像状态
+        /// </summary>
+        [SerializeField] public Texture2D Avatar;
+
 
         /// <summary>
         /// 行为执行方法

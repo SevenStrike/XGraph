@@ -5,8 +5,8 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
-    using UnityEngine.UI;
     using UnityEngine.UIElements;
+
 
     public class xGraph_NodePort
     {
@@ -95,17 +95,39 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<VNode_Base> OnUnSelectedNode;
         /// <summary>
+        /// 当为节点设置Avatar时的委托事件
+        /// </summary>
+        public Action<VNode_Base> OnNodeAvatar_Set;
+        /// <summary>
+        /// 当节点清空Avatar时的委托事件
+        /// </summary>
+        public Action<VNode_Base> On_NodeAvatar_Clear;
+        /// <summary>
         /// 视觉节点标题图标
         /// </summary>
         public Label TitleIconLabel;
+        /// <summary>
+        /// 视觉节点标记图标
+        /// </summary>
+        public VisualElement AvatarIcon;
         /// <summary>
         /// 视觉节点图标
         /// </summary>
         public Label IconLabel;
         /// <summary>
+        /// 视觉节点标题
+        /// </summary>
+        public Label TitleLabel;
+        /// <summary>
+        /// 视觉节点输入框
+        /// </summary>
+        public TextField TitleInputField;
+        /// <summary>
         /// 指定节点图标
         /// </summary>
         public string icon;
+
+        private bool monitoringObjectPicker = false;
 
         public Texture2D tex_logo_dir_sequential;
         public Texture2D tex_logo_dir_concurrent;
@@ -166,6 +188,17 @@ namespace SevenStrikeModules.XGraph
 
             // 设置节点的生成位置
             SetPosition(new Rect(pos, Vector2.zero));
+
+            // 关键：在节点监听拖拽事件
+            RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
+            RegisterCallback<DragPerformEvent>(OnDragPerform);
+            RegisterCallback<DragExitedEvent>(OnDragExit);
+
+            #region 快速选择头像专用隐藏式GUI
+            var imguiContainer = new IMGUIContainer(OnGUI);
+            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
+            AppendElement(GraphNodeContainerType.MainContainer, imguiContainer);
+            #endregion
         }
 
         /// <summary>
@@ -181,32 +214,61 @@ namespace SevenStrikeModules.XGraph
                 ActionNode.nodeGraphPosition.x = newPos.xMin;
                 ActionNode.nodeGraphPosition.y = newPos.yMin;
             }
+
+            VisualElementDisplay(TitleLabel, true);
+            VisualElementDisplay(TitleInputField, false);
+        }
+
+        #region 拖拽到节点
+        /// <summary>
+        /// 拖拽贴图到节点时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnDragUpdated(DragUpdatedEvent evt)
+        {
+            if (ActionNode.actionNodeType == "Relay")
+                return;
+
+            // 只关心贴图
+            if (DragAndDrop.objectReferences.Length > 0 &&
+                DragAndDrop.objectReferences[0] is Texture2D)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            }
+            else
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
+            }
+
+            evt.StopPropagation();   // 防止 GraphView 也处理
         }
 
         /// <summary>
-        /// 当点击节点时
+        /// 当拖拽离开节点时
         /// </summary>
-        public override void OnSelected()
+        /// <param name="evt"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void OnDragExit(DragExitedEvent evt)
         {
-            base.OnSelected();
 
-            // 调用回调事件
-            if (OnSelectedNode != null)
-            {
-                OnSelectedNode.Invoke(this);
-            }
         }
 
-        public override void OnUnselected()
+        /// <summary>
+        /// 松开鼠标赋值贴图到ActioNode的AvatarIcon
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnDragPerform(DragPerformEvent evt)
         {
-            base.OnUnselected();
+            if (ActionNode.actionNodeType == "Relay")
+                return;
+            var tex = DragAndDrop.objectReferences[0] as Texture2D;
+            if (tex == null) return;
 
-            // 调用回调事件
-            if (OnUnSelectedNode != null)
-            {
-                OnUnSelectedNode.Invoke(this);
-            }
+            NodeAvatar_Set(tex);
+
+            evt.StopPropagation();
         }
+        #endregion
 
         #region 端口设置
 
@@ -266,6 +328,9 @@ namespace SevenStrikeModules.XGraph
 
             // 绘制扩展容器
             Draw_Extension();
+
+            // 检查头像设置
+            CheckAvatarChanged();
 
             return this;
         }
@@ -348,38 +413,67 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Title()
         {
+            // 节点标题图标
             TitleIconLabel = new Label("");
             TitleIconLabel.AddToClassList("Title_Icon");
             TitleIconLabel.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{this.icon}.png");
-            // 应用配置文件的颜色到节点的标识颜色
-            graphView.ThemesList.Node.ForEach(colorData =>
+
+            if (ActionNode.themeSolution == "自定义")
             {
-                if (colorData.solution == ActionNode.themeSolution)
+                TitleIconLabel.style.unityBackgroundImageTintColor = ActionNode.themeColor;
+            }
+            else
+            {
+                // 应用配置文件的颜色到节点的标识颜色
+                graphView.ThemesList.Node.ForEach(colorData =>
                 {
-                    TitleIconLabel.style.unityBackgroundImageTintColor = ActionNode.themeSolution == "M 默认" ? Color.white : ActionNode.themeColor;
+                    if (colorData.solution == ActionNode.themeSolution)
+                    {
+                        TitleIconLabel.style.unityBackgroundImageTintColor = ActionNode.themeColor;
+                    }
+                });
+            }
+
+            // 用于显示节点名称
+            TitleLabel = new Label(ActionNode.identifyName);
+            TitleLabel.AddToClassList("Title_Label");
+            TitleLabel.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    VisualElementDisplay(TitleLabel, false);
+                    VisualElementDisplay(TitleInputField, true);
+                    EditorApplication.delayCall += () =>
+                    {
+                        TitleInputField.Focus();
+                    };
+                    evt.StopPropagation();
                 }
             });
+            //TitleLabel.RegisterCallback<GeometryChangedEvent>(TitleLabel_ChangedEvent);
 
-            TextField input_title = new TextField()
+            // 用于编辑节点名称
+            TitleInputField = new TextField()
             {
                 multiline = false
             };
-            input_title.value = ActionNode.identifyName;
-            input_title.AddToClassList("Title_TextField");
-            input_title.RegisterCallback<BlurEvent>(OnTitlteBlur);
-
-            VisualElement input = input_title.Q<VisualElement>("unity-text-input");
+            TitleInputField.value = ActionNode.identifyName;
+            TitleInputField.AddToClassList("Title_TextField");
+            TitleInputField.RegisterCallback<BlurEvent>(OnTitlteBlur);
+            VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
             input.AddToClassList("Title_TextInput");
-
             TextElement textelement = input.Q<TextElement>();
             textelement.AddToClassList("Title_TextElement");
+            //TitleInputField.RegisterCallback<GeometryChangedEvent>(TitleInputField_ChangedEvent);
 
+            // 节点折叠 / 展开按钮
             VisualElement element = titleContainer.Q<VisualElement>("title-button-container");
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
             AppendElement(GraphNodeContainerType.TitleContainer, TitleIconLabel);
-            AppendElement(GraphNodeContainerType.TitleContainer, input_title);
+            AppendElement(GraphNodeContainerType.TitleContainer, TitleInputField);
+            AppendElement(GraphNodeContainerType.TitleContainer, TitleLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, element);
         }
 
@@ -389,11 +483,13 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnTitlteBlur(BlurEvent evt)
         {
-            TextField textField = (evt.target as TextField);
             Undo.RecordObject(ActionNode, "Change ActionNode Name");
 
-            if (textField.value != ActionNode.name && textField.value != ActionNode.identifyName)
-                ActionNode.name = ActionNode.identifyName = textField.value;
+            if (TitleInputField.value != ActionNode.name && TitleInputField.value != ActionNode.identifyName)
+                TitleLabel.text = ActionNode.name = ActionNode.identifyName = TitleInputField.value;
+
+            VisualElementDisplay(TitleLabel, true);
+            VisualElementDisplay(TitleInputField, false);
         }
 
         /// <summary>
@@ -401,11 +497,189 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Main()
         {
+            mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
 
+            #region 头像组件
+            if (ActionNode.HasAvatar)
+            {
+                RegisterAvatarClicked();
+            }
+            #endregion
+        }
+
+        public void RegisterAvatarClicked()
+        {
+            if (AvatarIcon == null)
+            {
+                AvatarIcon = new VisualElement();
+                AvatarIcon.name = "AvatarIcon";
+                AvatarIcon.pickingMode = PickingMode.Position;
+                AvatarIcon.style.backgroundImage = ActionNode.Avatar;
+                AvatarIcon.AddToClassList("Avatar_Icon");
+                AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
+            }
+            // 修改头像点击回调
+            AvatarIcon.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                // 双击头像以更换头像
+                if (evt.clickCount == 2)
+                {
+                    OpenAvatarSelector();
+                    evt.StopPropagation();
+                }
+            });
+        }
+
+        public void UnregisterAvatarClicked()
+        {
+            if (AvatarIcon != null)
+            {
+                mainContainer.Remove(AvatarIcon);
+                AvatarIcon = null;
+            }
+        }
+
+        public void OpenAvatarSelector()
+        {
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNode.Avatar, false, "t:Texture2D", 0);
+            monitoringObjectPicker = true;
+        }
+
+        #endregion
+
+        #region 回调
+        /// <summary>
+        /// 当选择节点时
+        /// </summary>
+        public override void OnSelected()
+        {
+            base.OnSelected();
+
+            // 调用回调事件
+            if (OnSelectedNode != null)
+            {
+                OnSelectedNode.Invoke(this);
+            }
+
+            VisualElementDisplay(TitleLabel, true);
+            VisualElementDisplay(TitleInputField, false);
+        }
+        /// <summary>
+        /// 取消选择时
+        /// </summary>
+        public override void OnUnselected()
+        {
+            base.OnUnselected();
+
+            // 调用回调事件
+            if (OnUnSelectedNode != null)
+            {
+                OnUnSelectedNode.Invoke(this);
+            }
+
+            VisualElementDisplay(TitleLabel, true);
+            VisualElementDisplay(TitleInputField, false);
+        }
+        #endregion
+
+        #region 头像设置
+        /// <summary>
+        /// 检查是否设置了头像
+        /// </summary>
+        public void CheckAvatarChanged()
+        {
+            if (AvatarIcon == null)
+                return;
+
+            // 如果该节点设置了头像
+            if (ActionNode.HasAvatar)
+            {
+                // 头像组件的图片设置
+                if (ActionNode.Avatar != null)
+                    AvatarIcon.style.backgroundImage = ActionNode.Avatar;
+                else
+                    AvatarIcon.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png");
+                // 标题组件的缩进内边距
+                TitleLabel.style.paddingRight = 40;
+                TitleInputField.style.paddingRight = 37;
+            }
+            else
+            {
+                // 头像组件的图片设置
+                AvatarIcon.style.backgroundImage = null;
+                // 标题组件的缩进内边距
+                TitleLabel.style.paddingRight = 0;
+                TitleInputField.style.paddingRight = 0;
+            }
+        }
+        /// <summary>
+        /// 设置Avatar
+        /// </summary>
+        /// <param name="tex"></param>
+        public void NodeAvatar_Set(Texture2D tex)
+        {
+            Undo.RecordObject(ActionNode, "Set ActionNode Avatar");
+            // 头像状态开关 = 开
+            ActionNode.HasAvatar = true;
+            // 头像图像设置
+            ActionNode.Avatar = tex;
+
+            CheckAvatarChanged();
+
+            // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的扩展）
+            if (OnNodeAvatar_Set != null)
+                OnNodeAvatar_Set(this);
+        }
+        /// <summary>
+        /// 移除Avatar
+        /// </summary>
+        /// <param name="tex"></param>
+        public void NodeAvatar_Remove()
+        {
+            Undo.RecordObject(ActionNode, "Remove ActionNode Avatar");
+            // 头像状态开关 = 关
+            ActionNode.HasAvatar = false;
+            // 头像图像移除
+            ActionNode.Avatar = null;
+
+            CheckAvatarChanged();
+
+            // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的缩进）
+            if (On_NodeAvatar_Clear != null)
+                On_NodeAvatar_Clear(this);
+        }
+        /// <summary>
+        /// 添加 OnGUI 方法，用于处理头像选择
+        /// </summary>
+        private void OnGUI()
+        {
+            if (monitoringObjectPicker && Event.current != null)
+            {
+                if (Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+                    if (selectedTexture != null)
+                    {
+                        NodeAvatar_Set(selectedTexture);
+                    }
+                    monitoringObjectPicker = false;
+                }
+            }
         }
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 元素的视觉布局样式
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="display"></param>
+        private void VisualElementDisplay(VisualElement element, bool display)
+        {
+            if (element == null)
+                return;
+            element.style.display = display ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex) : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+        }
         /// <summary>
         /// 设置节点配色
         /// </summary>
