@@ -525,6 +525,25 @@ namespace SevenStrikeModules.XGraph
             BringToFront();
         }
         /// <summary>
+        /// 将节点置底显示（最下层显示级别）
+        /// </summary>
+        public void VisualElementSendToBack()
+        {
+            decaldata data = null;
+
+            for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
+            {
+                if (graphView.ActionTreeAsset.DecalDatas[i].guid == decalData.guid)
+                {
+                    data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
+                    graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
+                    break;
+                }
+            }
+            graphView.ActionTreeAsset.DecalDatas.Insert(0, data);
+            SendToBack();
+        }
+        /// <summary>
         /// 设置节点的样式应用
         /// </summary>
         /// <param h_name="StyleName"></param>

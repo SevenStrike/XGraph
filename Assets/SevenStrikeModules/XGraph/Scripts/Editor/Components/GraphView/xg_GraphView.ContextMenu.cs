@@ -290,9 +290,14 @@ namespace SevenStrikeModules.XGraph
                         decal.NodeDecalTexture_Flip_V();
                         evt.StopPropagation();
                     });
-                    evt.menu.AppendAction($"X 节点置顶", (action) =>
+                    evt.menu.AppendAction($"X 层级置顶", (action) =>
                     {
                         decal.VisualElementBringToFront();
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"Z 层级置底", (action) =>
+                    {
+                        decal.VisualElementSendToBack();
                         evt.StopPropagation();
                     });
                 }
