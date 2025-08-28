@@ -1,0 +1,49 @@
+#node-border
+{
+     margin: 0;
+     border-left-color: rgba(0, 0, 0,0);
+     border-right-color: rgba(0, 0, 0,0);
+     border-top-color: rgba(0, 0, 0,0);
+     border-bottom-color: rgba(0, 0, 0,0);
+}
+
+.resizer-icon
+{
+     right: 10px;
+     bottom: 10px;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/resize.png?fileID=2800000&guid=7ee37ab7fc61a8a43bfae9fed2cb81cf&type=3#resize");
+     background-size: 100% 100%;
+     -unity-background-image-tint-color: rgba(74, 74, 74, 0.82);
+     background-color: rgba(0, 0, 0, 0);
+     width: 50%;
+     height: 50%;
+     position: absolute;
+}
+
+.MainContainer
+{
+     width: 100%;
+     height: 100%;
+     margin-left: 0;
+     background-color: rgba(0, 0, 0, 0);
+     background-image: none;
+     -unity-slice-left: 0;
+     -unity-slice-top: 0;
+     -unity-slice-right: 0;
+     -unity-slice-bottom: 0;
+}
+
+.DecalTexture
+{
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-size: contain;
+     background-color: rgba(0, 0, 0, 0);
+     border-left-color: rgba(200, 200, 200,0.2);
+     border-right-color: rgba(200, 200, 200,0.2);
+     border-top-color: rgba(200, 200, 200,0.2);
+     border-bottom-color: rgba(200, 200, 200,0.2);
+     border-radius: 8px 8px 8px 8px;
+}

@@ -69,6 +69,14 @@ namespace SevenStrikeModules.XGraph
 
                     Node_MakeStick(sickData.position + new Vector2(50, 20), sickData).Draw();
                 }
+                else if (original is VNode_Decal xg_decal)
+                {
+                    decaldata decalData = xg_decal.decalData.Clone(true);
+                    Undo.RecordObject(ActionTreeAsset, "Duplicate DecalData");
+                    ActionTreeAsset.DecalDatas.Add(decalData);
+
+                    Node_MakeDecal(decalData.position + new Vector2(50, 20), decalData).Draw();
+                }
             }
 
             // 刷新 BlackBoard 信息显示
@@ -170,6 +178,37 @@ namespace SevenStrikeModules.XGraph
             // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
             node.OnSelectedNode = OnSelectedNode;
             node.OnUnSelectedNode = OnUnSelectedNode;
+            // 刷新GraphView视图
+            node.RefreshExpandedState();
+            node.RefreshPorts();
+            #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            return node;
+        }
+        /// <summary>
+        /// 创建视觉节点 - 贴纸
+        /// </summary>
+        /// <param h_name="pos"></param>
+        /// <returns></returns>
+        public VNode_Decal Node_MakeDecal(Vector2 pos, decaldata data = null)
+        {
+            #region 根据枚举类型创建 NodeView
+            // 根据枚举名称获取 NodeView 节点类
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.VNode_Decal");
+            // 创建 NodeView 类型的实例为 visualNode 基类
+            VNode_Decal node = Activator.CreateInstance(type_nodeview) as VNode_Decal;
+            #endregion
+
+            // 初始化节点并将data数据容器赋值过来便于后面使用
+            node.Initialize(this, pos, data);
+
+            #region GraphView 视图操作
+            // 添加进当前主GraphView视图中
+            this.AddElement(node);
+
             // 刷新GraphView视图
             node.RefreshExpandedState();
             node.RefreshPorts();
@@ -295,7 +334,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="visual_nodeType"></param>
         public void Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, string visual_nodeType)
         {
-            // 便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
+            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             if (action_nodeType == "Stick")
             {
                 Undo.RecordObject(ActionTreeAsset, "Create StickNote");
@@ -311,6 +350,23 @@ namespace SevenStrikeModules.XGraph
                 visualstickNode.RefreshExpandedState();
                 visualstickNode.RefreshPorts();
             }
+            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 DecalDatas 变量中
+            else if (action_nodeType == "Decal")
+            {
+                Undo.RecordObject(ActionTreeAsset, "Create Decal");
+                // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
+                decaldata decaldata = new decaldata(GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));
+                ActionTreeAsset.Decal_Add(decaldata);
+
+                // 创建新的节点并指定资源数据项
+                VNode_Decal visualstickNode = Node_MakeDecal(gv_NodeCreatedPosition, decaldata);
+
+                // 刷新节点
+                visualstickNode.Draw();
+                visualstickNode.RefreshExpandedState();
+                visualstickNode.RefreshPorts();
+            }
+            // 行为节点创建，行为类是加入行为树根资源中的
             else
             {
                 string asm = typeof(ActionNode_Base).Assembly.FullName;

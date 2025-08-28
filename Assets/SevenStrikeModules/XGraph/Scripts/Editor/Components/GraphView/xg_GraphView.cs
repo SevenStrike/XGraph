@@ -157,9 +157,13 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public ThemesList ThemesList = new ThemesList();
         /// <summary>
-        /// 当前选中的所有节点
+        /// 当前选中的所有节点 - 基础
         /// </summary>
-        private List<VNode_Base> CurrentSelectedNodes = new List<VNode_Base>();
+        private List<VNode_Base> CurrentSelectedNodes_Base = new List<VNode_Base>();
+        /// <summary>
+        /// 当前选中的所有节点 - 贴图
+        /// </summary>
+        private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
         /// <summary>
         /// 当前选中的所有编组
         /// </summary>
@@ -401,19 +405,27 @@ namespace SevenStrikeModules.XGraph
         {
             base.AddToSelection(selectable);
             List<VNode_Base> gvs = new List<VNode_Base>();
+            List<VNode_Decal> gvd = new List<VNode_Decal>();
             List<Group> gps = new List<Group>();
             selection.ForEach(n =>
             {
                 if (n is VNode_Base node)
+                {
                     if (node.ActionNode.actionNodeType != "StickNote")
                         gvs.Add(node);
+                }
+                if (n is VNode_Decal decal)
+                {
+                    gvd.Add(decal);
+                }
                 if (n is Group gp)
                 {
                     gps.Add(gp);
                 }
             });
             CurrentSelectedGroups = gps;
-            CurrentSelectedNodes = gvs;
+            CurrentSelectedNodes_Base = gvs;
+            CurrentSelectedNodes_Decal = gvd;
 
             if (OnSelectionNodes != null)
                 OnSelectionNodes(gvs);
@@ -426,6 +438,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.RemoveFromSelection(selectable);
             List<VNode_Base> gvs = new List<VNode_Base>();
+            List<VNode_Decal> gvd = new List<VNode_Decal>();
             List<Group> gps = new List<Group>();
             selection.ForEach(n =>
             {
@@ -433,13 +446,18 @@ namespace SevenStrikeModules.XGraph
                 {
                     gvs.Add(node);
                 }
+                if (n is VNode_Decal decal)
+                {
+                    gvd.Add(decal);
+                }
                 if (n is Group gp)
                 {
                     gps.Add(gp);
                 }
             });
             CurrentSelectedGroups = gps;
-            CurrentSelectedNodes = gvs;
+            CurrentSelectedNodes_Base = gvs;
+            CurrentSelectedNodes_Decal = gvd;
 
             if (OnRemoveSelectionNodes != null)
                 OnRemoveSelectionNodes(gvs);
@@ -511,13 +529,30 @@ namespace SevenStrikeModules.XGraph
                     var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
                     if (selectedTexture != null)
                     {
-                        if (CurrentSelectedNodes.Count > 0)
+                        if (CurrentSelectedNodes_Base.Count > 0)
                         {
-                            for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                VNode_Base node = CurrentSelectedNodes[s];
-                                node.RegisterAvatarClicked();
-                                node.NodeAvatar_Set(selectedTexture);
+                                VNode_Base node = CurrentSelectedNodes_Base[s];
+                                if (node.ActionNode.actionNodeType != "Relay")
+                                {
+                                    node.RegisterAvatarClicked();
+                                    node.NodeAvatar_Set(selectedTexture);
+                                }
+                            }
+                        }
+
+                        if (CurrentSelectedNodes_Decal.Count > 0)
+                        {
+                            for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
+                            {
+                                VNode_Decal decal = CurrentSelectedNodes_Decal[s];
+                                if (decal != null)
+                                {
+                                    decal.decalData.HasTexture = true;
+                                    decal.decalData.DecalTexture = selectedTexture;
+                                    decal.CheckDecalTextureChanged();
+                                }
                             }
                         }
                     }

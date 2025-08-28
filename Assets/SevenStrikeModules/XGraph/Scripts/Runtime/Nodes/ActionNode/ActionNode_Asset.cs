@@ -1,16 +1,72 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.SceneManagement;
 #endif
     using UnityEngine;
     using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
+
+    [System.Serializable]
+    /// <summary>
+    /// 贴纸数据
+    /// </summary>
+    public class decaldata
+    {
+        /// <summary>
+        /// 贴纸识别ID码
+        /// </summary>
+        public string guid;
+        /// <summary>
+        /// 节点位置
+        /// </summary>
+        public Vector2 position;
+        /// <summary>
+        /// 节点尺寸
+        /// </summary>
+        public Vector2 size;
+        public bool HasTexture;
+        public Texture2D DecalTexture;
+
+        /// <summary>
+        /// 贴纸构造器
+        /// </summary>
+        public decaldata() { }
+        /// <summary>
+        /// 贴纸构造器
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="content"></param>
+        /// <param name="guid"></param>
+        /// <param name="pos"></param>
+        /// <param name="size"></param>
+        public decaldata(string guid, Vector2 pos, Vector2 size)
+        {
+            this.guid = guid;
+            this.position = pos;
+            this.size = size;
+        }
+        /// <summary>
+        /// 贴纸克隆
+        /// </summary>
+        /// <param name="guid_create"></param>
+        /// <returns></returns>
+        public decaldata Clone(bool guid_create)
+        {
+            var clone = new decaldata();
+#if UNITY_EDITOR
+            clone.guid = guid_create ? GUID.Generate().ToString() : guid;
+#endif
+            clone.position = position;
+            clone.size = size;
+            clone.HasTexture = HasTexture;
+            clone.DecalTexture = DecalTexture;
+            return clone;
+        }
+    }
 
     [System.Serializable]
     /// <summary>
@@ -316,6 +372,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public List<stickdata> StickNoteDatas = new List<stickdata>();
         /// <summary>
+        /// 贴纸列表
+        /// </summary>
+        [SerializeField] public List<decaldata> DecalDatas = new List<decaldata>();
+        /// <summary>
         /// 编组列表
         /// </summary>
         [SerializeField] public List<groupdata> NodeGroupDatas = new List<groupdata>();
@@ -390,6 +450,8 @@ namespace SevenStrikeModules.XGraph
             ActionNodes.Clear();
             // 清空便签列表
             StickNote_Clear();
+            // 清空贴图列表
+            Decal_Clear();
             // 清空编组列表
             NodeGroup_Clear();
 
@@ -410,6 +472,13 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
             // 清空当前原始资源的所有子节点
             Clear();
+
+            // 覆盖原有的贴图数据列表
+            DecalDatas = new List<decaldata>();
+            foreach (var decal in root.DecalDatas)
+            {
+                DecalDatas.Add(decal.Clone(false));
+            }
 
             // 覆盖原有的便签数据列表
             StickNoteDatas = new List<stickdata>();
@@ -497,6 +566,13 @@ namespace SevenStrikeModules.XGraph
             foreach (var item in StickNoteDatas)
             {
                 newRoot.StickNoteDatas.Add(item.Clone(false));
+            }
+
+            // 实例化新的 DecalDatas 列表，并从原始资源复制项
+            newRoot.DecalDatas = new List<decaldata>();
+            foreach (var item in DecalDatas)
+            {
+                newRoot.DecalDatas.Add(item.Clone(false));
             }
 
             // 实例化新的 groupdata 列表，并从原始资源复制项
@@ -872,6 +948,35 @@ namespace SevenStrikeModules.XGraph
         public void StickNote_Remove(stickdata data)
         {
             StickNoteDatas.Remove(data);
+        }
+        #endregion
+
+        #region 贴图操作
+        /// <summary>
+        /// 添加贴图数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Decal_Add(decaldata data)
+        {
+            DecalDatas.Add(data);
+        }
+        /// <summary>
+        /// 清空便签数据列表
+        /// </summary>
+        public void Decal_Clear()
+        {
+            DecalDatas.Clear();
+#if UNITY_EDITOR
+            //AssetDatabase.SaveAssets();
+#endif
+        }
+        /// <summary>
+        /// 移除目标便签数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Decal_Remove(decaldata data)
+        {
+            DecalDatas.Remove(data);
         }
         #endregion
 

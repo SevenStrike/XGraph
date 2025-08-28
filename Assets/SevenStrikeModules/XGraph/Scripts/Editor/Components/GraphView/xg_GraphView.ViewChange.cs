@@ -75,6 +75,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     Removed_Node(element);
                     Removed_Stick(element);
+                    Removed_Decal(element);
                     Removed_Edge(element);
                     Removed_Group(element);
                 });
@@ -144,6 +145,19 @@ namespace SevenStrikeModules.XGraph
             {
                 Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
                 ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
+            }
+        }
+        /// <summary>
+        /// 当移除贴图时
+        /// </summary>
+        /// <param name="element"></param>
+        private void Removed_Decal(GraphElement element)
+        {
+            VNode_Decal decalview = element as VNode_Decal;
+            if (decalview != null)
+            {
+                Undo.RecordObject(ActionTreeAsset, "Remove Decal");
+                ActionTreeAsset.Decal_Remove(decalview.decalData);
             }
         }
         /// <summary>

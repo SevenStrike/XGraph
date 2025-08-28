@@ -192,6 +192,7 @@
 
                 wnd.titleContent = new GUIContent($"XGraph");
 
+
                 #region 克隆资源
                 // 保留原始资源引用
                 wnd.SourceTree = datatree;
@@ -443,37 +444,7 @@
             xw_DestroyGraphView();
         }
 
-        #region 重新编译 & 运行状态切换 资源保险操作
-        /// <summary>
-        /// 使行为树编辑器在游戏运行状态切换时重新加载目标行为树资源，而不会导致引用丢失产生报错
-        /// </summary>
-        [InitializeOnLoadMethod]
-        private static void Reloader_In_PlayModeSwitched()
-        {
-            EditorApplication.playModeStateChanged += state =>
-            {
-                if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.EnteredPlayMode)
-                {
-                    EditorApplication.delayCall += () =>
-                    {
-                        //Debug.Log("退出编辑模式，进入播放模式");
-                        string path_source = EditorPrefs.GetString("XGraph->ActionTreePath_Source", "");
-                        string path_clone = EditorPrefs.GetString("XGraph->ActionTreePath_Clone", "");
-
-                        // 根据路径恢复加载节点方案资源
-                        var tree_source = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_source);
-                        var tree_clone = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_clone);
-                        if (tree_clone != null)
-                        {
-                            // 打开窗口并加载资源
-                            var window = EditorWindow.GetWindow<xg_Window>();
-                            window.ReloadTreeFromPath(tree_source, tree_clone);
-                        }
-                    };
-                }
-            };
-        }
-
+        #region 重新编译时XGraph资源重载操作
         /// <summary>
         /// 使行为树编辑器在脚本重新编辑后重新加载目标行为树资源，而不会导致引用丢失产生报错
         /// </summary>
@@ -513,9 +484,9 @@
             xw_graphView.UnregisterGroupEvent();
 
             // 清理旧数据 
-            xw_graphView?.Node_Clear();
-            xw_graphView?.EdgesClear();
-            xw_graphView?.Groups_Clear();
+            xw_graphView.Node_Clear();
+            xw_graphView.EdgesClear();
+            xw_graphView.Groups_Clear();
 
             #region 恢复上一次退出 GraphView 时记录的内视图位置以及缩放等级
             xw_graphView.SetViewPosition(tree_source.LastGraphViewPosition, tree_source.LastGraphViewZoom);
@@ -565,11 +536,11 @@
             BlackBoardViewAction_SetTitle($"{SourceTree.name} 属性黑板");
             #endregion
 
+            xw_graphView.RegisterGroupEvent();
+
             // 重新加载行为树资源
             SourceTree = tree_source;
             CloneTree = tree_clone;
-
-            xw_graphView.RegisterGroupEvent();
 
             // 延迟重建可视化行为树结构
             EditorApplication.delayCall += () =>
@@ -577,7 +548,8 @@
                 EditorApplication.delayCall += () =>
                 {
                     element_inspector.SnapToNearestQuadrant();
-                    xw_graphView?.Restructure_VisualNodes(CloneTree);
+
+                    xw_graphView.Restructure_VisualNodes(CloneTree);
 
                     /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
                      *  而 xw_graphView?.Restructure_VisualNodes(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源

@@ -107,7 +107,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Label TitleIconLabel;
         /// <summary>
-        /// 视觉节点标记图标
+        /// 视觉节点头像组件
         /// </summary>
         public VisualElement AvatarIcon;
         /// <summary>
@@ -459,7 +459,7 @@ namespace SevenStrikeModules.XGraph
             };
             TitleInputField.value = ActionNode.identifyName;
             TitleInputField.AddToClassList("Title_TextField");
-            TitleInputField.RegisterCallback<BlurEvent>(OnTitlteBlur);
+            TitleInputField.RegisterCallback<BlurEvent>(OnTitleInputFieldBlur);
             VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
             input.AddToClassList("Title_TextInput");
             TextElement textelement = input.Q<TextElement>();
@@ -481,7 +481,7 @@ namespace SevenStrikeModules.XGraph
         /// 节点名称设置
         /// </summary>
         /// <param name="evt"></param>
-        private void OnTitlteBlur(BlurEvent evt)
+        private void OnTitleInputFieldBlur(BlurEvent evt)
         {
             Undo.RecordObject(ActionNode, "Change ActionNode Name");
 
@@ -506,45 +506,6 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
         }
-
-        public void RegisterAvatarClicked()
-        {
-            if (AvatarIcon == null)
-            {
-                AvatarIcon = new VisualElement();
-                AvatarIcon.name = "AvatarIcon";
-                AvatarIcon.pickingMode = PickingMode.Position;
-                AvatarIcon.style.backgroundImage = ActionNode.Avatar;
-                AvatarIcon.AddToClassList("Avatar_Icon");
-                AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
-            }
-            // 修改头像点击回调
-            AvatarIcon.RegisterCallback<PointerDownEvent>((evt) =>
-            {
-                // 双击头像以更换头像
-                if (evt.clickCount == 2)
-                {
-                    OpenAvatarSelector();
-                    evt.StopPropagation();
-                }
-            });
-        }
-
-        public void UnregisterAvatarClicked()
-        {
-            if (AvatarIcon != null)
-            {
-                mainContainer.Remove(AvatarIcon);
-                AvatarIcon = null;
-            }
-        }
-
-        public void OpenAvatarSelector()
-        {
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNode.Avatar, false, "t:Texture2D", 0);
-            monitoringObjectPicker = true;
-        }
-
         #endregion
 
         #region 回调
@@ -583,6 +544,50 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 头像设置
+        /// <summary>
+        /// 注册头像双击委托
+        /// </summary>
+        public void RegisterAvatarClicked()
+        {
+            if (AvatarIcon == null)
+            {
+                AvatarIcon = new VisualElement();
+                AvatarIcon.name = "AvatarIcon";
+                AvatarIcon.pickingMode = PickingMode.Position;
+                AvatarIcon.style.backgroundImage = ActionNode.Avatar;
+                AvatarIcon.AddToClassList("Avatar_Icon");
+                AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
+            }
+            // 修改头像点击回调
+            AvatarIcon.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                // 双击头像以更换头像
+                if (evt.clickCount == 2)
+                {
+                    OpenAvatarSelector();
+                    evt.StopPropagation();
+                }
+            });
+        }
+        /// <summary>
+        /// 注销头像双击委托
+        /// </summary>
+        public void UnregisterAvatarClicked()
+        {
+            if (AvatarIcon != null)
+            {
+                mainContainer.Remove(AvatarIcon);
+                AvatarIcon = null;
+            }
+        }
+        /// <summary>
+        /// 打开贴图选择框
+        /// </summary>
+        public void OpenAvatarSelector()
+        {
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNode.Avatar, false, "t:Texture2D", 0);
+            monitoringObjectPicker = true;
+        }
         /// <summary>
         /// 检查是否设置了头像
         /// </summary>
@@ -648,6 +653,9 @@ namespace SevenStrikeModules.XGraph
             if (On_NodeAvatar_Clear != null)
                 On_NodeAvatar_Clear(this);
         }
+        #endregion
+
+        #region 辅助
         /// <summary>
         /// 添加 OnGUI 方法，用于处理头像选择
         /// </summary>
@@ -666,9 +674,6 @@ namespace SevenStrikeModules.XGraph
                 }
             }
         }
-        #endregion
-
-        #region 辅助
         /// <summary>
         /// 元素的视觉布局样式
         /// </summary>

@@ -6,32 +6,12 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class VNode_Stick : Node
+    public class VNode_Decal : Node
     {
         /// <summary>
         /// GraphView组件
         /// </summary>
         public xg_GraphView graphView;
-        /// <summary>
-        /// 便签标题组件
-        /// </summary>
-        public Label stickTitlelabel;
-        /// <summary>
-        /// 便签内容组件
-        /// </summary>
-        public Label stickContentlabel;
-        /// <summary>
-        /// 便签标题输入框组件
-        /// </summary>
-        public TextField stickTitleInput;
-        /// <summary>
-        /// 便签内容输入框组件
-        /// </summary>
-        public TextField stickContentInput;
-        /// <summary>
-        /// 便签内容组件
-        /// </summary>
-        public TextField stickContent;
         /// <summary>
         /// 视觉节点贴图尺寸控制图标
         /// </summary>
@@ -41,9 +21,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement Resizer;
         /// <summary>
+        /// 视觉节点贴图组件
+        /// </summary>
+        public VisualElement DecalTextureElement;
+        /// <summary>
         /// 便签的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
+        private bool monitoringObjectPicker = false;
 
         #region 节点信息
         /// <summary>
@@ -59,7 +44,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public stickdata stickNoteData { get; set; }
+        public decaldata decalData { get; set; }
 
         /// <summary>
         /// 初始化节点 - stickdata
@@ -67,7 +52,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="graphView"></param>
         /// <param h_name="pos"></param>
         /// <param h_name="data"></param>
-        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, stickdata data = null)
+        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, decaldata data = null)
         {
             // 指定可调整大小
             capabilities |= Capabilities.Resizable;
@@ -75,11 +60,11 @@ namespace SevenStrikeModules.XGraph
             // 指定GraphView 组件
             this.graphView = graphView;
             // 设置节点的容器样式
-            SetContainersStyle("uss_StickNote");
+            SetContainersStyle("uss_DecalNode");
 
             // 携带数据
             if (data != null)
-                stickNoteData = data;
+                decalData = data;
 
             style.width = data.size.x;
             style.height = data.size.y;
@@ -87,7 +72,7 @@ namespace SevenStrikeModules.XGraph
             #region 基础参数设置
             this.viewDataKey = data != null ? data.guid : "";
             // 设置节点标题
-            this.title = this.nodeTitle = data != null ? data.name : "";
+            this.title = this.nodeTitle = "";
             #endregion
 
             // 设置节点的生成位置
@@ -96,6 +81,11 @@ namespace SevenStrikeModules.XGraph
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
+            #region 快速选择头像专用隐藏式GUI
+            var imguiContainer = new IMGUIContainer(OnGUI);
+            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
+            AppendElement(GraphNodeContainerType.MainContainer, imguiContainer);
+            #endregion
         }
 
         /// <summary>
@@ -112,7 +102,7 @@ namespace SevenStrikeModules.XGraph
             {
                 m_LastSize = newSize;
 
-                stickNoteData.size = newSize;
+                decalData.size = newSize;
             }
         }
 
@@ -125,10 +115,10 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Position");
             base.SetPosition(newPos);
 
-            if (stickNoteData != null)
+            if (decalData != null)
             {
-                stickNoteData.position.x = newPos.xMin;
-                stickNoteData.position.y = newPos.yMin;
+                decalData.position.x = newPos.xMin;
+                decalData.position.y = newPos.yMin;
             }
         }
 
@@ -145,7 +135,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 绘制节点
         /// </summary>
-        public VNode_Stick Draw()
+        public VNode_Decal Draw()
         {
             // 绘制主容器
             Draw_Main();
@@ -156,6 +146,8 @@ namespace SevenStrikeModules.XGraph
             // 绘制顶部容器
             Draw_Top();
 
+            // 检查贴图设置
+            CheckDecalTextureChanged();
             return this;
         }
 
@@ -164,42 +156,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Top()
         {
-            #region 便签内容
-            stickContentlabel = new Label(stickNoteData.content);
-            stickContentlabel.AddToClassList("Content_Label");
-            stickContentlabel.RegisterCallback<PointerDownEvent>(evt =>
-            {
-                if (evt.clickCount == 2)
-                {
-                    VisualElementDisplay(stickContentlabel, false);
-                    VisualElementDisplay(stickContentInput, true);
-
-                    EditorApplication.delayCall += () =>
-                    {
-                        stickContentInput.Focus();
-                    };
-                    evt.StopPropagation();
-                }
-            });
-            #endregion
-
-            #region 便签内容输入框
-            stickContentInput = new TextField();
-            stickContentInput.value = stickNoteData.content;
-            StyleLength len_width = stickContentInput.style.width;
-
-            Length len_w = len_width.value;
-            len_w.unit = LengthUnit.Percent;
-            len_w.value = 100;
-
-            len_width.value = len_w;
-            stickContentInput.multiline = true;
-            stickContentInput.AddToClassList("Content_TextField");
-            stickContentInput.RegisterCallback<BlurEvent>(OnStickContentInputBlur);
-
-            AppendElement(GraphNodeContainerType.TopContainer, stickContentlabel);
-            AppendElement(GraphNodeContainerType.TopContainer, stickContentInput);
-            #endregion
+            topContainer.Clear();
         }
 
         /// <summary>
@@ -207,54 +164,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Title()
         {
-            #region Logo
-            Label icon = new Label("");
-            icon.AddToClassList("Title_Icon");
-            icon.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/stick.png");
-            icon.style.unityBackgroundImageTintColor = Color.black * 0.85f;
-            #endregion
-
-            #region 便签标题
-            stickTitlelabel = new Label(stickNoteData.name);
-            stickTitlelabel.AddToClassList("Title_Label");
-            stickTitlelabel.RegisterCallback<PointerDownEvent>(evt =>
-            {
-                if (evt.clickCount == 2)
-                {
-                    VisualElementDisplay(stickTitlelabel, false);
-                    VisualElementDisplay(stickTitleInput, true);
-
-                    EditorApplication.delayCall += () =>
-                    {
-                        stickTitleInput.Focus();
-                    };
-                    evt.StopPropagation();
-                }
-            });
-            #endregion
-
-            #region 便签标题输入框
-            stickTitleInput = new TextField();
-            stickTitleInput.value = stickNoteData.name;
-            stickTitleInput.AddToClassList("Title_Input");
-            stickTitleInput.RegisterCallback<BlurEvent>(OnStickTitleInputBlur);
-
-            VisualElement input = stickTitleInput.Q<VisualElement>("unity-text-input");
-            input.AddToClassList("Title_InputElement");
-
-            TextElement inputtext = input.Q<TextElement>();
-            inputtext.AddToClassList("Title_InputElement_Text");
-            #endregion
-
-            VisualElement element = titleContainer.Q<VisualElement>("title-button-container");
-
-            // 清空容器后重新按顺序添加
+            // 清空容器
             titleContainer.Clear();
-
-            AppendElement(GraphNodeContainerType.TitleContainer, icon);
-            AppendElement(GraphNodeContainerType.TitleContainer, stickTitlelabel);
-            AppendElement(GraphNodeContainerType.TitleContainer, stickTitleInput);
-            AppendElement(GraphNodeContainerType.TitleContainer, element);
         }
 
         /// <summary>
@@ -262,47 +173,162 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Main()
         {
+            // 只保留贴图组件，其余的都不要了
+            mainContainer.Remove(mainContainer.Q<VisualElement>("contents"));
+            mainContainer.Remove(mainContainer.Q<VisualElement>("title"));
+
             // 拖拽尺寸控件图标
             ResizerIcon = this.Q<VisualElement>(className: "resizer-icon");
             ResizerIcon.pickingMode = PickingMode.Ignore;
+            ResizerIcon.style.opacity = 0f;
 
             // 拖拽尺寸控件
             Resizer = this.Q<VisualElement>(className: "resizer");
             Resizer.style.width = 30;
             Resizer.style.height = 30;
+            Resizer.RegisterCallback<PointerEnterEvent>(Decal_DisplayResizer);
+            Resizer.RegisterCallback<PointerLeaveEvent>(Decal_HideResizer);
+
+            #region 创建贴图组件
+            DecalTextureElement = new VisualElement();
+            DecalTextureElement.name = "DecalTexture";
+            DecalTextureElement.pickingMode = PickingMode.Position;
+            if (decalData.DecalTexture != null)
+                DecalTextureElement.style.backgroundImage = decalData.DecalTexture;
+            else
+                DecalTextureElement.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png"); ;
+            DecalTextureElement.AddToClassList("DecalTexture");
+            AppendElement(GraphNodeContainerType.MainContainer, DecalTextureElement);
+            #endregion
+
+            DecalTextureElement.RegisterCallback<PointerEnterEvent>(Decal_DisplayResizer);
+            DecalTextureElement.RegisterCallback<PointerLeaveEvent>(Decal_HideResizer);
+
+            RegisterDecalTextureClicked();
+        }
+
+        private void Decal_HideResizer(PointerLeaveEvent evt)
+        {
+            ResizerIcon.style.opacity = 0f;
+        }
+
+        private void Decal_DisplayResizer(PointerEnterEvent evt)
+        {
+            ResizerIcon.style.opacity = 1f;
+        }
+        #endregion
+
+        #region 贴图设置
+        public void RegisterDecalTextureClicked()
+        {
+            // 修改贴图点击回调
+            DecalTextureElement.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                // 双击头像以更换贴图
+                if (evt.clickCount == 2)
+                {
+                    OpenDecalTextureSelector();
+                    evt.StopPropagation();
+                }
+            });
+        }
+        /// <summary>
+        /// 打开贴图选择框
+        /// </summary>
+        public void OpenDecalTextureSelector()
+        {
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(decalData.DecalTexture, false, "t:Texture2D", 0);
+            monitoringObjectPicker = true;
+        }
+        /// <summary>
+        /// 检查是否设置了贴图
+        /// </summary>
+        public void CheckDecalTextureChanged()
+        {
+            if (DecalTextureElement == null)
+                return;
+
+            // 如果该节点设置了贴图
+            if (decalData.HasTexture)
+            {
+                NodeDecalTexture_IsSet();
+            }
+            else
+            {
+                NodeDecalTexture_IsNone();
+            }
+        }
+        public void NodeDecalTexture_IsNone()
+        {
+            DecalTextureElement.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png");
+            DecalTextureElement.style.borderTopWidth = 1;
+            DecalTextureElement.style.borderBottomWidth = 1;
+            DecalTextureElement.style.borderLeftWidth = 1;
+            DecalTextureElement.style.borderRightWidth = 1;
+        }
+
+        public void NodeDecalTexture_IsSet()
+        {
+            if (decalData.DecalTexture != null)
+            {
+                DecalTextureElement.style.backgroundImage = decalData.DecalTexture;
+                DecalTextureElement.style.borderTopWidth = 0;
+                DecalTextureElement.style.borderBottomWidth = 0;
+                DecalTextureElement.style.borderLeftWidth = 0;
+                DecalTextureElement.style.borderRightWidth = 0;
+            }
+            else
+                NodeDecalTexture_IsNone();
+        }
+
+        /// <summary>
+        /// 设置贴图
+        /// </summary>
+        /// <param name="tex"></param>
+        public void NodeDecalTexture_Set(Texture2D tex)
+        {
+            Undo.RecordObject(graphView.ActionTreeAsset, "Set DecalData Texture");
+            // 贴图状态开关 = 开
+            decalData.HasTexture = true;
+            // 贴图图像设置
+            decalData.DecalTexture = tex;
+
+            CheckDecalTextureChanged();
+        }
+        /// <summary>
+        /// 移除贴图
+        /// </summary>
+        /// <param name="tex"></param>
+        public void NodeDecalTexture_Remove()
+        {
+            Undo.RecordObject(graphView.ActionTreeAsset, "Remove DecalData Texture");
+            // 贴图状态开关 = 开
+            decalData.HasTexture = false;
+            // 贴图图像设置
+            decalData.DecalTexture = null;
+
+            CheckDecalTextureChanged();
         }
         #endregion
 
         #region 辅助
-        private void OnStickContentInputBlur(BlurEvent evt)
-        {
-            Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Content");
-            stickNoteData.content = stickContentlabel.text = stickContentInput.value;
-            VisualElementDisplay(stickContentlabel, true);
-            VisualElementDisplay(stickContentInput, false);
-        }
-
         /// <summary>
-        /// 便签标题名称设置
+        /// 添加 OnGUI 方法，用于处理贴图选择
         /// </summary>
-        /// <param name="evt"></param>
-        private void OnStickTitleInputBlur(BlurEvent evt)
+        private void OnGUI()
         {
-            Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Name");
-            stickNoteData.name = stickTitlelabel.text = stickTitleInput.value;
-            VisualElementDisplay(stickTitlelabel, true);
-            VisualElementDisplay(stickTitleInput, false);
-        }
-        /// <summary>
-        /// 元素的视觉布局样式
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="display"></param>
-        private void VisualElementDisplay(VisualElement element, bool display)
-        {
-            if (element == null)
-                return;
-            element.style.display = display ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex) : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            if (monitoringObjectPicker && Event.current != null)
+            {
+                if (Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+                    if (selectedTexture != null)
+                    {
+                        NodeDecalTexture_Set(selectedTexture);
+                    }
+                    monitoringObjectPicker = false;
+                }
+            }
         }
         /// <summary>
         /// 设置节点的样式应用
@@ -322,7 +348,6 @@ namespace SevenStrikeModules.XGraph
             outputContainer.AddToClassList("OutputContainer");
             extensionContainer.AddToClassList("ExtensionContainer");
         }
-
         /// <summary>
         /// 添加元素到指定类型的容器中
         /// </summary>

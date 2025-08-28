@@ -2,10 +2,8 @@ namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
     using System.Linq;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public partial class xg_GraphView
     {
@@ -60,7 +58,7 @@ namespace SevenStrikeModules.XGraph
                 });
             });
 
-            // 根据行为树根节点的数据列表  -  重建 Edges
+            // 根据行为树根节点的数据列表  -  检查 所有Relay的连线状态
             ActionTreeAsset.ActionNodes.ForEach(d =>
             {
                 // 获取延展节点
@@ -73,15 +71,18 @@ namespace SevenStrikeModules.XGraph
             });
 
             // 根据行为树根节点里的便签列表数据来生成GraphView的视觉便签节点
-            Restructure_Sticks(actiontree.StickNoteDatas);
+            Restructure_Sticks(ActionTreeAsset.StickNoteDatas);
+
+            // 根据行为树根节点里的贴图列表数据来生成GraphView的视觉贴图节点
+            Restructure_Decals(ActionTreeAsset.DecalDatas);
 
             // 重建编组
-            Restructure_Groups(actiontree.NodeGroupDatas); // 新增调用
+            Restructure_Groups(ActionTreeAsset.NodeGroupDatas);
         }
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来生成GraphView的视觉便签节点
         /// </summary>
-        /// <param h_name="stickdata"></param>
+        /// <param h_name="decaldata"></param>
         public void Restructure_Sticks(List<stickdata> stickdata)
         {
             // 根据根节点的数据列表重建 NodeViews
@@ -90,6 +91,22 @@ namespace SevenStrikeModules.XGraph
                 Node_MakeStick(data.position, data).Draw();
             });
         }
+
+        /// <summary>
+        /// 根据行为树根节点里的贴图列表数据来生成GraphView的视觉贴图节点
+        /// </summary>
+        /// <param h_name="decaldata"></param>
+        public void Restructure_Decals(List<decaldata> decaldata)
+        {
+            // 根据根节点的数据列表重建 NodeViews
+            decaldata.ForEach(data =>
+            {
+                VNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
+                // 检查头像设置情况
+                vNode_Decal.CheckDecalTextureChanged();
+            });
+        }
+
         /// <summary>
         /// 根据行为树根节点里的编组列表数据来生成GraphView的视觉编组
         /// </summary>
@@ -125,6 +142,15 @@ namespace SevenStrikeModules.XGraph
                     if (stickNote != null)
                     {
                         group.AddElement(stickNote);
+                    }
+
+                    // 查找贴图节点
+                    var decalNote = nodes.ToList().FirstOrDefault(n =>
+                        n is VNode_Decal decalNote && decalNote.decalData.guid == guid);
+
+                    if (decalNote != null)
+                    {
+                        group.AddElement(decalNote);
                     }
                 }
             }

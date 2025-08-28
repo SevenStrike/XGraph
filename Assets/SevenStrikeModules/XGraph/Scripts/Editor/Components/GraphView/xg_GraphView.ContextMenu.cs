@@ -22,9 +22,10 @@ namespace SevenStrikeModules.XGraph
             bool isInGraphView = false;
             bool isInGraphNode = false;
             bool isInStickNode = false;
+            bool isInDecalNode = false;
             bool isInGraphGroup = false;
 
-            #region  确认当前有点点击的物体是否是Group
+            #region  确认当前有点击的物体是否是Group
             if (evt.target is VisualElement ele)
             {
                 var current = ele.parent;
@@ -41,12 +42,15 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region  确认当前有点点击的物体是否是GraphNode
+            #region  确认当前有点击的物体是否是GraphNode
             if (evt.target is VNode_Base nodebase)
             {
+
                 // 菜单 - 自定主题色切换
                 evt.menu.AppendAction($"T 节点配色/A 自定颜色", (action) =>
                 {
+                    if (Application.isPlaying)
+                        return;
                     var t = typeof(EditorWindow).Assembly.GetTypes().FirstOrDefault(ty => ty.Name == "ColorPicker");
                     var m = t?.GetMethod("Show", new[] { typeof(Action<Color>), typeof(Color), typeof(bool), typeof(bool) });
                     if (m == null)
@@ -55,7 +59,7 @@ namespace SevenStrikeModules.XGraph
                         return;
                     }
 
-                    VNode_Base node = CurrentSelectedNodes.First();
+                    VNode_Base node = CurrentSelectedNodes_Base.First();
 
                     var defaultColor = Color.gray;
                     defaultColor = node.ActionNode.themeColor;
@@ -115,11 +119,11 @@ namespace SevenStrikeModules.XGraph
                     ThemeData_Node dat = ThemesList.Node[i];
                     evt.menu.AppendAction($"T 节点配色/{dat.solution}", (action) =>
                     {
-                        if (CurrentSelectedNodes.Count > 0)
+                        if (CurrentSelectedNodes_Base.Count > 0)
                         {
-                            for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                VNode_Base node = CurrentSelectedNodes[s];
+                                VNode_Base node = CurrentSelectedNodes_Base[s];
 
                                 Undo.RecordObject(node.ActionNode, "Change NodeColor");
                                 node.ActionNode.themeSolution = dat.solution;
@@ -166,11 +170,11 @@ namespace SevenStrikeModules.XGraph
                 // 执行模式切换
                 evt.menu.AppendAction($"E 执行模式/S 顺序", (action) =>
                 {
-                    if (CurrentSelectedNodes.Count > 0)
+                    if (CurrentSelectedNodes_Base.Count > 0)
                     {
-                        for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                        for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                         {
-                            VNode_Base node = CurrentSelectedNodes[s];
+                            VNode_Base node = CurrentSelectedNodes_Base[s];
                             node.ActionNode.isConcurrentExecution = false;
                             node.CheckExecutionModel();
                         }
@@ -178,11 +182,11 @@ namespace SevenStrikeModules.XGraph
                 });
                 evt.menu.AppendAction($"E 执行模式/C 并发", (action) =>
                 {
-                    if (CurrentSelectedNodes.Count > 0)
+                    if (CurrentSelectedNodes_Base.Count > 0)
                     {
-                        for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                        for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                         {
-                            VNode_Base node = CurrentSelectedNodes[s];
+                            VNode_Base node = CurrentSelectedNodes_Base[s];
                             node.ActionNode.isConcurrentExecution = true;
                             node.CheckExecutionModel();
                         }
@@ -197,11 +201,11 @@ namespace SevenStrikeModules.XGraph
                         evt.menu.AppendSeparator();
                         evt.menu.AppendAction($"R 清空头像", (action) =>
                         {
-                            if (CurrentSelectedNodes.Count > 0)
+                            if (CurrentSelectedNodes_Base.Count > 0)
                             {
-                                for (int s = 0; s < CurrentSelectedNodes.Count; s++)
+                                for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                                 {
-                                    VNode_Base node = CurrentSelectedNodes[s];
+                                    VNode_Base node = CurrentSelectedNodes_Base[s];
                                     node.NodeAvatar_Remove();
                                     node.UnregisterAvatarClicked();
                                 }
@@ -229,7 +233,7 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region  确认当前有点点击的物体是否是GraphView框架
+            #region  确认当前有点击的物体是否是GraphView框架
             if (evt.target is xg_GraphView graphview)
             {
                 isInGraphView = true;
@@ -246,10 +250,49 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region  确认当前有点点击的物体是否是Stick节点
+            #region  确认当前有点击的物体是否是Stick节点
             if (evt.target is VNode_Stick stick)
             {
                 isInStickNode = true;
+            }
+            #endregion
+
+            #region  确认当前有点击的物体是否是Decal节点
+            if (evt.target is VNode_Decal decal)
+            {
+                if (decal.decalData.HasTexture)
+                {
+                    evt.menu.AppendSeparator();
+                    evt.menu.AppendAction($"R 清空贴图", (action) =>
+                    {
+                        if (CurrentSelectedNodes_Decal.Count > 0)
+                        {
+                            for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
+                            {
+                                VNode_Decal node = CurrentSelectedNodes_Decal[s];
+                                node.NodeDecalTexture_Remove();
+                            }
+                        }
+                    });
+                    evt.menu.AppendAction($"W 替换贴图", (action) =>
+                    {
+                        EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
+                        monitoringObjectPicker = true;
+                        evt.StopPropagation();
+                    });
+                }
+                else
+                {
+                    evt.menu.AppendAction($"Z 设置贴图", (action) =>
+                    {
+                        EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
+                        monitoringObjectPicker = true;
+                        evt.StopPropagation();
+                    });
+                }
+
+                evt.menu.AppendSeparator();
+                isInDecalNode = true;
             }
             #endregion
 
@@ -293,7 +336,7 @@ namespace SevenStrikeModules.XGraph
 
             evt.menu.AppendSeparator();
 
-            if (!isInGraphGroup && isInGraphNode || isInStickNode)
+            if (!isInGraphGroup && isInGraphNode || isInStickNode || isInDecalNode)
             {
                 #region 节点操作：删除节点
                 evt.menu.AppendAction("S 删除节点", param =>

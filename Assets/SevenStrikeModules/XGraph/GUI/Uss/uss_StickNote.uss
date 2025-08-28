@@ -1,31 +1,4 @@
-.Title_Input
-{
-     height: 25px;
-     width: auto;
-     margin-right: 10px;
-}
-
-#unity-text-input.TitleInput
-{
-     top: 0;
-     width: auto;
-     margin: 0;
-     padding: 0;
-     -unity-text-align: middle-right;
-}
-
-.unity-text-element.TitleInputText
-{
-     padding: 0;
-     top: 0;
-     color: rgba(35,35,35, 1);
-     -unity-text-align: middle-right;
-     -unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
-     font-size: 16px;
-     letter-spacing: 10px;
-}
-
+/* Title */
 .Title_Icon
 {
      left: 10px;
@@ -36,45 +9,80 @@
      -unity-text-align: middle-left;
 }
 
-.Extension_Label
+.unity-text-element.Title_Label
 {
-     color: darkgrey;
-     height: 30px;
-     width: 30px;
-     font-size: 11px;
-     -unity-text-align: middle-left;
-     --unity-font-style: normal;
+     height: 25px;
+     width: auto;
+     margin-right: 10px;
+     margin-top: 5px;
+     color: rgba(35,35,35, 1);
+     -unity-text-align: middle-right;
+     -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     font-size: 14px;
      letter-spacing: 10px;
-     padding-left: 0;
-     padding-top: 0;
-     padding-right: 0;
-     padding-bottom: 0;
 }
 
-#node-border
+.Title_Input
 {
-     min-width: 80px;
-     min-height: 65px;
+     display: none;
+     height: 25px;
+     width: auto;
+     margin-right: 10px;
+     margin-top: 5px;
+}
+
+#unity-text-input.Title_InputElement
+{
+     top: 0;
+     width: auto;
+     margin: 0;
+     padding: 0;
+     -unity-text-align: middle-right;
+}
+
+.unity-text-element.Title_InputElement_Text
+{
+     padding: 0;
+     top: 0;
+     color: rgba(35,35,35, 1);
+     -unity-text-align: middle-right;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     font-size: 14px;
+     letter-spacing: 10px;
+}
+
+/* Content */
+.Content_TextField
+{
+     display: none;
+     height: 100%;
+     width: 100%;
+     -unity-text-align: upper-left;
      margin: 0;
 }
 
-#selection-border
+.unity-text-element.Content_Label
 {
-     min-width: 80px;
-     min-height: 65px;
-}
-
-.ContentContainer
-{
-     min-width: 90px;
-     min-height: 75px;
-     background-image: none;
-     background-color: rgba(0, 0, 0, 0);
-     -unity-slice-left: 0;
-     -unity-slice-top: 0;
-     -unity-slice-right: 0;
-     -unity-slice-bottom: 0;
+     color: rgb(51, 51, 51);
+     height: 100%;
+     width: 100%;
+     -unity-text-align: upper-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     letter-spacing: 3px;
+     padding-top: 0;
+     padding-right: 10px;
+     padding-bottom: 5px;
+     padding-left: 10px;
+     margin-top: 0;
+     top: 0;
+     text-overflow: ellipsis;
+     overflow: hidden;
+     white-space: normal;
+     font-size: 11px;
+     flex-basis: auto;
 }
 
 .resizer-icon
@@ -83,7 +91,7 @@
      bottom: 10px;
      background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/resize.png?fileID=2800000&guid=7ee37ab7fc61a8a43bfae9fed2cb81cf&type=3#resize");
      background-size: 100% 100%;
-     -unity-background-image-tint-color: rgba(74, 74, 74, 0.82);
+     -unity-background-image-tint-color: rgb(64, 64, 64);
      background-color: rgba(0, 0, 0, 0);
      width: 50%;
      height: 50%;
@@ -94,10 +102,8 @@
 {
      width: 100%;
      height: 100%;
-     min-width: 80px;
-     min-height: 65px;
      margin-left: 0;
-     background-color: rgb(195, 179, 99);
+     background-color: rgb(202, 186, 106);
      background-image: none;
      -unity-slice-left: 0;
      -unity-slice-top: 0;
@@ -127,21 +133,12 @@
      -unity-slice-right: 5;
      -unity-slice-bottom: 5;
      margin-top: 36px;
+     flex-wrap: wrap;
 }
 
-.InputContainer
+#contents
 {
-     display: none;
-}
-
-.OutputContainer
-{
-     display: none;
-}
-
-.ExtensionContainer
-{
-     display: none;
+     flex-wrap: wrap;
 }
 
 #unity-text-input
@@ -170,17 +167,4 @@
      white-space: normal;
      font-size: 12px;
      flex-basis: auto;
-}
-
-.unity-text-element
-{
-     font-size: 13px;
-}
-
-.StickNoteTextField_Title
-{
-     height: 100%;
-     width: 100%;
-     -unity-text-align: upper-left;
-     margin-top: 0;
 }

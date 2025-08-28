@@ -66,6 +66,15 @@
                     "action_nodeType": "Relay",
                     "icon": "relay",
                     "visual_nodeType": "VNode_Relay"
+                },
+                {
+                    "name": "贴图",
+                    "note": "节点文档插图",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "INode_",
+                    "action_nodeType": "Decal",
+                    "icon": "decal",
+                    "visual_nodeType": "VNode_N_In_N_Out"
                 }
             ]
         }
