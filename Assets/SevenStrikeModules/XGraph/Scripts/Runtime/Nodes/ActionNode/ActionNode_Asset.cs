@@ -28,9 +28,16 @@ namespace SevenStrikeModules.XGraph
         /// 节点尺寸
         /// </summary>
         public Vector2 size;
+        /// <summary>
+        /// 节点贴图透明度
+        /// </summary>
+        public float opacity = 1;
         public bool HasTexture;
         public Texture2D DecalTexture;
-
+        /// <summary>
+        /// 贴图缩放
+        /// </summary>
+        public Vector3 scale = Vector3.one;
         /// <summary>
         /// 贴纸构造器
         /// </summary>
@@ -43,11 +50,13 @@ namespace SevenStrikeModules.XGraph
         /// <param name="guid"></param>
         /// <param name="pos"></param>
         /// <param name="size"></param>
-        public decaldata(string guid, Vector2 pos, Vector2 size)
+        public decaldata(string guid, Vector2 pos, Vector2 size, Vector3 scale, float opacity)
         {
             this.guid = guid;
             this.position = pos;
+            this.scale = scale;
             this.size = size;
+            this.opacity = opacity;
         }
         /// <summary>
         /// 贴纸克隆
@@ -64,6 +73,8 @@ namespace SevenStrikeModules.XGraph
             clone.size = size;
             clone.HasTexture = HasTexture;
             clone.DecalTexture = DecalTexture;
+            clone.scale = scale;
+            clone.opacity = opacity;
             return clone;
         }
     }

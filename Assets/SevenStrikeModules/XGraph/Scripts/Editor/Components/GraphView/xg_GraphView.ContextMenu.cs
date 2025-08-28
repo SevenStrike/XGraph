@@ -280,6 +280,21 @@ namespace SevenStrikeModules.XGraph
                         monitoringObjectPicker = true;
                         evt.StopPropagation();
                     });
+                    evt.menu.AppendAction($"Q 水平翻转", (action) =>
+                    {
+                        decal.NodeDecalTexture_Flip_H();
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"E 垂直翻转", (action) =>
+                    {
+                        decal.NodeDecalTexture_Flip_V();
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"X 节点置顶", (action) =>
+                    {
+                        decal.VisualElementBringToFront();
+                        evt.StopPropagation();
+                    });
                 }
                 else
                 {

@@ -81,6 +81,11 @@ namespace SevenStrikeModules.XGraph
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
+            // 关键：在节点监听拖拽事件
+            RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
+            RegisterCallback<DragPerformEvent>(OnDragPerform);
+            RegisterCallback<DragExitedEvent>(OnDragExit);
+
             #region 快速选择头像专用隐藏式GUI
             var imguiContainer = new IMGUIContainer(OnGUI);
             imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
@@ -192,6 +197,8 @@ namespace SevenStrikeModules.XGraph
             #region 创建贴图组件
             DecalTextureElement = new VisualElement();
             DecalTextureElement.name = "DecalTexture";
+            DecalTextureElement.style.opacity = decalData.opacity;
+            DecalTextureElement.style.scale = new StyleScale(decalData.scale);
             DecalTextureElement.pickingMode = PickingMode.Position;
             if (decalData.DecalTexture != null)
                 DecalTextureElement.style.backgroundImage = decalData.DecalTexture;
@@ -204,26 +211,82 @@ namespace SevenStrikeModules.XGraph
             DecalTextureElement.RegisterCallback<PointerEnterEvent>(Decal_DisplayResizer);
             DecalTextureElement.RegisterCallback<PointerLeaveEvent>(Decal_HideResizer);
 
+            DecalTextureElement.RegisterCallback<PointerEnterEvent>(OnDecalPointerEnter);
+            DecalTextureElement.RegisterCallback<PointerLeaveEvent>(OnDecalPointerLeave);
+
             RegisterDecalTextureClicked();
         }
 
-        private void Decal_HideResizer(PointerLeaveEvent evt)
+        #endregion
+
+        #region Shift调整透明度
+        // 这两个字段用来缓存回调，方便注销
+        private EventCallback<WheelEvent> wheelHandler;
+        private EventCallback<PointerLeaveEvent> leaveHandler;
+
+        // 鼠标进入：挂滚轮监听
+        private void OnDecalPointerEnter(PointerEnterEvent evt)
         {
-            ResizerIcon.style.opacity = 0f;
+            // 如果已经挂过就不再重复挂
+            if (wheelHandler != null) return;
+
+            wheelHandler = OnDecalWheel;
+            DecalTextureElement.RegisterCallback(wheelHandler);
+
+            leaveHandler = OnDecalPointerLeave;
+            DecalTextureElement.RegisterCallback(leaveHandler);
         }
 
-        private void Decal_DisplayResizer(PointerEnterEvent evt)
+        // 鼠标离开：摘掉滚轮监听
+        private void OnDecalPointerLeave(PointerLeaveEvent evt)
         {
-            ResizerIcon.style.opacity = 1f;
+            if (wheelHandler != null)
+            {
+                DecalTextureElement.UnregisterCallback(wheelHandler);
+                wheelHandler = null;
+            }
+
+            if (leaveHandler != null)
+            {
+                DecalTextureElement.UnregisterCallback(leaveHandler);
+                leaveHandler = null;
+            }
         }
+
+        // 滚轮回调：按住 Shift 时调透明度
+        private void OnDecalWheel(WheelEvent evt)
+        {
+            if (!evt.shiftKey) return;          // 没按 Shift 直接忽略
+
+            // --- 关键：同时读 IMGUI 事件，拿到真正的滚轮增量 ---
+            Vector2 imDelta = Vector2.zero;
+            if (Event.current != null && Event.current.type == EventType.ScrollWheel)
+                imDelta = Event.current.delta;
+
+            float delta = imDelta.x * 0.02f;   // 滚一格 ≈ ±3
+            float newOpacity = DecalTextureElement.resolvedStyle.opacity - delta;
+            newOpacity = Mathf.Clamp01(newOpacity);
+
+            DecalTextureElement.style.opacity = newOpacity;
+            decalData.opacity = newOpacity;
+            evt.StopPropagation();
+        }
+
         #endregion
 
         #region 贴图设置
+        /// <summary>
+        /// 注册贴图双击事件
+        /// </summary>
         public void RegisterDecalTextureClicked()
         {
             // 修改贴图点击回调
             DecalTextureElement.RegisterCallback<PointerDownEvent>((evt) =>
             {
+                // 只响应左键
+                if (evt.button != (int)MouseButton.LeftMouse)
+                    return;
+
                 // 双击头像以更换贴图
                 if (evt.clickCount == 2)
                 {
@@ -232,6 +295,7 @@ namespace SevenStrikeModules.XGraph
                 }
             });
         }
+
         /// <summary>
         /// 打开贴图选择框
         /// </summary>
@@ -240,6 +304,7 @@ namespace SevenStrikeModules.XGraph
             EditorGUIUtility.ShowObjectPicker<Texture2D>(decalData.DecalTexture, false, "t:Texture2D", 0);
             monitoringObjectPicker = true;
         }
+
         /// <summary>
         /// 检查是否设置了贴图
         /// </summary>
@@ -258,6 +323,10 @@ namespace SevenStrikeModules.XGraph
                 NodeDecalTexture_IsNone();
             }
         }
+
+        /// <summary>
+        /// 贴图为空的时候的样式设置
+        /// </summary>
         public void NodeDecalTexture_IsNone()
         {
             DecalTextureElement.style.backgroundImage = util_EditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png");
@@ -267,6 +336,9 @@ namespace SevenStrikeModules.XGraph
             DecalTextureElement.style.borderRightWidth = 1;
         }
 
+        /// <summary>
+        /// 贴图不为空的时候的样式设置
+        /// </summary>
         public void NodeDecalTexture_IsSet()
         {
             if (decalData.DecalTexture != null)
@@ -295,6 +367,7 @@ namespace SevenStrikeModules.XGraph
 
             CheckDecalTextureChanged();
         }
+
         /// <summary>
         /// 移除贴图
         /// </summary>
@@ -309,9 +382,86 @@ namespace SevenStrikeModules.XGraph
 
             CheckDecalTextureChanged();
         }
+
+        /// <summary>
+        /// 贴图水平翻转
+        /// </summary>
+        public void NodeDecalTexture_Flip_H()
+        {
+            VisualElementScale(DecalTextureElement, "h");
+        }
+
+        /// <summary>
+        /// 贴图垂直翻转
+        /// </summary>
+        public void NodeDecalTexture_Flip_V()
+        {
+            VisualElementScale(DecalTextureElement, "v");
+        }
+        #endregion
+
+        #region 拖拽到节点
+        /// <summary>
+        /// 拖拽贴图到节点时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnDragUpdated(DragUpdatedEvent evt)
+        {
+            // 只关心贴图
+            if (DragAndDrop.objectReferences.Length > 0 &&
+                DragAndDrop.objectReferences[0] is Texture2D)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            }
+            else
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
+            }
+
+            evt.StopPropagation();   // 防止 GraphView 也处理
+        }
+
+        /// <summary>
+        /// 当拖拽离开节点时
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void OnDragExit(DragExitedEvent evt)
+        {
+
+        }
+
+        /// <summary>
+        /// 松开鼠标赋值贴图到ActioNode的AvatarIcon
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnDragPerform(DragPerformEvent evt)
+        {
+            var tex = DragAndDrop.objectReferences[0] as Texture2D;
+            if (tex == null) return;
+
+            NodeDecalTexture_Set(tex);
+            evt.StopPropagation();
+        }
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 鼠标移出时隐藏角点拖拽显示
+        /// </summary>
+        /// <param name="evt"></param>
+        private void Decal_HideResizer(PointerLeaveEvent evt)
+        {
+            ResizerIcon.style.opacity = 0f;
+        }
+        /// <summary>
+        /// 鼠标进入时显示角点拖拽显示
+        /// </summary>
+        /// <param name="evt"></param>
+        private void Decal_DisplayResizer(PointerEnterEvent evt)
+        {
+            ResizerIcon.style.opacity = 1f;
+        }
         /// <summary>
         /// 添加 OnGUI 方法，用于处理贴图选择
         /// </summary>
@@ -329,6 +479,50 @@ namespace SevenStrikeModules.XGraph
                     monitoringObjectPicker = false;
                 }
             }
+        }
+        /// <summary>
+        /// 元素的视觉布局翻转
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="scale"></param>
+        private void VisualElementScale(VisualElement element, string flip)
+        {
+            if (element == null)
+                return;
+            Undo.RecordObject(graphView.ActionTreeAsset, "Filp Decal");
+
+            Vector2 flipedValue = new Vector2(element.style.scale.value.value.x, element.style.scale.value.value.y);
+
+            if (flip == "h")
+            {
+                flipedValue.x = -flipedValue.x;
+            }
+            else if (flip == "v")
+            {
+                flipedValue.y = -flipedValue.y;
+            }
+
+            element.style.scale = new StyleScale(flipedValue);
+            decalData.scale = flipedValue;
+        }
+        /// <summary>
+        /// 将节点置顶显示（最上层显示级别）
+        /// </summary>
+        public void VisualElementBringToFront()
+        {
+            decaldata data = null;
+
+            for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
+            {
+                if (graphView.ActionTreeAsset.DecalDatas[i].guid == decalData.guid)
+                {
+                    data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
+                    graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
+                    break;
+                }
+            }
+            graphView.ActionTreeAsset.DecalDatas.Add(data);
+            BringToFront();
         }
         /// <summary>
         /// 设置节点的样式应用

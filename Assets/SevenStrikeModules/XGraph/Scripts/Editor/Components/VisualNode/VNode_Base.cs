@@ -265,6 +265,7 @@ namespace SevenStrikeModules.XGraph
             if (tex == null) return;
 
             NodeAvatar_Set(tex);
+            RegisterAvatarClicked();
 
             evt.StopPropagation();
         }

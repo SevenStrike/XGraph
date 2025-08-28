@@ -355,7 +355,7 @@ namespace SevenStrikeModules.XGraph
             {
                 Undo.RecordObject(ActionTreeAsset, "Create Decal");
                 // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
-                decaldata decaldata = new decaldata(GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));
+                decaldata decaldata = new decaldata(GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100), Vector3.one, 1);
                 ActionTreeAsset.Decal_Add(decaldata);
 
                 // 创建新的节点并指定资源数据项

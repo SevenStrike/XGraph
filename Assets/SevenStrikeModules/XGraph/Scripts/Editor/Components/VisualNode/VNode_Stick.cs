@@ -1,6 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -274,6 +273,10 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 当内容框输入完成时
+        /// </summary>
+        /// <param name="evt"></param>
         private void OnStickContentInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Content");
@@ -281,9 +284,8 @@ namespace SevenStrikeModules.XGraph
             VisualElementDisplay(stickContentlabel, true);
             VisualElementDisplay(stickContentInput, false);
         }
-
         /// <summary>
-        /// 便签标题名称设置
+        /// 便签标题输入完成时
         /// </summary>
         /// <param name="evt"></param>
         private void OnStickTitleInputBlur(BlurEvent evt)
@@ -322,7 +324,6 @@ namespace SevenStrikeModules.XGraph
             outputContainer.AddToClassList("OutputContainer");
             extensionContainer.AddToClassList("ExtensionContainer");
         }
-
         /// <summary>
         /// 添加元素到指定类型的容器中
         /// </summary>
