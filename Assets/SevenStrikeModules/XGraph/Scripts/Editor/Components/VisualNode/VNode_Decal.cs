@@ -136,6 +136,11 @@ namespace SevenStrikeModules.XGraph
             return true;
         }
 
+        public override void OnSelected()
+        {
+            //base.OnSelected();
+        }
+
         #region 节点绘制
         /// <summary>
         /// 绘制节点
