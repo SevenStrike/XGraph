@@ -284,12 +284,12 @@ namespace SevenStrikeModules.XGraph
             {
                 evt.menu.AppendSeparator();
 
-                string[] BgThemeTypes = new string[3] { "E 背景颜色", "R 网格颜色", "T 分割线颜色" };
+                string[] BgThemeTypes = new string[3] { "E 背景", "R 网格线", "T 分界线" };
                 // Graphview背景主题色切换
                 for (int i = 0; i < BgThemeTypes.Length; i++)
                 {
                     string type = BgThemeTypes[i];
-                    evt.menu.AppendAction($"T 编辑器主题/P 配色/{type}", (action) =>
+                    evt.menu.AppendAction($"T 编辑器主题/R 配色/{type}", (action) =>
                     {
                         if (Application.isPlaying)
                             return;
@@ -304,22 +304,22 @@ namespace SevenStrikeModules.XGraph
 
                         var defaultColor = Color.black;
 
-                        if (type == "E 背景颜色")
+                        if (type == "E 背景")
                             defaultColor = ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor;
-                        if (type == "R 网格颜色")
+                        if (type == "R 网格线")
                             defaultColor = ActionTreeAsset.GraphviewGridBackgroundThemes.linecolor;
-                        if (type == "T 分割线颜色")
+                        if (type == "T 分界线")
                             defaultColor = ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor;
                         #endregion
 
                         void ApplyColor(Color pickedColor)
                         {
                             Undo.RecordObject(ActionTreeAsset, "Change Graphview BgColor");
-                            if (type == "E 背景颜色")
+                            if (type == "E 背景")
                                 ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor = pickedColor;
-                            if (type == "R 网格颜色")
+                            if (type == "R 网格线")
                                 ActionTreeAsset.GraphviewGridBackgroundThemes.linecolor = pickedColor;
-                            if (type == "T 分割线颜色")
+                            if (type == "T 分界线")
                                 ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor = pickedColor;
 
                             ViggnetGridBackgroundUpdate();
@@ -333,7 +333,7 @@ namespace SevenStrikeModules.XGraph
 
                 if (ActionTreeAsset.GraphViewCustomBG_Texture != null)
                 {
-                    evt.menu.AppendAction($"T 编辑器主题/B 背景/C 替换", (action) =>
+                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/C 替换", (action) =>
                     {
                         EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
                         monitoringObjectPicker = true;
@@ -341,7 +341,7 @@ namespace SevenStrikeModules.XGraph
                         evt.StopPropagation();
                     });
 
-                    evt.menu.AppendAction($"T 编辑器主题/B 背景/R 移除", (action) =>
+                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/R 移除", (action) =>
                     {
                         ActionTreeAsset.GraphViewCustomBG_Texture = null;
                         GraphViewCustomBg_Texture_Clear();
@@ -355,7 +355,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         float v = opacityLevel_Value[i];
                         string n = opacityLevel_Names[i];
-                        evt.menu.AppendAction($"T 编辑器主题/B 背景/E 透明度/{n}", (action) =>
+                        evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/E 透明度/{n}", (action) =>
                         {
                             GraphViewCustomBg_OpacitySet(v);
                             evt.StopPropagation();
@@ -364,7 +364,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 else
                 {
-                    evt.menu.AppendAction($"T 编辑器主题/B 背景/A 指定", (action) =>
+                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/A 指定", (action) =>
                     {
                         EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
                         monitoringObjectPicker = true;
