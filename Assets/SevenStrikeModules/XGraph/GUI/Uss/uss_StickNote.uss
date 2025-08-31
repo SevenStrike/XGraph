@@ -61,6 +61,7 @@
      width: 100%;
      -unity-text-align: upper-left;
      margin: 0;
+     font-size: 14px;
 }
 
 .unity-text-element.Content_Label
@@ -81,7 +82,7 @@
      text-overflow: ellipsis;
      overflow: hidden;
      white-space: normal;
-     font-size: 11px;
+     font-size: 13px;
      flex-basis: auto;
 }
 
@@ -167,4 +168,9 @@
      white-space: normal;
      font-size: 12px;
      flex-basis: auto;
+}
+
+.unity-text-element
+{
+     font-size: 13px;
 }

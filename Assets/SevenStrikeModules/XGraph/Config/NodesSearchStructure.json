@@ -2,79 +2,89 @@
     "root_title": "节点列表",
     "root_types": [
         {
-            "catergory_title": "基础",
+            "catergory_title": "Base",
             "catergory_nodes": [
                 {
                     "name": "开始",
-                    "note": "流程的开始行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "Start",
                     "icon": "start",
-                    "visual_nodeType": "VNode_N_In_S_Out_1Port"
+                    "visual_nodeType": "Base_GraphNode_Start"
                 },
                 {
                     "name": "结束",
-                    "note": "流程的结束行为",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "End",
                     "icon": "end",
-                    "visual_nodeType": "VNode_S_In_1Port_N_Out"
+                    "visual_nodeType": "Base_GraphNode_End"
                 },
                 {
                     "name": "合成",
-                    "note": "多行为分支调用",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "Composite",
                     "icon": "composite",
-                    "visual_nodeType": "VNode_S_In_1Port_M_Out_1Port"
+                    "visual_nodeType": "Base_GraphNode_Composite"
                 },
                 {
                     "name": "等待",
-                    "note": "根据延时等待",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "Wait",
                     "icon": "wait",
-                    "visual_nodeType": "VNode_S_In_1Port_M_Out_1Port"
+                    "visual_nodeType": "Base_GraphNode_Wait"
                 },
                 {
                     "name": "调试",
-                    "note": "用于调试行为节点",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "Debug",
                     "icon": "debug",
-                    "visual_nodeType": "VNode_S_In_1Port_S_Out_1Port"
-                },
-                {
-                    "name": "便签",
-                    "note": "备注内容 / 解释性内容",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
-                    "action_nodeType": "Stick",
-                    "icon": "stick",
-                    "visual_nodeType": "VNode_N_In_N_Out"
+                    "visual_nodeType": "Base_GraphNode_Debug"
                 },
                 {
                     "name": "延展",
-                    "note": "将节点串联延展",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "Base_ActionNode_",
                     "action_nodeType": "Relay",
                     "icon": "relay",
-                    "visual_nodeType": "VNode_Relay"
+                    "visual_nodeType": "Base_GraphNode_Relay"
+                }
+            ]
+        },
+        {
+            "catergory_title": "Mind",
+            "catergory_nodes": [
+                {
+                    "name": "开始",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "Mind_ActionNode_",
+                    "action_nodeType": "Start",
+                    "icon": "start",
+                    "visual_nodeType": "Mind_GraphNode_Start"
+                }
+            ]
+        },
+        {
+            "catergory_title": "实用工具",
+            "catergory_nodes": [
+                {
+                    "name": "便签",
+                    "prefix_namespace": "SevenStrikeModules.XGraph",
+                    "prefix_class": "",
+                    "action_nodeType": "Stick",
+                    "icon": "stick",
+                    "visual_nodeType": "VNode_Stick"
                 },
                 {
                     "name": "贴图",
-                    "note": "节点文档插图",
                     "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "INode_",
+                    "prefix_class": "",
                     "action_nodeType": "Decal",
                     "icon": "decal",
-                    "visual_nodeType": "VNode_N_In_N_Out"
+                    "visual_nodeType": "VNode_Decal"
                 }
             ]
         }

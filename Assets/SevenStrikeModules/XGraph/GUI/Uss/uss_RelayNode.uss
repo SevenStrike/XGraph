@@ -53,13 +53,15 @@
 .port.output.Port_Out
 {
      width: auto;
-     height: 15px;
+     height: auto;
+     /*margin-right: -25px;*/
 }
 
 .port.input.Port_In
 {
      width: auto;
-     height: 15px;
+     height: auto;
+     /*margin-left: -25px;*/
 }
 
 #contents > #top
@@ -74,12 +76,13 @@
 
 #contents > #top
 {
-     background-color: rgba(60, 60, 60, 0.95);
+     background-color: rgba(60, 60, 60, 0);
 }
 
 #node-border
 {
      background-color: rgba(60, 60, 60, 0.95);
+     min-width: 60px;
 }
 
 #title
@@ -116,6 +119,7 @@
 #node-border.node_nodeborder
 {
      border-radius: 13px;
+     overflow: visible;
 }
 
 #selection-border.node_selectionborder

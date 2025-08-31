@@ -29,7 +29,7 @@
 .unity-text-element.Title_Label
 {
      position: relative;
-     font-size: 13px;
+     font-size: 15px;
      height: 20px;
      width: auto;
      -unity-font-style: normal;
@@ -70,6 +70,13 @@
      -unity-text-align: middle-left;
 }
 
+#collapsible-area
+{
+     flex-grow: 1;
+     flex-shrink: 1;
+     height: 100%;
+}
+
 .Avatar_Icon
 {
      position: absolute;
@@ -93,7 +100,7 @@
 .Extension_Label
 {
      color: darkgrey;
-     height: 30px;
+     height: 10px;
      width: 30px;
      font-size: 11px;
      -unity-text-align: middle-left;
@@ -105,28 +112,32 @@
 
 .port.output > #type.PortText_Out
 {
-     font-size: 12px;
+     font-size: 14px;
      --unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     margin-right: 18px;
 }
 
 .port.input > #type.PortText_In
 {
-     font-size: 12px;
+     font-size: 14px;
      --unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     margin-left: 18px;
 }
 
 .port.output.Port_Out
 {
      width: auto;
      height: 35px;
+     margin-right: -25px;
 }
 
 .port.input.Port_In
 {
      width: auto;
      height: 35px;
+     margin-left: -25px;
 }
 
 #contents > #top
@@ -147,7 +158,7 @@
 #node-border
 {
      background-color: rgba(60, 60, 60, 0.95);
-     min-width: 150px;
+     min-width: 160px;
 }
 
 #title

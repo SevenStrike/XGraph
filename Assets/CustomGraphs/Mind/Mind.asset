@@ -1,0 +1,198 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-754371817325536268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7520e9eb6f289d942a1a06c8306d1512, type: 3}
+  m_Name: A
+  m_EditorClassIdentifier: 
+  identifyName: A
+  content: "\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9"
+  guid: aea2b186f60253543ae6079f47209466
+  namespaces: SevenStrikeModules.XGraph
+  classes: MindNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > A.asset
+  actionNodeType: Start
+  icon: start
+  visualNodeType: VNode_Mind_Start
+  nodeGraphPosition: {x: 530, y: 721}
+  nodeGraphSize: {x: 276, y: 178}
+  themeSolution: "M \u66AE\u5149\u7EA2"
+  themeColor: {r: 0.8, g: 0.21176471, b: 0.21176471, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 1
+  TransparentNode: 0
+  Avatar: {fileID: 2800000, guid: fdee9359f5246a849912c7a35900b406, type: 3}
+  NodeIcon: {fileID: 0}
+  childNode: {fileID: 0}
+  Message: 0123456789
+  Names:
+  - A
+  - B
+  - C
+  - D
+  - E
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
+  m_Name: Mind
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1480, y: 927}
+  LastGraphViewPosition: {x: -424, y: -538}
+  LastGraphViewZoom: 0.9482759
+  GraphViewBg: {fileID: 2800000, guid: 56fc61d24b6981f4cbf227798008d5e7, type: 3}
+  GraphViewBgOpacity: 0.15
+  ActionNodes:
+  - {fileID: -754371817325536268}
+  - {fileID: 7779718706917303897}
+  - {fileID: 1512342163346960303}
+  - {fileID: 2174044734507363517}
+  StickNoteDatas:
+  - name: "\u4FBF\u7B7E"
+    content: "\u70B9\u51FB\u6B64\u5904\u66F4\u6539\u5185\u5BB9"
+    guid: b2c0cfbdc927bc844aaef4f50983165e
+    position: {x: 1099, y: 858}
+    size: {x: 258, y: 116}
+  DecalDatas:
+  - guid: 57214d5e3ac28fd49aa2b6376708763c
+    position: {x: 1099, y: 974}
+    size: {x: 238, y: 244}
+    opacity: 1
+    HasTexture: 1
+    DecalTexture: {fileID: 2800000, guid: 9bb491ffcaef97847a7b780bfcf73876, type: 3}
+    scale: {x: 1, y: 1, z: 1}
+  - guid: 9f466c8b19516144da255de4700c712d
+    position: {x: 861.0002, y: 1059.4728}
+    size: {x: 238, y: 244}
+    opacity: 1
+    HasTexture: 1
+    DecalTexture: {fileID: 2800000, guid: 3e2ec7882c9b44a4ab3dabb55a8c00d6, type: 3}
+    scale: {x: 1, y: 1, z: 1}
+  NodeGroupDatas:
+  - name: "\u8282\u70B9\u7F16\u7EC4"
+    guid: 886340e017468c54ca239d647850058b
+    pos: {x: 511, y: 629}
+    solution: "M \u9ED8\u8BA4"
+    guids:
+    - aea2b186f60253543ae6079f47209466
+    - fab02e4028a2f754c99c4540ca463b33
+    - 368f587cf00220541b149e52e564d563
+    - b2c0cfbdc927bc844aaef4f50983165e
+    - 57214d5e3ac28fd49aa2b6376708763c
+    - 9f466c8b19516144da255de4700c712d
+    - bf3cb41716271e340b62ef431f66f142
+    hasAvatarNodes: 1
+  BlackboardVariables: []
+--- !u!114 &1512342163346960303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b597d7bce7b00f04cb24347cce771d25, type: 3}
+  m_Name: "\u5EF6\u5C55"
+  m_EditorClassIdentifier: 
+  identifyName: "\u5EF6\u5C55"
+  content: 
+  guid: 368f587cf00220541b149e52e564d563
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u5EF6\u5C55.asset"
+  actionNodeType: Relay
+  icon: relay
+  visualNodeType: VNode_Relay
+  nodeGraphPosition: {x: 917, y: 806}
+  nodeGraphSize: {x: 66, y: 32}
+  themeSolution: "B \u5B9D\u77F3\u84DD"
+  themeColor: {r: 0.14509805, g: 0.5137255, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  childNodes:
+  - {fileID: 7779718706917303897}
+--- !u!114 &2174044734507363517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7520e9eb6f289d942a1a06c8306d1512, type: 3}
+  m_Name: BBB
+  m_EditorClassIdentifier: 
+  identifyName: BBB
+  content: "\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9\u601D\u7EF4\u98CE\u66B4\u8D77\u70B9"
+  guid: bf3cb41716271e340b62ef431f66f142
+  namespaces: SevenStrikeModules.XGraph
+  classes: MindNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > BBB.asset
+  actionNodeType: Start
+  icon: start
+  visualNodeType: VNode_Mind_Start
+  nodeGraphPosition: {x: 530, y: 926.9455}
+  nodeGraphSize: {x: 276, y: 178}
+  themeSolution: "M \u66AE\u5149\u7EA2"
+  themeColor: {r: 0.8, g: 0.21176471, b: 0.21176471, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 1
+  TransparentNode: 0
+  Avatar: {fileID: 2800000, guid: da183933ad5336b4cb31093e7f940330, type: 3}
+  NodeIcon: {fileID: 0}
+  childNode: {fileID: 1512342163346960303}
+  Message: 0123456789
+  Names:
+  - A
+  - B
+  - C
+  - D
+  - E
+--- !u!114 &7779718706917303897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a31c353e3f246c41b9f77c89186d2ac, type: 3}
+  m_Name: CC
+  m_EditorClassIdentifier: 
+  identifyName: CC
+  content: 
+  guid: fab02e4028a2f754c99c4540ca463b33
+  namespaces: SevenStrikeModules.XGraph
+  classes: INode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > CC.asset
+  actionNodeType: End
+  icon: end
+  visualNodeType: VNode_S_In_1Port_N_Out
+  nodeGraphPosition: {x: 1099, y: 721}
+  nodeGraphSize: {x: 166, y: 97}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 1
+  TransparentNode: 0
+  Avatar: {fileID: 2800000, guid: ab493549cf9182540bbe21ac5557a3d8, type: 3}
+  NodeIcon: {fileID: 0}

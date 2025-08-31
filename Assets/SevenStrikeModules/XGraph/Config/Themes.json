@@ -99,79 +99,9 @@
             "logo_color": "#FFFFFF"
         }
     ],
-    "GraphviewBgGrid": [
-        {
-            "solution": "M 默认",
-            "grid_bg_color": "#282828",
-            "line_color": "#2f2f2f",
-            "thickLine_color": "#2f2f2f",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "M 默认（无网格）",
-            "grid_bg_color": "#282828",
-            "line_color": "#282828",
-            "thickLine_color": "#282828",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "A 暗色系",
-            "grid_bg_color": "#1D1D1D",
-            "line_color": "#272727",
-            "thickLine_color": "#272727",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "A 暗色系（无网格）",
-            "grid_bg_color": "#1D1D1D",
-            "line_color": "#1D1D1D",
-            "thickLine_color": "#1D1D1D",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "L 亮色系",
-            "grid_bg_color": "#CECECE",
-            "line_color": "#b6b6b6",
-            "thickLine_color": "#b6b6b6",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "L 亮色系（无网格）",
-            "grid_bg_color": "#CECECE",
-            "line_color": "#CECECE",
-            "thickLine_color": "#CECECE",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "G 橄榄绿",
-            "grid_bg_color": "#505349",
-            "line_color": "#424242",
-            "thickLine_color": "#424242",
-            "spacing": 20,
-            "thicklines": 0
-        },
-        {
-            "solution": "G 橄榄绿（无网格）",
-            "grid_bg_color": "#505349",
-            "line_color": "#505349",
-            "thickLine_color": "#505349",
-            "spacing": 20,
-            "thicklines": 0
-        }
-    ],
     "Node": [
         {
             "solution": "M 默认",
-            "nodecolor": "#AFAFAF"
-        },
-        {
-            "solution": "L 亮色",
             "nodecolor": "#FFFFFF"
         },
         {
