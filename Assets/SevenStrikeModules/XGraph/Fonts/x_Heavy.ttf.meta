@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6c4c11c51e2c8f642b6e197bbd813e0a
+guid: 72f2755737ddb2545a774f68d54027aa
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - zihun57hao-chuangxihei
+  - Source Han Sans CN
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

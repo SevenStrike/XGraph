@@ -368,101 +368,27 @@ namespace SevenStrikeModules.XGraph
 
         #region Uss操作
         /// <summary>
-        /// 修改USS规则
+        /// 设置元素的样式
         /// </summary>
-        /// <param name="ussFilePath"></param>
-        /// <param name="selector"></param>
-        /// <param name="property"></param>
-        /// <param name="newValue"></param>
-        /// <returns></returns>
-        public static bool ModifyUssRule(string ussFilePath, string selector, string property, string newValue)
+        /// <param name="element">要添加样式的目标元素</param>
+        /// <param name="path">样式资源路径（要包含.uss后缀）</param>
+        public static void ElementStyle_Add(VisualElement element, string path)
         {
-            try
-            {
-                // 读取 CSS 文件内容
-                string cssContent = File.ReadAllText(ussFilePath, Encoding.UTF8);
-
-                // 构建更精确的正则表达式模式
-                string pattern = $@"({Regex.Escape(selector)}\s*{{)([^}}]*?)({Regex.Escape(property)}\s*:\s*)([^;}}]*)([;}}])([^}}]*)(}})";
-                Regex regex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
-                // 替换属性值
-                string newCssContent;
-                if (regex.IsMatch(cssContent))
-                {
-                    newCssContent = regex.Replace(cssContent, match =>
-                    {
-                        // 保留原始的分隔符（; 或 }），但确保只有一个
-                        string separator = match.Groups[5].Value == ";" ? ";" : "";
-                        return $"{match.Groups[1].Value}{match.Groups[2].Value}{property}: {newValue}{separator}{match.Groups[6].Value}{match.Groups[7].Value}";
-                    });
-                }
-                else
-                {
-                    // 如果没有找到匹配项，尝试添加新规则
-                    newCssContent = AddOrUpdateUssRule(cssContent, selector, property, newValue);
-                }
-
-                // 写回文件
-                File.WriteAllText(ussFilePath, newCssContent, Encoding.UTF8);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"修改 CSS 文件时出错: {ex.Message}");
-                return false;
-            }
+            // 读取uss样式
+            var uss = util_XGraphEditorUtility.AssetLoad<StyleSheet>(path);
+            element.styleSheets.Add(uss);
         }
 
         /// <summary>
-        /// 添加或更新USS规则
+        /// 移除元素的样式
         /// </summary>
-        /// <param name="ussContent"></param>
-        /// <param name="selector"></param>
-        /// <param name="property"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static string AddOrUpdateUssRule(string ussContent, string selector, string property, string value)
+        /// <param name="element">要添加样式的目标元素</param>
+        /// <param name="path">样式资源路径（要包含.uss后缀）</param>
+        public static void ElementStyle_Remove(VisualElement element, string path)
         {
-            // 更精确的匹配选择器
-            string selectorPattern = $@"({Regex.Escape(selector)}\s*{{)([^}}]*)(}})";
-            Regex selectorRegex = new Regex(selectorPattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
-            if (selectorRegex.IsMatch(ussContent))
-            {
-                return selectorRegex.Replace(ussContent, match =>
-                {
-                    string prefix = match.Groups[1].Value;
-                    string content = match.Groups[2].Value;
-                    string suffix = match.Groups[3].Value;
-
-                    // 处理属性
-                    var propRegex = new Regex($@"({Regex.Escape(property)}\s*:\s*)([^;}}]*)([;}}])");
-                    if (propRegex.IsMatch(content))
-                    {
-                        content = propRegex.Replace(content, m =>
-                        {
-                            // 保留原始的分隔符（; 或 }），但确保只有一个
-                            string separator = m.Groups[3].Value == ";" ? ";" : "";
-                            return $"{property}: {value}{separator}";
-                        });
-                    }
-                    else
-                    {
-                        // 添加新属性，确保有分号
-                        content = content.TrimEnd();
-                        if (!string.IsNullOrEmpty(content))
-                            content += ";";
-                        content += $"{property}: {value}";
-                    }
-
-                    return $"{prefix}{content}{suffix}";
-                });
-            }
-            else
-            {
-                return ussContent + $"\n{selector} {{\n  {property}: {value};\n}}\n";
-            }
+            // 读取uss样式
+            var uss = util_XGraphEditorUtility.AssetLoad<StyleSheet>(path);
+            element.styleSheets.Remove(uss);
         }
         #endregion
     }

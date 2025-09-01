@@ -194,11 +194,8 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 布局样式设定
-            var uss_GraphView = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_GraphView.uss");
-            styleSheets.Add(uss_GraphView);
-
-            var uss_group = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_Group.uss");
-            styleSheets.Add(uss_group);
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_GraphView.uss");
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Group.uss");
             #endregion
 
             #region 添加 GraphView 基础组件

@@ -1,5 +1,14 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <engine:VisualElement class="DecalTexture" style="width: 100%; height: 100%;">
-        <engine:Label text="LabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabel" />
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_XGraphWindowOptions.uss?fileID=7433441132597879392&amp;guid=eac0a75721ece66449117b5853565d63&amp;type=3#uss_XGraphWindowOptions" />
+    <SevenStrikeModules.XGraph.xg_GraphView style="width: 100%; height: 100%;" />
+    <engine:VisualElement name="OptionsPanel" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; flex-direction: column-reverse;">
+        <engine:VisualElement name="OptionsContainer" class="OptionsContainer">
+            <engine:Button text="Button" />
+            <engine:Button text="Button" />
+            <engine:Button text="Button" />
+            <engine:Button text="Button" />
+            <engine:Button text="Button" />
+            <engine:Button text="Button" />
+        </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

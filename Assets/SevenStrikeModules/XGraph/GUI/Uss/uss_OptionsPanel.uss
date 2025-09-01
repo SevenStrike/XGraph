@@ -1,0 +1,25 @@
+.OptionsContainer
+{
+     flex-direction: row;
+     height: 120px;
+     width: 100%;
+     position: absolute;
+     background-color: rgba(36, 78, 143, 0.33);
+     justify-content: space-around;
+}
+
+.OptionsContainer_Display
+{
+     transition-property: bottom;
+     transition-duration: 0.3s;
+     transition-timing-function: ease-out-cubic;
+     bottom: 0;
+}
+
+.OptionsContainer_Hide
+{
+     transition-property: bottom;
+     transition-duration: 0.3s;
+     transition-timing-function: ease-in-cubic;
+     bottom: -170px;
+}

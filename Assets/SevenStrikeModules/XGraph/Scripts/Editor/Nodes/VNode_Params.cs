@@ -11,7 +11,7 @@ namespace SevenStrikeModules.XGraph
             base.Initialize(graphView, pos, data);
 
             // 设置节点的容器样式
-            SetNodeStyle("uss_Node");
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Node.uss");
 
             #region 端口设置
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();

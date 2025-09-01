@@ -3,7 +3,6 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -16,6 +15,9 @@ namespace SevenStrikeModules.XGraph
         /// <param assetName="e"></param>
         private void Action_PointerDown(PointerDownEvent e)
         {
+            if (gv_GraphWindow == null)
+                return;
+
             #region 获取鼠标点击位置，便于指定创建的节点在鼠标位置
             Vector2 mousePosition = e.position;
             // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
@@ -81,6 +83,13 @@ namespace SevenStrikeModules.XGraph
                 OnGraphViewChanged(changes);
             }
             #endregion
+
+            // 隐藏选项面板
+            if (e.button == (int)MouseButton.LeftMouse)
+            {
+                gv_GraphWindow.OptionsPanel_Hide();
+                gv_GraphWindow.toggle_Options_CheckState(false);
+            }
 
             // 清空 VariableList 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();

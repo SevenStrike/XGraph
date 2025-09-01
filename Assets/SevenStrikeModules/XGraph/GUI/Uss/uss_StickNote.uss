@@ -18,7 +18,7 @@
      color: rgba(35,35,35, 1);
      -unity-text-align: middle-right;
      -unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
      font-size: 14px;
      letter-spacing: 10px;
 }
@@ -48,7 +48,7 @@
      color: rgba(35,35,35, 1);
      -unity-text-align: middle-right;
      -unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
      font-size: 14px;
      letter-spacing: 10px;
 }
@@ -71,7 +71,7 @@
      width: 100%;
      -unity-text-align: upper-left;
      -unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 3px;
      padding-top: 0;
      padding-right: 10px;
@@ -151,7 +151,7 @@
      border-right-color: rgba(0, 0, 0, 0);
      width: 100%;
      height: 100%;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      color: rgb(51, 51, 51);
      letter-spacing: 3px;
      padding-top: 0;

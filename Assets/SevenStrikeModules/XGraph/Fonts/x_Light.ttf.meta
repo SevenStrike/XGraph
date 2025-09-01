@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7d1ddad0ffa00ed4298aab1fff7fb1cd
+guid: fd2d547f2b6cec74198d3ab9e83da790
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Arial
+  - Source Han Sans CN
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

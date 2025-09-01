@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEngine;
@@ -70,6 +71,10 @@
         /// 黑板视图容器组件
         /// </summary>
         internal VisualElement xw_BlackBoardView_Container;
+        /// <summary>
+        /// Graphview编辑器的选项面板组件
+        /// </summary>
+        internal VisualElement xw_OptionsContainer;
         #endregion
 
         #region 控件
@@ -93,6 +98,10 @@
         /// 用于显示和隐藏节点的颜色标记
         /// </summary>
         internal Toggle xw_toggle_DisplayNodeColor;
+        /// <summary>
+        /// 用于显示和隐藏选项面板
+        /// </summary>
+        internal Toggle xw_toggle_Options;
         /// <summary>
         ///  xw_graphView 控件 - 标题
         /// </summary>
@@ -292,7 +301,7 @@
             lab_graphIcon.style.unityBackgroundImageTintColor = util_Dashboard.Theme_Primary;
             #endregion
 
-            #region 找到并获取 GraphView | InspectorView | BlackBoardView | SplitView 组件
+            #region 找到并获取 GraphView | InspectorView | BlackBoardView | GraphviewOptions 组件
             // 在布局中找到 xw_graphView 组件
             xw_graphView = root.Q<xg_GraphView>();
             xw_graphView.gv_GraphWindow = this;
@@ -372,6 +381,17 @@
             xw_label_InspectorView_Container_Title.SendToBack();
             #endregion
 
+            #region  读取并克隆OptionsPanel布局
+            var xw_GraphviewOptionsPanel = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_OptionsPanel.uxml").CloneTree().Q<VisualElement>("OptionsPanel");
+            root.Add(xw_GraphviewOptionsPanel);
+
+            util_XGraphEditorUtility.ElementStyle_Add(root, $"{util_Dashboard.GetPath_GUI_Uss()}uss_OptionsPanel.uss");
+
+            xw_OptionsContainer = xw_GraphviewOptionsPanel.Q<VisualElement>("OptionsContainer");
+            xw_OptionsContainer.AddToClassList("OptionsContainer");
+            xw_OptionsContainer.AddToClassList("OptionsContainer_Hide");
+            #endregion
+
             #endregion
 
             EditorApplication.delayCall += () =>
@@ -406,6 +426,8 @@
             xw_toggle_BlackBoardViewDisplay.RegisterValueChangedCallback(xw_toggle_BlackBoardDisplay_changed);
             xw_toggle_DisplayNodeColor = root.Q<Toggle>("toggle_DisplayNodeColor");
             xw_toggle_DisplayNodeColor.RegisterValueChangedCallback(xw_toggle_DisplayNodeColor_changed);
+            xw_toggle_Options = root.Q<Toggle>("toggle_Options");
+            xw_toggle_Options.RegisterValueChangedCallback(xw_toggle_Options_changed);
             #endregion
         }
 
@@ -773,6 +795,45 @@
 
             // 记录 InspectorView 开关状态到行为树根节点变量
             Element_State_Save("XGraph_DisplayNodeColor", xw_toggle_DisplayNodeColor.value);
+        }
+        /// <summary>
+        /// toggle_Options 开关改变状态时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void xw_toggle_Options_changed(ChangeEvent<bool> evt)
+        {
+            if (evt.newValue)
+            {
+                OptionsPanel_Display();
+            }
+            else
+            {
+                OptionsPanel_Hide();
+            }
+        }
+        /// <summary>
+        /// 显示选项面板
+        /// </summary>
+        public void OptionsPanel_Display()
+        {
+            xw_OptionsContainer.AddToClassList("OptionsContainer_Display");
+            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Hide");
+        }
+        /// <summary>
+        /// 隐藏选项面板
+        /// </summary>
+        public void OptionsPanel_Hide()
+        {
+            xw_OptionsContainer.AddToClassList("OptionsContainer_Hide");
+            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Display");
+        }
+        /// <summary>
+        /// 选项面板按钮的开关状态设置
+        /// </summary>
+        /// <param name="state"></param>
+        public void toggle_Options_CheckState(bool state)
+        {
+            xw_toggle_Options.SetValueWithoutNotify(state);
         }
         #endregion
 

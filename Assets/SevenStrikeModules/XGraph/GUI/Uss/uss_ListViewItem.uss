@@ -1,126 +1,119 @@
-.item_label_title
-{
-     position: relative;
-     color: rgb(255, 255, 255);
-     align-self: auto;
-     flex-grow: 1;
-     -unity-text-align: middle-right;
-     margin-right: 10px;
-     margin-top: 0;
-     padding-right: 0;
-     height: 10px;
-     top: auto;
-     margin-left: 10px;
-     margin-bottom: 0;
-     padding-top: 0;
-     padding-bottom: 0;
-     padding-left: 0;
-     -unity-font-style: normal;
-     font-size: 13px;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/ARIALBD.TTF?fileID=12800000&guid=7d1ddad0ffa00ed4298aab1fff7fb1cd&type=3#ARIALBD");
+.item_label_title {
+    position: relative;
+    color: rgb(255, 255, 255);
+    align-self: auto;
+    flex-grow: 1;
+    -unity-text-align: middle-right;
+    margin-right: 10px;
+    margin-top: 0;
+    padding-right: 0;
+    height: 10px;
+    top: auto;
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-style: normal;
+    font-size: 13px;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
-.item_icon
-{
-     width: 5px;
-     height: 5px;
-     position: relative;
-     align-self: auto;
-     flex-shrink: 0;
-     flex-grow: 0;
-     border-top-left-radius: 6px;
-     border-top-right-radius: 6px;
-     border-bottom-right-radius: 6px;
-     border-bottom-left-radius: 6px;
-     top: auto;
-     left: auto;
-     justify-content: center;
-     margin-left: 10px;
-     border-left-color: rgb(0, 0, 0);
-     border-right-color: rgb(0, 0, 0);
-     border-top-color: rgb(0, 0, 0);
-     border-bottom-color: rgb(0, 0, 0);
-     flex-direction: column;
-     align-items: flex-start;
-     margin-top: 0;
-     margin-right: 0;
-     margin-bottom: 0;
-     background-color: rgb(255, 255, 255);
+.item_icon {
+    width: 5px;
+    height: 5px;
+    position: relative;
+    align-self: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    top: auto;
+    left: auto;
+    justify-content: center;
+    margin-left: 10px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    background-color: rgb(255, 255, 255);
 }
 
-.item_label_des
-{
-     -unity-text-align: middle-right;
-     color: rgba(255, 255, 255, 0.4);
-     font-size: 12px;
-     margin-top: 0;
-     padding-top: 0;
-     padding-bottom: 0;
-     margin-bottom: 0;
-     text-overflow: clip;
-     overflow: hidden;
-     width: auto;
-     padding-left: 0;
-     margin-left: 30px;
-     align-items: stretch;
-     flex-grow: 1;
-     margin-right: 0;
-     padding-right: 0;
+.item_label_des {
+    -unity-text-align: middle-right;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    text-overflow: clip;
+    overflow: hidden;
+    width: auto;
+    padding-left: 0;
+    margin-left: 30px;
+    align-items: stretch;
+    flex-grow: 1;
+    margin-right: 0;
+    padding-right: 0;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
-.item_container_pill
-{
-     border-top-left-radius: 13px;
-     border-top-right-radius: 13px;
-     border-bottom-right-radius: 13px;
-     border-bottom-left-radius: 13px;
-     border-top-width: 1px;
-     border-right-width: 1px;
-     border-bottom-width: 1px;
-     border-left-width: 1px;
-     border-left-color: rgb(20, 20, 20);
-     border-right-color: rgb(20, 20, 20);
-     border-top-color: rgb(20, 20, 20);
-     border-bottom-color: rgb(20, 20, 20);
-     flex-direction: row;
-     flex-shrink: 0;
-     align-items: center;
-     background-color: rgb(40, 40, 40);
+.item_container_pill {
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(20, 20, 20);
+    border-right-color: rgb(20, 20, 20);
+    border-top-color: rgb(20, 20, 20);
+    border-bottom-color: rgb(20, 20, 20);
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    background-color: rgb(40, 40, 40);
 }
 
-.item_container_des
-{
-     flex-direction: row;
-     flex-grow: 1;
-     width: 100%;
+.item_container_des {
+    flex-direction: row;
+    flex-grow: 1;
+    width: 100%;
 }
 
-.item_container
-{
-     background-size: 100% 100%;
-     background-color: rgba(0, 0, 0, 0);
-     width: auto;
-     height: 28px;
-     justify-content: flex-start;
-     padding-right: 5px;
-     flex-grow: 0;
-     flex-shrink: 0;
-     flex-direction: row;
-     padding-bottom: 5px;
+.item_container {
+    background-size: 100% 100%;
+    background-color: rgba(0, 0, 0, 0);
+    width: auto;
+    height: 28px;
+    justify-content: flex-start;
+    padding-right: 5px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-direction: row;
+    padding-bottom: 5px;
 }
 
-.item_container:hover .item_container_pill
-{
-     border-top-color: rgba(68, 192, 255,0.5);
-     border-bottom-color: rgba(68, 192, 255,0.5);
-     border-left-color: rgba(68, 192, 255,0.5);
-     border-right-color: rgba(68, 192, 255,0.5);
+.item_container:hover .item_container_pill {
+    border-top-color: rgba(68, 192, 255, 0.5);
+    border-bottom-color: rgba(68, 192, 255, 0.5);
+    border-left-color: rgba(68, 192, 255, 0.5);
+    border-right-color: rgba(68, 192, 255, 0.5);
 }
 
-.item_container:checked .item_container_pill
-{
-     border-top-color: rgb(68, 192, 255);
-     border-bottom-color: rgb(68, 192, 255);
-     border-left-color: rgb(68, 192, 255);
-     border-right-color: rgb(68, 192, 255);
+.item_container:checked .item_container_pill {
+    border-top-color: rgb(68, 192, 255);
+    border-bottom-color: rgb(68, 192, 255);
+    border-left-color: rgb(68, 192, 255);
+    border-right-color: rgb(68, 192, 255);
 }

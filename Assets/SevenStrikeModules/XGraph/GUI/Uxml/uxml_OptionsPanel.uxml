@@ -1,0 +1,17 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_OptionsPanel.uss?fileID=7433441132597879392&amp;guid=eac0a75721ece66449117b5853565d63&amp;type=3#uss_OptionsPanel" />
+    <engine:VisualElement name="OptionsPanel" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; flex-direction: column-reverse;">
+        <engine:VisualElement name="OptionsContainer" class="OptionsContainer" style="height: 160px;">
+            <engine:VisualElement name="left" style="flex-grow: 1; background-color: rgb(58, 58, 58);" />
+            <engine:VisualElement name="center" style="flex-grow: 1; background-color: rgb(101, 81, 81);" />
+            <engine:VisualElement name="right" style="flex-grow: 1; background-color: rgb(29, 29, 29);">
+                <engine:VisualElement name="upper" style="flex-grow: 1; flex-direction: row; background-color: rgb(91, 84, 47); flex-shrink: 1; align-items: flex-start; justify-content: flex-end;">
+                    <engine:VisualElement name="close" style="flex-grow: 0; flex-shrink: 0; background-color: rgba(188, 79, 79, 0.87); width: 50px; height: 50px; right: 10px; top: 5px; justify-content: center;">
+                        <engine:Button style="background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&amp;guid=ebe30fe61a64f7b4a94633a76720d557&amp;type=3#close&quot;); width: 35px; height: 35px; align-self: center;" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+                <engine:VisualElement name="down" style="flex-grow: 1; background-color: rgb(34, 34, 34);" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

@@ -289,7 +289,7 @@ namespace SevenStrikeModules.XGraph
                 for (int i = 0; i < BgThemeTypes.Length; i++)
                 {
                     string type = BgThemeTypes[i];
-                    evt.menu.AppendAction($"T 编辑器主题/R 配色/{type}", (action) =>
+                    evt.menu.AppendAction($"E 编辑器主题/E 配色/{type}", (action) =>
                     {
                         if (Application.isPlaying)
                             return;
@@ -333,7 +333,7 @@ namespace SevenStrikeModules.XGraph
 
                 if (ActionTreeAsset.GraphViewCustomBG_Texture != null)
                 {
-                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/C 替换", (action) =>
+                    evt.menu.AppendAction($"E 编辑器主题/D 背景贴图/D 替换", (action) =>
                     {
                         EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
                         monitoringObjectPicker = true;
@@ -341,7 +341,7 @@ namespace SevenStrikeModules.XGraph
                         evt.StopPropagation();
                     });
 
-                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/R 移除", (action) =>
+                    evt.menu.AppendAction($"E 编辑器主题/D 背景贴图/R 移除", (action) =>
                     {
                         ActionTreeAsset.GraphViewCustomBG_Texture = null;
                         GraphViewCustomBg_Texture_Clear();
@@ -355,7 +355,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         float v = opacityLevel_Value[i];
                         string n = opacityLevel_Names[i];
-                        evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/E 透明度/{n}", (action) =>
+                        evt.menu.AppendAction($"E 编辑器主题/D 背景贴图/E 透明度/{n}", (action) =>
                         {
                             GraphViewCustomBg_OpacitySet(v);
                             evt.StopPropagation();
@@ -364,7 +364,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 else
                 {
-                    evt.menu.AppendAction($"T 编辑器主题/F 背景贴图/A 指定", (action) =>
+                    evt.menu.AppendAction($"E 编辑器主题/D 背景贴图/D 指定", (action) =>
                     {
                         EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
                         monitoringObjectPicker = true;
@@ -373,7 +373,12 @@ namespace SevenStrikeModules.XGraph
                     });
                 }
                 evt.menu.AppendSeparator();
-
+                evt.menu.AppendAction($"S 编辑器选项设置", (action) =>
+                {
+                    gv_GraphWindow.OptionsPanel_Display();
+                    gv_GraphWindow.toggle_Options_CheckState(true);
+                    evt.StopPropagation();
+                });
                 isInGraphView = true;
             }
             #endregion

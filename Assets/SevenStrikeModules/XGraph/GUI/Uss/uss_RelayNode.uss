@@ -6,7 +6,7 @@
      font-size: 13px;
      padding-left: 0;
      -unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
      letter-spacing: 10px;
 }
 
@@ -29,7 +29,7 @@
      font-size: 11px;
      -unity-text-align: middle-left;
      --unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Bold.TTF?fileID=12800000&guid=42cbe45bc225c6a4fbc8f249577386af&type=3#SS_Editor_Bold");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
      letter-spacing: 10px;
      padding-left: 5px;
 }
@@ -39,7 +39,7 @@
      /*display: flex;*/
      font-size: 12px;
      --unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
 .port.input > #type.PortText_In
@@ -47,7 +47,7 @@
      /*display: flex;*/
      font-size: 12px;
      --unity-font-style: normal;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/SS_Editor_Light.TTF?fileID=12800000&guid=30c4cdc2715665b41af12828367f2426&type=3#SS_Editor_Light");
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
 .port.output.Port_Out

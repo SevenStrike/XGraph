@@ -74,8 +74,7 @@ namespace SevenStrikeModules.XGraph
             VariableThemes = JsonConvert.DeserializeObject<VariableThemesGroup>(theme);
 
             // 指定样式
-            var uss_BlackBoardView = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_ListViewItem.uss");
-            styleSheets.Add(uss_BlackBoardView);
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_ListViewItem.uss");
 
             // 获取Item模版
             ListViewTemplate = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_ListViewItem.uxml");

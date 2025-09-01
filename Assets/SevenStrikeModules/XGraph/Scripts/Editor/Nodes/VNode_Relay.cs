@@ -16,7 +16,7 @@ namespace SevenStrikeModules.XGraph
             tex_logo_disconnected = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/emptyrelay.png");
 
             // 设置节点的容器样式
-            SetNodeStyle("uss_RelayNode");
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_RelayNode.uss");
 
             VisualElement nodeborder = this.Q<VisualElement>("node-border");
             nodeborder.AddToClassList("node_nodeborder");

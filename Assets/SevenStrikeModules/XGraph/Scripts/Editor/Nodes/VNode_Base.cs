@@ -172,7 +172,7 @@ namespace SevenStrikeModules.XGraph
         public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
             // 设置节点的容器样式
-            SetNodeStyle("uss_Node");
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Node.uss");
 
             tex_logo_dir_sequential = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
             tex_logo_dir_concurrent = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/concurrent.png");
@@ -821,16 +821,6 @@ namespace SevenStrikeModules.XGraph
         {
             titleContainer.style.borderBottomColor = ActionNode.themeColor;
             titleContainer.style.borderBottomWidth = 1;
-        }
-        /// <summary>
-        /// 设置节点的样式应用
-        /// </summary>
-        /// <param h_name="StyleName"></param>
-        protected void SetNodeStyle(string StyleName)
-        {
-            // 读取uss样式
-            var uss_node = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}{StyleName}.uss");
-            styleSheets.Add(uss_node);
         }
         /// <summary>
         /// 添加元素到指定类型的容器中

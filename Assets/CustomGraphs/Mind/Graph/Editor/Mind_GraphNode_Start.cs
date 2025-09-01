@@ -35,7 +35,8 @@ namespace SevenStrikeModules.XGraph
             style.height = MindActionNode.nodeGraphSize.y;
 
             // 设置节点的容器样式
-            SetNodeStyle("uss_MindNode");
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"Assets/CustomGraphs/Mind/Uss/uss_MindNode.uss");
+
 
             AddToClassList("NodeCointainer");
 

@@ -61,6 +61,7 @@ namespace SevenStrikeModules.XGraph
             this.graphView = graphView;
 
             // 设置节点的容器样式
+            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_DecalNode.uss");
             SetContainersStyle("uss_DecalNode");
 
             // 携带数据
@@ -555,9 +556,6 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="StyleName"></param>
         protected void SetContainersStyle(string StyleName)
         {
-            // 读取uss样式
-            var uss_node = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}{StyleName}.uss");
-            styleSheets.Add(uss_node);
             contentContainer.AddToClassList("ContentContainer");
             mainContainer.AddToClassList("MainContainer");
             titleContainer.AddToClassList("TitleContainer");
