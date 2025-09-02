@@ -343,6 +343,7 @@ namespace SevenStrikeModules.XGraph
 
                     evt.menu.AppendAction($"E 编辑器主题/D 背景贴图/R 移除", (action) =>
                     {
+                        Undo.RecordObject(ActionTreeAsset, "Remove GraphView CustomBgTexture");
                         ActionTreeAsset.GraphViewCustomBG_Texture = null;
                         GraphViewCustomBg_Texture_Clear();
                         evt.StopPropagation();
@@ -376,7 +377,9 @@ namespace SevenStrikeModules.XGraph
                 evt.menu.AppendAction($"S 编辑器选项设置", (action) =>
                 {
                     gv_GraphWindow.OptionsPanel_Display();
-                    gv_GraphWindow.toggle_Options_CheckState(true);
+                    gv_GraphWindow.xw_OptionsPanel_ExpanderButton_Hide();
+                    gv_GraphWindow.OptionsPanel_CloseButton_Display();
+                    gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(true);
                     evt.StopPropagation();
                 });
                 isInGraphView = true;

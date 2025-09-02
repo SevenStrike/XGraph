@@ -408,6 +408,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public float GraphViewCustomBG_Opacity = 1;
         /// <summary>
+        /// 最后一次保存时间
+        /// </summary>
+        [SerializeField] public string LastSaveDateTime;
+        /// <summary>
         /// 节点编辑器的背景参数
         /// </summary>
         [SerializeField] public GraphviewGridBackgroundThemes GraphviewGridBackgroundThemes;
@@ -431,7 +435,6 @@ namespace SevenStrikeModules.XGraph
         /// 黑板值列表
         /// </summary>
         [SerializeField] public List<BlackboardVariable> BlackboardVariables = new List<BlackboardVariable>();
-
 
         /// <summary>
         /// 刷新
@@ -521,6 +524,8 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
             // 清空当前原始资源的所有子节点
             Clear();
+
+            LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
 
             GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
 
@@ -615,6 +620,7 @@ namespace SevenStrikeModules.XGraph
             // 创建新的 ActionNode_Asset
             ActionNode_Asset newRoot = ScriptableObject.CreateInstance<ActionNode_Asset>();
 
+            newRoot.LastSaveDateTime = LastSaveDateTime;
             newRoot.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
 
             newRoot.GraphViewCustomBG_Texture = GraphViewCustomBG_Texture;

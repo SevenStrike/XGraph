@@ -88,7 +88,9 @@ namespace SevenStrikeModules.XGraph
             if (e.button == (int)MouseButton.LeftMouse)
             {
                 gv_GraphWindow.OptionsPanel_Hide();
-                gv_GraphWindow.toggle_Options_CheckState(false);
+                gv_GraphWindow.OptionsPanel_CloseButton_Hide();
+                gv_GraphWindow.OptionsPanel_ExpanderButton_Display();
+                gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
             // 清空 VariableList 选中状态

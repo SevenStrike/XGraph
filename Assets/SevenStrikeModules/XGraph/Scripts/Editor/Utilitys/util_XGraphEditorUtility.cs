@@ -391,5 +391,51 @@ namespace SevenStrikeModules.XGraph
             element.styleSheets.Remove(uss);
         }
         #endregion
+
+        #region 日期&时间计算
+        // 更精确的版本，考虑边界情况
+        public static string GetTimeSinceLastSavePrecise(string lastSaveTime)
+        {
+            string[] formats = { "yyyy-MM-dd  -  HH:mm:ss", "yyyy-MM-dd  -  HH:mm:ss" };
+
+            if (DateTime.TryParseExact(lastSaveTime, formats,
+                                      System.Globalization.CultureInfo.InvariantCulture,
+                                      System.Globalization.DateTimeStyles.None,
+                                      out DateTime savedTime))
+            {
+                DateTime currentTime = DateTime.Now;
+                TimeSpan timeDifference = currentTime - savedTime;
+
+                // 先检查是否超过1天（不同日期）
+                if (timeDifference.TotalDays >= 1)
+                {
+                    int days = (int)timeDifference.TotalDays;
+                    return $"{days}天前";
+                }
+                // 检查是否超过1小时（不同小时）
+                else if (timeDifference.TotalHours >= 1)
+                {
+                    int hours = (int)timeDifference.TotalHours;
+                    return $"{hours}小时前";
+                }
+                // 检查是否超过1分钟
+                else if (timeDifference.TotalMinutes >= 1)
+                {
+                    int minutes = (int)timeDifference.TotalMinutes;
+                    return $"{minutes}分钟前";
+                }
+                // 少于1分钟
+                else
+                {
+                    int seconds = (int)timeDifference.TotalSeconds;
+                    return $"{seconds}秒前";
+                }
+            }
+            else
+            {
+                throw new ArgumentException("无效的时间格式。请使用 'yyyy-MM-dd - HH:mm:ss' 格式");
+            }
+        }
+        #endregion
     }
 }

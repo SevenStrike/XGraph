@@ -1,16 +1,49 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_OptionsPanel.uss?fileID=7433441132597879392&amp;guid=eac0a75721ece66449117b5853565d63&amp;type=3#uss_OptionsPanel" />
-    <engine:VisualElement name="OptionsPanel" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; flex-direction: column-reverse;">
-        <engine:VisualElement name="OptionsContainer" class="OptionsContainer" style="height: 160px;">
-            <engine:VisualElement name="left" style="flex-grow: 1; background-color: rgb(58, 58, 58);" />
-            <engine:VisualElement name="center" style="flex-grow: 1; background-color: rgb(101, 81, 81);" />
-            <engine:VisualElement name="right" style="flex-grow: 1; background-color: rgb(29, 29, 29);">
-                <engine:VisualElement name="upper" style="flex-grow: 1; flex-direction: row; background-color: rgb(91, 84, 47); flex-shrink: 1; align-items: flex-start; justify-content: flex-end;">
-                    <engine:VisualElement name="close" style="flex-grow: 0; flex-shrink: 0; background-color: rgba(188, 79, 79, 0.87); width: 50px; height: 50px; right: 10px; top: 5px; justify-content: center;">
-                        <engine:Button style="background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&amp;guid=ebe30fe61a64f7b4a94633a76720d557&amp;type=3#close&quot;); width: 35px; height: 35px; align-self: center;" />
-                    </engine:VisualElement>
+    <engine:VisualElement name="OptionsPanel" picking-mode="Ignore" enabled="true" style="position: absolute; width: 100%; height: 100%; flex-direction: column; justify-content: flex-end; align-content: flex-end;">
+        <engine:VisualElement name="ExpandContainer" picking-mode="Ignore" style="position: absolute; height: 50px; width: 50px; flex-direction: column; flex-grow: 0; flex-shrink: 0; align-self: center; justify-content: center; align-items: center;">
+            <engine:Button name="btn_expand" class="btn_expand" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="OptionsContainer" picking-mode="Ignore" enabled="true" class="OptionsContainer" style="position: relative;">
+            <engine:VisualElement name="reg_color" class="OptionsContainer_InsideRegion_Left" style="flex-grow: 0; justify-content: flex-start; padding-left: 20px; padding-bottom: 0; padding-top: 10px; flex-direction: column; overflow: hidden; padding-right: 15px; width: 280px;">
+                <engine:Label text="配色" name="Title" class="OptionsTitle" />
+                <engine:VisualElement name="color_bg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="背景色" name="title" class="ParamFieldTitle" />
+                    <editor:ColorField name="colorfield_bg" value="#000000FF" class="ParamField" style="width: 100px;" />
                 </engine:VisualElement>
-                <engine:VisualElement name="down" style="flex-grow: 1; background-color: rgb(34, 34, 34);" />
+                <engine:VisualElement name="color_grid" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="网格" name="title" class="ParamFieldTitle" />
+                    <editor:ColorField name="colorfield_grid" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="color_thickline" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="分界线" name="title" class="ParamFieldTitle" />
+                    <editor:ColorField name="colorfield_thickline" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="color_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="背景图像着色" name="title" class="ParamFieldTitle" />
+                    <editor:ColorField name="colorfield_customimage" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+            <engine:VisualElement name="sepline" class="sepline" style="width: 1px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&amp;guid=df626e800f8f8744baf117e45cfdaf7a&amp;type=3#sepline&quot;);" />
+            <engine:VisualElement name="reg_params" class="OptionsContainer_InsideRegion_Center" style="flex-grow: 0; justify-content: flex-start; padding-left: 20px; padding-bottom: 0; padding-top: 10px; flex-direction: column; overflow: hidden; padding-right: 15px; width: 350px;">
+                <engine:Label text="参数" name="Title" class="OptionsTitle" />
+                <engine:VisualElement name="param_gridspace" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="网格间距" name="title" class="ParamFieldTitle" />
+                    <engine:TextField name="textfield_gridspace" class="ParamField" style="font-size: 13px; width: 150px;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="param_thicklinecount" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="分界线数量" name="title" class="ParamFieldTitle" />
+                    <engine:TextField name="textfield_thicklinecount" class="ParamField" style="font-size: 13px; width: 150px;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="param_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="背景图像" name="title" class="ParamFieldTitle" />
+                    <editor:ObjectField allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="objectfield_customimage" class="ParamField" style="width: 150px;" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+            <engine:VisualElement name="sepline" class="sepline" />
+            <engine:VisualElement name="reg_other" class="OptionsContainer_InsideRegion_Right" style="overflow: hidden; justify-content: center; align-items: center;">
+                <engine:Button name="btn_close" class="btn_close" style="background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&amp;guid=ebe30fe61a64f7b4a94633a76720d557&amp;type=3#close&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+                <engine:Label text="待完善区域" name="Notice" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 20px; color: rgba(210, 210, 210, 0.17); letter-spacing: 22px;" />
             </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>

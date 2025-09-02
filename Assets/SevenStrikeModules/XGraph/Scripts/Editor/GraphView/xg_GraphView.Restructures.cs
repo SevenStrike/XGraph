@@ -2,6 +2,7 @@ namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
     using System.Linq;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
@@ -85,6 +86,7 @@ namespace SevenStrikeModules.XGraph
             // 重建编组
             Restructure_Groups(ActionTreeAsset.NodeGroupDatas);
 
+            #region 编辑器主面板UI逻辑
             // 设置编辑器背景图
             GraphViewCustomBg_Texture_Set(ActionTreeAsset.GraphViewCustomBG_Texture);
 
@@ -93,6 +95,16 @@ namespace SevenStrikeModules.XGraph
 
             // GraphviewGridBackground 网格背景主题改变
             ViggnetGridBackgroundUpdate();
+
+            // 计算并显示行为资源的保存时间差
+            gv_GraphWindow.xw_GraphInfo_LastSaveDateTime_Set(ActionTreeAsset.LastSaveDateTime);
+
+            // 显示行为资源路径
+            gv_GraphWindow.xw_GraphInfo_PathContent_Set(AssetDatabase.GetAssetPath(gv_GraphWindow.SourceTree));
+
+            // OptionsPanel_GraphView背景颜色组件值设置
+            gv_GraphWindow.xw_OptionsPanel_Color_Bg_Change(ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
+            #endregion
         }
 
         /// <summary>
