@@ -389,7 +389,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 刷新ViggnetGridBackground 背景主题参数
         /// </summary>
-        private void ViggnetGridBackgroundUpdate()
+        public void ViggnetGridBackgroundUpdate()
         {
             if (ActionTreeAsset == null)
                 return;

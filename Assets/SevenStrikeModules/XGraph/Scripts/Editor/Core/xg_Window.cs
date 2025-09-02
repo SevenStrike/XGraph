@@ -482,6 +482,7 @@
 
             // GraphView背景颜色组件
             xw_OptionsPanel_Color_Bg = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_bg");
+            xw_OptionsPanel_Color_Bg.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Bg_changed);
             // GraphView背景网格颜色组件
             xw_OptionsPanel_Color_Grid = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_grid");
             // GraphView背景网格分界线颜色组件
@@ -574,6 +575,7 @@
             xw_GraphInfo_LastSaveLag.style.color = util_Dashboard.Theme_Primary;
             #endregion
         }
+
 
         /// <summary>
         /// 编辑器界面绘制逻辑
@@ -929,6 +931,16 @@
         public void xw_OptionsPanel_Color_Bg_Change(Color color)
         {
             xw_OptionsPanel_Color_Bg.value = color;
+        }
+        /// <summary>
+        /// OptionsPanel_GraphView背景颜色组件值改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void on_xw_OptionsPanel_Color_Bg_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview BgColor");
+            CloneTree.GraphviewGridBackgroundThemes.bgcolor = evt.newValue;
+            xw_graphView.ViggnetGridBackgroundUpdate();
         }
 
         // ------------------ OptionsPanel_Toggle 组件逻辑
