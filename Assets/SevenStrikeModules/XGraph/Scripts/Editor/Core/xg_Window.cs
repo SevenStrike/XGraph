@@ -99,31 +99,35 @@
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 背景颜色
         /// </summary>
-        internal ColorField xw_OptionsPanel_Color_Bg;
+        internal ColorField xw_OptionsPanel_Colorfield_Bg;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 网格颜色
         /// </summary>
-        internal ColorField xw_OptionsPanel_Color_Grid;
+        internal ColorField xw_OptionsPanel_Colorfield_Grid;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 分界线颜色
         /// </summary>
-        internal ColorField xw_OptionsPanel_Color_Thickline;
+        internal ColorField xw_OptionsPanel_Colorfield_Thickline;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 背景图像着色
         /// </summary>
-        internal ColorField xw_OptionsPanel_Color_CustomImage;
+        internal ColorField xw_OptionsPanel_Colorfield_CustomImage;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 网格间距
         /// </summary>
-        internal TextField xw_OptionsPanel_TextField_GridSpace;
+        internal FloatField xw_OptionsPanel_Floatfield_GridSpace;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 分界线数量
         /// </summary>
-        internal TextField xw_OptionsPanel_TextField_ThicklineCount;
+        internal IntegerField xw_OptionsPanel_Integerfield_ThicklineCount;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 背景图像
         /// </summary>
-        internal ObjectField xw_OptionsPanel_ObjectField_CustomImage;
+        internal ObjectField xw_OptionsPanel_Objectfield_CustomImage;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 复位背景参数
+        /// </summary>
+        internal Button xw_OptionsPanel_Button_Reset;
         #endregion
 
         #region 控件
@@ -457,7 +461,6 @@
             #endregion
 
             #region 找到并获取 OptionsPanel | 背景各类颜色和参数组件
-
             #region  读取并克隆选项面板布局树元素
             var xw_GraphviewOptionsPanel = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_OptionsPanel.uxml").CloneTree().Q<VisualElement>("OptionsPanel");
             root.Add(xw_GraphviewOptionsPanel);
@@ -480,22 +483,45 @@
             xw_OptionsContainerRegion_Reg_Other = xw_OptionsContainer.Q<VisualElement>("reg_other");
             #endregion
 
-            // GraphView背景颜色组件
-            xw_OptionsPanel_Color_Bg = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_bg");
-            xw_OptionsPanel_Color_Bg.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Bg_changed);
-            // GraphView背景网格颜色组件
-            xw_OptionsPanel_Color_Grid = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_grid");
-            // GraphView背景网格分界线颜色组件
-            xw_OptionsPanel_Color_Thickline = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_thickline");
-            // GraphView背景图像着色颜色组件
-            xw_OptionsPanel_Color_CustomImage = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_customimage");
+            #region GraphView背景颜色组件
+            xw_OptionsPanel_Colorfield_Bg = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_bg");
+            xw_OptionsPanel_Colorfield_Bg.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Bg_changed);
+            #endregion
 
-            // GraphView背景网格间距输入框组件
-            xw_OptionsPanel_TextField_GridSpace = xw_OptionsContainerRegion_Reg_Params.Q<TextField>(name: "textfield_gridspace");
-            // GraphView背景网格分界线数量输入框组件
-            xw_OptionsPanel_TextField_ThicklineCount = xw_OptionsContainerRegion_Reg_Params.Q<TextField>(name: "textfield_thicklinecount");
-            // GraphView背景图像对象框组件
-            xw_OptionsPanel_ObjectField_CustomImage = xw_OptionsContainerRegion_Reg_Params.Q<ObjectField>(name: "objectfield_customimage");
+            #region GraphView背景网格颜色组件
+            xw_OptionsPanel_Colorfield_Grid = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_grid");
+            xw_OptionsPanel_Colorfield_Grid.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Grid_changed);
+            #endregion
+
+            #region GraphView背景网格分界线颜色组件
+            xw_OptionsPanel_Colorfield_Thickline = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_thickline");
+            xw_OptionsPanel_Colorfield_Thickline.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_Thickline_changed);
+            #endregion
+
+            #region GraphView背景图像着色颜色组件
+            xw_OptionsPanel_Colorfield_CustomImage = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_customimage");
+            xw_OptionsPanel_Colorfield_CustomImage.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_CustomImage_changed);
+            #endregion
+
+            #region GraphView背景网格间距输入框组件
+            xw_OptionsPanel_Floatfield_GridSpace = xw_OptionsContainerRegion_Reg_Params.Q<FloatField>(name: "floatfield_gridspace");
+            xw_OptionsPanel_Floatfield_GridSpace.RegisterCallback<BlurEvent>(on_xw_OptionsPanel_Textfield_GridSpace_changed);
+            #endregion
+
+            #region GraphView背景网格分界线数量输入框组件
+            xw_OptionsPanel_Integerfield_ThicklineCount = xw_OptionsContainerRegion_Reg_Params.Q<IntegerField>(name: "integerfield_thicklinecount");
+            xw_OptionsPanel_Integerfield_ThicklineCount.RegisterCallback<BlurEvent>(on_xw_OptionsPanel_Textfield_ThicklineCount_changed);
+            #endregion
+
+            #region GraphView背景图像对象框组件
+            xw_OptionsPanel_Objectfield_CustomImage = xw_OptionsContainerRegion_Reg_Params.Q<ObjectField>(name: "objectfield_customimage");
+            xw_OptionsPanel_Objectfield_CustomImage.RegisterValueChangedCallback(on_xw_OptionsPanel_Objectfield_CustomImage_changed);
+            #endregion
+
+            #region GraphView背景参数复位按钮
+            xw_OptionsPanel_Button_Reset = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "resetbutton");
+            xw_OptionsPanel_Button_Reset.clicked += xw_OptionsPanel_Button_Reset_Clicked;
+            #endregion
             #endregion
 
             EditorApplication.delayCall += () =>
@@ -575,7 +601,6 @@
             xw_GraphInfo_LastSaveLag.style.color = util_Dashboard.Theme_Primary;
             #endregion
         }
-
 
         /// <summary>
         /// 编辑器界面绘制逻辑
@@ -837,6 +862,215 @@
         #endregion
 
         #region 控件逻辑
+        #region OptionsPanel逻辑
+        #region OptionsPanel_GraphView背景颜色组件逻辑      
+        /// <summary>
+        /// OptionsPanel_GraphView背景颜色组件值改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void on_xw_OptionsPanel_Color_Bg_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview BgColor");
+            CloneTree.GraphviewGridBackgroundThemes.bgcolor = evt.newValue;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphViewGrid颜色组件逻辑
+        private void on_xw_OptionsPanel_Color_Grid_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview GridColor");
+            CloneTree.GraphviewGridBackgroundThemes.gridcolor = evt.newValue;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphViewThickline颜色组件逻辑
+        private void on_xw_OptionsPanel_Colorfield_Thickline_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview ThicklineColor");
+            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = evt.newValue;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphViewCustomImage颜色组件逻辑
+        private void on_xw_OptionsPanel_Colorfield_CustomImage_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview CustomImageColor");
+            CloneTree.GraphviewGridBackgroundThemes.customimagecolor = evt.newValue;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphView网格间距组件逻辑
+        private void on_xw_OptionsPanel_Textfield_GridSpace_changed(BlurEvent evt)
+        {
+            Undo.RecordObject(CloneTree, "Set GraphView GridSpace");
+            CloneTree.GraphviewGridBackgroundThemes.spacing = xw_OptionsPanel_Floatfield_GridSpace.value;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphView分界线数量组件逻辑
+        private void on_xw_OptionsPanel_Textfield_ThicklineCount_changed(BlurEvent evt)
+        {
+            Undo.RecordObject(CloneTree, "Set GraphView ThicklineCount");
+            CloneTree.GraphviewGridBackgroundThemes.thicklines = xw_OptionsPanel_Integerfield_ThicklineCount.value;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_GraphView背景图像组件逻辑
+        private void on_xw_OptionsPanel_Objectfield_CustomImage_changed(ChangeEvent<UnityEngine.Object> evt)
+        {
+            Undo.RecordObject(CloneTree, "Set GraphView CustomBg Texture");
+            CloneTree.GraphviewGridBackgroundThemes.customimage = evt.newValue as Texture2D;
+            xw_graphView.ViggnetGridBackgroundUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel_Toggle 组件逻辑
+        /// <summary>
+        /// toggle_Options 开关改变状态时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void xw_toggle_OptionsPanel_changed(ChangeEvent<bool> evt)
+        {
+            if (evt.newValue)
+            {
+                OptionsPanel_Display();
+                xw_OptionsPanel_ExpanderButton_Hide();
+                OptionsPanel_CloseButton_Display();
+            }
+            else
+            {
+                OptionsPanel_Hide();
+                OptionsPanel_ExpanderButton_Display();
+                OptionsPanel_CloseButton_Hide();
+            }
+        }
+        /// <summary>
+        /// 显示选项面板
+        /// </summary>
+        public void OptionsPanel_Display()
+        {
+            xw_OptionsContainer.AddToClassList("OptionsContainer_Display");
+            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Hide");
+        }
+        /// <summary>
+        /// 隐藏选项面板
+        /// </summary>
+        public void OptionsPanel_Hide()
+        {
+            xw_OptionsContainer.AddToClassList("OptionsContainer_Hide");
+            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Display");
+        }
+        /// <summary>
+        /// 选项面板按钮的开关状态设置
+        /// </summary>
+        /// <param name="state"></param>
+        public void OptionsPanel_ToggleChange_WithoutNotify(bool state)
+        {
+            xw_toggle_Options.SetValueWithoutNotify(state);
+        }
+        #endregion
+
+        #region OptionsPanel_CloseButton 组件逻辑
+        /// <summary>
+        /// 选项面板的关闭按钮点击动作
+        /// </summary>
+        private void xw_btn_OptionsPanel_CloseButton_Clicked()
+        {
+            OptionsPanel_Hide();
+            OptionsPanel_ToggleChange_WithoutNotify(false);
+            OptionsPanel_ExpanderButton_Display();
+            OptionsPanel_CloseButton_Hide();
+        }
+        /// <summary>
+        /// 显示选项面板的关闭按钮
+        /// </summary>
+        public void OptionsPanel_CloseButton_Display()
+        {
+            xw_OptionsPanel_Btn_Close.AddToClassList("btn_close_Display");
+            xw_OptionsPanel_Btn_Close.RemoveFromClassList("btn_close_Hide");
+        }
+        /// <summary>
+        /// 隐藏选项面板的关闭按钮
+        /// </summary>
+        public void OptionsPanel_CloseButton_Hide()
+        {
+            xw_OptionsPanel_Btn_Close.AddToClassList("btn_close_Hide");
+            xw_OptionsPanel_Btn_Close.RemoveFromClassList("btn_close_Display");
+        }
+        #endregion
+
+        #region OptionsPanel_ExpanderButton 组件逻辑
+        /// <summary>
+        /// 选项面板折叠按钮点击动作
+        /// </summary>
+        private void xw_btn_OptionsPanel_ExpanderButton_changed()
+        {
+            OptionsPanel_ToggleChange_WithoutNotify(true);
+            xw_OptionsPanel_ExpanderButton_Hide();
+            OptionsPanel_Display();
+            OptionsPanel_CloseButton_Display();
+        }
+        /// <summary>
+        /// 选项面板折叠按钮 - 显示
+        /// </summary>
+        public void OptionsPanel_ExpanderButton_Display()
+        {
+            xw_OptionsPanel_ExpanderButton.AddToClassList("btn_expand_Display");
+            xw_OptionsPanel_ExpanderButton.RemoveFromClassList("btn_expand_Hide");
+        }
+        /// <summary>
+        /// 选项面板折叠按钮 - 隐藏
+        /// </summary>
+        public void xw_OptionsPanel_ExpanderButton_Hide()
+        {
+            xw_OptionsPanel_ExpanderButton.AddToClassList("btn_expand_Hide");
+            xw_OptionsPanel_ExpanderButton.RemoveFromClassList("btn_expand_Display");
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的背景参数复位
+        /// <summary>
+        /// 复位选项面板的所有背景参数控件的值，以及背景参数的原始值复位
+        /// </summary>
+        private void xw_OptionsPanel_Button_Reset_Clicked()
+        {
+            CloneTree.GraphviewGridBackgroundThemes.bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
+            CloneTree.GraphviewGridBackgroundThemes.gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
+            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = new Color(1, 1, 1, 0);
+            CloneTree.GraphviewGridBackgroundThemes.customimagecolor = new Color(1, 1, 1, 0);
+            CloneTree.GraphviewGridBackgroundThemes.spacing = 18;
+            CloneTree.GraphviewGridBackgroundThemes.thicklines = 18;
+            CloneTree.GraphviewGridBackgroundThemes.customimage = null;
+
+            OptionsPanel_ParamsUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的背景参数刷新
+        /// <summary>
+        /// 刷新选项面板的所有背景参数控件的值
+        /// </summary>
+        private void OptionsPanel_ParamsUpdate()
+        {
+            xw_OptionsPanel_Colorfield_Bg.value = CloneTree.GraphviewGridBackgroundThemes.bgcolor;
+            xw_OptionsPanel_Colorfield_Grid.value = CloneTree.GraphviewGridBackgroundThemes.gridcolor;
+            xw_OptionsPanel_Colorfield_Thickline.value = CloneTree.GraphviewGridBackgroundThemes.thickLinecolor;
+            xw_OptionsPanel_Colorfield_CustomImage.value = CloneTree.GraphviewGridBackgroundThemes.customimagecolor;
+            xw_OptionsPanel_Floatfield_GridSpace.value = CloneTree.GraphviewGridBackgroundThemes.spacing;
+            xw_OptionsPanel_Integerfield_ThicklineCount.value = CloneTree.GraphviewGridBackgroundThemes.thicklines;
+            xw_OptionsPanel_Objectfield_CustomImage.value = CloneTree.GraphviewGridBackgroundThemes.customimage;
+
+        }
+        #endregion
+        #endregion
+
+        #region 工具栏按钮逻辑
         /// <summary>
         /// 清空按钮逻辑
         /// </summary>
@@ -865,6 +1099,9 @@
         {
             xw_graphView?.FrameAll();
         }
+        #endregion
+
+        #region 工具栏开关逻辑
         /// <summary>
         /// toggle_RemoteInspectorDisplay 开关改变状态时
         /// </summary>
@@ -922,129 +1159,9 @@
             // 记录 InspectorView 开关状态到行为树根节点变量
             Element_State_Save("XGraph_DisplayNodeColor", xw_toggle_DisplayNodeColor.value);
         }
+        #endregion
 
-        // ------------------ OptionsPanel_GraphView背景颜色组件逻辑
-        /// <summary>
-        /// OptionsPanel_GraphView背景颜色组件设置
-        /// </summary>
-        /// <param name="color"></param>
-        public void xw_OptionsPanel_Color_Bg_Change(Color color)
-        {
-            xw_OptionsPanel_Color_Bg.value = color;
-        }
-        /// <summary>
-        /// OptionsPanel_GraphView背景颜色组件值改变时
-        /// </summary>
-        /// <param name="evt"></param>
-        private void on_xw_OptionsPanel_Color_Bg_changed(ChangeEvent<Color> evt)
-        {
-            Undo.RecordObject(CloneTree, "Change Graphview BgColor");
-            CloneTree.GraphviewGridBackgroundThemes.bgcolor = evt.newValue;
-            xw_graphView.ViggnetGridBackgroundUpdate();
-        }
-
-        // ------------------ OptionsPanel_Toggle 组件逻辑
-        /// <summary>
-        /// toggle_Options 开关改变状态时
-        /// </summary>
-        /// <param name="evt"></param>
-        private void xw_toggle_OptionsPanel_changed(ChangeEvent<bool> evt)
-        {
-            if (evt.newValue)
-            {
-                OptionsPanel_Display();
-                xw_OptionsPanel_ExpanderButton_Hide();
-                OptionsPanel_CloseButton_Display();
-            }
-            else
-            {
-                OptionsPanel_Hide();
-                OptionsPanel_ExpanderButton_Display();
-                OptionsPanel_CloseButton_Hide();
-            }
-        }
-        /// <summary>
-        /// 显示选项面板
-        /// </summary>
-        public void OptionsPanel_Display()
-        {
-            xw_OptionsContainer.AddToClassList("OptionsContainer_Display");
-            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Hide");
-        }
-        /// <summary>
-        /// 隐藏选项面板
-        /// </summary>
-        public void OptionsPanel_Hide()
-        {
-            xw_OptionsContainer.AddToClassList("OptionsContainer_Hide");
-            xw_OptionsContainer.RemoveFromClassList("OptionsContainer_Display");
-        }
-
-        /// <summary>
-        /// 选项面板按钮的开关状态设置
-        /// </summary>
-        /// <param name="state"></param>
-        public void OptionsPanel_ToggleChange_WithoutNotify(bool state)
-        {
-            xw_toggle_Options.SetValueWithoutNotify(state);
-        }
-
-        // ------------------ OptionsPanel_CloseButton 组件逻辑
-        /// <summary>
-        /// 选项面板的关闭按钮点击动作
-        /// </summary>
-        private void xw_btn_OptionsPanel_CloseButton_Clicked()
-        {
-            OptionsPanel_Hide();
-            OptionsPanel_ToggleChange_WithoutNotify(false);
-            OptionsPanel_ExpanderButton_Display();
-            OptionsPanel_CloseButton_Hide();
-        }
-        /// <summary>
-        /// 显示选项面板的关闭按钮
-        /// </summary>
-        public void OptionsPanel_CloseButton_Display()
-        {
-            xw_OptionsPanel_Btn_Close.AddToClassList("btn_close_Display");
-            xw_OptionsPanel_Btn_Close.RemoveFromClassList("btn_close_Hide");
-        }
-        /// <summary>
-        /// 隐藏选项面板的关闭按钮
-        /// </summary>
-        public void OptionsPanel_CloseButton_Hide()
-        {
-            xw_OptionsPanel_Btn_Close.AddToClassList("btn_close_Hide");
-            xw_OptionsPanel_Btn_Close.RemoveFromClassList("btn_close_Display");
-        }
-
-        // ------------------ OptionsPanel_ExpanderButton 组件逻辑
-        /// <summary>
-        /// 选项面板折叠按钮点击动作
-        /// </summary>
-        private void xw_btn_OptionsPanel_ExpanderButton_changed()
-        {
-            OptionsPanel_ToggleChange_WithoutNotify(true);
-            xw_OptionsPanel_ExpanderButton_Hide();
-            OptionsPanel_Display();
-            OptionsPanel_CloseButton_Display();
-        }
-        /// <summary>
-        /// 选项面板折叠按钮 - 显示
-        /// </summary>
-        public void OptionsPanel_ExpanderButton_Display()
-        {
-            xw_OptionsPanel_ExpanderButton.AddToClassList("btn_expand_Display");
-            xw_OptionsPanel_ExpanderButton.RemoveFromClassList("btn_expand_Hide");
-        }
-        /// <summary>
-        /// 选项面板折叠按钮 - 隐藏
-        /// </summary>
-        public void xw_OptionsPanel_ExpanderButton_Hide()
-        {
-            xw_OptionsPanel_ExpanderButton.AddToClassList("btn_expand_Hide");
-            xw_OptionsPanel_ExpanderButton.RemoveFromClassList("btn_expand_Display");
-        }
-
+        #region GraphInfo 信息设置
         /// <summary>
         /// 行为资源信息容器 - 路径内容拷贝
         /// </summary>
@@ -1057,7 +1174,6 @@
                 GUIUtility.systemCopyBuffer = xw_GraphInfo_PathContent.text;
             }
         }
-
         /// <summary>
         /// 获取并计算正确的相差上一次保存时间
         /// </summary>
@@ -1067,7 +1183,6 @@
             xw_GraphInfo_LastSaveDateTime.text = $"{lasttime}";
             xw_GraphInfo_LastSaveLag_Set(lasttime);
         }
-
         /// <summary>
         /// 获取并计算正确的相差上一次保存时间的时差
         /// </summary>
@@ -1076,7 +1191,6 @@
         {
             xw_GraphInfo_LastSaveLag.text = $"{util_XGraphEditorUtility.GetTimeSinceLastSavePrecise(lasttime)}";
         }
-
         /// <summary>
         /// 显示行为资源的路径
         /// </summary>
@@ -1085,7 +1199,9 @@
         {
             xw_GraphInfo_PathContent.text = path;
         }
+        #endregion
 
+        #region Inspctor 和 BlackBoard 面板标题设置
         /// <summary>
         /// 设置Inspector面板的标题
         /// </summary>
@@ -1116,6 +1232,7 @@
             // 节点的挂载资源路径 - 清空
             Element_Label_Set(xw_label_graph_CurrentNodePath, path);
         }
+        #endregion
         #endregion
 
         #region ActionTree全局操作
@@ -1218,6 +1335,38 @@
         #endregion
 
         #region 元素控制
+        /// <summary>
+        /// IntegerField输入框组件设置
+        /// </summary>
+        /// <param name="val"></param>
+        public void Element_IntegerField_ValueSet(IntegerField field, int val)
+        {
+            field.value = val;
+        }
+        /// <summary>
+        /// FloatField输入框组件设置
+        /// </summary>
+        /// <param name="val"></param>
+        public void Element_FloatField_ValueSet(FloatField field, float val)
+        {
+            field.value = val;
+        }
+        /// <summary>
+        /// ColorField颜色组件设置
+        /// </summary>
+        /// <param name="color"></param>
+        public void Element_ColorField_ValueSet(ColorField field, Color color)
+        {
+            field.value = color;
+        }
+        /// <summary>
+        /// ObjectField物体组件设置
+        /// </summary>
+        /// <param name="obj"></param>
+        public void Element_ObjectField_ValueSet(ObjectField field, UnityEngine.Object obj)
+        {
+            field.value = obj;
+        }
         /// <summary>
         /// 拖动目标VisualElement方法
         /// </summary>
@@ -1511,6 +1660,8 @@
                 xw_InspectorView.UpdateSelection(xw_currentSelectedVisualNode);
             else
                 xw_InspectorView.UpdateSelection(CloneTree);
+
+            OptionsPanel_ParamsUpdate();
 
             // 刷新 BlackBoard 标题显示
             xw_BlackBoard_UpdateTitleInfo();

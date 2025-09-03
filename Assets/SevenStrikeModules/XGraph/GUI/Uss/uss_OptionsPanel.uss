@@ -129,15 +129,7 @@
     font-size: 13px;
     text-overflow: ellipsis;
     -unity-text-align: middle-left;
-}
-
-.ParamField {
-    height: auto;
-    width: 50px;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
+    width: 100px;
 }
 
 .ParamFieldContainer {
@@ -171,16 +163,6 @@
     -unity-text-align: middle-left;
 }
 
-.ParamField {
-    height: auto;
-    width: 50px;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-}
-
 .ParamFieldContainer {
     flex-direction: row;
     flex-grow: 0;
@@ -196,17 +178,18 @@
     margin-bottom: 10px;
 }
 
-.ParamField {
-    height: auto;
-    width: 50px;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-
 .sepline {
     width: 1px;
     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&guid=df626e800f8f8744baf117e45cfdaf7a&type=3#sepline");
     -unity-background-image-tint-color: rgba(114, 114, 114, 0.64);
+}
+
+.ParamField {
+    height: auto;
+    width: 130px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }

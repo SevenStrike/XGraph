@@ -364,10 +364,12 @@ namespace SevenStrikeModules.XGraph
     public class GraphviewGridBackgroundThemes
     {
         public Color bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
-        public Color linecolor = new Color(0.18f, 0.18f, 0.18f, 1);
+        public Color gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
+        public Color customimagecolor = new Color(1, 1, 1, 0);
         public Color thickLinecolor = new Color(0.18f, 0.18f, 0.18f, 1);
         public float spacing = 18;
         public int thicklines = 18;
+        public Texture2D customimage;
 
         public GraphviewGridBackgroundThemes() { }
 
@@ -375,10 +377,12 @@ namespace SevenStrikeModules.XGraph
         {
             GraphviewGridBackgroundThemes t = new GraphviewGridBackgroundThemes();
             t.bgcolor = bgcolor;
-            t.linecolor = linecolor;
+            t.gridcolor = gridcolor;
             t.thickLinecolor = thickLinecolor;
             t.spacing = spacing;
             t.thicklines = thicklines;
+            t.customimagecolor = customimagecolor;
+            t.customimage = customimage;
 
             return t;
         }
@@ -399,14 +403,6 @@ namespace SevenStrikeModules.XGraph
         /// 记录的节点编辑器最后一次的视图内缩放
         /// </summary>
         [SerializeField] public float LastGraphViewZoom = 1;
-        /// <summary>
-        /// 节点编辑器的自定义背景图
-        /// </summary>
-        [SerializeField] public Texture2D GraphViewCustomBG_Texture;
-        /// <summary>
-        /// 节点编辑器的自定义背景图透明度
-        /// </summary>
-        [SerializeField] public float GraphViewCustomBG_Opacity = 1;
         /// <summary>
         /// 最后一次保存时间
         /// </summary>
@@ -529,9 +525,6 @@ namespace SevenStrikeModules.XGraph
 
             GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
 
-            GraphViewCustomBG_Texture = root.GraphViewCustomBG_Texture;
-            GraphViewCustomBG_Opacity = root.GraphViewCustomBG_Opacity;
-
             // 覆盖原有的贴图数据列表
             DecalDatas = new List<decaldata>();
             foreach (var decal in root.DecalDatas)
@@ -621,10 +614,8 @@ namespace SevenStrikeModules.XGraph
             ActionNode_Asset newRoot = ScriptableObject.CreateInstance<ActionNode_Asset>();
 
             newRoot.LastSaveDateTime = LastSaveDateTime;
-            newRoot.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
 
-            newRoot.GraphViewCustomBG_Texture = GraphViewCustomBG_Texture;
-            newRoot.GraphViewCustomBG_Opacity = GraphViewCustomBG_Opacity;
+            newRoot.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
 
             // 实例化新的 StickNoteDatas 列表，并从原始资源复制项
             newRoot.StickNoteDatas = new List<stickdata>();

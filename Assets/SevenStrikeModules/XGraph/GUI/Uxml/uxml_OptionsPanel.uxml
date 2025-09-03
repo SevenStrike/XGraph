@@ -9,19 +9,19 @@
                 <engine:Label text="配色" name="Title" class="OptionsTitle" />
                 <engine:VisualElement name="color_bg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="背景色" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_bg" value="#000000FF" class="ParamField" style="width: 100px;" />
+                    <editor:ColorField name="colorfield_bg" value="#000000FF" class="ParamField" />
                 </engine:VisualElement>
                 <engine:VisualElement name="color_grid" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="网格" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_grid" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <editor:ColorField name="colorfield_grid" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </engine:VisualElement>
                 <engine:VisualElement name="color_thickline" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="分界线" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_thickline" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <editor:ColorField name="colorfield_thickline" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </engine:VisualElement>
                 <engine:VisualElement name="color_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="背景图像着色" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_customimage" value="#000000FF" class="ParamField" style="height: auto; width: 100px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <editor:ColorField name="colorfield_customimage" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </engine:VisualElement>
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" style="width: 1px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&amp;guid=df626e800f8f8744baf117e45cfdaf7a&amp;type=3#sepline&quot;);" />
@@ -29,16 +29,17 @@
                 <engine:Label text="参数" name="Title" class="OptionsTitle" />
                 <engine:VisualElement name="param_gridspace" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="网格间距" name="title" class="ParamFieldTitle" />
-                    <engine:TextField name="textfield_gridspace" class="ParamField" style="font-size: 13px; width: 150px;" />
+                    <engine:FloatField value="0" name="floatfield_gridspace" class="ParamField" />
                 </engine:VisualElement>
                 <engine:VisualElement name="param_thicklinecount" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="分界线数量" name="title" class="ParamFieldTitle" />
-                    <engine:TextField name="textfield_thicklinecount" class="ParamField" style="font-size: 13px; width: 150px;" />
+                    <engine:IntegerField value="0" name="integerfield_thicklinecount" class="ParamField" />
                 </engine:VisualElement>
                 <engine:VisualElement name="param_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="背景图像" name="title" class="ParamFieldTitle" />
-                    <editor:ObjectField allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="objectfield_customimage" class="ParamField" style="width: 150px;" />
+                    <editor:ObjectField allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="objectfield_customimage" class="ParamField" />
                 </engine:VisualElement>
+                <engine:Button text="恢复默认样式配置" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_other" class="OptionsContainer_InsideRegion_Right" style="overflow: hidden; justify-content: center; align-items: center;">

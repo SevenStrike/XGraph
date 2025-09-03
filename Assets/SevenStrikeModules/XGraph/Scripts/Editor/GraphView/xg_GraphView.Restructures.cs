@@ -87,14 +87,6 @@ namespace SevenStrikeModules.XGraph
             Restructure_Groups(ActionTreeAsset.NodeGroupDatas);
 
             #region 编辑器主面板UI逻辑
-            // 设置编辑器背景图
-            GraphViewCustomBg_Texture_Set(ActionTreeAsset.GraphViewCustomBG_Texture);
-
-            // 设置编辑器背景图透明度
-            GraphViewCustomBg_OpacitySet(ActionTreeAsset.GraphViewCustomBG_Opacity);
-
-            // GraphviewGridBackground 网格背景主题改变
-            ViggnetGridBackgroundUpdate();
 
             // 计算并显示行为资源的保存时间差
             gv_GraphWindow.xw_GraphInfo_LastSaveDateTime_Set(ActionTreeAsset.LastSaveDateTime);
@@ -102,8 +94,29 @@ namespace SevenStrikeModules.XGraph
             // 显示行为资源路径
             gv_GraphWindow.xw_GraphInfo_PathContent_Set(AssetDatabase.GetAssetPath(gv_GraphWindow.SourceTree));
 
-            // OptionsPanel_GraphView背景颜色组件值设置
-            gv_GraphWindow.xw_OptionsPanel_Color_Bg_Change(ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
+            // OptionsPanel_GraphView背景颜色值设置
+            gv_GraphWindow.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_Bg, ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
+
+            // OptionsPanel_GraphView网格颜色值设置
+            gv_GraphWindow.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_Grid, ActionTreeAsset.GraphviewGridBackgroundThemes.gridcolor);
+
+            // OptionsPanel_GraphView分界线颜色值设置
+            gv_GraphWindow.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_Thickline, ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor);
+
+            // OptionsPanel_GraphView背景图像颜色值设置
+            gv_GraphWindow.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_CustomImage, ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor);
+
+            // OptionsPanel_GraphView网格间距值设置
+            gv_GraphWindow.Element_FloatField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Floatfield_GridSpace, ActionTreeAsset.GraphviewGridBackgroundThemes.spacing);
+
+            // OptionsPanel_GraphView网格分界线值设置
+            gv_GraphWindow.Element_IntegerField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Integerfield_ThicklineCount, ActionTreeAsset.GraphviewGridBackgroundThemes.thicklines);
+
+            // OptionsPanel_GraphView背景图像值设置
+            gv_GraphWindow.Element_ObjectField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Objectfield_CustomImage, ActionTreeAsset.GraphviewGridBackgroundThemes.customimage);
+
+            // GraphviewGridBackground 网格背景主题改变
+            ViggnetGridBackgroundUpdate();
             #endregion
         }
 

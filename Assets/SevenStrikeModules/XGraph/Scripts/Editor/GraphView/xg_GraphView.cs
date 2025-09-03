@@ -243,68 +243,6 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 节点编辑器自定义背景贴图设置
-        /// <summary>
-        /// 节点编辑器自定义背景图 - 设置
-        /// </summary>
-        /// <param name="tex"></param>
-        public void GraphViewCustomBg_Texture_Set(Texture2D tex)
-        {
-            Undo.RecordObject(ActionTreeAsset, "Set GraphView CustomBg Texture");
-            ActionTreeAsset.GraphViewCustomBG_Texture = tex;
-            CustomBg_Texture_Set(tex);
-        }
-
-        /// <summary>
-        /// 节点编辑器自定义背景图 - 移除
-        /// </summary>
-        /// <param name="tex"></param>
-        public void GraphViewCustomBg_Texture_Clear()
-        {
-            Undo.RecordObject(ActionTreeAsset, "Clear GraphView CustomBg Texture");
-            ActionTreeAsset.GraphViewCustomBG_Texture = null;
-            CustomBg_Texture_Clear();
-        }
-
-        /// <summary>
-        /// 节点编辑器自定义背景图 - 设置透明度
-        /// </summary>
-        /// <param name="opacity"></param>
-        public void GraphViewCustomBg_OpacitySet(float opacity)
-        {
-            Undo.RecordObject(ActionTreeAsset, "Set GraphView CustomBg TextureOpacity");
-            ActionTreeAsset.GraphViewCustomBG_Opacity = opacity;
-            CustomBg_Opacity_Set(opacity);
-        }
-
-        /// <summary>
-        /// 自定义背景图组件 - 设置贴图资源
-        /// </summary>
-        private void CustomBg_Texture_Set(Texture2D tex)
-        {
-            if (CustomBackground != null)
-                CustomBackground.style.backgroundImage = tex;
-        }
-
-        /// <summary>
-        /// 自定义背景图组件 - 移除贴图资源
-        /// </summary>
-        private void CustomBg_Texture_Clear()
-        {
-            if (CustomBackground != null)
-                CustomBackground.style.backgroundImage = null;
-        }
-
-        /// <summary>
-        /// 自定义背景图组件 - 设置透明度
-        /// </summary>
-        private void CustomBg_Opacity_Set(float opacity)
-        {
-            if (CustomBackground != null)
-                CustomBackground.style.opacity = opacity;
-        }
-        #endregion
-
         #region 辅助方法
         /// <summary>
         /// 注册当元素移入 / 移出编组时委托
@@ -395,9 +333,15 @@ namespace SevenStrikeModules.XGraph
                 return;
             GraphviewGridBackground.SetSpacing(ActionTreeAsset.GraphviewGridBackgroundThemes.spacing);
             GraphviewGridBackground.SetGridBackgroundColor(ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
-            GraphviewGridBackground.SetLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.linecolor);
+            GraphviewGridBackground.SetLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.gridcolor);
             GraphviewGridBackground.SetThickLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor);
             GraphviewGridBackground.SetThickLines(ActionTreeAsset.GraphviewGridBackgroundThemes.thicklines);
+
+            if (CustomBackground != null)
+                CustomBackground.style.unityBackgroundImageTintColor = ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor;
+
+            if (CustomBackground != null)
+                CustomBackground.style.backgroundImage = ActionTreeAsset.GraphviewGridBackgroundThemes.customimage;
         }
         /// <summary>
         /// 根据数据节点的GUID来获取目标视觉节点
@@ -600,43 +544,36 @@ namespace SevenStrikeModules.XGraph
                     var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
                     if (selectedTexture != null)
                     {
-                        if (SetTextureMode == "SetBgImage")
+                        if (CurrentSelectedNodes_Base.Count > 0)
                         {
-                            GraphViewCustomBg_Texture_Set(selectedTexture);
-                        }
-                        else
-                        {
-                            if (CurrentSelectedNodes_Base.Count > 0)
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                                VNode_Base node = CurrentSelectedNodes_Base[s];
+                                if (node.ActionNode.actionNodeType != "Relay")
                                 {
-                                    VNode_Base node = CurrentSelectedNodes_Base[s];
-                                    if (node.ActionNode.actionNodeType != "Relay")
+                                    if (SetTextureMode == "SetAvatar")
                                     {
-                                        if (SetTextureMode == "SetAvatar")
-                                        {
-                                            node.RegisterAvatarClicked();
-                                            node.NodeAvatar_Set(selectedTexture);
-                                        }
-                                        if (SetTextureMode == "SetTitleIcon")
-                                        {
-                                            node.NodeTitleIcon_Set(selectedTexture);
-                                        }
+                                        node.RegisterAvatarClicked();
+                                        node.NodeAvatar_Set(selectedTexture);
+                                    }
+                                    if (SetTextureMode == "SetTitleIcon")
+                                    {
+                                        node.NodeTitleIcon_Set(selectedTexture);
                                     }
                                 }
                             }
+                        }
 
-                            if (CurrentSelectedNodes_Decal.Count > 0)
+                        if (CurrentSelectedNodes_Decal.Count > 0)
+                        {
+                            for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
                             {
-                                for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
+                                VNode_Decal decal = CurrentSelectedNodes_Decal[s];
+                                if (decal != null)
                                 {
-                                    VNode_Decal decal = CurrentSelectedNodes_Decal[s];
-                                    if (decal != null)
-                                    {
-                                        decal.decalData.HasTexture = true;
-                                        decal.decalData.DecalTexture = selectedTexture;
-                                        decal.CheckDecalTextureChanged();
-                                    }
+                                    decal.decalData.HasTexture = true;
+                                    decal.decalData.DecalTexture = selectedTexture;
+                                    decal.CheckDecalTextureChanged();
                                 }
                             }
                         }
