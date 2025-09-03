@@ -125,22 +125,30 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 绑定列表项的数据
         /// </summary>
-        /// <param text_name="element"></param>
-        /// <param text_name="index"></param>
+        /// <param label_name="container"></param>
+        /// <param label_name="index"></param>
         private void BindData(VisualElement element, int index)
         {
+            // 变量名称容器
             VisualElement ele_pill = element.Q<VisualElement>("pill");
+            // 变量图标
             VisualElement icon = ele_pill.Q<VisualElement>("icon");
-            Label text_name = ele_pill.Q<Label>("text");
 
-            VisualElement ele_des = element.Q<VisualElement>("description");
-            Label text_des = ele_des.Q<Label>("text");
+            // 变量名称
+            Label label_name = ele_pill.Q<Label>("text");
+            // 变量名称输入框
+            Label textfield_name = ele_pill.Q<Label>("textfield");
+
+            // 变量说明容器
+            VisualElement ele_des = element.Q<VisualElement>("des");
+            // 解释内容
+            Label label_des = ele_des.Q<Label>("text");
 
             var obj = graphWindow.CloneTree.BlackboardVariables[index];
-            text_name.text = obj.name;
-            text_des.text = obj.type.ToString();
+            label_name.text = obj.name;
+            label_des.text = obj.des;
 
-            // 属性前的图标的颜色根据属性类型来定（通过 json 配置对应主题色）
+            // 变量图标的颜色根据属性类型来定（通过 json 配置对应主题色）
             VariableThemes.VariableThemes.ForEach(theme =>
             {
                 if (theme.type == obj.type.ToString())

@@ -5,7 +5,7 @@
             <engine:Button name="btn_expand" class="btn_expand" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
         </engine:VisualElement>
         <engine:VisualElement name="OptionsContainer" picking-mode="Ignore" enabled="true" class="OptionsContainer" style="position: relative;">
-            <engine:VisualElement name="reg_color" class="OptionsContainer_InsideRegion_Left" style="flex-grow: 0; justify-content: flex-start; padding-left: 20px; padding-bottom: 0; padding-top: 10px; flex-direction: column; overflow: hidden; padding-right: 15px; width: 280px;">
+            <engine:VisualElement name="reg_color" class="OptionsContainer_InsideRegion_Color" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
                 <engine:Label text="配色" name="Title" class="OptionsTitle" />
                 <engine:VisualElement name="color_bg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="背景色" name="title" class="ParamFieldTitle" />
@@ -25,7 +25,7 @@
                 </engine:VisualElement>
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" style="width: 1px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&amp;guid=df626e800f8f8744baf117e45cfdaf7a&amp;type=3#sepline&quot;);" />
-            <engine:VisualElement name="reg_params" class="OptionsContainer_InsideRegion_Center" style="flex-grow: 0; justify-content: flex-start; padding-left: 20px; padding-bottom: 0; padding-top: 10px; flex-direction: column; overflow: hidden; padding-right: 15px; width: 350px;">
+            <engine:VisualElement name="reg_params" class="OptionsContainer_InsideRegion_Param" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
                 <engine:Label text="参数" name="Title" class="OptionsTitle" />
                 <engine:VisualElement name="param_gridspace" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
                     <engine:Label text="网格间距" name="title" class="ParamFieldTitle" />
@@ -42,9 +42,57 @@
                 <engine:Button text="恢复默认样式配置" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
-            <engine:VisualElement name="reg_other" class="OptionsContainer_InsideRegion_Right" style="overflow: hidden; justify-content: center; align-items: center;">
+            <engine:VisualElement name="reg_blackboards" class="OptionsContainer_InsideRegion_BlackBoards" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
+                <engine:Label text="黑板变量标记" name="Title" class="OptionsTitle" />
+                <engine:VisualElement name="paramTypes" picking-mode="Ignore" style="flex-grow: 0; flex-direction: row; width: 266px; padding-left: 10px;">
+                    <engine:VisualElement name="reg_left" picking-mode="Ignore" style="margin-right: 29px;">
+                        <engine:VisualElement name="param_type_string" class="paramtype_container">
+                            <engine:Label text="String" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_float" class="paramtype_container">
+                            <engine:Label text="Float" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_int" class="paramtype_container">
+                            <engine:Label text="Int" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_bool" class="paramtype_container">
+                            <engine:Label text="Bool" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                    </engine:VisualElement>
+                    <engine:VisualElement name="reg_right" picking-mode="Ignore">
+                        <engine:VisualElement name="param_type_vector2" class="paramtype_container">
+                            <engine:Label text="Vector2" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_vector3" class="paramtype_container">
+                            <engine:Label text="Vector3" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_vector4" class="paramtype_container">
+                            <engine:Label text="Vector4" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_object" class="paramtype_container">
+                            <engine:Label text="Object" name="title" class="ParamFieldTitle" style="width: auto;" />
+                            <engine:VisualElement name="dot" style="width: 5px; height: 5px; background-color: rgb(255, 0, 0); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                        </engine:VisualElement>
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:VisualElement>
+            <engine:VisualElement name="sepline" class="sepline" />
+            <engine:VisualElement name="reg_other" class="OptionsContainer_InsideRegion_Other" style="overflow: hidden;">
+                <engine:VisualElement name="Abouts" picking-mode="Ignore" enabled="true" style="flex-direction: column-reverse; align-items: flex-end; flex-grow: 1; overflow: hidden; margin-bottom: 10px;">
+                    <engine:Label text="Powered By SevenStrike Media" name="CompanyName" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 12px; margin-bottom: 12px; text-overflow: ellipsis; flex-shrink: 1; overflow: hidden; letter-spacing: 15px; color: rgba(210, 210, 210, 0.31); margin-right: 0; padding-right: 0; padding-left: 0; margin-top: 5px;" />
+                    <engine:VisualElement name="ProductName" style="flex-direction: row-reverse; align-items: flex-end; justify-content: space-between; padding-bottom: 0; margin-bottom: 10px;">
+                        <engine:Label text="1.0" name="xGraphName" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;); font-size: 12px; margin-bottom: 0; text-overflow: ellipsis; flex-shrink: 1; overflow: hidden; letter-spacing: 10px; padding-right: 0; padding-left: 0; color: rgba(255, 255, 255, 0.8); margin-left: 13px;" />
+                        <engine:Label text="X GRAPH" name="xGraphName" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;); font-size: 28px; margin-bottom: 0; text-overflow: ellipsis; flex-shrink: 1; overflow: hidden; letter-spacing: 10px; padding-right: 0; padding-left: 0; color: rgba(255, 255, 255, 0.8);" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
                 <engine:Button name="btn_close" class="btn_close" style="background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&amp;guid=ebe30fe61a64f7b4a94633a76720d557&amp;type=3#close&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
-                <engine:Label text="待完善区域" name="Notice" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 20px; color: rgba(210, 210, 210, 0.17); letter-spacing: 22px;" />
             </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>

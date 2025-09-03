@@ -13,6 +13,7 @@
         <editor:ToolbarButton name="btn_FrameAll" tabindex="3" tooltip="聚焦所有节点内容" class="ToolbarButon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/frameAll.png?fileID=2800000&amp;guid=6ce006534c3c44a4e921fc01a0d3047d&amp;type=3#frameAll&quot;); background-size: 17px 17px; width: 50px;" />
         <editor:ToolbarToggle name="toggle_DisplayNodeColor" tooltip="是否显示节点的颜色标记" class="ToolbarButon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/displayNodeColor.png?fileID=2800000&amp;guid=a68ddfd424bd9fa4d97a6d4e611c146c&amp;type=3#displayNodeColor&quot;); background-size: 17px 17px; width: 50px;" />
         <editor:ToolbarToggle name="toggle_Options" tooltip="XGraph编辑器选项" class="ToolbarButon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/options.png?fileID=2800000&amp;guid=e8fdeb8977b112f41b118090c1320b4e&amp;type=3#options&quot;); background-size: 17px 17px; width: 50px;" />
+        <editor:ToolbarButton name="btn_Help" tabindex="3" tooltip="聚焦所有节点内容" class="ToolbarButon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/help.png?fileID=2800000&amp;guid=de401d7c80f77cc4587dae28b2bdb8f3&amp;type=3#help&quot;); background-size: 17px 17px; width: 50px;" />
     </editor:Toolbar>
     <engine:Label text="节点视图" name="graphintro_Title" style="background-color: rgb(29, 29, 29); height: 21px; -unity-text-align: middle-left; padding-left: 20px; font-size: 13px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; width: 100%; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);">
         <engine:Label name="graphintro_currentNodeName" style="height: 21px; padding-left: 0; font-size: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; background-size: 50% 100%; padding-right: 20px; width: 70%; -unity-text-align: middle-right; align-self: flex-end;" />
@@ -46,7 +47,7 @@
                 <engine:Label text="节点图简要信息" name="sub" class="BlackBoard_Sub" style="position: relative;" />
             </engine:VisualElement>
             <SevenStrikeModules.XGraph.xg_BlackBoardView name="BlackBoardView" style="width: 100%; height: auto; padding-left: 10px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; position: relative; top: auto; left: auto; right: auto; bottom: auto; flex-shrink: 1; flex-grow: 1;">
-                <engine:ListView name="VariableList" fixed-item-height="35" reorderable="true" selection-type="Multiple" virtualization-method="FixedHeight" style="width: 100%; height: 100%;" />
+                <engine:ListView name="VariableList" fixed-item-height="35" reorderable="true" selection-type="Multiple" virtualization-method="DynamicHeight" style="width: 100%; height: 100%;" />
             </SevenStrikeModules.XGraph.xg_BlackBoardView>
         </SevenStrikeModules.XGraph.xg_ResizableElement>
     </engine:VisualElement>

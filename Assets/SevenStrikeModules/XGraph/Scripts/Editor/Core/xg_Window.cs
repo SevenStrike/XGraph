@@ -89,6 +89,10 @@
         /// </summary>
         internal VisualElement xw_OptionsContainerRegion_Reg_Params;
         /// <summary>
+        /// Graphview编辑器的选项面板分区组件 - RegBlackBoards
+        /// </summary>
+        internal VisualElement xw_OptionsContainerRegion_Reg_BlackBoards;
+        /// <summary>
         /// Graphview编辑器的选项面板分区组件 - RegOther
         /// </summary>
         internal VisualElement xw_OptionsContainerRegion_Reg_Other;
@@ -188,6 +192,10 @@
         /// </summary>
         private Button xw_btn_FrameAll;
         /// <summary>
+        ///  xw_graphView 控件 - 帮助与教程
+        /// </summary>
+        private Button xw_btn_Help;
+        /// <summary>
         /// Graphview编辑器的选项面板折叠按钮组件
         /// </summary>
         internal Button xw_OptionsPanel_ExpanderButton;
@@ -273,7 +281,6 @@
                 xg_Window wnd = GetWindow<xg_Window>();
 
                 wnd.titleContent = new GUIContent($"XGraph");
-
 
                 #region 克隆资源
                 // 保留原始资源引用
@@ -480,6 +487,8 @@
             // 参数配置区域
             xw_OptionsContainerRegion_Reg_Params = xw_OptionsContainer.Q<VisualElement>("reg_params");
             // 暂未开放
+            xw_OptionsContainerRegion_Reg_BlackBoards = xw_OptionsContainer.Q<VisualElement>("reg_blackboards");
+            // 暂未开放
             xw_OptionsContainerRegion_Reg_Other = xw_OptionsContainer.Q<VisualElement>("reg_other");
             #endregion
 
@@ -522,6 +531,27 @@
             xw_OptionsPanel_Button_Reset = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "resetbutton");
             xw_OptionsPanel_Button_Reset.clicked += xw_OptionsPanel_Button_Reset_Clicked;
             #endregion
+
+            #region BlackBoard 的参数类型的颜色标记物
+
+            VisualElement paramtypes = xw_OptionsContainerRegion_Reg_BlackBoards.Q<VisualElement>(name: "paramTypes");
+
+            // 获取所有名称为dot的VisualElement
+            var dotElements = paramtypes.Query<VisualElement>(name: "dot").ToList();
+
+            for (int i = 0; i < dotElements.Count; i++)
+            {
+                VisualElement dot = dotElements[i];
+                string dotparentName = dot.parent.name;
+                for (int s = 0; s < xw_BlackBoardView.VariableThemes.VariableThemes.Count; s++)
+                {
+                    if (dotparentName == $"param_type_{xw_BlackBoardView.VariableThemes.VariableThemes[s].type.ToLower()}")
+                    {
+                        dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemes.VariableThemes[s].color);
+                    }
+                }
+            }
+            #endregion
             #endregion
 
             EditorApplication.delayCall += () =>
@@ -557,6 +587,11 @@
             // 重聚焦按钮
             xw_btn_FrameAll = root.Q<Button>("btn_FrameAll");
             xw_btn_FrameAll.clicked += xw_btn_FrameAll_clicked;
+
+            // 帮助按钮
+            xw_btn_Help = root.Q<Button>("btn_Help");
+            xw_btn_Help.clicked += xw_btn_Help_clicked;
+
 
             // Inspector面板开关按钮
             xw_toggle_InspectorViewDisplay = root.Q<Toggle>("toggle_InspectorViewDisplay");
@@ -1042,8 +1077,8 @@
         {
             CloneTree.GraphviewGridBackgroundThemes.bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
             CloneTree.GraphviewGridBackgroundThemes.gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
-            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = new Color(1, 1, 1, 0);
             CloneTree.GraphviewGridBackgroundThemes.customimagecolor = new Color(1, 1, 1, 0);
+            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = new Color(0, 0, 0, 0);
             CloneTree.GraphviewGridBackgroundThemes.spacing = 18;
             CloneTree.GraphviewGridBackgroundThemes.thicklines = 18;
             CloneTree.GraphviewGridBackgroundThemes.customimage = null;
@@ -1098,6 +1133,14 @@
         private void xw_btn_FrameAll_clicked()
         {
             xw_graphView?.FrameAll();
+        }
+        /// <summary>
+        /// 帮助按钮
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        private void xw_btn_Help_clicked()
+        {
+            Debug.Log("打开教程网站！");
         }
         #endregion
 
@@ -1774,6 +1817,5 @@
             window.position = windowRect;
         }
         #endregion
-
     }
 }

@@ -238,6 +238,7 @@ namespace SevenStrikeModules.XGraph
         public string name;
         public BlackboardVariableType type;
         public string stringValue;
+        public string des;
         public float floatValue;
         public int intValue;
         public bool boolValue;
@@ -259,6 +260,7 @@ namespace SevenStrikeModules.XGraph
         {
             var clone = new BlackboardVariable();
             clone.name = name;
+            clone.des = des;
             clone.type = type;
             clone.stringValue = stringValue;
             clone.floatValue = floatValue;
@@ -286,9 +288,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="vector4Value"></param>
         /// <param name="objectValue"></param>
         /// <returns></returns>
-        public BlackboardVariable(string name = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
+        public BlackboardVariable(string name = null, string des = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
         {
             this.name = name;
+            this.des = des;
             this.type = type;
             this.stringValue = stringValue;
             this.floatValue = floatValue;
@@ -366,7 +369,7 @@ namespace SevenStrikeModules.XGraph
         public Color bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
         public Color gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
         public Color customimagecolor = new Color(1, 1, 1, 0);
-        public Color thickLinecolor = new Color(0.18f, 0.18f, 0.18f, 1);
+        public Color thickLinecolor = new Color(0, 0, 0, 0);
         public float spacing = 18;
         public int thicklines = 18;
         public Texture2D customimage;
@@ -406,7 +409,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 最后一次保存时间
         /// </summary>
-        [SerializeField] public string LastSaveDateTime;
+        [SerializeField] public string LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
         /// <summary>
         /// 节点编辑器的背景参数
         /// </summary>

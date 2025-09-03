@@ -19,7 +19,7 @@
 
 .OptionsContainer_Display {
     transition-property: bottom;
-    transition-duration: 0.2s;
+    transition-duration: 0.35s;
     transition-timing-function: ease-out-cubic;
     bottom: 20px;
 }
@@ -108,19 +108,38 @@
     bottom: -70px;
 }
 
-.OptionsContainer_InsideRegion_Left {
+.OptionsContainer_InsideRegion_Color {
     flex-grow: 1;
     background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.OptionsContainer_InsideRegion_Center {
+.OptionsContainer_InsideRegion_Param {
     flex-grow: 1;
     background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.OptionsContainer_InsideRegion_Right {
+.OptionsContainer_InsideRegion_BlackBoards {
     flex-grow: 1;
     background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.OptionsContainer_InsideRegion_Other {
+    background-color: rgba(0, 0, 0, 0);
+    width: 319px;
+    flex-grow: 1;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    flex-direction: column;
 }
 
 .ParamFieldTitle {
@@ -192,4 +211,12 @@
     margin-bottom: 0;
     margin-left: 0;
     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+}
+
+.paramtype_container {
+    width: 100px;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
 }
