@@ -88,6 +88,8 @@ namespace SevenStrikeModules.XGraph
             // 在此模块下寻找 ListView 组件
             VariableList = this.Q<ListView>("VariableList");
 
+            VariableList.reorderable = false;
+
             // 创造 ListView 的模版样式
             VariableList.makeItem = GetElement;
 
@@ -103,36 +105,60 @@ namespace SevenStrikeModules.XGraph
             // 注册添加属性按钮动作
             btn_AddVariable.RegisterCallback<ClickEvent>(AddVariablesMenu);
 
-            // 注册拖拽相关事件
-            VariableList.RegisterCallback<DragUpdatedEvent>(OnVariableDragUpdated);
-            VariableList.RegisterCallback<DragPerformEvent>(OnVariableDragPerform);
-            VariableList.RegisterCallback<DragExitedEvent>(OnVariableDragExited);
+            // 设置拖拽启动条件
+            VariableList.canStartDrag += CanStartDrag;
+
+            // 设置拖拽更新
+            VariableList.dragAndDropUpdate += OnDragAndDropUpdate;
+
+            // 设置拖拽开始
+            VariableList.setupDragAndDrop += SetupDragAndDrop;
+
+            // 手动注册鼠标事件来实现排序
+            //VariableList.RegisterCallback<MouseDownEvent>(OnListViewMouseDown);
+            //VariableList.RegisterCallback<MouseUpEvent>(OnListViewMouseUp);
+            //VariableList.RegisterCallback<MouseMoveEvent>(OnListViewMouseMove);
         }
 
-        #region 拖拽相关逻辑
-        private void OnVariableDragExited(DragExitedEvent evt)
+        #region 拖拽属性到Graphview中的相关逻辑
+        /// <summary>
+        /// 是否可以开始拖拽
+        /// </summary>
+        private bool CanStartDrag(CanStartDragArgs arg)
         {
-
+            // 只有当有选中项时才允许拖拽
+            return true;
         }
 
-        private void OnVariableDragPerform(DragPerformEvent evt)
+        /// <summary>
+        /// 设置拖拽数据
+        /// </summary>
+        private StartDragArgs SetupDragAndDrop(SetupDragAndDropArgs arg)
         {
-            // 获取选中的 BlackboardVariables
-            var selectedVariables = VariableList.selectedItems;
-
-            // 创建属性节点
-            CreateVaiableNode(evt, selectedVariables);
-
-            // 标记事件已处理
-            evt.StopPropagation();
+            var variable = VariableList.selectedItem as BlackboardVariable;
+            if (variable != null)
+            {
+                DragAndDrop.PrepareStartDrag();
+                DragAndDrop.SetGenericData("NodeType", variable);
+                DragAndDrop.objectReferences = new UnityEngine.Object[0];
+                DragAndDrop.StartDrag($"Dragging {variable.name}");
+            }
+            return arg.startDragArgs;
         }
 
-        private void OnVariableDragUpdated(DragUpdatedEvent evt)
+        /// <summary>
+        /// 拖拽更新处理
+        /// </summary>
+        private DragVisualMode OnDragAndDropUpdate(HandleDragAndDropArgs arg)
         {
-            // 设置拖拽的视觉反馈
-            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            // 如果拖拽到 GraphView，显示复制图标
+            if (arg.target is xg_GraphView)
+            {
+                return DragVisualMode.Copy;
+            }
 
-            evt.StopPropagation();
+            // 如果在 ListView 内部拖拽，显示移动图标（用于重新排序）
+            return DragVisualMode.Move;
         }
         #endregion
 

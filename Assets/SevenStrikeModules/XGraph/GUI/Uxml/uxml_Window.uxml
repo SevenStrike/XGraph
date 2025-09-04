@@ -19,7 +19,7 @@
         <engine:Label name="graphintro_currentNodeName" style="height: 21px; padding-left: 0; font-size: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; background-size: 50% 100%; padding-right: 20px; width: 70%; -unity-text-align: middle-right; align-self: flex-end;" />
     </engine:Label>
     <engine:VisualElement name="GraphRegion" style="width: 100%; height: 100%;">
-        <SevenStrikeModules.XGraph.xg_GraphView name="graphView">
+        <SevenStrikeModules.XGraph.xg_GraphView name="graphView" style="left: auto;">
             <engine:Label name="graphintro_currentNodePath" style="height: 21px; padding-left: 0; font-size: 13px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; background-size: 50% 100%; padding-right: 20px; width: 100%; -unity-text-align: lower-right; color: rgba(132, 132, 132, 0.62); top: 94.5%; padding-top: 0; padding-bottom: 0; bottom: auto; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
         </SevenStrikeModules.XGraph.xg_GraphView>
         <engine:Label text="ActionFree" name="graphintro_MarkText" enabled="true" class="MarkText" style="margin-bottom: 0; bottom: 15px; -unity-text-align: lower-left;" />
@@ -47,7 +47,7 @@
                 <engine:Label text="节点图简要信息" name="sub" class="BlackBoard_Sub" style="position: relative;" />
             </engine:VisualElement>
             <SevenStrikeModules.XGraph.xg_BlackBoardView name="BlackBoardView" style="width: 100%; height: auto; padding-left: 10px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; position: relative; top: auto; left: auto; right: auto; bottom: auto; flex-shrink: 1; flex-grow: 1;">
-                <engine:ListView name="VariableList" reorderable="true" selection-type="Multiple" virtualization-method="DynamicHeight" style="width: 100%; height: 100%;" />
+                <engine:ListView name="VariableList" selection-type="Multiple" virtualization-method="DynamicHeight" reorderable="true" style="width: 100%; height: 100%;" />
             </SevenStrikeModules.XGraph.xg_BlackBoardView>
         </SevenStrikeModules.XGraph.xg_ResizableElement>
     </engine:VisualElement>

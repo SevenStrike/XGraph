@@ -12,18 +12,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragUpdated(DragUpdatedEvent evt)
         {
-            // 只关心贴图
-            if (DragAndDrop.objectReferences.Length > 0 &&
-                DragAndDrop.objectReferences[0] is Texture2D)
-            {
-                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-            }
-            else
-            {
-                DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
-            }
-
-            evt.StopPropagation();   // 防止 GraphView 也处理
+            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            evt.StopPropagation();
         }
 
         /// <summary>
@@ -42,7 +32,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragPerform(DragPerformEvent evt)
         {
-            Debug.Log(DragAndDrop.GetGenericData("AAA"));
+            var nodeType = DragAndDrop.GetGenericData("NodeType");
+            BlackboardVariable variable = nodeType as BlackboardVariable;
+            Debug.Log(variable.name);
+            DragAndDrop.AcceptDrag();
+            evt.StopPropagation();
         }
     }
 }
