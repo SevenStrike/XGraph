@@ -6,6 +6,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
+    using static UnityEditor.Rendering.InspectorCurveEditor;
 
     public partial class xg_GraphView
     {
@@ -64,7 +65,7 @@ namespace SevenStrikeModules.XGraph
                     //Debug.Log($"{prefix_namespace} - {class_name} - {actiontype_name} - {prefix_class}");
 
                     // 克隆出新的节点
-                    d.DuplicatedNode = Node_Create(actionnode.identifyName, prefix_namespace, prefix_class, actionnode.actionNodeType, actionnode.icon, actionnode.NodeIcon, actionnode.visualNodeType, actionnode.HasAvatar, actionnode.Avatar, actionnode.themeSolution, actionnode.themeColor, actionnode.TransparentNode, actionnode.content, actionnode.nodeGraphSize);
+                    d.DuplicatedNode = Node_Create(actionnode.identifyName, prefix_namespace, prefix_class, actionnode.actionNodeType, actionnode.icon, actionnode.NodeIcon, actionnode.visualNodeType, actionnode.HasAvatar, actionnode.Avatar, actionnode.themeSolution, actionnode.themeColor, actionnode.TransparentNode, actionnode.content, actionnode.nodeGraphPosition + new Vector2(50, 20), actionnode.nodeGraphSize);
                 }
                 else if (original is VNode_Stick xg_sticknote)
                 {
@@ -80,14 +81,18 @@ namespace SevenStrikeModules.XGraph
                     Undo.RecordObject(ActionTreeAsset, "Duplicate DecalData");
                     ActionTreeAsset.DecalDatas.Add(decalData);
 
-                    d.DuplicatedNode = Node_MakeDecal(decalData.position + new Vector2(50, 20), decalData).Draw();
+                    d.DuplicatedNode = Node_MakeDecal(decalData.position + new Vector2(0, 20), decalData).Draw();
                 }
 
                 dup_objs.Add(d);
+
+                AddToSelection(d.DuplicatedNode as Node);
             }
 
             if (OnDuplicateNodes != null)
                 OnDuplicateNodes(dup_objs);
+
+
 
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
@@ -358,9 +363,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="themeColor"></param>
         /// <param name="transparentNode"></param>
         /// <param name="content"></param>
-        /// <param name="nodeGraphSize"></param>
+        /// <param name="size"></param>
         /// <returns>返回的类型根据 action_nodeType 来决定是：VNode_Base、VNode_Stick、VNode_Decal这几个当中的哪一个</returns>
-        public object Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, Texture2D titleIcon, string visual_nodeType, bool hasAvatar, Texture2D avatar, string themeSolution, Color themeColor, bool transparentNode, string content, Vector2 nodeGraphSize)
+        public object Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, Texture2D titleIcon, string visual_nodeType, bool hasAvatar, Texture2D avatar, string themeSolution, Color themeColor, bool transparentNode, string content, Vector2 pos, Vector2 size)
         {
             // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             if (action_nodeType == "Stick")
@@ -385,7 +390,7 @@ namespace SevenStrikeModules.XGraph
             {
                 Undo.RecordObject(ActionTreeAsset, "Create Decal");
                 // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
-                decaldata decaldata = new decaldata(GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100), Vector3.one, 1);
+                decaldata decaldata = new decaldata(GUID.Generate().ToString(), pos, new Vector2(100, 100), Vector3.one, 1);
                 ActionTreeAsset.Decal_Add(decaldata);
 
                 // 创建新的节点并指定资源数据项
@@ -424,10 +429,10 @@ namespace SevenStrikeModules.XGraph
                     themeColor,
                     transparentNode,
                     content,
-                    nodeGraphSize);
+                    size);
 
                 // 创建新的节点并指定资源数据项
-                VNode_Base visualNode = Node_Make(gv_NodeCreatedPosition, database);
+                VNode_Base visualNode = Node_Make(pos + new Vector2(-81, -46.5f), database);
 
                 // 刷新节点
                 visualNode.Draw();
@@ -435,9 +440,6 @@ namespace SevenStrikeModules.XGraph
                 visualNode.RefreshPorts();
                 visualNode.CheckTransparentDisplay(transparentNode);
                 visualNode.CheckAvatarChanged();
-
-                // 选中新节点
-                AddToSelection(visualNode);
 
                 return visualNode;
             }

@@ -1,13 +1,14 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_ListViewItem.uss?fileID=7433441132597879392&amp;guid=b8e8fc8fd2a44be4ab7d1ddce8ba9e6a&amp;type=3#uss_ListViewItem" />
     <engine:VisualElement name="container" class="item_container" style="justify-content: space-between;">
-        <engine:VisualElement name="pill" picking-mode="Ignore" class="item_container_pill">
+        <engine:VisualElement name="pill" class="item_container_pill">
             <engine:VisualElement name="icon" picking-mode="Ignore" class="item_icon" />
-            <engine:TextField name="textfield" class="item_textfield" />
-            <engine:Label text="Vector4" name="text" class="item_label_title" />
+            <engine:TextField name="var_textfield" class="item_textfield" />
+            <engine:Label text="Vector4" name="var_label" picking-mode="Ignore" class="item_label_title" />
         </engine:VisualElement>
-        <engine:VisualElement name="des" picking-mode="Ignore" class="item_container_des" style="margin-left: 20px;">
-            <engine:Label text="Descrption" name="text" class="item_label_des" />
+        <engine:VisualElement name="description" class="item_container_des" style="margin-left: 20px;">
+            <engine:TextField name="des_textfield" class="description_textfield" />
+            <engine:Label text="Descrption" name="des" picking-mode="Ignore" class="item_label_des" style="font-size: 13px;" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

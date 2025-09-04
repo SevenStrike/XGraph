@@ -204,7 +204,8 @@ namespace SevenStrikeModules.XGraph
                 themeColor: Color.white,
                 transparentNode: false,
                 content: null,
-                nodeGraphSize: Vector2.one * 100);
+                pos: graphView.GetNodeCreatedPosition(),
+                size: Vector2.one * 100);
             return true;
         }
     }

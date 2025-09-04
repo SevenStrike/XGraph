@@ -240,6 +240,12 @@ namespace SevenStrikeModules.XGraph
             // 必须将自定义背景图的层级放在网格背景的下面的图层，这样贴图不会遮住网格背景
             CustomBackground.SendToBack();
             #endregion
+
+            #region 监听拖拽事件
+            RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
+            RegisterCallback<DragPerformEvent>(OnDragPerform);
+            RegisterCallback<DragExitedEvent>(OnDragExit);
+            #endregion
         }
         #endregion
 
@@ -360,6 +366,14 @@ namespace SevenStrikeModules.XGraph
         private Node FindNode(string guid)
         {
             return GetNodeByGuid(guid) as Node;
+        }
+        /// <summary>
+        /// 获取当前创建节点的鼠标位置
+        /// </summary>
+        /// <returns></returns>
+        public Vector2 GetNodeCreatedPosition()
+        {
+            return gv_NodeCreatedPosition;
         }
         /// <summary>
         /// 获取鼠标位置

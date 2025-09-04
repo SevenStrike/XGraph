@@ -219,6 +219,11 @@
         ///  xw_graphView 控件 - 行为资源信息容器组件的显示资源最后一次保存的时间&日期的时差
         /// </summary>
         internal Label xw_GraphInfo_LastSaveLag;
+
+        /// <summary>
+        ///  xw_graphView 控件 - 窗口尺寸显示文字
+        /// </summary>
+        private Label xw_label_GraphWindowSize;
         #endregion
 
         #region 参数
@@ -620,7 +625,7 @@
             OptionsPanel_CloseButton_Hide();
             #endregion
 
-            #region 行为资源信息容器
+            #region 页脚信息容器
             xw_GraphInfo_Container = root.Q<VisualElement>("GraphInfo");
             xw_GraphInfo_Container.BringToFront();
 
@@ -634,6 +639,8 @@
             // 行为资源信息容器 - 最后一次保存日期 & 时间的时差
             xw_GraphInfo_LastSaveLag = xw_GraphInfo_Container.Q<VisualElement>("right").Q<Label>("lastsavelag");
             xw_GraphInfo_LastSaveLag.style.color = util_Dashboard.Theme_Primary;
+            // 窗口尺寸大小显示
+            xw_label_GraphWindowSize = xw_GraphInfo_Container.Q<VisualElement>("center").Q<Label>("size");
             #endregion
         }
 
@@ -1366,6 +1373,8 @@
                 // 保存新位置
                 Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
                 Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
+
+                xw_label_GraphWindowSize.text = $"{lastWindowSize.x} x {lastWindowSize.y}";
 
                 // 刷新 BlackBoard 显示
                 xw_BlackBoard_UpdateTitleInfo();

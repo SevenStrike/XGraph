@@ -102,8 +102,98 @@ namespace SevenStrikeModules.XGraph
 
             // 注册添加属性按钮动作
             btn_AddVariable.RegisterCallback<ClickEvent>(AddVariablesMenu);
+
+            // 注册拖拽相关事件
+            VariableList.RegisterCallback<DragUpdatedEvent>(OnVariableDragUpdated);
+            VariableList.RegisterCallback<DragPerformEvent>(OnVariableDragPerform);
+            VariableList.RegisterCallback<DragExitedEvent>(OnVariableDragExited);
         }
 
+        #region 拖拽相关逻辑
+        private void OnVariableDragExited(DragExitedEvent evt)
+        {
+
+        }
+
+        private void OnVariableDragPerform(DragPerformEvent evt)
+        {
+            // 获取选中的 BlackboardVariables
+            var selectedVariables = VariableList.selectedItems;
+
+            // 创建属性节点
+            CreateVaiableNode(evt, selectedVariables);
+
+            // 标记事件已处理
+            evt.StopPropagation();
+        }
+
+        private void OnVariableDragUpdated(DragUpdatedEvent evt)
+        {
+            // 设置拖拽的视觉反馈
+            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+
+            evt.StopPropagation();
+        }
+        #endregion
+
+        /// <summary>
+        /// 创建属性节点
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <param name="selectedVariables"></param>
+        private void CreateVaiableNode(DragPerformEvent evt, IEnumerable<object> selectedVariables)
+        {
+            // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标用于创建节点时指定位置
+            Vector2 localMousePosition = graphWindow.xw_graphView.contentViewContainer.WorldToLocal(evt.mousePosition);
+
+            // 用于偏移大于1个的属性节点坐标
+            int index = 0;
+
+            // 遍历选中的黑板变量
+            foreach (var variable in selectedVariables)
+            {
+                // 根据解析的黑板属性类型来创建属性节点到编辑器中
+                BlackboardVariable vare = variable as BlackboardVariable;
+                if (vare != null)
+                {
+                    #region 计算偏移值
+                    Vector2 offset = Vector2.zero;
+                    if (index > 0)
+                    {
+                        float step_x = 81;
+                        float step_y = 46.5f;
+                        offset = new Vector2(-(step_x * 0.4f) * index, (step_y * 0.9f) * index);
+                    }
+
+                    index++;
+                    #endregion
+
+                    #region 节点配色的颜色根据属性类型来定（通过 json 配置对应主题色）
+                    UnityEngine.Color node_color = UnityEngine.Color.white;
+                    VariableThemes.VariableThemes.ForEach(theme =>
+                    {
+                        if (theme.type == vare.type.ToString())
+                        {
+                            node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                        }
+                    });
+                    #endregion
+
+                    #region 创建属性节点
+                    object node = graphWindow.xw_graphView.Node_Create(vare.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset, Vector2.one);
+
+                    VNode_Base node_base = node as VNode_Base;
+                    if (node_base != null)
+                    {
+
+                    }
+                    #endregion
+                    graphWindow.xw_graphView.AddToSelection(node_base);
+                }
+            }
+        }
+
+        #region 模版获取指定 & 绑定数据
         /// <summary>
         /// 获取列表项模版
         /// </summary>
@@ -125,39 +215,140 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 绑定列表项的数据
         /// </summary>
-        /// <param label_name="container"></param>
-        /// <param label_name="index"></param>
+        /// <param x_textfield="container"></param>
+        /// <param x_textfield="index"></param>
         private void BindData(VisualElement element, int index)
         {
+            // 获取黑板变量数据
+            var variable = graphWindow.CloneTree.BlackboardVariables[index];
+
+            #region 获取属性项的UI元素
             // 变量名称容器
-            VisualElement ele_pill = element.Q<VisualElement>("pill");
-            // 变量图标
-            VisualElement icon = ele_pill.Q<VisualElement>("icon");
-
+            VisualElement ele_pill_container = element.Q<VisualElement>("pill");
             // 变量名称
-            Label label_name = ele_pill.Q<Label>("text");
+            Label var_label_name = ele_pill_container.Q<Label>("var_label");
             // 变量名称输入框
-            Label textfield_name = ele_pill.Q<Label>("textfield");
+            TextField var_textfield_name = ele_pill_container.Q<TextField>("var_textfield");
+            var_textfield_name.multiline = false;
+            var_textfield_name.Q<VisualElement>("unity-text-input").AddToClassList("PureTextfieldinput");
 
-            // 变量说明容器
-            VisualElement ele_des = element.Q<VisualElement>("des");
-            // 解释内容
-            Label label_des = ele_des.Q<Label>("text");
+            // 变量图标
+            VisualElement icon = ele_pill_container.Q<VisualElement>("icon");
 
-            var obj = graphWindow.CloneTree.BlackboardVariables[index];
-            label_name.text = obj.name;
-            label_des.text = obj.des;
+            // 变量解释容器
+            VisualElement ele_des_container = element.Q<VisualElement>("description");
+            // 变量解释内容
+            Label var_label_des = ele_des_container.Q<Label>("des");
+            // 变量解释内容输入框
+            TextField var_textfield_des = ele_des_container.Q<TextField>("des_textfield");
+            var_textfield_des.multiline = false;
+            var_textfield_des.Q<VisualElement>("unity-text-input").AddToClassList("PureTextfieldinput");
+
+            #endregion
+
+            #region 注册 - 属性名称标签 - 双击事件
+            // 双击变量名称标签，以切换为输入框模式
+            ele_pill_container.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.clickCount == 2 && evt.button == (int)MouseButton.LeftMouse)
+                {
+                    var_label_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+                    // 从当前物体的父物体再次查找并获取变量 - 输入框
+                    VisualElement pill = (VisualElement)evt.target;
+                    TextField x_textfield = pill.Q<TextField>("var_textfield");
+                    x_textfield.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                    x_textfield.value = variable.name;
+                    EditorApplication.delayCall += () =>
+                    {
+                        x_textfield.Focus();
+                    };
+                }
+            });
+            #endregion
+
+            #region 注册 - 属性名称输入框 - 焦点丢失事件
+            // 单击任意处，以切换为标签模式
+            var_textfield_name.RegisterCallback<BlurEvent>((evt) =>
+            {
+                // 从当前物体的父物体再次查找并获取变量 - 标签
+                TextField x_textfield = (TextField)evt.target;
+                Label x_name = x_textfield.parent.Q<Label>("var_label");
+
+                if (var_textfield_name.value != string.Empty)
+                {
+                    string value = var_textfield_name.value;
+                    x_name.text = value;
+                    Undo.RecordObject(graphWindow.CloneTree, "Change BlackBoard Variable Name");
+                    // 改变行为资源的黑板属性列表中的属性名称
+                    variable.name = value;
+                }
+
+                x_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                var_textfield_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            });
+            #endregion
+
+            #region 注册 - 属性解释标签 - 双击事件
+            // 双击变量名称标签，以切换为输入框模式
+            ele_des_container.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.clickCount == 2 && evt.button == (int)MouseButton.LeftMouse)
+                {
+                    var_label_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+                    // 从当前物体的父物体再次查找并获取变量 - 输入框
+                    VisualElement description = (VisualElement)evt.target;
+                    TextField x_textfield = description.Q<TextField>("des_textfield");
+                    x_textfield.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                    x_textfield.value = variable.des;
+                    EditorApplication.delayCall += () =>
+                    {
+                        x_textfield.Focus();
+                    };
+                }
+            });
+            #endregion
+
+            #region 注册 - 属性解释输入框 - 焦点丢失事件
+            // 单击任意处，以切换为标签模式
+            var_textfield_des.RegisterCallback<BlurEvent>((evt) =>
+            {
+                // 从当前物体的父物体再次查找并获取变量 - 标签
+                TextField x_textfield = (TextField)evt.target;
+                Label x_des = x_textfield.parent.Q<Label>("des");
+
+                if (var_textfield_des.value != string.Empty)
+                {
+                    string value = var_textfield_des.value;
+                    x_des.text = value;
+                    Undo.RecordObject(graphWindow.CloneTree, "Change BlackBoard Variable Description");
+                    // 改变行为资源的黑板属性列表中的属性名称
+                    variable.des = value;
+                }
+
+                x_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                var_textfield_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            });
+            #endregion
+
+            // 将行为资源的黑板属性列表中的 "属性名称" 赋予给标签
+            var_label_name.text = variable.name;
+            // 将行为资源的黑板属性列表中的 "属性解释" 赋予给标签
+            var_label_des.text = variable.des;
 
             // 变量图标的颜色根据属性类型来定（通过 json 配置对应主题色）
             VariableThemes.VariableThemes.ForEach(theme =>
             {
-                if (theme.type == obj.type.ToString())
+                if (theme.type == variable.type.ToString())
                 {
                     icon.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
             });
         }
+        #endregion
 
+        #region 辅助
         /// <summary>
         /// 重建黑板的所有属性
         /// </summary>
@@ -365,5 +556,6 @@ namespace SevenStrikeModules.XGraph
             }
 
         }
+        #endregion
     }
 }
