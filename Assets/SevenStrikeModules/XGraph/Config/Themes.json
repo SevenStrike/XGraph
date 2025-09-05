@@ -117,7 +117,7 @@
             "nodecolor": "#FFA32F"
         },
         {
-            "solution": "M 暮光红",
+            "solution": "G 绯红色",
             "nodecolor": "#CC3636"
         },
         {
@@ -129,7 +129,7 @@
             "nodecolor": "#E0D05C"
         },
         {
-            "solution": "G 橄榄绿",
+            "solution": "O 橄榄绿",
             "nodecolor": "#D5FF17"
         },
         {
@@ -149,12 +149,12 @@
             "nodecolor": "#22D640"
         },
         {
-            "solution": "B 薄荷绿",
+            "solution": "P 薄荷绿",
             "nodecolor": "#86CC5F"
         },
         {
-            "solution": "T 天际蓝",
-            "nodecolor": "#4CC3FF"
+            "solution": "R 亮蓝",
+            "nodecolor": "#4CDBFF"
         },
         {
             "solution": "B 宝石蓝",

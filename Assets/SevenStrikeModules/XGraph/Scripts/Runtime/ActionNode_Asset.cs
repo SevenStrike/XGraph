@@ -245,6 +245,7 @@ namespace SevenStrikeModules.XGraph
         public Vector2 vector2Value;
         public Vector3 vector3Value;
         public Vector4 vector4Value;
+        public Color colorValue;
         public UnityEngine.Object objectValue;
         public string guid;
         /// <summary>
@@ -270,6 +271,7 @@ namespace SevenStrikeModules.XGraph
             clone.vector3Value = vector3Value;
             clone.vector4Value = vector4Value;
             clone.objectValue = objectValue;
+            clone.colorValue = colorValue;
             clone.guid = guid_create ? UnityEditor.GUID.Generate().ToString() : guid;
             return clone;
         }
@@ -288,7 +290,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="vector4Value"></param>
         /// <param name="objectValue"></param>
         /// <returns></returns>
-        public BlackboardVariable(string name = null, string des = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Object objectValue = null)
+        public BlackboardVariable(string name = null, string des = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Color colorValue = default, Object objectValue = null)
         {
             this.name = name;
             this.des = des;
@@ -301,6 +303,7 @@ namespace SevenStrikeModules.XGraph
             this.vector3Value = vector3Value;
             this.vector4Value = vector4Value;
             this.objectValue = objectValue;
+            this.colorValue = colorValue;
             this.guid = UnityEditor.GUID.Generate().ToString();
         }
 
@@ -358,9 +361,13 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         Vector4 = 6,
         /// <summary>
+        /// 值 - 颜色
+        /// </summary>
+        Color = 7,
+        /// <summary>
         /// 值 - 物体
         /// </summary>
-        Object = 7
+        Object = 8
     }
 
     [Serializable]

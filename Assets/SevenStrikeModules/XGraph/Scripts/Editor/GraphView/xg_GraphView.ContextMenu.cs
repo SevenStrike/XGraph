@@ -45,7 +45,7 @@ namespace SevenStrikeModules.XGraph
             {
 
                 // 菜单 - 自定主题色切换
-                evt.menu.AppendAction($"T 节点配色/A 自定颜色", (action) =>
+                evt.menu.AppendAction($"T 节点配色/T 自定颜色", (action) =>
                 {
                     if (Application.isPlaying)
                         return;
@@ -162,8 +162,10 @@ namespace SevenStrikeModules.XGraph
                     });
                 }
 
+                evt.menu.AppendSeparator();
+
                 // 执行模式切换
-                evt.menu.AppendAction($"E 执行模式/S 顺序", (action) =>
+                evt.menu.AppendAction($"E 执行模式/E 顺序", (action) =>
                 {
                     if (CurrentSelectedNodes_Base.Count > 0)
                     {
@@ -174,8 +176,9 @@ namespace SevenStrikeModules.XGraph
                             node.CheckExecutionModel();
                         }
                     }
+                    evt.StopPropagation();
                 });
-                evt.menu.AppendAction($"E 执行模式/C 并发", (action) =>
+                evt.menu.AppendAction($"E 执行模式/D 并发", (action) =>
                 {
                     if (CurrentSelectedNodes_Base.Count > 0)
                     {
@@ -186,6 +189,7 @@ namespace SevenStrikeModules.XGraph
                             node.CheckExecutionModel();
                         }
                     }
+                    evt.StopPropagation();
                 });
 
                 // 设置节点头像
@@ -194,7 +198,7 @@ namespace SevenStrikeModules.XGraph
                     if (nodebase.ActionNode.HasAvatar)
                     {
                         evt.menu.AppendSeparator();
-                        evt.menu.AppendAction($"R 清空头像", (action) =>
+                        evt.menu.AppendAction($"R 头像/R 清空头像", (action) =>
                         {
                             if (CurrentSelectedNodes_Base.Count > 0)
                             {
@@ -205,8 +209,9 @@ namespace SevenStrikeModules.XGraph
                                     node.UnregisterAvatarClicked();
                                 }
                             }
+                            evt.StopPropagation();
                         });
-                        evt.menu.AppendAction($"W 替换头像", (action) =>
+                        evt.menu.AppendAction($"R 头像/W 替换头像", (action) =>
                         {
                             OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionNode.Avatar);
                             evt.StopPropagation();
@@ -214,14 +219,15 @@ namespace SevenStrikeModules.XGraph
                     }
                     else
                     {
-                        evt.menu.AppendAction($"R 设置头像", (action) =>
+                        evt.menu.AppendSeparator();
+                        evt.menu.AppendAction($"R 头像/R 设置头像", (action) =>
                         {
                             OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionNode.Avatar);
                             evt.StopPropagation();
                         });
                     }
                     evt.menu.AppendSeparator();
-                    evt.menu.AppendAction($"B 恢复标题图标", (action) =>
+                    evt.menu.AppendAction($"B 图标/B 恢复原生图标", (action) =>
                     {
                         if (CurrentSelectedNodes_Base.Count > 0)
                         {
@@ -235,7 +241,7 @@ namespace SevenStrikeModules.XGraph
                         }
                         evt.StopPropagation();
                     });
-                    evt.menu.AppendAction($"V 设置标题图标", (action) =>
+                    evt.menu.AppendAction($"B 图标/V 设置标题图标", (action) =>
                     {
                         OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionNode.NodeIcon);
                         evt.StopPropagation();
@@ -376,6 +382,7 @@ namespace SevenStrikeModules.XGraph
                         screenMousePosition = screenMousePosition,
                         index = -1
                     });
+                    evt.StopPropagation();
                 });
                 #endregion
 
@@ -385,6 +392,7 @@ namespace SevenStrikeModules.XGraph
                     evt.menu.AppendAction("Z 清空节点", (action) =>
                     {
                         ClearGraphViewContents();
+                        evt.StopPropagation();
                     });
                 }
                 #endregion
@@ -410,6 +418,7 @@ namespace SevenStrikeModules.XGraph
                 evt.menu.AppendAction("S 删除节点", param =>
                 {
                     Node_Delete();
+                    evt.StopPropagation();
                 });
                 #endregion
 
@@ -417,6 +426,7 @@ namespace SevenStrikeModules.XGraph
                 evt.menu.AppendAction("G 节点编组", param =>
                 {
                     MakeGroup("节点编组", gv_NodeCreatedPosition);
+                    evt.StopPropagation();
                 });
                 #endregion
 
@@ -426,10 +436,12 @@ namespace SevenStrikeModules.XGraph
                     evt.menu.AppendAction("D 克隆节点", param =>
                     {
                         Node_Duplicate();
+                        evt.StopPropagation();
                     });
                     evt.menu.AppendAction("C 复制节点", param =>
                     {
                         //Node_Copy();
+                        evt.StopPropagation();
                     });
                 }
                 #endregion
@@ -437,5 +449,99 @@ namespace SevenStrikeModules.XGraph
 
             evt.StopPropagation();
         }
+
+        #region 弹出物体选择面板
+        // 打开物体选择器的方法
+        public void OpenObjectPickerForTextures(string mode, string typefilter, Texture2D tex)
+        {
+            monitoringObjectPicker = true;
+            SetTextureMode = mode;
+
+            // 动态创建 IMGUIContainer
+            if (m_ObjectPickerIMGUI == null)
+            {
+                m_ObjectPickerIMGUI = new IMGUIContainer(OnObjectPickerGUI);
+                m_ObjectPickerIMGUI.name = "---------------GraphviewTexturePicker";
+                m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
+                Add(m_ObjectPickerIMGUI);
+            }
+
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(tex, false, typefilter, 0);
+        }
+
+        private void OnObjectPickerGUI()
+        {
+            // 只处理特定事件
+            if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
+            {
+                if (Event.current != null && Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+
+                    if (selectedTexture != null)
+                    {
+                        ApplySelectedTexture(selectedTexture);
+                    }
+
+                    monitoringObjectPicker = false;
+                    SetTextureMode = null;
+
+                    // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
+                    if (m_ObjectPickerIMGUI != null)
+                    {
+                        EditorApplication.delayCall += () =>
+                        {
+                            Remove(m_ObjectPickerIMGUI);
+                            m_ObjectPickerIMGUI = null;
+                        };
+                    }
+
+                }
+            }
+
+            MarkDirtyRepaint();
+        }
+
+        // 应用选择的贴图
+        private void ApplySelectedTexture(Texture2D selectedTexture)
+        {
+            if (SetTextureMode == "DecalTexSet")
+            {
+                if (CurrentSelectedNodes_Decal.Count > 0)
+                {
+                    foreach (var decal in CurrentSelectedNodes_Decal)
+                    {
+                        if (decal != null)
+                        {
+                            decal.decalData.HasTexture = true;
+                            decal.decalData.DecalTexture = selectedTexture;
+                            decal.CheckDecalTextureChanged();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (CurrentSelectedNodes_Base.Count > 0)
+                {
+                    foreach (var node in CurrentSelectedNodes_Base)
+                    {
+                        if (node.ActionNode.actionNodeType != "Relay")
+                        {
+                            if (SetTextureMode == "AvatarSet")
+                            {
+                                node.RegisterAvatarClicked();
+                                node.NodeAvatar_Set(selectedTexture);
+                            }
+                            else if (SetTextureMode == "TitleIconSet")
+                            {
+                                node.NodeTitleIcon_Set(selectedTexture);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

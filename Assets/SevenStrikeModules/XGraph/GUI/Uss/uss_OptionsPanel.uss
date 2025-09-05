@@ -215,8 +215,28 @@
 
 .paramtype_container {
     width: 100px;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
     align-items: center;
     margin-bottom: 12px;
+}
+
+.ParamFieldBoldTitle {
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-right;
+    -unity-font-style: normal;
+}
+
+.BlackBoardVarMark {
+    width: 5px;
+    height: 5px;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-right: 15px;
 }

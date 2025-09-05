@@ -2,35 +2,39 @@
     "VariableThemes": [
         {
             "type": "String",
-            "color": "#FFFFFF"
+            "color": "#FFC320"
         },
         {
             "type": "Float",
-            "color": "#91FF00"
+            "color": "#8F6BFF"
         },
         {
             "type": "Int",
-            "color": "#805DFF"
+            "color": "#31A8FF"
         },
         {
             "type": "Bool",
-            "color": "#FFA927"
+            "color": "#FF2020"
         },
         {
             "type": "Vector2",
-            "color": "#FF54E2"
+            "color": "#17FF86"
         },
         {
             "type": "Vector3",
-            "color": "#27FFBE"
+            "color": "#17FF86"
         },
         {
             "type": "Vector4",
-            "color": "#FF3C3C"
+            "color": "#17FF86"
+        },
+        {
+            "type": "Color",
+            "color": "#FF6FB7"
         },
         {
             "type": "Object",
-            "color": "#47AEFF"
+            "color": "#FFFFFF"
         }
     ]
 }

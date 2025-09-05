@@ -881,26 +881,27 @@ namespace SevenStrikeModules.XGraph
                 {
                     var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
 
-                    // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
-                    EditorApplication.delayCall += () =>
+                    if (selectedTexture != null)
                     {
-                        if (selectedTexture != null)
-                        {
-                            ApplySelectedTexture(selectedTexture);
-                        }
+                        ApplySelectedTexture(selectedTexture);
+                    }
 
-                        monitoringObjectPicker = false;
-                        SetTextureMode = null;
+                    monitoringObjectPicker = false;
+                    SetTextureMode = null;
 
-                        if (m_ObjectPickerIMGUI != null)
+                    if (m_ObjectPickerIMGUI != null)
+                    {
+
+                        // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
+                        EditorApplication.delayCall += () =>
                         {
                             Remove(m_ObjectPickerIMGUI);
                             m_ObjectPickerIMGUI = null;
-                            MarkDirtyRepaint();
-                        }
-                    };
+                        };
+                    }
                 }
             }
+            MarkDirtyRepaint();
         }
 
         // 应用选择的贴图

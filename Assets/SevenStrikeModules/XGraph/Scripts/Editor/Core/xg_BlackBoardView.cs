@@ -461,35 +461,39 @@ namespace SevenStrikeModules.XGraph
                 var menu = new GenericMenu();
 
                 // 添加菜单项
-                menu.AddItem(new GUIContent("添加 - 字符串参数"), false, () =>
+                menu.AddItem(new GUIContent("S 字符串参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.String));
                 });
-                menu.AddItem(new GUIContent("添加 - 浮点数参数"), false, () =>
+                menu.AddItem(new GUIContent("F 浮点数参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Float));
                 });
-                menu.AddItem(new GUIContent("添加 - 整数参数"), false, () =>
+                menu.AddItem(new GUIContent("I 整数参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Int));
                 });
-                menu.AddItem(new GUIContent("添加 - 布尔参数"), false, () =>
+                menu.AddItem(new GUIContent("B 布尔参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Bool));
                 });
-                menu.AddItem(new GUIContent("添加 - 2维向量参数"), false, () =>
+                menu.AddItem(new GUIContent("V 2维向量参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Vector2));
                 });
-                menu.AddItem(new GUIContent("添加 - 3维向量参数"), false, () =>
+                menu.AddItem(new GUIContent("V 3维向量参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Vector3));
                 });
-                menu.AddItem(new GUIContent("添加 - 4维向量参数"), false, () =>
+                menu.AddItem(new GUIContent("V 4维向量参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Vector4));
                 });
-                menu.AddItem(new GUIContent("添加 - 物体参数"), false, () =>
+                menu.AddItem(new GUIContent("C 颜色参数"), false, () =>
+                {
+                    AddVariable(Variable_Create(BlackboardVariableType.Color));
+                });
+                menu.AddItem(new GUIContent("O 物体参数"), false, () =>
                 {
                     AddVariable(Variable_Create(BlackboardVariableType.Object));
                 });
@@ -566,7 +570,7 @@ namespace SevenStrikeModules.XGraph
             vare.guid = UnityEditor.GUID.Generate().ToString();
             Undo.RecordObject(graphWindow.CloneTree, "Create BlackboardVariable");
 #endif
-            Debug.Log($"创建了： {vare.type.ToString()} 到黑板中！");
+            //Debug.Log($"创建了： {vare.type.ToString()} 到黑板中！");
 
             return vare;
         }
