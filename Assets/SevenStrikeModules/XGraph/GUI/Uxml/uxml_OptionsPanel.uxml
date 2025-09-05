@@ -43,42 +43,48 @@
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_blackboards" class="OptionsContainer_InsideRegion_BlackBoards" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
-                <engine:Label text="黑板标记释义" name="Title" class="OptionsTitle" />
-                <engine:VisualElement name="paramTypes" picking-mode="Ignore" style="flex-grow: 0; flex-direction: row; padding-left: 10px;">
-                    <engine:VisualElement name="reg_left" picking-mode="Ignore" style="margin-right: 29px;">
+                <engine:Label text="标记" name="Title" class="OptionsTitle" />
+                <engine:VisualElement name="paramTypes" picking-mode="Ignore" style="flex-grow: 0; flex-direction: row;">
+                    <engine:VisualElement name="reg_left" picking-mode="Ignore">
                         <engine:VisualElement name="param_type_string" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="String" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="String" name="lab_string" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                         <engine:VisualElement name="param_type_float" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="Float" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Float" name="lab_float" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                         <engine:VisualElement name="param_type_int" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="Integer" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Integer" name="lab_int" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
+                    </engine:VisualElement>
+                    <engine:VisualElement name="reg_center" picking-mode="Ignore">
                         <engine:VisualElement name="param_type_bool" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="Boolean" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Bool" name="lab_bool" class="ParamFieldBoldTitle" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_color" class="paramtype_container">
+                            <engine:VisualElement name="dot" class="BlackBoardVarMark" style="border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
+                            <engine:Label text="Color" name="lab_color" class="ParamFieldBoldTitle" />
+                        </engine:VisualElement>
+                        <engine:VisualElement name="param_type_object" class="paramtype_container">
+                            <engine:VisualElement name="dot" class="BlackBoardVarMark" />
+                            <engine:Label text="Object" name="lab_object" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                     </engine:VisualElement>
                     <engine:VisualElement name="reg_right" picking-mode="Ignore">
                         <engine:VisualElement name="param_type_vector2" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="Vector 2" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Vector 2" name="lab_vector2" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                         <engine:VisualElement name="param_type_vector3" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" style="border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
-                            <engine:Label text="Vector 3" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Vector 3" name="lab_vector3" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                         <engine:VisualElement name="param_type_vector4" class="paramtype_container">
                             <engine:VisualElement name="dot" class="BlackBoardVarMark" style="border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;" />
-                            <engine:Label text="Vector 4" name="title" class="ParamFieldBoldTitle" />
-                        </engine:VisualElement>
-                        <engine:VisualElement name="param_type_object" class="paramtype_container">
-                            <engine:VisualElement name="dot" class="BlackBoardVarMark" />
-                            <engine:Label text="Object" name="title" class="ParamFieldBoldTitle" />
+                            <engine:Label text="Vector 4" name="lab_vector4" class="ParamFieldBoldTitle" />
                         </engine:VisualElement>
                     </engine:VisualElement>
                 </engine:VisualElement>

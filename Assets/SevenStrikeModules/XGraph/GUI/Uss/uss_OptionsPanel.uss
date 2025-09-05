@@ -218,7 +218,8 @@
     justify-content: flex-start;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 25px;
+    margin-right: 20px;
 }
 
 .ParamFieldBoldTitle {
@@ -226,8 +227,38 @@
     color: rgba(255, 255, 255, 0.82);
     font-size: 13px;
     text-overflow: ellipsis;
-    -unity-text-align: middle-right;
+    -unity-text-align: middle-center;
     -unity-font-style: normal;
+    border-left-color: rgba(116, 116, 116, 0.45);
+    border-right-color: rgba(116, 116, 116, 0.45);
+    border-top-color: rgba(116, 116, 116, 0.45);
+    border-bottom-color: rgba(116, 116, 116, 0.45);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+    border-bottom-right-radius: 11px;
+    border-bottom-left-radius: 11px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 80px;
+    transition-property: border-bottom-color, border-top-color, border-left-color, border-right-color;
+    transition-duration: 0.5s, 0.5s, 0.5s, 0.5s;
+    transition-timing-function: ease-out-cubic, ease-out-cubic, ease-out-cubic, ease-out-cubic;
+}
+
+.ParamFieldBoldTitle:hover {
+    transition-property: border-bottom-color, border-top-color, border-left-color, border-right-color;
+    transition-duration: 0.5s, 0.5s, 0.5s, 0.5s;
+    transition-timing-function: ease-out-cubic, ease-out-cubic, ease-out-cubic, ease-out-cubic;
+    border-bottom-color: rgb(59, 254, 155);
+    border-right-color: rgb(59, 254, 155);
+    border-top-color: rgb(59, 254, 155);
+    border-left-color: rgb(59, 254, 155);
 }
 
 .BlackBoardVarMark {

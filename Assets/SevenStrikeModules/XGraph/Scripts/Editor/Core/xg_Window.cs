@@ -219,7 +219,6 @@
         ///  xw_graphView 控件 - 行为资源信息容器组件的显示资源最后一次保存的时间&日期的时差
         /// </summary>
         internal Label xw_GraphInfo_LastSaveLag;
-
         /// <summary>
         ///  xw_graphView 控件 - 窗口尺寸显示文字
         /// </summary>
@@ -555,6 +554,14 @@
                         dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemes.VariableThemes[s].color);
                     }
                 }
+            }
+
+            // 为BlackBoard 的标记添加鼠标悬停时在节点视图中显示同类型节点高亮
+            var labelElements = paramtypes.Query<Label>().ToList();
+            foreach (var item in labelElements)
+            {
+                item.RegisterCallback<PointerEnterEvent>(ValriablesInGraphview_SyncDisplay);
+                item.RegisterCallback<PointerLeaveEvent>(ValriablesInGraphview_SyncHide);
             }
             #endregion
             #endregion
@@ -1108,6 +1115,27 @@
             xw_OptionsPanel_Integerfield_ThicklineCount.value = CloneTree.GraphviewGridBackgroundThemes.thicklines;
             xw_OptionsPanel_Objectfield_CustomImage.value = CloneTree.GraphviewGridBackgroundThemes.customimage;
 
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的标记在鼠标悬停时在节点视图中显示同类型节点高亮
+        /// <summary>
+        /// 鼠标悬停时在节点视图中同类型节点高亮
+        /// </summary>
+        /// <param name="evt"></param>
+        private void ValriablesInGraphview_SyncDisplay(PointerEnterEvent evt)
+        {
+            Label label = evt.target as Label;
+            Debug.Log($"Variable - 高亮显示：{label.name}");
+        }
+        /// <summary>
+        /// 鼠标离开时在节点视图中同类型节点恢复正常
+        /// </summary>
+        /// <param name="evt"></param>
+        private void ValriablesInGraphview_SyncHide(PointerLeaveEvent evt)
+        {
+            Label label = evt.target as Label;
+            Debug.Log($"Variable - 恢复正常显示：{label.name}");
         }
         #endregion
         #endregion
