@@ -28,7 +28,16 @@ namespace SevenStrikeModules.XGraph
         /// 便签的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
+
+        /// <summary>
+        /// 指示物体选择器是否已经打开
+        /// </summary>
         private bool monitoringObjectPicker = false;
+        private IMGUIContainer m_ObjectPickerIMGUI;
+        /// <summary>
+        /// 用于打开贴图选择器后选择贴图应用的模式
+        /// </summary>
+        public string SetTextureMode;
 
         #region 节点信息
         /// <summary>
@@ -87,12 +96,6 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
             RegisterCallback<DragPerformEvent>(OnDragPerform);
             RegisterCallback<DragExitedEvent>(OnDragExit);
-
-            #region 快速选择头像专用隐藏式GUI
-            var imguiContainer = new IMGUIContainer(OnGUI);
-            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
-            AppendElement(GraphNodeContainerType.MainContainer, imguiContainer);
-            #endregion
         }
 
         /// <summary>
@@ -101,7 +104,7 @@ namespace SevenStrikeModules.XGraph
         /// <param h_name="evt"></param>
         private void OnSizeChanged(GeometryChangedEvent evt)
         {
-            Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Size");
+            Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Size");
 
             Vector2 newSize = new Vector2(evt.newRect.width, evt.newRect.height);
 
@@ -114,12 +117,22 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
+        /// 设置节点尺寸为图片原生尺寸
+        /// </summary>
+        public void SetNativeSize()
+        {
+            decalData.size = new Vector2(decalData.DecalTexture.width, decalData.DecalTexture.height);
+            style.width = decalData.size.x;
+            style.height = decalData.size.y;
+        }
+
+        /// <summary>
         /// 当拖动节点位置时，将位置数据传递给对应的目标数据节点位置变量
         /// </summary>
         /// <param h_name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Position");
+            Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Position");
             base.SetPosition(newPos);
 
             if (decalData != null)
@@ -308,7 +321,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void OpenTexturesSelector()
         {
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(decalData.DecalTexture, false, "t:Texture2D", 0);
+            OpenObjectPickerForTextures("t:Texture2D");
             monitoringObjectPicker = true;
         }
 
@@ -470,24 +483,6 @@ namespace SevenStrikeModules.XGraph
             ResizerIcon.style.opacity = 1f;
         }
         /// <summary>
-        /// 添加 OnGUI 方法，用于处理贴图选择
-        /// </summary>
-        private void OnGUI()
-        {
-            if (monitoringObjectPicker && Event.current != null)
-            {
-                if (Event.current.commandName == "ObjectSelectorClosed")
-                {
-                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
-                    if (selectedTexture != null)
-                    {
-                        NodeDecalTexture_Set(selectedTexture);
-                    }
-                    monitoringObjectPicker = false;
-                }
-            }
-        }
-        /// <summary>
         /// 元素的视觉布局翻转
         /// </summary>
         /// <param name="element"></param>
@@ -597,6 +592,66 @@ namespace SevenStrikeModules.XGraph
                     RefreshExpandedState();
                     break;
             }
+        }
+        #endregion
+
+        #region 弹出物体选择面板
+        // 打开物体选择器的方法
+        public void OpenObjectPickerForTextures(string typefilter)
+        {
+            if (monitoringObjectPicker) return;
+
+            monitoringObjectPicker = true;
+
+            // 动态创建 IMGUIContainer
+            if (m_ObjectPickerIMGUI == null)
+            {
+                m_ObjectPickerIMGUI = new IMGUIContainer(OnObjectPickerGUI);
+                m_ObjectPickerIMGUI.name = "---------------VNodeTexturePicker";
+                m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
+                Add(m_ObjectPickerIMGUI);
+            }
+
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(decalData.DecalTexture, false, typefilter, 0);
+        }
+
+        private void OnObjectPickerGUI()
+        {
+            if (!monitoringObjectPicker) return;
+
+            // 只处理特定事件
+            if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
+            {
+                if (Event.current != null && Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+
+                    // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
+                    EditorApplication.delayCall += () =>
+                    {
+                        if (selectedTexture != null)
+                        {
+                            ApplySelectedTexture(selectedTexture);
+                        }
+
+                        monitoringObjectPicker = false;
+                        SetTextureMode = null;
+
+                        if (m_ObjectPickerIMGUI != null)
+                        {
+                            Remove(m_ObjectPickerIMGUI);
+                            m_ObjectPickerIMGUI = null;
+                            MarkDirtyRepaint();
+                        }
+                    };
+                }
+            }
+        }
+
+        // 应用选择的贴图
+        private void ApplySelectedTexture(Texture2D selectedTexture)
+        {
+            NodeDecalTexture_Set(selectedTexture);
         }
         #endregion
     }

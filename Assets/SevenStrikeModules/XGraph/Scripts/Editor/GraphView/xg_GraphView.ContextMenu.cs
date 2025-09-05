@@ -208,9 +208,7 @@ namespace SevenStrikeModules.XGraph
                         });
                         evt.menu.AppendAction($"W 替换头像", (action) =>
                         {
-                            EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
-                            monitoringObjectPicker = true;
-                            SetTextureMode = "SetAvatar";
+                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionNode.Avatar);
                             evt.StopPropagation();
                         });
                     }
@@ -218,9 +216,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         evt.menu.AppendAction($"R 设置头像", (action) =>
                         {
-                            EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
-                            monitoringObjectPicker = true;
-                            SetTextureMode = "SetAvatar";
+                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionNode.Avatar);
                             evt.StopPropagation();
                         });
                     }
@@ -241,10 +237,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     evt.menu.AppendAction($"V 设置标题图标", (action) =>
                     {
-                        Undo.RecordObject(nodebase.ActionNode, "Set ActionNodeTitleIcon");
-                        EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
-                        monitoringObjectPicker = true;
-                        SetTextureMode = "SetTitleIcon";
+                        OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionNode.NodeIcon);
                         evt.StopPropagation();
                     });
                 }
@@ -320,8 +313,20 @@ namespace SevenStrikeModules.XGraph
                     });
                     evt.menu.AppendAction($"W 替换贴图", (action) =>
                     {
-                        EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
-                        monitoringObjectPicker = true;
+                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.decalData.DecalTexture);
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"C 实际尺寸", (action) =>
+                    {
+                        if (CurrentSelectedNodes_Decal.Count > 0)
+                        {
+                            Undo.RecordObject(ActionTreeAsset, "Change Decals Size");
+
+                            for (int i = 0; i < CurrentSelectedNodes_Decal.Count; i++)
+                            {
+                                CurrentSelectedNodes_Decal[i].SetNativeSize();
+                            }
+                        }
                         evt.StopPropagation();
                     });
                     evt.menu.AppendAction($"Q 水平翻转", (action) =>
@@ -347,10 +352,9 @@ namespace SevenStrikeModules.XGraph
                 }
                 else
                 {
-                    evt.menu.AppendAction($"Z 设置贴图", (action) =>
+                    evt.menu.AppendAction($"R 设置贴图", (action) =>
                     {
-                        EditorGUIUtility.ShowObjectPicker<Texture2D>(null, false, "t:Texture2D", 0);
-                        monitoringObjectPicker = true;
+                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.decalData.DecalTexture);
                         evt.StopPropagation();
                     });
                 }

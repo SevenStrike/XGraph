@@ -126,8 +126,16 @@ namespace SevenStrikeModules.XGraph
         /// 指定节点图标
         /// </summary>
         public string icon;
-        public string SetIconMode;
+        /// <summary>
+        /// 指示物体选择器是否已经打开
+        /// </summary>
         private bool monitoringObjectPicker = false;
+        private IMGUIContainer m_ObjectPickerIMGUI;
+        /// <summary>
+        /// 用于打开贴图选择器后选择贴图应用的模式
+        /// </summary>
+        public string SetTextureMode;
+
         /// <summary>
         /// 导图节点的最后一次尺寸
         /// </summary>
@@ -203,12 +211,6 @@ namespace SevenStrikeModules.XGraph
 
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
-
-            #region 快速选择头像专用隐藏式GUI
-            var imguiContainer = new IMGUIContainer(OnGUI);
-            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
-            AppendElement(GraphNodeContainerType.MainContainer, imguiContainer);
-            #endregion
 
             DuplicateAction_Add();
         }
@@ -520,8 +522,7 @@ namespace SevenStrikeModules.XGraph
 
             if (evt.clickCount == 2)
             {
-                SetIconMode = "TitleIconSet";
-                OpenTexturesSelector();
+                OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", ActionNode.NodeIcon);
             }
 
             evt.StopPropagation();
@@ -626,8 +627,7 @@ namespace SevenStrikeModules.XGraph
                 // 双击头像以更换头像
                 if (evt.clickCount == 2)
                 {
-                    SetIconMode = "AvatarSet";
-                    OpenTexturesSelector();
+                    OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", ActionNode.Avatar);
                     evt.StopPropagation();
                 }
             });
@@ -760,36 +760,6 @@ namespace SevenStrikeModules.XGraph
 
         #region 辅助
         /// <summary>
-        /// 添加 OnGUI 方法，用于处理头像选择
-        /// </summary>
-        private void OnGUI()
-        {
-            if (monitoringObjectPicker && Event.current != null)
-            {
-                if (Event.current.commandName == "ObjectSelectorClosed")
-                {
-                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
-                    if (selectedTexture != null)
-                    {
-                        if (SetIconMode == "TitleIconSet")
-                            NodeTitleIcon_Set(selectedTexture);
-                        else if (SetIconMode == "AvatarSet")
-                            NodeAvatar_Set(selectedTexture);
-                    }
-                    monitoringObjectPicker = false;
-                    SetIconMode = null;
-                }
-            }
-        }
-        /// <summary>
-        /// 打开贴图选择框
-        /// </summary>
-        public void OpenTexturesSelector()
-        {
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNode.Avatar, false, "t:Texture2D", 0);
-            monitoringObjectPicker = true;
-        }
-        /// <summary>
         /// 元素的视觉布局样式
         /// </summary>
         /// <param name="element"></param>
@@ -878,6 +848,68 @@ namespace SevenStrikeModules.XGraph
         public void SetSequential()
         {
             SeperateIconLabel.style.backgroundImage = tex_logo_dir_sequential;
+        }
+        #endregion
+
+        #region 弹出物体选择面板
+        public void OpenObjectPickerForTextures(string mode, string typefilter, Texture2D tex)
+        {
+            if (monitoringObjectPicker) return;
+
+            monitoringObjectPicker = true;
+            SetTextureMode = mode;
+
+            // 动态创建 IMGUIContainer
+            if (m_ObjectPickerIMGUI == null)
+            {
+                m_ObjectPickerIMGUI = new IMGUIContainer(OnObjectPickerGUI);
+                m_ObjectPickerIMGUI.name = "---------------VNodeTexturePicker";
+                m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
+                Add(m_ObjectPickerIMGUI);
+            }
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNode.Avatar, false, typefilter, 0);
+        }
+
+        private void OnObjectPickerGUI()
+        {
+            if (!monitoringObjectPicker) return;
+
+            // 只处理特定事件
+            if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
+            {
+                if (Event.current != null && Event.current.commandName == "ObjectSelectorClosed")
+                {
+                    var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+
+                    // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
+                    EditorApplication.delayCall += () =>
+                    {
+                        if (selectedTexture != null)
+                        {
+                            ApplySelectedTexture(selectedTexture);
+                        }
+
+                        monitoringObjectPicker = false;
+                        SetTextureMode = null;
+
+                        if (m_ObjectPickerIMGUI != null)
+                        {
+                            Remove(m_ObjectPickerIMGUI);
+                            m_ObjectPickerIMGUI = null;
+                            MarkDirtyRepaint();
+                        }
+                    };
+                }
+            }
+        }
+
+        // 应用选择的贴图
+        private void ApplySelectedTexture(Texture2D selectedTexture)
+        {
+            if (SetTextureMode == "TitleIconSet")
+                NodeTitleIcon_Set(selectedTexture);
+            if (SetTextureMode == "AvatarSet")
+                NodeAvatar_Set(selectedTexture);
         }
         #endregion
     }

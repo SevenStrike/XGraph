@@ -88,8 +88,6 @@ namespace SevenStrikeModules.XGraph
             // 在此模块下寻找 ListView 组件
             VariableList = this.Q<ListView>("VariableList");
 
-            VariableList.reorderable = false;
-
             // 创造 ListView 的模版样式
             VariableList.makeItem = GetElement;
 
@@ -105,69 +103,92 @@ namespace SevenStrikeModules.XGraph
             // 注册添加属性按钮动作
             btn_AddVariable.RegisterCallback<ClickEvent>(AddVariablesMenu);
 
-            // 设置拖拽启动条件
-            VariableList.canStartDrag += CanStartDrag;
-
-            // 设置拖拽更新
-            VariableList.dragAndDropUpdate += OnDragAndDropUpdate;
-
-            // 设置拖拽开始
-            VariableList.setupDragAndDrop += SetupDragAndDrop;
-
-            // 手动注册鼠标事件来实现排序
-            //VariableList.RegisterCallback<MouseDownEvent>(OnListViewMouseDown);
-            //VariableList.RegisterCallback<MouseUpEvent>(OnListViewMouseUp);
-            //VariableList.RegisterCallback<MouseMoveEvent>(OnListViewMouseMove);
+            // 注册拖拽相关事件
+            VariableList.RegisterCallback<DragUpdatedEvent>(OnVariableDragUpdated);
+            VariableList.RegisterCallback<DragPerformEvent>(OnVariableDragPerform);
+            VariableList.RegisterCallback<DragExitedEvent>(OnVariableDragExited);
         }
 
-        #region 拖拽属性到Graphview中的相关逻辑
+        #region 拖拽排序 & 添加进Graphview作为节点的相关逻辑
         /// <summary>
-        /// 是否可以开始拖拽
+        /// 拖拽离开元素时触发
         /// </summary>
-        private bool CanStartDrag(CanStartDragArgs arg)
+        /// <param name="evt"></param>
+        private void OnVariableDragExited(DragExitedEvent evt)
         {
-            // 只有当有选中项时才允许拖拽
-            return true;
+
         }
 
         /// <summary>
-        /// 设置拖拽数据
+        /// 拖拽完成时触发（松开鼠标）
         /// </summary>
-        private StartDragArgs SetupDragAndDrop(SetupDragAndDropArgs arg)
+        /// <param name="evt"></param>
+        private void OnVariableDragPerform(DragPerformEvent evt)
         {
-            var variable = VariableList.selectedItem as BlackboardVariable;
-            if (variable != null)
+            // 检查是否拖拽到了GraphView区域（而不是在ListView内部排序）
+            var graphView = FindGraphViewUnderPosition(evt.mousePosition);
+            if (graphView != null)
             {
-                DragAndDrop.PrepareStartDrag();
-                DragAndDrop.SetGenericData("NodeType", variable);
-                DragAndDrop.objectReferences = new UnityEngine.Object[0];
-                DragAndDrop.StartDrag($"Dragging {variable.name}");
+                // 获取选中的 BlackboardVariables
+                var selectedVariables = VariableList.selectedItems;
+
+                // 创建属性节点
+                VaiableNodeGenerate(evt, selectedVariables);
+
+                // 完全停止事件传播，阻止ListView内部处理
+                evt.StopImmediatePropagation();
+
+                // 标记为已处理
+                evt.StopPropagation();
             }
-            return arg.startDragArgs;
         }
 
         /// <summary>
-        /// 拖拽更新处理
+        /// 拖拽过程中每帧触发
         /// </summary>
-        private DragVisualMode OnDragAndDropUpdate(HandleDragAndDropArgs arg)
+        /// <param name="evt"></param>
+        private void OnVariableDragUpdated(DragUpdatedEvent evt)
         {
-            // 如果拖拽到 GraphView，显示复制图标
-            if (arg.target is xg_GraphView)
+            // 检查是否在GraphView区域
+            var graphView = FindGraphViewUnderPosition(evt.mousePosition);
+            if (graphView != null)
             {
-                return DragVisualMode.Copy;
-            }
+                // 设置拖拽的视觉反馈
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
 
-            // 如果在 ListView 内部拖拽，显示移动图标（用于重新排序）
-            return DragVisualMode.Move;
+                // 完全停止事件传播
+                evt.StopImmediatePropagation();
+
+                // 标记为已处理
+                evt.StopPropagation();
+            }
+        }
+
+        /// <summary>
+        /// 查找位置下的GraphView
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private xg_GraphView FindGraphViewUnderPosition(Vector2 position)
+        {
+            var element = panel.Pick(position);
+            while (element != null)
+            {
+                if (element is xg_GraphView graphView)
+                    return graphView;
+                element = element.parent;
+            }
+            return null;
         }
         #endregion
 
+        #region 创建节点
         /// <summary>
         /// 创建属性节点
         /// </summary>
         /// <param name="evt"></param>
         /// <param name="selectedVariables"></param>
-        private void CreateVaiableNode(DragPerformEvent evt, IEnumerable<object> selectedVariables)
+        private void VaiableNodeGenerate(DragPerformEvent evt, IEnumerable<object> selectedVariables)
         {
             // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标用于创建节点时指定位置
             Vector2 localMousePosition = graphWindow.xw_graphView.contentViewContainer.WorldToLocal(evt.mousePosition);
@@ -176,48 +197,79 @@ namespace SevenStrikeModules.XGraph
             int index = 0;
 
             // 遍历选中的黑板变量
-            foreach (var variable in selectedVariables)
+            foreach (var variableItem in selectedVariables)
             {
                 // 根据解析的黑板属性类型来创建属性节点到编辑器中
-                BlackboardVariable vare = variable as BlackboardVariable;
-                if (vare != null)
+                BlackboardVariable variable = variableItem as BlackboardVariable;
+                if (variable != null)
                 {
-                    #region 计算偏移值
-                    Vector2 offset = Vector2.zero;
-                    if (index > 0)
-                    {
-                        float step_x = 81;
-                        float step_y = 46.5f;
-                        offset = new Vector2(-(step_x * 0.4f) * index, (step_y * 0.9f) * index);
-                    }
-
-                    index++;
-                    #endregion
-
-                    #region 节点配色的颜色根据属性类型来定（通过 json 配置对应主题色）
-                    UnityEngine.Color node_color = UnityEngine.Color.white;
-                    VariableThemes.VariableThemes.ForEach(theme =>
-                    {
-                        if (theme.type == vare.type.ToString())
-                        {
-                            node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
-                        }
-                    });
-                    #endregion
-
-                    #region 创建属性节点
-                    object node = graphWindow.xw_graphView.Node_Create(vare.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset, Vector2.one);
-
-                    VNode_Base node_base = node as VNode_Base;
-                    if (node_base != null)
-                    {
-
-                    }
-                    #endregion
-                    graphWindow.xw_graphView.AddToSelection(node_base);
+                    index = CreateVariableNode(localMousePosition, index, variable);
                 }
             }
         }
+
+        /// <summary>
+        /// 创建属性节点
+        /// </summary>
+        /// <param name="localMousePosition"></param>
+        /// <param name="index"></param>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        private int CreateVariableNode(Vector2 localMousePosition, int index, BlackboardVariable variable)
+        {
+            #region 计算偏移值
+            Vector2 offset = Vector2.zero;
+
+            /* 如果是只有一个被拖入Graphview则该节点会居中对齐鼠标位置
+             * 如果是批量加入从第2个节点开始按照步数和缩放的系数进行堆叠排列
+             */
+            if (index > 0)
+            {
+                float step_x = 81;
+                float step_y = 46.5f;
+                offset = new Vector2(-(step_x * 0.4f) * index, (step_y * 0.9f) * index);
+            }
+
+            index++;
+            #endregion
+
+            #region 节点配色的颜色根据属性类型来定（通过 json 配置对应主题色）
+            Color node_color = GetVariableThemeColor(variable);
+            #endregion
+
+            #region 创建属性节点
+            object node = graphWindow.xw_graphView.Node_Create(variable.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset, Vector2.one);
+
+            VNode_Base node_base = node as VNode_Base;
+            if (node_base != null)
+            {
+
+            }
+            #endregion
+
+            graphWindow.xw_graphView.AddToSelection(node_base);
+
+            return index;
+        }
+
+        /// <summary>
+        /// 获取黑板属性的专属主题色
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        private Color GetVariableThemeColor(BlackboardVariable variable)
+        {
+            Color node_color = Color.white;
+            VariableThemes.VariableThemes.ForEach(theme =>
+            {
+                if (theme.type == variable.type.ToString())
+                {
+                    node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                }
+            });
+            return node_color;
+        }
+        #endregion
 
         #region 模版获取指定 & 绑定数据
         /// <summary>

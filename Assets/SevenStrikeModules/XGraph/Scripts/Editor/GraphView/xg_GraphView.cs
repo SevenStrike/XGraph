@@ -162,6 +162,7 @@ namespace SevenStrikeModules.XGraph
         /// 指示物体选择器是否已经打开
         /// </summary>
         private bool monitoringObjectPicker = false;
+        private IMGUIContainer m_ObjectPickerIMGUI;
         /// <summary>
         /// 用于打开贴图选择器后选择贴图应用的模式
         /// </summary>
@@ -225,12 +226,6 @@ namespace SevenStrikeModules.XGraph
 
             RegisterGroupEvent();
 
-            #region 快速选择头像专用隐藏式GUI
-            var imguiContainer = new IMGUIContainer(OnGUI);
-            imguiContainer.style.display = DisplayStyle.None; // 隐藏，只用于处理GUI事件
-            Add(imguiContainer);
-            #endregion
-
             #region 自定义节点编辑器背景的创建
             CustomBackground = new VisualElement();
             CustomBackground.name = "custombg";
@@ -239,12 +234,6 @@ namespace SevenStrikeModules.XGraph
 
             // 必须将自定义背景图的层级放在网格背景的下面的图层，这样贴图不会遮住网格背景
             CustomBackground.SendToBack();
-            #endregion
-
-            #region 监听拖拽事件
-            RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
-            RegisterCallback<DragPerformEvent>(OnDragPerform);
-            RegisterCallback<DragExitedEvent>(OnDragExit);
             #endregion
         }
         #endregion
@@ -548,52 +537,93 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 弹出选择头像面板
-        private void OnGUI()
+        #region 弹出物体选择面板
+        // 打开物体选择器的方法
+        public void OpenObjectPickerForTextures(string mode, string typefilter, Texture2D tex)
         {
-            if (monitoringObjectPicker && Event.current != null)
+            monitoringObjectPicker = true;
+            SetTextureMode = mode;
+
+            // 动态创建 IMGUIContainer
+            if (m_ObjectPickerIMGUI == null)
             {
-                if (Event.current.commandName == "ObjectSelectorClosed")
+                m_ObjectPickerIMGUI = new IMGUIContainer(OnObjectPickerGUI);
+                m_ObjectPickerIMGUI.name = "---------------GraphviewTexturePicker";
+                m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
+                Add(m_ObjectPickerIMGUI);
+            }
+
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(tex, false, typefilter, 0);
+        }
+
+        private void OnObjectPickerGUI()
+        {
+            // 只处理特定事件
+            if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
+            {
+                if (Event.current != null && Event.current.commandName == "ObjectSelectorClosed")
                 {
                     var selectedTexture = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
-                    if (selectedTexture != null)
+
+                    // 使用延迟调用来处理选择结果，避免在当前 GUI 调用中修改层次结构
+                    EditorApplication.delayCall += () =>
                     {
-                        if (CurrentSelectedNodes_Base.Count > 0)
+                        if (selectedTexture != null)
                         {
-                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
-                            {
-                                VNode_Base node = CurrentSelectedNodes_Base[s];
-                                if (node.ActionNode.actionNodeType != "Relay")
-                                {
-                                    if (SetTextureMode == "SetAvatar")
-                                    {
-                                        node.RegisterAvatarClicked();
-                                        node.NodeAvatar_Set(selectedTexture);
-                                    }
-                                    if (SetTextureMode == "SetTitleIcon")
-                                    {
-                                        node.NodeTitleIcon_Set(selectedTexture);
-                                    }
-                                }
-                            }
+                            ApplySelectedTexture(selectedTexture);
                         }
 
-                        if (CurrentSelectedNodes_Decal.Count > 0)
+                        monitoringObjectPicker = false;
+                        SetTextureMode = null;
+
+                        if (m_ObjectPickerIMGUI != null)
                         {
-                            for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
+                            Remove(m_ObjectPickerIMGUI);
+                            m_ObjectPickerIMGUI = null;
+                            MarkDirtyRepaint();
+                        }
+                    };
+                }
+            }
+        }
+
+        // 应用选择的贴图
+        private void ApplySelectedTexture(Texture2D selectedTexture)
+        {
+            if (SetTextureMode == "DecalTexSet")
+            {
+                if (CurrentSelectedNodes_Decal.Count > 0)
+                {
+                    foreach (var decal in CurrentSelectedNodes_Decal)
+                    {
+                        if (decal != null)
+                        {
+                            decal.decalData.HasTexture = true;
+                            decal.decalData.DecalTexture = selectedTexture;
+                            decal.CheckDecalTextureChanged();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (CurrentSelectedNodes_Base.Count > 0)
+                {
+                    foreach (var node in CurrentSelectedNodes_Base)
+                    {
+                        if (node.ActionNode.actionNodeType != "Relay")
+                        {
+                            if (SetTextureMode == "AvatarSet")
                             {
-                                VNode_Decal decal = CurrentSelectedNodes_Decal[s];
-                                if (decal != null)
-                                {
-                                    decal.decalData.HasTexture = true;
-                                    decal.decalData.DecalTexture = selectedTexture;
-                                    decal.CheckDecalTextureChanged();
-                                }
+                                node.RegisterAvatarClicked();
+                                node.NodeAvatar_Set(selectedTexture);
+                            }
+                            else if (SetTextureMode == "TitleIconSet")
+                            {
+                                node.NodeTitleIcon_Set(selectedTexture);
                             }
                         }
                     }
-                    monitoringObjectPicker = false;
-                    SetTextureMode = null;
                 }
             }
         }
