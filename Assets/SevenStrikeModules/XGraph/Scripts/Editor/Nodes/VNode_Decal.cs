@@ -234,6 +234,7 @@ namespace SevenStrikeModules.XGraph
             DecalTextureElement.RegisterCallback<PointerEnterEvent>(OnDecalPointerEnter);
             DecalTextureElement.RegisterCallback<PointerLeaveEvent>(OnDecalPointerLeave);
 
+            DecalTextureElement.RegisterCallback<PointerDownEvent>(OnDecalPointerDown);
             RegisterDecalTextureClicked();
         }
 
@@ -292,6 +293,18 @@ namespace SevenStrikeModules.XGraph
             evt.StopPropagation();
         }
 
+        /// <summary>
+        /// 按住Shift点击鼠标滚轮键恢复透明度
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void OnDecalPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button == (int)MouseButton.MiddleMouse)
+            {
+                DecalTextureElement.style.opacity = 1;
+            }
+        }
         #endregion
 
         #region 贴图设置

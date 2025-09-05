@@ -566,6 +566,7 @@ namespace SevenStrikeModules.XGraph
             BlackboardVariable vare = new BlackboardVariable();
             vare.type = type;
             vare.name = type.ToString();
+            vare.des = $"变量 {type}";
 #if UNITY_EDITOR
             vare.guid = UnityEditor.GUID.Generate().ToString();
             Undo.RecordObject(graphWindow.CloneTree, "Create BlackboardVariable");

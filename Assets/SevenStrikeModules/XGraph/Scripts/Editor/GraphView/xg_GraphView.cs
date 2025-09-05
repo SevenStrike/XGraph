@@ -207,7 +207,7 @@ namespace SevenStrikeModules.XGraph
             // 添加 xw_graphView 基础组件 - 内容选择拖动
             this.AddManipulator(new SelectionDragger());
             // 添加 xw_graphView 基础组件 - 内容框选
-            this.AddManipulator(new RectangleSelector());
+            this.AddManipulator(new xg_GraphViewRectangleSelector());
             // 启用节点之间的连线功能
             this.AddManipulator(new EdgeManipulator());
             // 实例化节点搜索框的主体
@@ -215,6 +215,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 注册事件委托
+            RegisterCallback<PointerMoveEvent>(Action_MouseMove);
             // 注册处理快捷键
             RegisterCallback<KeyDownEvent>(Action_KeyDown);
             // 注册鼠标点击事件
@@ -365,11 +366,11 @@ namespace SevenStrikeModules.XGraph
             return gv_NodeCreatedPosition;
         }
         /// <summary>
-        /// 获取鼠标位置
+        /// 根据屏幕鼠标位置获取Graphview鼠标位置
         /// </summary>
-        /// <param h_name="screenMousePosition">asdsadasdsad</param>
+        /// <param name="screenMousePosition"></param>
         /// <returns></returns>
-        public Vector2 GetLocalMousePosition(Vector2 screenMousePosition)
+        public Vector2 GetGraphMousePosition_With_ScreenMousePosition(Vector2 screenMousePosition)
         {
             // 将光标的屏幕坐标转换为光标在当前窗口内的坐标
             Vector2 window_mouse_pos = screenMousePosition - gv_GraphWindow.position.position;
@@ -377,6 +378,16 @@ namespace SevenStrikeModules.XGraph
             // 将光标在当前窗口内的坐标转换为光标在节点视图内的坐标
             Vector2 local_mouse_pos = contentViewContainer.WorldToLocal(window_mouse_pos);
             return local_mouse_pos;
+        }
+        /// <summary>
+        /// 获取Graphview的鼠标位置
+        /// </summary>
+        /// <param name="PointerMousePosition"></param>
+        /// <returns></returns>
+        public Vector2 GetGraphMousePosition_With_PointerEventMousePosition(Vector2 PointerMousePosition)
+        {
+            // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
+            return contentViewContainer.WorldToLocal(PointerMousePosition);
         }
         /// <summary>
         /// 获取当前视口的滚动位置

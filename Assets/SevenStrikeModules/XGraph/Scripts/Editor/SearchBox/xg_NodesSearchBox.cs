@@ -186,7 +186,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public bool OnSelectEntry(SearchTreeEntry SearchTreeEntry, SearchWindowContext context)
         {
-            graphView.gv_NodeCreatedPosition = graphView.GetLocalMousePosition(context.screenMousePosition);
+            graphView.gv_NodeCreatedPosition = graphView.GetGraphMousePosition_With_ScreenMousePosition(context.screenMousePosition);
             NodeMenuParam types = (NodeMenuParam)SearchTreeEntry.userData;
 
             // 创建对应的节点

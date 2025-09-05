@@ -223,6 +223,14 @@
         ///  xw_graphView 控件 - 窗口尺寸显示文字
         /// </summary>
         private Label xw_label_GraphWindowSize;
+        /// <summary>
+        ///  xw_graphView 控件 - 窗口内鼠标在Graphview中的位置 X
+        /// </summary>
+        private Label xw_label_GraphMousePos_x;
+        /// <summary>
+        ///  xw_graphView 控件 - 窗口内鼠标在Graphview中的位置 Y
+        /// </summary>
+        private Label xw_label_GraphMousePos_y;
         #endregion
 
         #region 参数
@@ -648,6 +656,9 @@
             xw_GraphInfo_LastSaveLag.style.color = util_Dashboard.Theme_Primary;
             // 窗口尺寸大小显示
             xw_label_GraphWindowSize = xw_GraphInfo_Container.Q<VisualElement>("center").Q<Label>("size");
+            // 鼠标位置
+            xw_label_GraphMousePos_x = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_x");
+            xw_label_GraphMousePos_y = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_y");
             #endregion
         }
 
@@ -1276,6 +1287,15 @@
         public void xw_GraphInfo_PathContent_Set(string path)
         {
             xw_GraphInfo_PathContent.text = path;
+        }
+        /// <summary>
+        /// 显示Graphview的鼠标位置
+        /// </summary>
+        /// <param name="pos"></param>
+        public void xw_GraphInfo_GraphMousePos_Set(Vector2 pos)
+        {
+            xw_label_GraphMousePos_x.text = $"X : {pos.x.ToString("F2")}";
+            xw_label_GraphMousePos_y.text = $"Y : {pos.y.ToString("F2")}";
         }
         #endregion
 

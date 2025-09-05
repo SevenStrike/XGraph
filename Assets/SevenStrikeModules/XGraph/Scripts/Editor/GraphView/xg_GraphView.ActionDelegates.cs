@@ -9,24 +9,24 @@ namespace SevenStrikeModules.XGraph
 
     public partial class xg_GraphView
     {
+        private void Action_MouseMove(PointerMoveEvent evt)
+        {
+            gv_GraphWindow.xw_GraphInfo_GraphMousePos_Set(GetGraphMousePosition_With_PointerEventMousePosition(evt.position));
+        }
         /// <summary>
         /// 鼠标点击事件的回调函数
         /// </summary>
-        /// <param assetName="e"></param>
-        private void Action_PointerDown(PointerDownEvent e)
+        /// <param assetName="evt"></param>
+        private void Action_PointerDown(PointerDownEvent evt)
         {
             if (gv_GraphWindow == null)
                 return;
 
-            #region 获取鼠标点击位置，便于指定创建的节点在鼠标位置
-            Vector2 mousePosition = e.position;
-            // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
-            Vector2 localMousePosition = contentViewContainer.WorldToLocal(mousePosition);
-            gv_NodeCreatedPosition = localMousePosition;
-            #endregion
+            Vector2 graphMouse_pos = GetGraphMousePosition_With_PointerEventMousePosition(evt.position);
+            gv_NodeCreatedPosition = graphMouse_pos;
 
             #region 双击两个节点之间的连线时
-            if (e.clickCount == 2 && e.target is Edge edge)
+            if (evt.clickCount == 2 && evt.target is Edge edge)
             {
                 // 先存储边和端口信息
                 var p_child = edge.input;
@@ -58,7 +58,7 @@ namespace SevenStrikeModules.XGraph
                     content: null,
                     nodeGraphSize: Vector2.one * 100);
 
-                VNode_Relay relaynode = Node_MakeRelay(localMousePosition, data);
+                VNode_Relay relaynode = Node_MakeRelay(graphMouse_pos, data);
                 relaynode.Draw();
                 relaynode.expanded = true;
                 relaynode.RefreshExpandedState();
@@ -85,7 +85,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 隐藏选项面板
-            if (e.button == (int)MouseButton.LeftMouse)
+            if (evt.button == (int)MouseButton.LeftMouse)
             {
                 gv_GraphWindow.OptionsPanel_Hide();
                 gv_GraphWindow.OptionsPanel_CloseButton_Hide();
