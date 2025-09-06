@@ -1207,7 +1207,7 @@
         private void ValriablesInGraphview_SyncDisplay(PointerEnterEvent evt)
         {
             Label label = evt.target as Label;
-            Debug.Log($"Variable - 高亮显示：{label.name}");
+            //Debug.Log($"Variable - 高亮显示：{label.name}");
         }
         /// <summary>
         /// 鼠标离开时在节点视图中同类型节点恢复正常
@@ -1216,7 +1216,7 @@
         private void ValriablesInGraphview_SyncHide(PointerLeaveEvent evt)
         {
             Label label = evt.target as Label;
-            Debug.Log($"Variable - 恢复正常显示：{label.name}");
+            //Debug.Log($"Variable - 恢复正常显示：{label.name}");
         }
         #endregion
 
