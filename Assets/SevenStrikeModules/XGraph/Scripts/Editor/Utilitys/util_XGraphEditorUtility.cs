@@ -5,6 +5,7 @@ namespace SevenStrikeModules.XGraph
     using System.Text;
     using System.Text.RegularExpressions;
     using UnityEditor;
+    using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -434,6 +435,90 @@ namespace SevenStrikeModules.XGraph
             else
             {
                 throw new ArgumentException("无效的时间格式。请使用 'yyyy-MM-dd - HH:mm:ss' 格式");
+            }
+        }
+        #endregion
+
+        #region 元素控制
+        /// <summary>
+        /// Toggle组件设置
+        /// </summary>
+        /// <param name="val"></param>
+        public static void Element_ToggleField_ValueSet(Toggle toggle, bool val)
+        {
+            toggle.value = val;
+        }
+        /// <summary>
+        /// IntegerField输入框组件设置
+        /// </summary>
+        /// <param name="val"></param>
+        public static void Element_IntegerField_ValueSet(IntegerField field, int val)
+        {
+            field.value = val;
+        }
+        /// <summary>
+        /// FloatField输入框组件设置
+        /// </summary>
+        /// <param name="val"></param>
+        public static void Element_FloatField_ValueSet(FloatField field, float val)
+        {
+            field.value = val;
+        }
+        /// <summary>
+        /// ColorField颜色组件设置
+        /// </summary>
+        /// <param name="color"></param>
+        public static void Element_ColorField_ValueSet(ColorField field, Color color)
+        {
+            field.value = color;
+        }
+        /// <summary>
+        /// ObjectField物体组件设置
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void Element_ObjectField_ValueSet(ObjectField field, UnityEngine.Object obj)
+        {
+            field.value = obj;
+        }
+        /// <summary>
+        /// 控件元素 - 文字设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="text"></param>
+        public static void Element_Label_ValueSet(Label label, string text)
+        {
+            label.text = text;
+        }
+        /// <summary>
+        /// 控制元素 - 可见性
+        /// </summary>
+        /// <param name="state"></param>
+        public static void Element_Visibility_Set(VisualElement element, bool state)
+        {
+            // 如果为 True 则将 element 容器的可见性设为：Visiblity，即：可见，否则就是不可见：Hidden
+            if (state)
+            {
+                element.style.visibility = Visibility.Visible;
+            }
+            else
+            {
+                element.style.visibility = Visibility.Hidden;
+            }
+        }
+        /// <summary>
+        /// 控制元素 - 布局可视模式
+        /// </summary>
+        /// <param name="state"></param>
+        public static void Element_Dispaly_Set(VisualElement element, bool state)
+        {
+            // 如果为 True 则将 element  的布局模式设为：Flex，即：可见，否则就是：None
+            if (state)
+            {
+                element.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+            }
+            else
+            {
+                element.style.display = new StyleEnum<DisplayStyle>(StyleKeyword.None);
             }
         }
         #endregion

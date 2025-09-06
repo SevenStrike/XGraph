@@ -247,7 +247,7 @@ namespace SevenStrikeModules.XGraph
         public Vector4 vector4Value;
         public Color colorValue;
         public UnityEngine.Object objectValue;
-        public string guid;
+        public string variableGUID;
         /// <summary>
         /// 所有用到属性的节点的guid列表，用于重建节点图连线关系
         /// </summary>
@@ -272,7 +272,7 @@ namespace SevenStrikeModules.XGraph
             clone.vector4Value = vector4Value;
             clone.objectValue = objectValue;
             clone.colorValue = colorValue;
-            clone.guid = guid_create ? UnityEditor.GUID.Generate().ToString() : guid;
+            clone.variableGUID = guid_create ? UnityEditor.GUID.Generate().ToString() : variableGUID;
             return clone;
         }
 
@@ -304,7 +304,7 @@ namespace SevenStrikeModules.XGraph
             this.vector4Value = vector4Value;
             this.objectValue = objectValue;
             this.colorValue = colorValue;
-            this.guid = UnityEditor.GUID.Generate().ToString();
+            this.variableGUID = UnityEditor.GUID.Generate().ToString();
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace SevenStrikeModules.XGraph
         {
             this.name = name;
             this.type = type;
-            this.guid = UnityEditor.GUID.Generate().ToString();
+            this.variableGUID = UnityEditor.GUID.Generate().ToString();
         }
 
         /// <summary>
@@ -398,6 +398,25 @@ namespace SevenStrikeModules.XGraph
         }
     }
 
+    [Serializable]
+    public class GraphviewRectangleSelectorThemes
+    {
+        public Color rectangleSelectorLineColor = new Color(1, 1, 1, 0.6f);
+        public int segments = 4;
+        public bool displayCoordinate = false;
+
+        public GraphviewRectangleSelectorThemes() { }
+
+        public GraphviewRectangleSelectorThemes Clone()
+        {
+            GraphviewRectangleSelectorThemes t = new GraphviewRectangleSelectorThemes();
+            t.rectangleSelectorLineColor = rectangleSelectorLineColor;
+            t.segments = segments;
+            t.displayCoordinate = displayCoordinate;
+            return t;
+        }
+    }
+
     [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionGraphAsset")]
     public class ActionNode_Asset : ScriptableObject
     {
@@ -421,6 +440,10 @@ namespace SevenStrikeModules.XGraph
         /// 节点编辑器的背景参数
         /// </summary>
         [SerializeField] public GraphviewGridBackgroundThemes GraphviewGridBackgroundThemes;
+        /// <summary>
+        /// 节点编辑器的选择框主题参数
+        /// </summary>
+        [SerializeField] public GraphviewRectangleSelectorThemes GraphviewRectangleSelectorThemes;
         /// <summary>
         /// 数据节点列表
         /// </summary>
@@ -535,6 +558,8 @@ namespace SevenStrikeModules.XGraph
 
             GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
 
+            GraphviewRectangleSelectorThemes = root.GraphviewRectangleSelectorThemes.Clone();
+
             // 覆盖原有的贴图数据列表
             DecalDatas = new List<decaldata>();
             foreach (var decal in root.DecalDatas)
@@ -626,6 +651,8 @@ namespace SevenStrikeModules.XGraph
             newRoot.LastSaveDateTime = LastSaveDateTime;
 
             newRoot.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
+
+            newRoot.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
 
             // 实例化新的 StickNoteDatas 列表，并从原始资源复制项
             newRoot.StickNoteDatas = new List<stickdata>();

@@ -155,6 +155,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private xg_GraphViewGridBackground GraphviewGridBackground;
         /// <summary>
+        /// 自定义选择框
+        /// </summary>
+        private xg_GraphViewRectangleSelector GraphviewCustomRectangleSelector;
+        /// <summary>
         /// 节点颜色标记开关
         /// </summary>
         private bool NodeColorDisplay = false;
@@ -206,8 +210,9 @@ namespace SevenStrikeModules.XGraph
             this.SetupZoom(gv_scaleGraph_Min, gv_scaleGraph_Max);
             // 添加 xw_graphView 基础组件 - 内容选择拖动
             this.AddManipulator(new SelectionDragger());
-            // 添加 xw_graphView 基础组件 - 内容框选
-            this.AddManipulator(new xg_GraphViewRectangleSelector());
+            // 添加 xw_graphView 基础组件 - 自定义内容框选组件
+            GraphviewCustomRectangleSelector = new xg_GraphViewRectangleSelector(Color.gray, 5, false);
+            this.AddManipulator(GraphviewCustomRectangleSelector);
             // 启用节点之间的连线功能
             this.AddManipulator(new EdgeManipulator());
             // 实例化节点搜索框的主体
@@ -240,6 +245,69 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助方法
+
+        /// <summary>
+        /// 居中聚焦所有视觉节点
+        /// </summary>
+        public void SetFrameAll()
+        {
+            FrameAll();
+        }
+        /// <summary>
+        /// 清空GraphView的所有内容
+        /// </summary>
+        public void ClearGraphViewContents(bool DisplayActionTreeInspector = true)
+        {
+            // 清空克隆体的内容
+            ActionTreeAsset.Clear();
+
+            // 清空GraphView的所有节点
+            Node_Clear();
+
+            // 清空GraphView的所有连线
+            EdgesClear();
+
+            // 清空GraphView的所有Group
+            Groups_Clear();
+
+            // 清空 Inspector 视图
+            gv_GraphWindow.xw_InspectorView.ClearInspector();
+
+            if (DisplayActionTreeInspector)
+                // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
+                gv_GraphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
+        }
+        /// <summary>
+        /// 刷新 GridBackground 背景主题
+        /// </summary>
+        public void GridBackgroundThemeUpdate()
+        {
+            if (ActionTreeAsset == null)
+                return;
+            GraphviewGridBackground.SetSpacing(ActionTreeAsset.GraphviewGridBackgroundThemes.spacing);
+            GraphviewGridBackground.SetGridBackgroundColor(ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
+            GraphviewGridBackground.SetLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.gridcolor);
+            GraphviewGridBackground.SetThickLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor);
+            GraphviewGridBackground.SetThickLines(ActionTreeAsset.GraphviewGridBackgroundThemes.thicklines);
+
+            if (CustomBackground != null)
+                CustomBackground.style.unityBackgroundImageTintColor = ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor;
+
+            if (CustomBackground != null)
+                CustomBackground.style.backgroundImage = ActionTreeAsset.GraphviewGridBackgroundThemes.customimage;
+        }
+        /// <summary>
+        /// 刷新选择框主题
+        /// </summary>
+        /// <param name="theme"></param>
+        public void RectangleSelectorThemeUpdate(GraphviewRectangleSelectorThemes theme)
+        {
+            this.RemoveManipulator(GraphviewCustomRectangleSelector);
+            GraphviewCustomRectangleSelector = new xg_GraphViewRectangleSelector(theme.rectangleSelectorLineColor, theme.segments, theme.displayCoordinate);
+            this.AddManipulator(GraphviewCustomRectangleSelector);
+        }
+
+        #region 编组事件
         /// <summary>
         /// 注册当元素移入 / 移出编组时委托
         /// </summary>
@@ -256,13 +324,9 @@ namespace SevenStrikeModules.XGraph
             elementsAddedToGroup = null;
             elementsRemovedFromGroup = null;
         }
-        /// <summary>
-        /// 居中聚焦所有视觉节点
-        /// </summary>
-        public void SetFrameAll()
-        {
-            FrameAll();
-        }
+        #endregion
+
+        #region 主题
         /// <summary>
         /// 读取Group主题色方案
         /// </summary>
@@ -296,49 +360,9 @@ namespace SevenStrikeModules.XGraph
                 node.MarkColor_Dislay();
             }
         }
-        /// <summary>
-        /// 清空GraphView的所有内容
-        /// </summary>
-        public void ClearGraphViewContents(bool DisplayActionTreeInspector = true)
-        {
-            // 清空克隆体的内容
-            ActionTreeAsset.Clear();
+        #endregion
 
-            // 清空GraphView的所有节点
-            Node_Clear();
-
-            // 清空GraphView的所有连线
-            EdgesClear();
-
-            // 清空GraphView的所有Group
-            Groups_Clear();
-
-            // 清空 Inspector 视图
-            gv_GraphWindow.xw_InspectorView.ClearInspector();
-
-            if (DisplayActionTreeInspector)
-                // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                gv_GraphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
-        }
-        /// <summary>
-        /// 刷新ViggnetGridBackground 背景主题参数
-        /// </summary>
-        public void ViggnetGridBackgroundUpdate()
-        {
-            if (ActionTreeAsset == null)
-                return;
-            GraphviewGridBackground.SetSpacing(ActionTreeAsset.GraphviewGridBackgroundThemes.spacing);
-            GraphviewGridBackground.SetGridBackgroundColor(ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
-            GraphviewGridBackground.SetLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.gridcolor);
-            GraphviewGridBackground.SetThickLineColor(ActionTreeAsset.GraphviewGridBackgroundThemes.thickLinecolor);
-            GraphviewGridBackground.SetThickLines(ActionTreeAsset.GraphviewGridBackgroundThemes.thicklines);
-
-            if (CustomBackground != null)
-                CustomBackground.style.unityBackgroundImageTintColor = ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor;
-
-            if (CustomBackground != null)
-                CustomBackground.style.backgroundImage = ActionTreeAsset.GraphviewGridBackgroundThemes.customimage;
-        }
+        #region 视图内寻找节点
         /// <summary>
         /// 根据数据节点的GUID来获取目标视觉节点
         /// </summary>
@@ -357,6 +381,9 @@ namespace SevenStrikeModules.XGraph
         {
             return GetNodeByGuid(guid) as Node;
         }
+        #endregion
+
+        #region 鼠标位置
         /// <summary>
         /// 获取当前创建节点的鼠标位置
         /// </summary>
@@ -389,6 +416,9 @@ namespace SevenStrikeModules.XGraph
             // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
             return contentViewContainer.WorldToLocal(PointerMousePosition);
         }
+        #endregion
+
+        #region 视口状态
         /// <summary>
         /// 获取当前视口的滚动位置
         /// </summary>
@@ -422,6 +452,7 @@ namespace SevenStrikeModules.XGraph
             // 第二个参数是缩放，这里设为 scale,scale,1 表示缩放到scale，Z值保持1即可
             UpdateViewTransform(position, new Vector3(scale, scale, 1));
         }
+        #endregion
         #endregion
 
         #region 内部重写方法

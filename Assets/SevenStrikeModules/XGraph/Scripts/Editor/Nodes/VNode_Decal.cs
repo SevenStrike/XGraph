@@ -303,6 +303,7 @@ namespace SevenStrikeModules.XGraph
             if (evt.button == (int)MouseButton.MiddleMouse)
             {
                 DecalTextureElement.style.opacity = 1;
+                decalData.opacity = 1;
             }
         }
         #endregion

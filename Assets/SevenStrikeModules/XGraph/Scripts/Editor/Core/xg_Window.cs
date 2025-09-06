@@ -89,6 +89,10 @@
         /// </summary>
         internal VisualElement xw_OptionsContainerRegion_Reg_Params;
         /// <summary>
+        /// Graphview编辑器的选项面板分区组件 - RegRectangleSelector
+        /// </summary>
+        internal VisualElement xw_OptionsContainerRegion_Reg_RectangleSelector;
+        /// <summary>
         /// Graphview编辑器的选项面板分区组件 - RegBlackBoards
         /// </summary>
         internal VisualElement xw_OptionsContainerRegion_Reg_BlackBoards;
@@ -117,6 +121,14 @@
         /// </summary>
         internal ColorField xw_OptionsPanel_Colorfield_CustomImage;
         /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 选择框颜色
+        /// </summary>
+        internal ColorField xw_OptionsPanel_Colorfield_RectangleSelector;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 选择框线分段
+        /// </summary>
+        internal IntegerField xw_OptionsPanel_Integerfield_SelectorLineSegment;
+        /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 网格间距
         /// </summary>
         internal FloatField xw_OptionsPanel_Floatfield_GridSpace;
@@ -131,7 +143,15 @@
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 复位背景参数
         /// </summary>
-        internal Button xw_OptionsPanel_Button_Reset;
+        internal Button xw_OptionsPanel_Button_ResetGridBackGround;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 复位选择框参数
+        /// </summary>
+        internal Button xw_OptionsPanel_Button_ResetRectangleSelector;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 显示选择框坐标
+        /// </summary>
+        internal Toggle xw_OptionsPanel_Toggle_DisplaySelectorCoordinate;
         #endregion
 
         #region 控件
@@ -309,7 +329,7 @@
                 // 获取最后一次的移动式属性面板开关状态
                 bool inspector_view_toggle = wnd.Element_State_Load("XGraph_InspectorViewDisplay");
                 // 设置 InspectorView Remote 容器可见性
-                wnd.Element_Visibility_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
+                util_XGraphEditorUtility.Element_Visibility_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
                 // 设置移动式属性视图容器可见性按钮开关状态
                 wnd.xw_toggle_InspectorViewDisplay.value = inspector_view_toggle;
                 EditorApplication.delayCall += () =>
@@ -326,7 +346,7 @@
                 // 获取最后一次的黑板面板开关状态
                 bool blackboard_view_toggle = wnd.Element_State_Load("XGraph_BlackBoardViewDisplay");
                 // 设置 BlackBoardView  容器可见性
-                wnd.Element_Visibility_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
+                util_XGraphEditorUtility.Element_Visibility_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
                 // 设置黑板视图容器可见性按钮开关状态
                 wnd.xw_toggle_BlackBoardViewDisplay.value = blackboard_view_toggle;
                 EditorApplication.delayCall += () =>
@@ -336,7 +356,7 @@
                     // 刷新 BlackBoard 属性列表
                     wnd.xw_BlackBoard_VariablesRestructure();
                 };
-                wnd.BlackBoardViewAction_SetTitle($"{wnd.SourceTree.name} 属性黑板");
+                wnd.BlackBoardViewAction_SetTitle($"{wnd.SourceTree.name} 变量黑板");
                 #endregion
 
                 #region Node节点颜色标记的状态恢复
@@ -356,7 +376,7 @@
                 EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
 
                 // 如果最后一次窗口尺寸值不为0则使用最后一次的窗口尺寸，否则就是用默认窗口尺寸，这里使用的 SourceTree 的原因是因为窗口尺寸这个变量不受克隆影响
-                xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1000, 700) : wnd.SourceTree.LastGraphWindowSize, wnd);
+                xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1260, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
                 #endregion
 
                 #region 根据资源结构重建可视化行为树节点
@@ -498,6 +518,8 @@
             xw_OptionsContainerRegion_Reg_Color = xw_OptionsContainer.Q<VisualElement>("reg_color");
             // 参数配置区域
             xw_OptionsContainerRegion_Reg_Params = xw_OptionsContainer.Q<VisualElement>("reg_params");
+            // 参数配置区域
+            xw_OptionsContainerRegion_Reg_RectangleSelector = xw_OptionsContainer.Q<VisualElement>("reg_rectselector");
             // 暂未开放
             xw_OptionsContainerRegion_Reg_BlackBoards = xw_OptionsContainer.Q<VisualElement>("reg_blackboards");
             // 暂未开放
@@ -540,11 +562,13 @@
             #endregion
 
             #region GraphView背景参数复位按钮
-            xw_OptionsPanel_Button_Reset = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "resetbutton");
-            xw_OptionsPanel_Button_Reset.clicked += xw_OptionsPanel_Button_Reset_Clicked;
+            xw_OptionsPanel_Button_ResetGridBackGround = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "resetbutton");
+            xw_OptionsPanel_Button_ResetGridBackGround.clicked += xw_OptionsPanel_Button_Reset_Clicked;
             #endregion
 
-            #region BlackBoard 的参数类型的颜色标记物
+            //-------------------------------- 黑板标记解释
+
+            #region BlackBoard 的变量类型的颜色标记物
 
             VisualElement paramtypes = xw_OptionsContainerRegion_Reg_BlackBoards.Q<VisualElement>(name: "paramTypes");
 
@@ -572,6 +596,29 @@
                 item.RegisterCallback<PointerLeaveEvent>(ValriablesInGraphview_SyncHide);
             }
             #endregion
+
+            //-------------------------------- 选择框
+
+            #region RectangleSelector 选择框显示坐标
+            xw_OptionsPanel_Toggle_DisplaySelectorCoordinate = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<Toggle>(name: "toggle_selectorline_displaycoordinate");
+            xw_OptionsPanel_Toggle_DisplaySelectorCoordinate.RegisterValueChangedCallback(xw_OptionsPanel_Toggle_DisplaySelectorCoordinate_changed);
+            #endregion
+
+            #region RectangleSelector 选择框线颜色
+            xw_OptionsPanel_Colorfield_RectangleSelector = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<ColorField>(name: "colorfield_selectorlinecolor");
+            xw_OptionsPanel_Colorfield_RectangleSelector.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_RectangleSelector_changed);
+            #endregion
+
+            #region RectangleSelector 选择框线分段
+            xw_OptionsPanel_Integerfield_SelectorLineSegment = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<IntegerField>(name: "integerfield_selectorline_seg");
+            xw_OptionsPanel_Integerfield_SelectorLineSegment.RegisterCallback<BlurEvent>(on_xw_OptionsPanel_Integerfield_SelectorLineSegment_changed);
+            #endregion
+
+            #region RectangleSelector 复位按钮
+            xw_OptionsPanel_Button_ResetRectangleSelector = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<Button>(name: "resetbutton");
+            xw_OptionsPanel_Button_ResetRectangleSelector.clicked += xw_OptionsPanel_Button_ResetRectangleSelector_Clicked;
+            #endregion
+
             #endregion
 
             EditorApplication.delayCall += () =>
@@ -746,7 +793,7 @@
             // 获取最后一次的移动式属性面板开关状态
             bool remote_toggle = Element_State_Load("XGraph_InspectorViewDisplay");
             // 设置 InspectorView Remote 容器可见性
-            Element_Visibility_Set(xw_InspectorView_Container, remote_toggle);
+            util_XGraphEditorUtility.Element_Visibility_Set(xw_InspectorView_Container, remote_toggle);
             // 设置移动式属性视图容器可见性按钮开关状态
             xw_toggle_InspectorViewDisplay.value = remote_toggle;
             if (remote_toggle)
@@ -763,12 +810,12 @@
             InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
             #endregion
 
-            #region 黑板属性面板的状态恢复
-            // 获取最后一次的移动式属性面板开关状态
+            #region 黑板变量面板的状态恢复
+            // 获取最后一次的移动式变量面板开关状态
             bool blackboard_toggle = Element_State_Load("XGraph_BlackBoardViewDisplay");
             // 设置 InspectorView Remote 容器可见性
-            Element_Visibility_Set(xw_BlackBoardView_Container, blackboard_toggle);
-            // 设置移动式属性视图容器可见性按钮开关状态
+            util_XGraphEditorUtility.Element_Visibility_Set(xw_BlackBoardView_Container, blackboard_toggle);
+            // 设置黑板变量视图容器可见性按钮开关状态
             xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
 
             // 刷新 BlackBoard 显示
@@ -783,7 +830,7 @@
             Element_Size_Load("XGraph_BlackBoardViewSize", element_blackboard);
 
             // 加载 BlackBoard 面板标题文字
-            BlackBoardViewAction_SetTitle($"{SourceTree.name} 属性黑板");
+            BlackBoardViewAction_SetTitle($"{SourceTree.name} 变量黑板");
             #endregion
 
             xw_graphView.RegisterGroupEvent();
@@ -805,9 +852,9 @@
                      *  而 xw_graphView?.Restructure_Nodes(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
                      */
                     #region Node节点颜色标记的状态恢复
-                    // 获取最后一次的移动式属性面板开关状态
+                    // 获取最后一次的节点颜色标记开关状态
                     bool nodeColor_toggle = Element_State_Load("XGraph_DisplayNodeColor");
-                    // 设置移动式属性视图容器可见性按钮开关状态
+                    // 设置节点颜色标记可见性按钮开关状态
                     xw_toggle_DisplayNodeColor.value = nodeColor_toggle;
                     #endregion
                 };
@@ -932,7 +979,7 @@
         {
             Undo.RecordObject(CloneTree, "Change Graphview BgColor");
             CloneTree.GraphviewGridBackgroundThemes.bgcolor = evt.newValue;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -941,7 +988,7 @@
         {
             Undo.RecordObject(CloneTree, "Change Graphview GridColor");
             CloneTree.GraphviewGridBackgroundThemes.gridcolor = evt.newValue;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -950,7 +997,7 @@
         {
             Undo.RecordObject(CloneTree, "Change Graphview ThicklineColor");
             CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = evt.newValue;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -959,7 +1006,7 @@
         {
             Undo.RecordObject(CloneTree, "Change Graphview CustomImageColor");
             CloneTree.GraphviewGridBackgroundThemes.customimagecolor = evt.newValue;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -968,7 +1015,7 @@
         {
             Undo.RecordObject(CloneTree, "Set GraphView GridSpace");
             CloneTree.GraphviewGridBackgroundThemes.spacing = xw_OptionsPanel_Floatfield_GridSpace.value;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -977,7 +1024,7 @@
         {
             Undo.RecordObject(CloneTree, "Set GraphView ThicklineCount");
             CloneTree.GraphviewGridBackgroundThemes.thicklines = xw_OptionsPanel_Integerfield_ThicklineCount.value;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -986,7 +1033,7 @@
         {
             Undo.RecordObject(CloneTree, "Set GraphView CustomBg Texture");
             CloneTree.GraphviewGridBackgroundThemes.customimage = evt.newValue as Texture2D;
-            xw_graphView.ViggnetGridBackgroundUpdate();
+            xw_graphView.GridBackgroundThemeUpdate();
         }
         #endregion
 
@@ -1112,22 +1159,45 @@
         }
         #endregion
 
-        #region OptionsPanel Graphview 选项面板的背景参数刷新
+        #region OptionsPanel Graphview 选项面板的所有UI参数刷新
         /// <summary>
-        /// 刷新选项面板的所有背景参数控件的值
+        /// 刷新选项面板的所有参数控件的值
         /// </summary>
         private void OptionsPanel_ParamsUpdate()
         {
-            xw_OptionsPanel_Colorfield_Bg.value = CloneTree.GraphviewGridBackgroundThemes.bgcolor;
-            xw_OptionsPanel_Colorfield_Grid.value = CloneTree.GraphviewGridBackgroundThemes.gridcolor;
-            xw_OptionsPanel_Colorfield_Thickline.value = CloneTree.GraphviewGridBackgroundThemes.thickLinecolor;
-            xw_OptionsPanel_Colorfield_CustomImage.value = CloneTree.GraphviewGridBackgroundThemes.customimagecolor;
-            xw_OptionsPanel_Floatfield_GridSpace.value = CloneTree.GraphviewGridBackgroundThemes.spacing;
-            xw_OptionsPanel_Integerfield_ThicklineCount.value = CloneTree.GraphviewGridBackgroundThemes.thicklines;
-            xw_OptionsPanel_Objectfield_CustomImage.value = CloneTree.GraphviewGridBackgroundThemes.customimage;
+            // OptionsPanel_GraphView背景颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_Bg, CloneTree.GraphviewGridBackgroundThemes.bgcolor);
 
+            // OptionsPanel_GraphView网格颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_Grid, CloneTree.GraphviewGridBackgroundThemes.gridcolor);
+
+            // OptionsPanel_GraphView分界线颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_Thickline, CloneTree.GraphviewGridBackgroundThemes.thickLinecolor);
+
+            // OptionsPanel_GraphView背景图像颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_CustomImage, CloneTree.GraphviewGridBackgroundThemes.customimagecolor);
+
+            // OptionsPanel_GraphView网格间距值设置
+            util_XGraphEditorUtility.Element_FloatField_ValueSet(xw_OptionsPanel_Floatfield_GridSpace, CloneTree.GraphviewGridBackgroundThemes.spacing);
+
+            // OptionsPanel_GraphView网格分界线值设置
+            util_XGraphEditorUtility.Element_IntegerField_ValueSet(xw_OptionsPanel_Integerfield_ThicklineCount, CloneTree.GraphviewGridBackgroundThemes.thicklines);
+
+            // OptionsPanel_GraphView背景图像值设置
+            util_XGraphEditorUtility.Element_ObjectField_ValueSet(xw_OptionsPanel_Objectfield_CustomImage, CloneTree.GraphviewGridBackgroundThemes.customimage);
+
+            // OptionsPanel_GraphView 选择框坐标显示开关值设置
+            util_XGraphEditorUtility.Element_ToggleField_ValueSet(xw_OptionsPanel_Toggle_DisplaySelectorCoordinate, CloneTree.GraphviewRectangleSelectorThemes.displayCoordinate);
+
+            // OptionsPanel_GraphView 选择框线分段值设置
+            util_XGraphEditorUtility.Element_IntegerField_ValueSet(xw_OptionsPanel_Integerfield_SelectorLineSegment, CloneTree.GraphviewRectangleSelectorThemes.segments);
+
+            // OptionsPanel_GraphView 选择框线颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_RectangleSelector, CloneTree.GraphviewRectangleSelectorThemes.rectangleSelectorLineColor);
         }
         #endregion
+
+        //-------------------------------- 黑板标记解释
 
         #region OptionsPanel Graphview 选项面板的标记在鼠标悬停时在节点视图中显示同类型节点高亮
         /// <summary>
@@ -1147,6 +1217,63 @@
         {
             Label label = evt.target as Label;
             Debug.Log($"Variable - 恢复正常显示：{label.name}");
+        }
+        #endregion
+
+        //-------------------------------- 选择框
+
+        #region RectangleSelector 复位按钮
+        /// <summary>
+        /// 当点击选择框选项中的复位按钮时
+        /// </summary>
+        private void xw_OptionsPanel_Button_ResetRectangleSelector_Clicked()
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview RectangleSelectorTheme");
+            CloneTree.GraphviewRectangleSelectorThemes.segments = 4;
+            CloneTree.GraphviewRectangleSelectorThemes.rectangleSelectorLineColor = new Color(1, 1, 1, 0.6f);
+            CloneTree.GraphviewRectangleSelectorThemes.displayCoordinate = false;
+            xw_graphView.RectangleSelectorThemeUpdate(CloneTree.GraphviewRectangleSelectorThemes);
+
+            OptionsPanel_ParamsUpdate();
+        }
+        #endregion
+
+        #region RectangleSelector 选择框线分段
+        /// <summary>
+        /// 当改变选择框选项中的分段数的值时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void on_xw_OptionsPanel_Integerfield_SelectorLineSegment_changed(BlurEvent evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview RectangleSelectorTheme");
+            CloneTree.GraphviewRectangleSelectorThemes.segments = xw_OptionsPanel_Integerfield_SelectorLineSegment.value;
+            xw_graphView.RectangleSelectorThemeUpdate(CloneTree.GraphviewRectangleSelectorThemes);
+        }
+        #endregion
+
+        #region RectangleSelector 选择框线颜色
+        /// <summary>
+        /// 当改变选择框选项中的选择框线的颜色值时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void on_xw_OptionsPanel_Colorfield_RectangleSelector_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview RectangleSelectorTheme");
+            CloneTree.GraphviewRectangleSelectorThemes.rectangleSelectorLineColor = evt.newValue;
+            xw_graphView.RectangleSelectorThemeUpdate(CloneTree.GraphviewRectangleSelectorThemes);
+        }
+        #endregion
+
+        #region RectangleSelector 选择框显示坐标开关
+        /// <summary>
+        /// 当改变选择框选项中的显示选择框的坐标的开关时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void xw_OptionsPanel_Toggle_DisplaySelectorCoordinate_changed(ChangeEvent<bool> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview RectangleSelectorTheme");
+            CloneTree.GraphviewRectangleSelectorThemes.displayCoordinate = evt.newValue;
+            xw_graphView.RectangleSelectorThemeUpdate(CloneTree.GraphviewRectangleSelectorThemes);
         }
         #endregion
         #endregion
@@ -1200,7 +1327,7 @@
             bool state = evt.newValue;
 
             // 设置 InspectorView 容器可见性
-            Element_Visibility_Set(xw_InspectorView_Container, state);
+            util_XGraphEditorUtility.Element_Visibility_Set(xw_InspectorView_Container, state);
 
             // 如果打开开关的话，就让 InspectorView 更新节点属性显示（前提是当前存在节点被选中）
             xw_InspectorView.Clear();
@@ -1224,7 +1351,7 @@
             bool state = evt.newValue;
 
             // 设置 BlackBoardView 容器可见性
-            Element_Visibility_Set(xw_BlackBoardView_Container, state);
+            util_XGraphEditorUtility.Element_Visibility_Set(xw_BlackBoardView_Container, state);
 
             if (state)
             {
@@ -1307,7 +1434,7 @@
         public void InspectorViewAction_SetTitle(string Title)
         {
             // 加载 Inspector 面板标题文字
-            Element_Label_Set(xw_label_InspectorView_Container_Title, Title);
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_InspectorView_Container_Title, Title);
         }
         /// <summary>
         /// 设置BlackBoard面板的标题
@@ -1316,7 +1443,7 @@
         public void BlackBoardViewAction_SetTitle(string Title)
         {
             // 加载 Inspector 面板标题文字
-            Element_Label_Set(xw_label_BlackBoardView_Container_Title, Title);
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_BlackBoardView_Container_Title, Title);
         }
         /// <summary>
         /// 设置节点的路径、类型的简要信息组件的显示内容（窗口右上方和窗口右下方的两个文字组件）
@@ -1326,9 +1453,9 @@
         public void InspectorViewAction_SetNodeInfo(string name, string path)
         {
             // 节点的类型信息 - 清空
-            Element_Label_Set(xw_label_graph_CurrentNodeName, name);
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodeName, name);
             // 节点的挂载资源路径 - 清空
-            Element_Label_Set(xw_label_graph_CurrentNodePath, path);
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodePath, path);
         }
         #endregion
         #endregion
@@ -1381,7 +1508,7 @@
             InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
 
             // 加载 BlackBoard 面板标题文字
-            BlackBoardViewAction_SetTitle($"{SourceTree.name} 属性黑板");
+            BlackBoardViewAction_SetTitle($"{SourceTree.name} 变量黑板");
 
             EditorApplication.delayCall += () =>
             {
@@ -1434,39 +1561,7 @@
         }
         #endregion
 
-        #region 元素控制
-        /// <summary>
-        /// IntegerField输入框组件设置
-        /// </summary>
-        /// <param name="val"></param>
-        public void Element_IntegerField_ValueSet(IntegerField field, int val)
-        {
-            field.value = val;
-        }
-        /// <summary>
-        /// FloatField输入框组件设置
-        /// </summary>
-        /// <param name="val"></param>
-        public void Element_FloatField_ValueSet(FloatField field, float val)
-        {
-            field.value = val;
-        }
-        /// <summary>
-        /// ColorField颜色组件设置
-        /// </summary>
-        /// <param name="color"></param>
-        public void Element_ColorField_ValueSet(ColorField field, Color color)
-        {
-            field.value = color;
-        }
-        /// <summary>
-        /// ObjectField物体组件设置
-        /// </summary>
-        /// <param name="obj"></param>
-        public void Element_ObjectField_ValueSet(ObjectField field, UnityEngine.Object obj)
-        {
-            field.value = obj;
-        }
+        #region 元素控制     
         /// <summary>
         /// 拖动目标VisualElement方法
         /// </summary>
@@ -1520,31 +1615,6 @@
                     target.ReleasePointer(evt.pointerId);
                 }
             });
-        }
-        /// <summary>
-        /// 控制元素 - 可见性
-        /// </summary>
-        /// <param name="state"></param>
-        private void Element_Visibility_Set(VisualElement element, bool state)
-        {
-            // 如果为 True 则将 InspectorView Remote 容器的可见性设为：Visiblity，即：可见，否则就是不可见：Hidden
-            if (state)
-            {
-                element.style.visibility = Visibility.Visible;
-            }
-            else
-            {
-                element.style.visibility = Visibility.Hidden;
-            }
-        }
-        /// <summary>
-        /// 控件元素 - 文字设置
-        /// </summary>
-        /// <param name="label"></param>
-        /// <param name="text"></param>
-        public void Element_Label_Set(Label label, string text)
-        {
-            label.text = text;
         }
         /// <summary>
         /// 控制元素 - 读取Prefs并控制开关状态
@@ -1749,7 +1819,6 @@
             xw_InspectorView.ClearInspector();
             //xw_BlackBoardView.ClearVariables();
 
-
             xw_graphView.RegisterGroupEvent();
 
             // 根据当前数据重新生成节点
@@ -1761,6 +1830,7 @@
             else
                 xw_InspectorView.UpdateSelection(CloneTree);
 
+            // 刷新选项面板UI参数显示
             OptionsPanel_ParamsUpdate();
 
             // 刷新 BlackBoard 标题显示
