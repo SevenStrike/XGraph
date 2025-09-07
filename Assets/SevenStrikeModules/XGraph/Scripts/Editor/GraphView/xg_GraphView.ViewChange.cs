@@ -49,7 +49,7 @@ namespace SevenStrikeModules.XGraph
             if (vbs_parent != null && vbs_child != null)
             {
                 // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
-                ActionTreeAsset.ChildNode_Add(vbs_parent.ActionNode, vbs_child.ActionNode);
+                ActionTreeAsset.ChildNode_Add(vbs_parent.ActionNodeData, vbs_child.ActionNodeData);
             }
 
             VNode_Relay relay_child = edge.input.node as VNode_Relay;
@@ -123,13 +123,13 @@ namespace SevenStrikeModules.XGraph
                 if (node_parent != null && node_child != null)
                 {
                     // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
-                    ActionTreeAsset.ChildNode_Remove(node_parent.ActionNode, node_child.ActionNode);
+                    ActionTreeAsset.ChildNode_Remove(node_parent.ActionNodeData, node_child.ActionNodeData);
                 }
 
                 VNode_Relay relay_child = edge.input.node as VNode_Relay;
                 if (relay_child != null)
                 {
-                    Undo.RecordObject(relay_child.ActionNode, "Remove RelayConnector");
+                    Undo.RecordObject(relay_child.ActionNodeData, "Remove RelayConnector");
                     relay_child.Disconnected();
                 }
             }
@@ -144,7 +144,7 @@ namespace SevenStrikeModules.XGraph
             if (stickview != null)
             {
                 Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
-                ActionTreeAsset.StickNote_Remove(stickview.stickNoteData);
+                ActionTreeAsset.StickNote_Remove(stickview.stickData);
             }
         }
         /// <summary>
@@ -171,7 +171,7 @@ namespace SevenStrikeModules.XGraph
             if (nodeview != null)
             {
                 // 从根节点中移除数据节点
-                ActionTreeAsset.Remove(nodeview.ActionNode);
+                ActionTreeAsset.Remove(nodeview.ActionNodeData);
             }
             #endregion          
         }

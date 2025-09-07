@@ -105,12 +105,12 @@ namespace SevenStrikeModules.XGraph
         {
             if (evt.keyCode == KeyCode.C && (evt.ctrlKey || evt.commandKey))
             {
-                //Node_Copy();
+                Node_Copy();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.V && (evt.ctrlKey || evt.commandKey))
             {
-                //Node_Paste(gv_NodeCreatedPosition);
+                Node_Paste();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.D && (evt.ctrlKey || evt.commandKey))

@@ -31,7 +31,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
                     vNode_Relay.Draw();
-                    vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionNode.TransparentNode);
+                    vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionNodeData.TransparentNode);
                     vNode_Relay.RefreshExpandedState();
                 }
                 else
@@ -42,7 +42,7 @@ namespace SevenStrikeModules.XGraph
 
                     // 检查头像设置情况
                     vNode_Base.CheckAvatarChanged();
-                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionNode.TransparentNode);
+                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionNodeData.TransparentNode);
                 }
             });
 
@@ -181,7 +181,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 查找 - 行为节点
                     var node = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Base baseNode && baseNode.ActionNode.guid == guid);
+                        n is VNode_Base baseNode && baseNode.ActionNodeData.guid == guid);
 
                     if (node != null)
                     {
@@ -191,7 +191,7 @@ namespace SevenStrikeModules.XGraph
 
                     // 查找 - 便签节点
                     var stickNote = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Stick stickNode && stickNode.stickNoteData.guid == guid);
+                        n is VNode_Stick stickNode && stickNode.stickData.guid == guid);
 
                     if (stickNote != null)
                     {

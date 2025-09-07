@@ -882,10 +882,10 @@
             xw_InspectorView.UpdateSelection(nodeview);
 
             // 加载 Inspector 面板标题文字
-            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionNode.identifyName}");
+            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionNodeData.identifyName}");
 
             // 显示当前选中的节点的类型信息
-            InspectorViewAction_SetNodeInfo(nodeview.ActionNode.GetInfo(), nodeview.ActionNode.GetPath());
+            InspectorViewAction_SetNodeInfo(nodeview.ActionNodeData.GetInfo(), nodeview.ActionNodeData.GetPath());
             xw_isUnSelectedNode = false;
         }
         /// <summary>
@@ -909,10 +909,10 @@
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
                 // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionNode.identifyName}");
+                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionNodeData.identifyName}");
 
                 // 显示当前选中的节点的类型信息
-                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionNode.GetInfo(), nodeviews[0].ActionNode.GetPath());
+                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionNodeData.GetInfo(), nodeviews[0].ActionNodeData.GetPath());
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)

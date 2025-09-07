@@ -97,7 +97,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 用于存储复制的节点数据
         /// </summary>
-        private List<VNode_Base> gv_CopiedNodeList = new List<VNode_Base>();
+        private List<object> gv_CopiedNodeList = new List<object>();
         /// <summary>
         /// 当节点被选中时的回调委托
         /// </summary>
@@ -146,6 +146,10 @@ namespace SevenStrikeModules.XGraph
         /// 当前选中的所有节点 - 贴图
         /// </summary>
         private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
+        /// <summary>
+        /// 当前选中的所有节点 - 便签
+        /// </summary>
+        private List<VNode_Stick> CurrentSelectedNodes_Stick = new List<VNode_Stick>();
         /// <summary>
         /// 当前选中的所有编组
         /// </summary>
@@ -345,9 +349,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == node.ActionNode.themeSolution)
+                if (colorData.solution == node.ActionNodeData.themeSolution)
                 {
-                    node.ActionNode.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
+                    node.ActionNodeData.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
                 }
             });
 
@@ -466,17 +470,22 @@ namespace SevenStrikeModules.XGraph
             base.AddToSelection(selectable);
             List<VNode_Base> gvs = new List<VNode_Base>();
             List<VNode_Decal> gvd = new List<VNode_Decal>();
+            List<VNode_Stick> gvk = new List<VNode_Stick>();
             List<Group> gps = new List<Group>();
             selection.ForEach(n =>
             {
                 if (n is VNode_Base node)
                 {
-                    if (node.ActionNode.actionNodeType != "StickNote")
+                    if (node.ActionNodeData.actionNodeType != "StickNote")
                         gvs.Add(node);
                 }
                 if (n is VNode_Decal decal)
                 {
                     gvd.Add(decal);
+                }
+                if (n is VNode_Stick stick)
+                {
+                    gvk.Add(stick);
                 }
                 if (n is Group gp)
                 {
@@ -486,6 +495,7 @@ namespace SevenStrikeModules.XGraph
             CurrentSelectedGroups = gps;
             CurrentSelectedNodes_Base = gvs;
             CurrentSelectedNodes_Decal = gvd;
+            CurrentSelectedNodes_Stick = gvk;
 
             if (OnSelectionNodes != null)
                 OnSelectionNodes(gvs);
@@ -499,6 +509,7 @@ namespace SevenStrikeModules.XGraph
             base.RemoveFromSelection(selectable);
             List<VNode_Base> gvs = new List<VNode_Base>();
             List<VNode_Decal> gvd = new List<VNode_Decal>();
+            List<VNode_Stick> gvk = new List<VNode_Stick>();
             List<Group> gps = new List<Group>();
             selection.ForEach(n =>
             {
@@ -510,6 +521,10 @@ namespace SevenStrikeModules.XGraph
                 {
                     gvd.Add(decal);
                 }
+                if (n is VNode_Stick stick)
+                {
+                    gvk.Add(stick);
+                }
                 if (n is Group gp)
                 {
                     gps.Add(gp);
@@ -518,6 +533,7 @@ namespace SevenStrikeModules.XGraph
             CurrentSelectedGroups = gps;
             CurrentSelectedNodes_Base = gvs;
             CurrentSelectedNodes_Decal = gvd;
+            CurrentSelectedNodes_Stick = gvk;
 
             if (OnRemoveSelectionNodes != null)
                 OnRemoveSelectionNodes(gvs);

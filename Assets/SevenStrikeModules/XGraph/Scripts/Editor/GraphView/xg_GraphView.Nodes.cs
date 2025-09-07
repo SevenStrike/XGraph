@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -32,7 +33,7 @@ namespace SevenStrikeModules.XGraph
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
         }
         /// <summary>
-        /// 实现视觉节点复制逻辑
+        /// 实现视觉节点克隆逻辑
         /// </summary>
         public void Node_Duplicate()
         {
@@ -51,7 +52,7 @@ namespace SevenStrikeModules.XGraph
                 if (original is VNode_Base xg_base)
                 {
                     // 待复制的源节点
-                    ActionNode_Base actionnode = xg_base.ActionNode;
+                    ActionNode_Base actionnode = xg_base.ActionNodeData;
 
                     // 待复制的源节点的命名空间
                     string prefix_namespace = actionnode.GetType().Namespace;
@@ -69,7 +70,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 else if (original is VNode_Stick xg_sticknote)
                 {
-                    stickdata stickData = xg_sticknote.stickNoteData.Clone(true);
+                    stickdata stickData = xg_sticknote.stickData.Clone(true);
                     Undo.RecordObject(ActionTreeAsset, "Duplicate StickNoteData");
                     ActionTreeAsset.StickNoteDatas.Add(stickData);
 
@@ -97,6 +98,63 @@ namespace SevenStrikeModules.XGraph
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
         }
+        /// <summary>
+        /// 实现视觉节点复制逻辑
+        /// </summary>
+        public void Node_Copy()
+        {
+            // 先清空拷贝缓冲列表
+            gv_CopiedNodeList.Clear();
+
+            var selectedNodes = selection.OfType<Node>().ToList();
+            if (selectedNodes.Count == 0) return;
+
+            // 特化处理 - ActionNodeData
+            foreach (var node in CurrentSelectedNodes_Base)
+            {
+                // 将选中的节点拷贝进缓冲区
+                gv_CopiedNodeList.Add(node);
+            }
+
+            // 特化处理 - DecalData
+            foreach (var node in CurrentSelectedNodes_Decal)
+            {
+                // 将选中的节点拷贝进缓冲区
+                gv_CopiedNodeList.Add(node);
+            }
+
+            // 特化处理 - StickNoteData
+            foreach (var node in CurrentSelectedNodes_Stick)
+            {
+                // 将选中的节点拷贝进缓冲区
+                gv_CopiedNodeList.Add(node);
+            }
+        }
+        public void Node_Paste()
+        {
+            if (gv_CopiedNodeList.Count <= 0)
+                return;
+
+            foreach (var node in gv_CopiedNodeList)
+            {
+                if (node is VNode_Base node_base)
+                {
+                    Debug.Log(JsonUtility.ToJson(node_base.ActionNodeData));
+
+                    VNode_Base vNode_Base = Node_Make(Vector2.zero, node_base.ActionNodeData);
+                    vNode_Base.Draw();
+                    vNode_Base.RefreshExpandedState();
+                    vNode_Base.RefreshPorts();
+                }
+                if (node is VNode_Decal node_decal)
+                    Debug.Log(JsonUtility.ToJson(node_decal.decalData));
+                if (node is VNode_Stick node_stick)
+                    Debug.Log(JsonUtility.ToJson(node_stick.stickData));
+            }
+
+            Debug.Log($"粘贴 {gv_CopiedNodeList.Count} 节点");
+        }
+
         /// <summary>
         /// 移除当前选择的所有节点及其相关的连线
         /// </summary>

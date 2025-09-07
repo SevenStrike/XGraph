@@ -142,11 +142,11 @@ namespace SevenStrikeModules.XGraph
             {
                 if (n is VNode_Base node)
                 {
-                    nodes_guid.Add(node.ActionNode.guid);
+                    nodes_guid.Add(node.ActionNodeData.guid);
                 }
                 else if (n is VNode_Stick stick)
                 {
-                    nodes_guid.Add(stick.stickNoteData.guid);
+                    nodes_guid.Add(stick.stickData.guid);
                 }
                 else if (n is VNode_Decal decal)
                 {
@@ -218,7 +218,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (node is VNode_Base bs)
                 {
-                    if (bs.ActionNode.actionNodeType != "Relay" && bs.ActionNode.HasAvatar)
+                    if (bs.ActionNodeData.actionNodeType != "Relay" && bs.ActionNodeData.HasAvatar)
                     {
                         hasmark = true;
                         break;
@@ -373,7 +373,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is VNode_Base node)
                 {
                     // 获取移入的节点的guid
-                    guid = node.ActionNode.guid;
+                    guid = node.ActionNodeData.guid;
 
                     // 注册委托 - 节点头像设置
                     node.OnNodeAvatar_Set += ((n) =>
@@ -391,7 +391,7 @@ namespace SevenStrikeModules.XGraph
                 else if (item is VNode_Stick stick)
                 {
                     // 获取移入的节点的guid
-                    guid = stick.stickNoteData.guid;
+                    guid = stick.stickData.guid;
                 }
                 else if (item is VNode_Decal decal)
                 {
@@ -424,7 +424,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is VNode_Base node)
                 {
                     // 获取移出的节点的guid
-                    guid = node.ActionNode.guid;
+                    guid = node.ActionNodeData.guid;
 
                     // 清空委托 - 节点头像设置
                     node.OnNodeAvatar_Set = null;
@@ -434,7 +434,7 @@ namespace SevenStrikeModules.XGraph
                 else if (item is VNode_Stick stick)
                 {
                     // 获取移出的节点的guid
-                    guid = stick.stickNoteData.guid;
+                    guid = stick.stickData.guid;
                 }
                 else if (item is VNode_Decal decal)
                 {

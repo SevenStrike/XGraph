@@ -58,7 +58,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public stickdata stickNoteData { get; set; }
+        public stickdata stickData { get; set; }
 
         /// <summary>
         /// 初始化节点 - stickdata
@@ -81,7 +81,7 @@ namespace SevenStrikeModules.XGraph
 
             // 携带数据
             if (data != null)
-                stickNoteData = data;
+                stickData = data;
 
             style.width = data.size.x;
             style.height = data.size.y;
@@ -113,7 +113,7 @@ namespace SevenStrikeModules.XGraph
             {
                 m_LastSize = newSize;
 
-                stickNoteData.size = newSize;
+                stickData.size = newSize;
             }
         }
 
@@ -126,10 +126,10 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Position");
             base.SetPosition(newPos);
 
-            if (stickNoteData != null)
+            if (stickData != null)
             {
-                stickNoteData.position.x = newPos.xMin;
-                stickNoteData.position.y = newPos.yMin;
+                stickData.position.x = newPos.xMin;
+                stickData.position.y = newPos.yMin;
             }
         }
 
@@ -166,7 +166,7 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Top()
         {
             #region 便签内容
-            stickContentlabel = new Label(stickNoteData.content);
+            stickContentlabel = new Label(stickData.content);
             stickContentlabel.AddToClassList("Content_Label");
             stickContentlabel.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -186,7 +186,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 便签内容输入框
             stickContentInput = new TextField();
-            stickContentInput.value = stickNoteData.content;
+            stickContentInput.value = stickData.content;
             StyleLength len_width = stickContentInput.style.width;
 
             Length len_w = len_width.value;
@@ -216,7 +216,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 便签标题
-            stickTitlelabel = new Label(stickNoteData.name);
+            stickTitlelabel = new Label(stickData.name);
             stickTitlelabel.AddToClassList("Title_Label");
             stickTitlelabel.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -236,7 +236,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 便签标题输入框
             stickTitleInput = new TextField();
-            stickTitleInput.value = stickNoteData.name;
+            stickTitleInput.value = stickData.name;
             stickTitleInput.AddToClassList("Title_Input");
             stickTitleInput.RegisterCallback<BlurEvent>(OnStickTitleInputBlur);
 
@@ -282,7 +282,7 @@ namespace SevenStrikeModules.XGraph
         private void OnStickContentInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Content");
-            stickNoteData.content = stickContentlabel.text = stickContentInput.value;
+            stickData.content = stickContentlabel.text = stickContentInput.value;
             VisualElementDisplay(stickContentlabel, true);
             VisualElementDisplay(stickContentInput, false);
         }
@@ -293,7 +293,7 @@ namespace SevenStrikeModules.XGraph
         private void OnStickTitleInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Name");
-            stickNoteData.name = stickTitlelabel.text = stickTitleInput.value;
+            stickData.name = stickTitlelabel.text = stickTitleInput.value;
             VisualElementDisplay(stickTitlelabel, true);
             VisualElementDisplay(stickTitleInput, false);
         }
