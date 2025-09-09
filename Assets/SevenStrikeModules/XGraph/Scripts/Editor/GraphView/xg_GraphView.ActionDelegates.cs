@@ -10,12 +10,19 @@ namespace SevenStrikeModules.XGraph
 
     public partial class xg_GraphView
     {
+        /// <summary>
+        /// 鼠标移动时的回调
+        /// </summary>
+        /// <param name="evt"></param>
         private void Action_MouseMove(PointerMoveEvent evt)
         {
             gv_GraphWindow.xw_GraphInfo_GraphMousePos_Set(GetGraphMousePosition_With_PointerEventMousePosition(evt.position));
+
+            gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
+            gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
         }
         /// <summary>
-        /// 鼠标点击事件的回调函数
+        /// 鼠标点击事件的回调
         /// </summary>
         /// <param name="evt"></param>
         private void Action_PointerDown(PointerDownEvent evt)
@@ -99,28 +106,13 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
-            // 隐藏选项面板
-            if (evt.button == (int)MouseButton.MiddleMouse)
-            {
-                gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
-                gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
-            }
-
             // 清空 VariableList 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
         }
         /// <summary>
-        /// 鼠标抬起事件的回调函数
-        /// </summary>
-        /// <param name="evt"></param>
-        private void Action_PointerUp(PointerUpEvent evt)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
         /// 处理快捷键
         /// </summary>
-        /// <param assetName="evt"></param>
+        /// <param name="evt"></param>
         private void Action_KeyDown(KeyDownEvent evt)
         {
             if (evt.keyCode == KeyCode.C && (evt.ctrlKey || evt.commandKey))

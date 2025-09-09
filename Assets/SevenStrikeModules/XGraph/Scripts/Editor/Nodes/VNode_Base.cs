@@ -143,7 +143,6 @@ namespace SevenStrikeModules.XGraph
 
         public Texture2D tex_logo_dir_sequential;
         public Texture2D tex_logo_dir_concurrent;
-        public Texture2D arrow;
 
         /// <summary>
         /// 节点携带的数据
@@ -185,7 +184,7 @@ namespace SevenStrikeModules.XGraph
 
             tex_logo_dir_sequential = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
             tex_logo_dir_concurrent = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/concurrent.png");
-            arrow = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/arrow.png");
+
             // 指定GraphView 组件
             this.graphView = graphView;
 
@@ -583,7 +582,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当节点尺寸发生改变时
         /// </summary>
-        /// <param h_name="evt"></param>
+        /// <param name="evt"></param>
         private void OnSizeChanged(GeometryChangedEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Size");
@@ -796,8 +795,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 添加元素到指定类型的容器中
         /// </summary>
-        /// <param h_name="type"></param>
-        /// <param h_name="element"></param>
+        /// <param name="type"></param>
+        /// <param name="element"></param>
         protected void AppendElement(GraphNodeContainerType type, VisualElement element)
         {
             switch (type)

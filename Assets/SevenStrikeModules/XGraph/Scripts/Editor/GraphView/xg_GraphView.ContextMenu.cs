@@ -12,7 +12,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 实现 GraphView 视图内的鼠标右键上下文菜单
         /// </summary>
-        /// <param h_name="evt"></param>
+        /// <param name="evt"></param>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
             //base.BuildContextualMenu(evt);
@@ -322,7 +322,7 @@ namespace SevenStrikeModules.XGraph
                         OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.DecalData.DecalTexture);
                         evt.StopPropagation();
                     });
-                    evt.menu.AppendAction($"C 实际尺寸", (action) =>
+                    evt.menu.AppendAction($"F 实际尺寸", (action) =>
                     {
                         if (CurrentSelectedNodes_Decal.Count > 0)
                         {
@@ -405,7 +405,8 @@ namespace SevenStrikeModules.XGraph
             {
                 evt.menu.AppendAction("V 粘贴节点", param =>
                 {
-                    //Node_Paste(gv_NodeCreatedPosition);
+                    Node_Paste();
+                    evt.StopPropagation();
                 });
             }
             #endregion
@@ -440,7 +441,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     evt.menu.AppendAction("C 复制节点", param =>
                     {
-                        //Node_Copy();
+                        Node_Copy();
                         evt.StopPropagation();
                     });
                 }

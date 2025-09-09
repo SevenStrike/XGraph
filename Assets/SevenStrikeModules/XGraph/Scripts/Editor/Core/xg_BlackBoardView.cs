@@ -439,6 +439,22 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助
+        public bool ChceckVariableVisual()
+        {
+            if (VariableList.itemsSource == null || VariableList.itemsSource.Count <= 0)
+            {
+                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, false);
+                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, true);
+                return false;
+            }
+            else
+            {
+                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, true);
+                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, false);
+                return true;
+            }
+        }
+
         /// <summary>
         /// 重建黑板的所有变量
         /// </summary>
@@ -450,6 +466,8 @@ namespace SevenStrikeModules.XGraph
 
             VariableList.Rebuild();
             VariableList.RefreshItems();
+
+            ChceckVariableVisual();
         }
 
         /// <summary>
@@ -529,18 +547,15 @@ namespace SevenStrikeModules.XGraph
 
             Undo.RecordObject(graphWindow.CloneTree, "Added BlackBoardVariable");
 
-            if (VariableList.itemsSource.Count <= 0)
-            {
-                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, true);
-                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, false);
-            }
-
             // 添加变量数据源并刷新
             VariableList.itemsSource.Add(vars);
 
             VariableList.Rebuild();
             VariableList.RefreshItems();
             VariableList.selectedIndex = -1;
+
+            ChceckVariableVisual();
+
             // 每次添加完变量后将焦点给到GraphView窗口控件，便于能正确识别Ctrl+S保存节点图
             graphWindow.xw_graphView.Focus();
         }
@@ -577,11 +592,8 @@ namespace SevenStrikeModules.XGraph
             VariableList.Rebuild();
             VariableList.RefreshItems();
 
-            if (VariableList.itemsSource.Count <= 0)
+            if (ChceckVariableVisual())
             {
-                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, false);
-                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, true);
-
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
                 graphWindow.xw_InspectorView.UpdateSelection(graphWindow.CloneTree);
             }
@@ -597,7 +609,7 @@ namespace SevenStrikeModules.XGraph
             BlackboardVariable vare = new BlackboardVariable();
             vare.type = type;
             vare.name = type.ToString();
-            vare.des = $"变量 {type}";
+            vare.des = $"{type}";
 #if UNITY_EDITOR
             vare.variableGUID = UnityEditor.GUID.Generate().ToString();
             Undo.RecordObject(graphWindow.CloneTree, "Create BlackboardVariable");

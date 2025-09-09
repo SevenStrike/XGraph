@@ -227,8 +227,6 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<PointerMoveEvent>(Action_MouseMove);
             // 注册处理快捷键
             RegisterCallback<KeyDownEvent>(Action_KeyDown);
-            // 注册处理鼠标抬起
-            RegisterCallback<PointerUpEvent>(Action_PointerUp);
             // 注册鼠标点击事件
             RegisterCallback<PointerDownEvent>(Action_PointerDown, TrickleDown.TrickleDown);
             #endregion
@@ -251,7 +249,6 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助方法
-
         /// <summary>
         /// 居中聚焦所有视觉节点
         /// </summary>
@@ -262,6 +259,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 清空GraphView的所有内容
         /// </summary>
+        /// <param name="DisplayActionTreeInspector"></param>
         public void ClearGraphViewContents(bool DisplayActionTreeInspector = true)
         {
             // 清空克隆体的内容
@@ -394,7 +392,7 @@ namespace SevenStrikeModules.XGraph
         /// 获取当前创建节点的鼠标位置
         /// </summary>
         /// <returns></returns>
-        public Vector2 GetNodeCreatedPosition()
+        public Vector2 GetNodeCreatedMousePosition()
         {
             return gv_NodeCreatedPosition;
         }
@@ -420,7 +418,7 @@ namespace SevenStrikeModules.XGraph
         public Vector2 GetGraphMousePosition_With_PointerEventMousePosition(Vector2 PointerMousePosition)
         {
             // 将鼠标位置从屏幕坐标转换为 xw_graphView 的局部坐标
-            return contentViewContainer.WorldToLocal(PointerMousePosition);
+            return gv_NodeCreatedPosition = contentViewContainer.WorldToLocal(PointerMousePosition);
         }
         #endregion
 
@@ -565,8 +563,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// GraphView 组件视图内的端口连线规则
         /// </summary>
-        /// <param h_name="startPort"></param>
-        /// <param h_name="nodeAdapter"></param>
+        /// <param name="startPort"></param>
+        /// <param name="nodeAdapter"></param>
         /// <returns></returns>
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {

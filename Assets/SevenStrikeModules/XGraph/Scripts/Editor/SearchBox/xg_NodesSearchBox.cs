@@ -194,7 +194,7 @@ namespace SevenStrikeModules.XGraph
                 NodeCreateArgs_Stick args = new NodeCreateArgs_Stick();
                 args.stickName = "便签";
                 args.stickContent = "点击此处更改内容";
-                args.position = graphView.GetNodeCreatedPosition();
+                args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
 
                 graphView.CreateNode(args);
@@ -202,7 +202,7 @@ namespace SevenStrikeModules.XGraph
             else if (types.action_nodeType == "Decal")
             {
                 NodeCreateArgs_Decal args = new NodeCreateArgs_Decal();
-                args.position = graphView.GetNodeCreatedPosition();
+                args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
                 args.opacity = 1;
                 args.hasTexture = false;
@@ -226,7 +226,7 @@ namespace SevenStrikeModules.XGraph
                 args.themeColor = Color.white;
                 args.transparentNode = false;
                 args.content = null;
-                args.position = graphView.GetNodeCreatedPosition();
+                args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
 
                 graphView.CreateNode(args);

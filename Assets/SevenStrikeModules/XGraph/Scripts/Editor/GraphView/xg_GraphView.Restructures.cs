@@ -11,7 +11,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据数据行为树根节点容器里的子资源来重建GraphView的视觉节点
         /// </summary>
-        /// <param h_name="actiontree"></param>
+        /// <param name="actiontree"></param>
         public void Restructure_Nodes(ActionNode_Asset actiontree)
         {
             // 获取到数据根节点
@@ -136,7 +136,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
         /// </summary>
-        /// <param h_name="ActionDecalData"></param>
+        /// <param name="ActionDecalData"></param>
         public void Restructure_Sticks(List<ActionStickData> stickdata)
         {
             // 根据根节点的数据列表重建 NodeViews
@@ -149,7 +149,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
         /// </summary>
-        /// <param h_name="ActionDecalData"></param>
+        /// <param name="ActionDecalData"></param>
         public void Restructure_Decals(List<ActionDecalData> decaldata)
         {
             // 根据根节点的数据列表重建 NodeViews

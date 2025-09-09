@@ -111,7 +111,7 @@ namespace SevenStrikeModules.XGraph
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
         }
         /// <summary>
-        /// 实现视觉节点复制逻辑
+        /// 将节点复制到缓冲区
         /// </summary>
         public void Node_Copy()
         {
@@ -142,34 +142,83 @@ namespace SevenStrikeModules.XGraph
                 gv_CopiedNodeList.Add(node);
             }
         }
+        /// <summary>
+        /// 粘贴拷贝到缓冲区的节点
+        /// </summary>
         public void Node_Paste()
         {
             if (gv_CopiedNodeList.Count <= 0)
                 return;
 
+            // 清空当前选择
+            ClearSelection();
+
+            Vector2 pos_mouse = GetNodeCreatedMousePosition();
+            Vector2 realpos = pos_mouse;
+
             foreach (var node in gv_CopiedNodeList)
             {
-                if (node is VNode_Base node_base)
+                if (node is Node nd)
                 {
-                    //ActionNode_Base data = node_base.ActionData;
+                    Vector2 nd_size = nd.GetPosition().size;
 
-                    //CreateNode(data.identifyName, data.namespaces, data.classes, data.actionNodeType, data.iconName, data.NodeIcon, data.visualNodeType, data.HasAvatar, data.Avatar, data.themeSolution, data.themeColor, data.TransparentNode, data.content, null, null, data.nodeGraphPosition, data.nodeGraphSize);
-                }
-                if (node is VNode_Decal node_decal)
-                {
-                    //ActionDecalData data = node_decal.data;
+                    if (node is VNode_Base node_base)
+                    {
+                        ActionNode_Base data = node_base.ActionData;
 
-                    //CreateNode(actionNodeType: "Stick");
-                }
-                if (node is VNode_Stick node_stick)
-                {
-                    //ActionNode_Base data = node_base.ActionData;
+                        if (data.actionNodeType == "Relay")
+                            continue;
 
-                    //CreateNode(data.identifyName, data.namespaces, data.classes, data.actionNodeType, data.iconName, data.NodeIcon, data.visualNodeType, data.HasAvatar, data.Avatar, data.themeSolution, data.themeColor, data.TransparentNode, data.content, data.nodeGraphPosition, data.nodeGraphSize);
+                        // 从拷贝的节点中创建出新的节点数据
+                        NodeCreateArgs_Action args = new NodeCreateArgs_Action();
+                        args.visualName = data.identifyName;
+                        args.prefixNamespace = data.namespaces;
+                        args.prefixClass = data.classes;
+                        args.actionNodeType = data.actionNodeType;
+                        args.iconName = data.icon;
+                        args.nodeIcon = data.NodeIcon;
+                        args.visualNodeType = data.visualNodeType;
+                        args.hasAvatar = data.HasAvatar;
+                        args.avatar = data.Avatar;
+                        args.themeSolution = data.themeSolution;
+                        args.themeColor = data.themeColor;
+                        args.transparentNode = data.TransparentNode;
+                        args.content = data.content;
+                        args.position = realpos;
+                        args.size = data.nodeGraphSize;
+
+                        AddToSelection(CreateNode(args));
+                    }
+                    if (node is VNode_Decal node_decal)
+                    {
+                        ActionDecalData data = node_decal.DecalData;
+
+                        NodeCreateArgs_Decal args = new NodeCreateArgs_Decal();
+                        args.size = data.size;
+                        args.opacity = data.opacity;
+                        args.hasTexture = data.HasTexture;
+                        args.decalTexture = data.DecalTexture;
+                        args.position = realpos;
+
+                        AddToSelection(CreateNode(args));
+                    }
+                    if (node is VNode_Stick node_stick)
+                    {
+                        ActionStickData data = node_stick.StickData;
+
+                        NodeCreateArgs_Stick args = new NodeCreateArgs_Stick();
+                        args.size = data.size;
+                        args.stickContent = data.content;
+                        args.stickName = data.name;
+                        args.position = realpos;
+
+                        AddToSelection(CreateNode(args));
+                    }
+
+                    // 递增间距
+                    realpos.y += nd_size.y + 5;
                 }
             }
-
-            Debug.Log($"粘贴 {gv_CopiedNodeList.Count} 节点");
         }
         /// <summary>
         /// 移除当前选择的所有节点及其相关的连线
@@ -253,8 +302,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建视觉节点
         /// </summary>
-        /// <param h_name="position"></param>
-        /// <param h_name="dat"></param>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public VNode_Base Node_MakeAction(Vector2 pos, ActionNode_Base data = null)
         {
@@ -294,7 +343,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建视觉节点 - 贴纸
         /// </summary>
-        /// <param h_name="position"></param>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public VNode_Decal Node_MakeDecal(Vector2 pos, ActionDecalData data = null)
         {
@@ -325,7 +375,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建视觉节点 - 便签
         /// </summary>
-        /// <param h_name="position"></param>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public VNode_Stick Node_MakeStick(Vector2 pos, ActionStickData data = null)
         {
@@ -356,7 +407,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建中继节点
         /// </summary>
-        /// <param name="node_base"></param>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public VNode_Relay Node_MakeRelay(Vector2 pos, ActionNode_Base data = null)
         {
             if (data.visualNodeType == "None")
@@ -392,24 +445,11 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 创建包装节点
+        ///  创建节点 - 行为
         /// </summary>
-        /// <param name="visualName"></param>
-        /// <param name="prefix_namespace"></param>
-        /// <param name="prefix_class"></param>
-        /// <param name="action_nodeType"></param>
-        /// <param name="icon"></param>
-        /// <param name="titleIcon"></param>
-        /// <param name="visual_nodeType"></param>
-        /// <param name="hasAvatar"></param>
-        /// <param name="avatar"></param>
-        /// <param name="themeSolution"></param>
-        /// <param name="themeColor"></param>
-        /// <param name="transparentNode"></param>
-        /// <param name="content"></param>
-        /// <param name="size"></param>
-        /// <returns>返回的类型根据 actionNodeType 来决定是：VNode_Base、VNode_Stick、VNode_Decal这几个当中的哪一个</returns>
-        public object CreateNode(NodeCreateArgs_Action args)
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public Node CreateNode(NodeCreateArgs_Action args)
         {
             // 创建新的节点并指定资源数据项
             VNode_Base visualNode = Node_MakeAction(args.position, ActionTreeAsset.Create(args));
@@ -427,12 +467,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建节点 - 便签
         /// </summary>
-        /// <param name="stick_Name"></param>
-        /// <param name="stick_Content"></param>
-        /// <param name="pos"></param>
-        /// <param name="size"></param>
-        /// <returns>返回 VNode_Stick 类型</returns>
-        public object CreateNode(NodeCreateArgs_Stick args)
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public Node CreateNode(NodeCreateArgs_Stick args)
         {
             // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
             Undo.RecordObject(ActionTreeAsset, "Create StickNode");
@@ -454,11 +491,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建节点 - 贴图
         /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="size"></param>
-        /// <param name="opacity"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        public object CreateNode(NodeCreateArgs_Decal args)
+        public Node CreateNode(NodeCreateArgs_Decal args)
         {
             // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 DecalDatas 变量中
             Undo.RecordObject(ActionTreeAsset, "Create DecalNode");

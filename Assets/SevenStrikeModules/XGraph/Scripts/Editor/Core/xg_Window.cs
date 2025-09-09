@@ -720,10 +720,13 @@
         private void OnEnable()
         {
             // 注册撤销逻辑
+            Undo.undoRedoPerformed -= OnUndoRedoPerformed;
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
 
             // 初始化窗口尺寸记录
             lastWindowSize = position.size;
+
+            EditorApplication.update -= OnWindowResizingUpdate;
             EditorApplication.update += OnWindowResizingUpdate;
         }
 
@@ -738,8 +741,6 @@
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
             xw_DestroyGraphView();
-
-            Debug.Log(456);
         }
 
         #region 重新编译时XGraph资源重载操作
@@ -868,7 +869,7 @@
         /// <summary>
         /// 当选中视觉节点时执行
         /// </summary>
-        /// <param h_name="nodeview"></param>
+        /// <param name="nodeview"></param>
         private void OnSelectNodeView(VNode_Base nodeview)
         {
             if (nodeview == null) return;
@@ -893,7 +894,7 @@
         /// <summary>
         /// 当选中视觉节点时执行
         /// </summary>
-        /// <param h_name="nodeviews"></param>
+        /// <param name="nodeviews"></param>
         private void OnSelectionNodesView(List<VNode_Base> nodeviews)
         {
             if (nodeviews == null) return;
@@ -934,7 +935,7 @@
         /// <summary>
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
-        /// <param h_name="nodeviews"></param>
+        /// <param name="nodeviews"></param>
         private void OnRemovedSelectionNodesView(List<VNode_Base> nodeviews)
         {
             if (nodeviews == null) return;
@@ -946,7 +947,7 @@
         /// <summary>
         /// 取消选中视觉节点时执行
         /// </summary>
-        /// <param h_name="nodeview"></param>
+        /// <param name="nodeview"></param>
         private void OnUnSelectNodeView(VNode_Base nodeview)
         {
             if (!xw_isUnSelectedNode)
@@ -1567,8 +1568,8 @@
         /// <summary>
         /// 拖动目标VisualElement方法
         /// </summary>
-        /// <param h_name="sourceNode"></param>
-        /// <param h_name="handle"></param>
+        /// <param name="sourceNode"></param>
+        /// <param name="handle"></param>
         private void Element_Drag(VisualElement target, VisualElement handle, string saveKey_pos, string saveKey_size, Vector2 offset)
         {
             // 鼠标按下
@@ -1921,7 +1922,7 @@
         /// <summary>
         /// 设置工具栏前端图标
         /// </summary>
-        /// <param h_name="iconName"></param>
+        /// <param name="iconName"></param>
         /// <returns></returns>
         public Texture2D xw_Toolbar_IconSet(Texture2D icon)
         {

@@ -1,40 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
-  m_Name: sadasd
-  m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1260, y: 800}
-  LastGraphViewPosition: {x: -258, y: 292}
-  LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-09-08  -  23:59:20
-  GraphviewGridBackgroundThemes:
-    bgcolor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
-    gridcolor: {r: 0.18, g: 0.18, b: 0.18, a: 1}
-    customimagecolor: {r: 1, g: 1, b: 1, a: 0}
-    thickLinecolor: {r: 0, g: 0, b: 0, a: 0}
-    spacing: 18
-    thicklines: 18
-    customimage: {fileID: 0}
-  GraphviewRectangleSelectorThemes:
-    rectangleSelectorLineColor: {r: 1, g: 1, b: 1, a: 0.6}
-    segments: 4
-    displayCoordinate: 0
-  ActionNodes:
-  - {fileID: 2694393144878427884}
-  StickNoteDatas: []
-  DecalDatas: []
-  NodeGroupDatas: []
-  BlackboardVariables: []
---- !u!114 &2694393144878427884
+--- !u!114 &-2755955641894023017
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,3 +31,37 @@ MonoBehaviour:
   Avatar: {fileID: 2800000, guid: 3e2ec7882c9b44a4ab3dabb55a8c00d6, type: 3}
   NodeIcon: {fileID: 0}
   childNode: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
+  m_Name: sadasd
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1260, y: 800}
+  LastGraphViewPosition: {x: 105, y: 83}
+  LastGraphViewZoom: 1
+  LastSaveDateTime: 2025-09-09  -  14:04:35
+  GraphviewGridBackgroundThemes:
+    bgcolor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+    gridcolor: {r: 0.18, g: 0.18, b: 0.18, a: 1}
+    customimagecolor: {r: 1, g: 1, b: 1, a: 0}
+    thickLinecolor: {r: 0, g: 0, b: 0, a: 0}
+    spacing: 18
+    thicklines: 18
+    customimage: {fileID: 0}
+  GraphviewRectangleSelectorThemes:
+    rectangleSelectorLineColor: {r: 1, g: 1, b: 1, a: 0.6}
+    segments: 4
+    displayCoordinate: 0
+  ActionNodes:
+  - {fileID: -2755955641894023017}
+  StickNoteDatas: []
+  DecalDatas: []
+  NodeGroupDatas: []
+  BlackboardVariables: []

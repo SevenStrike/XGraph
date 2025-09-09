@@ -58,9 +58,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 初始化节点 - ActionStickData
         /// </summary>
-        /// <param h_name="graphView"></param>
-        /// <param h_name="position"></param>
-        /// <param h_name="data"></param>
+        /// <param name="graphView"></param>
+        /// <param name="position"></param>
+        /// <param name="data"></param>
         public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionDecalData data = null)
         {
             // 指定可调整大小
@@ -101,7 +101,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当节点尺寸发生改变时
         /// </summary>
-        /// <param h_name="evt"></param>
+        /// <param name="evt"></param>
         private void OnSizeChanged(GeometryChangedEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Size");
@@ -129,7 +129,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当拖动节点位置时，将位置数据传递给对应的目标数据节点位置变量
         /// </summary>
-        /// <param h_name="newPos"></param>
+        /// <param name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Position");
@@ -562,7 +562,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 设置节点的样式应用
         /// </summary>
-        /// <param h_name="StyleName"></param>
+        /// <param name="StyleName"></param>
         protected void SetContainersStyle(string StyleName)
         {
             contentContainer.AddToClassList("ContentContainer");
@@ -577,8 +577,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 添加元素到指定类型的容器中
         /// </summary>
-        /// <param h_name="type"></param>
-        /// <param h_name="element"></param>
+        /// <param name="type"></param>
+        /// <param name="element"></param>
         protected void AppendElement(GraphNodeContainerType type, VisualElement element)
         {
             switch (type)

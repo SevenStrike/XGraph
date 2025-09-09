@@ -133,10 +133,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建控制点 - 角点
         /// </summary>
-        /// <param h_name="solution"></param>
-        /// <param h_name="horizontalPos"></param>
-        /// <param h_name="verticalPos"></param>
-        /// <param h_name="cursorstyle"></param>
+        /// <param name="solution"></param>
+        /// <param name="horizontalPos"></param>
+        /// <param name="verticalPos"></param>
+        /// <param name="cursorstyle"></param>
         /// <returns></returns>
         private VisualElement CreateCornerHandle(string name, int horizontalPos, int verticalPos, MouseCursor cursorstyle = MouseCursor.Arrow)
         {
@@ -164,10 +164,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建控制点 - 边缘
         /// </summary>
-        /// <param h_name="solution"></param>
-        /// <param h_name="horizontalPos"></param>
-        /// <param h_name="verticalPos"></param>
-        /// <param h_name="cursorstyle"></param>
+        /// <param name="solution"></param>
+        /// <param name="horizontalPos"></param>
+        /// <param name="verticalPos"></param>
+        /// <param name="cursorstyle"></param>
         /// <returns></returns>
         private VisualElement CreateEdgeHandle(string name, float left = float.NaN, float top = float.NaN, float right = float.NaN, float bottom = float.NaN, float width = float.NaN, float height = float.NaN, MouseCursor cursorstyle = MouseCursor.Arrow)
         {
