@@ -6,51 +6,51 @@
             "catergory_nodes": [
                 {
                     "name": "开始",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "Start",
-                    "icon": "start",
-                    "visual_nodeType": "Base_GraphNode_Start"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "Start",
+                    "iconName": "start",
+                    "visualNodeType": "Base_GraphNode_Start"
                 },
                 {
                     "name": "结束",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "End",
-                    "icon": "end",
-                    "visual_nodeType": "Base_GraphNode_End"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "End",
+                    "iconName": "end",
+                    "visualNodeType": "Base_GraphNode_End"
                 },
                 {
                     "name": "合成",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "Composite",
-                    "icon": "composite",
-                    "visual_nodeType": "Base_GraphNode_Composite"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "Composite",
+                    "iconName": "composite",
+                    "visualNodeType": "Base_GraphNode_Composite"
                 },
                 {
                     "name": "等待",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "Wait",
-                    "icon": "wait",
-                    "visual_nodeType": "Base_GraphNode_Wait"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "Wait",
+                    "iconName": "wait",
+                    "visualNodeType": "Base_GraphNode_Wait"
                 },
                 {
                     "name": "调试",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "Debug",
-                    "icon": "debug",
-                    "visual_nodeType": "Base_GraphNode_Debug"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "Debug",
+                    "iconName": "debug",
+                    "visualNodeType": "Base_GraphNode_Debug"
                 },
                 {
                     "name": "延展",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Base_ActionNode_",
-                    "action_nodeType": "Relay",
-                    "icon": "relay",
-                    "visual_nodeType": "Base_GraphNode_Relay"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Base_ActionNode_",
+                    "actionNodeType": "Relay",
+                    "iconName": "relay",
+                    "visualNodeType": "Base_GraphNode_Relay"
                 }
             ]
         },
@@ -59,11 +59,11 @@
             "catergory_nodes": [
                 {
                     "name": "开始",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "Mind_ActionNode_",
-                    "action_nodeType": "Start",
-                    "icon": "start",
-                    "visual_nodeType": "Mind_GraphNode_Start"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Mind_ActionNode_",
+                    "actionNodeType": "Start",
+                    "iconName": "start",
+                    "visualNodeType": "Mind_GraphNode_Start"
                 }
             ]
         },
@@ -72,19 +72,19 @@
             "catergory_nodes": [
                 {
                     "name": "便签",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "",
-                    "action_nodeType": "Stick",
-                    "icon": "stick",
-                    "visual_nodeType": "VNode_Stick"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Stick",
+                    "iconName": "stick",
+                    "visualNodeType": "VNode_Stick"
                 },
                 {
                     "name": "贴图",
-                    "prefix_namespace": "SevenStrikeModules.XGraph",
-                    "prefix_class": "",
-                    "action_nodeType": "Decal",
-                    "icon": "decal",
-                    "visual_nodeType": "VNode_Decal"
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Decal",
+                    "iconName": "decal",
+                    "visualNodeType": "VNode_Decal"
                 }
             ]
         }

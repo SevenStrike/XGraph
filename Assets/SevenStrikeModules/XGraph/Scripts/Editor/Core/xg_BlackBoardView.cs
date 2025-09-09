@@ -245,16 +245,16 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 创建变量节点
-            object node = graphWindow.xw_graphView.Node_Create(variable.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset, Vector2.one);
+            //object node = graphWindow.xw_graphView.CreateNode(variable.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset + new Vector2(-81, -46.5f), Vector2.one);
 
-            VNode_Base node_base = node as VNode_Base;
-            if (node_base != null)
-            {
+            //VNode_Base node_base = node as VNode_Base;
+            //if (node_base != null)
+            //{
 
-            }
+            //}
             #endregion
 
-            graphWindow.xw_graphView.AddToSelection(node_base);
+            //graphWindow.xw_graphView.AddToSelection(node_base);
 
             return index;
         }

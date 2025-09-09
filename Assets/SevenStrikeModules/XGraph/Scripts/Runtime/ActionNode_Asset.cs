@@ -9,13 +9,59 @@ namespace SevenStrikeModules.XGraph
 #endif
     using UnityEngine;
     using UnityEngine.UIElements;
+    using static UnityEngine.Rendering.GPUSort;
     using Object = UnityEngine.Object;
+
+    /// <summary>
+    /// 节点信息结构体 - 行为
+    /// </summary>
+    public struct NodeCreateArgs_Action
+    {
+        public string visualName;
+        public string prefixNamespace;
+        public string prefixClass;
+        public string actionNodeType;
+        public string iconName;
+        public Texture2D nodeIcon;
+        public string visualNodeType;
+        public bool hasAvatar;
+        public Texture2D avatar;
+        public string themeSolution;
+        public Color themeColor;
+        public bool transparentNode;
+        public string content;
+        public Vector2 position;
+        public Vector2 size;
+    }
+
+    /// <summary>
+    /// 节点信息结构体 - 便签
+    /// </summary>
+    public struct NodeCreateArgs_Stick
+    {
+        public string stickName;
+        public string stickContent;
+        public Vector2 position;
+        public Vector2 size;
+    }
+
+    /// <summary>
+    /// 节点信息结构体 - 贴图
+    /// </summary>
+    public struct NodeCreateArgs_Decal
+    {
+        public Vector2 position;
+        public Vector2 size;
+        public float opacity;
+        public bool hasTexture;
+        public Texture2D decalTexture;
+    }
 
     [System.Serializable]
     /// <summary>
     /// 贴纸数据
     /// </summary>
-    public class decaldata
+    public class ActionDecalData
     {
         /// <summary>
         /// 贴纸识别ID码
@@ -42,7 +88,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 贴纸构造器
         /// </summary>
-        public decaldata() { }
+        public ActionDecalData() { }
         /// <summary>
         /// 贴纸构造器
         /// </summary>
@@ -51,22 +97,24 @@ namespace SevenStrikeModules.XGraph
         /// <param name="guid"></param>
         /// <param name="pos"></param>
         /// <param name="size"></param>
-        public decaldata(string guid, Vector2 pos, Vector2 size, Vector3 scale, float opacity)
+        public ActionDecalData(string guid, Vector2 pos, Vector2 size, Vector3 scale, float opacity, bool hastex, Texture2D tex)
         {
             this.guid = guid;
             this.position = pos;
             this.scale = scale;
             this.size = size;
             this.opacity = opacity;
+            this.HasTexture = hastex;
+            this.DecalTexture = tex;
         }
         /// <summary>
         /// 贴纸克隆
         /// </summary>
         /// <param name="guid_create"></param>
         /// <returns></returns>
-        public decaldata Clone(bool guid_create)
+        public ActionDecalData Clone(bool guid_create)
         {
-            var clone = new decaldata();
+            var clone = new ActionDecalData();
 #if UNITY_EDITOR
             clone.guid = guid_create ? GUID.Generate().ToString() : guid;
 #endif
@@ -84,7 +132,7 @@ namespace SevenStrikeModules.XGraph
     /// <summary>
     /// 便签数据
     /// </summary>
-    public class stickdata
+    public class ActionStickData
     {
         /// <summary>
         /// 便签标题
@@ -109,7 +157,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 便签构造器
         /// </summary>
-        public stickdata() { }
+        public ActionStickData() { }
         /// <summary>
         /// 便签构造器
         /// </summary>
@@ -118,7 +166,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="guid"></param>
         /// <param name="pos"></param>
         /// <param name="size"></param>
-        public stickdata(string name, string content, string guid, Vector2 pos, Vector2 size)
+        public ActionStickData(string name, string content, string guid, Vector2 pos, Vector2 size)
         {
             this.name = name;
             this.guid = guid;
@@ -131,9 +179,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid_create"></param>
         /// <returns></returns>
-        public stickdata Clone(bool guid_create)
+        public ActionStickData Clone(bool guid_create)
         {
-            var clone = new stickdata();
+            var clone = new ActionStickData();
             clone.name = name;
             clone.content = content;
 #if UNITY_EDITOR
@@ -451,11 +499,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 便签列表
         /// </summary>
-        [SerializeField] public List<stickdata> StickNoteDatas = new List<stickdata>();
+        [SerializeField] public List<ActionStickData> StickNoteDatas = new List<ActionStickData>();
         /// <summary>
         /// 贴纸列表
         /// </summary>
-        [SerializeField] public List<decaldata> DecalDatas = new List<decaldata>();
+        [SerializeField] public List<ActionDecalData> DecalDatas = new List<ActionDecalData>();
         /// <summary>
         /// 编组列表
         /// </summary>
@@ -479,15 +527,40 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public ActionNode_Base Create(ActionNode_Base node)
+        public ActionNode_Base Create(NodeCreateArgs_Action args)
         {
 #if UNITY_EDITOR
             Undo.RecordObject(this, "Added ActionTree Asset");
+
+            // 解析得到行为基础类
+            string asm = typeof(ActionNode_Base).Assembly.FullName;
+            // 拼接字符串得到行为类
+            Type type = Type.GetType($"{args.prefixNamespace}.{args.prefixClass}{args.actionNodeType},{asm}", true);
+
+            // 创建行为资源
+            ActionNode_Base actionData = ScriptableObject.CreateInstance(type) as ActionNode_Base;
+            actionData.name = args.visualName;
+            actionData.guid = GUID.Generate().ToString();
+            actionData.actionNodeType = args.actionNodeType;
+            actionData.icon = args.iconName;
+            actionData.NodeIcon = args.nodeIcon;
+            actionData.visualNodeType = args.visualNodeType;
+            actionData.identifyName = args.visualName;
+            actionData.namespaces = args.prefixNamespace;
+            actionData.classes = args.prefixClass;
+            actionData.HasAvatar = args.hasAvatar;
+            actionData.Avatar = args.avatar;
+            actionData.themeSolution = args.themeSolution;
+            actionData.themeColor = args.themeColor;
+            actionData.TransparentNode = args.transparentNode;
+            actionData.content = args.content;
+            actionData.nodeGraphSize = args.size;
+
             // 添加到列表中
-            ActionNodes.Add(node);
+            ActionNodes.Add(actionData);
 
             // 添加到资源文件下
-            AssetDatabase.AddObjectToAsset(node, this);
+            AssetDatabase.AddObjectToAsset(actionData, this);
             //AssetDatabase.SaveAssets();
 
             // 创建后获取该行为树节点相对行为树资源根节点的路径
@@ -496,7 +569,7 @@ namespace SevenStrikeModules.XGraph
             string combine_path = $"{opt_path}   >   {ActionNodes[^1].name}.asset";
             ActionNodes[^1].path = combine_path;
 #endif
-            return node;
+            return actionData;
         }
         /// <summary>
         /// 从列表中移除一个数据节点
@@ -561,14 +634,14 @@ namespace SevenStrikeModules.XGraph
             GraphviewRectangleSelectorThemes = root.GraphviewRectangleSelectorThemes.Clone();
 
             // 覆盖原有的贴图数据列表
-            DecalDatas = new List<decaldata>();
+            DecalDatas = new List<ActionDecalData>();
             foreach (var decal in root.DecalDatas)
             {
                 DecalDatas.Add(decal.Clone(false));
             }
 
             // 覆盖原有的便签数据列表
-            StickNoteDatas = new List<stickdata>();
+            StickNoteDatas = new List<ActionStickData>();
             foreach (var stick in root.StickNoteDatas)
             {
                 StickNoteDatas.Add(stick.Clone(false));
@@ -655,14 +728,14 @@ namespace SevenStrikeModules.XGraph
             newRoot.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
 
             // 实例化新的 StickNoteDatas 列表，并从原始资源复制项
-            newRoot.StickNoteDatas = new List<stickdata>();
+            newRoot.StickNoteDatas = new List<ActionStickData>();
             foreach (var item in StickNoteDatas)
             {
                 newRoot.StickNoteDatas.Add(item.Clone(false));
             }
 
             // 实例化新的 DecalDatas 列表，并从原始资源复制项
-            newRoot.DecalDatas = new List<decaldata>();
+            newRoot.DecalDatas = new List<ActionDecalData>();
             foreach (var item in DecalDatas)
             {
                 newRoot.DecalDatas.Add(item.Clone(false));
@@ -1020,7 +1093,7 @@ namespace SevenStrikeModules.XGraph
         /// 添加便签数据
         /// </summary>
         /// <param name="data"></param>
-        public void StickNote_Add(stickdata data)
+        public void StickNote_Add(ActionStickData data)
         {
             StickNoteDatas.Add(data);
         }
@@ -1038,7 +1111,7 @@ namespace SevenStrikeModules.XGraph
         /// 移除目标便签数据
         /// </summary>
         /// <param name="data"></param>
-        public void StickNote_Remove(stickdata data)
+        public void StickNote_Remove(ActionStickData data)
         {
             StickNoteDatas.Remove(data);
         }
@@ -1049,7 +1122,7 @@ namespace SevenStrikeModules.XGraph
         /// 添加贴图数据
         /// </summary>
         /// <param name="data"></param>
-        public void Decal_Add(decaldata data)
+        public void Decal_Add(ActionDecalData data)
         {
             DecalDatas.Add(data);
         }
@@ -1067,7 +1140,7 @@ namespace SevenStrikeModules.XGraph
         /// 移除目标便签数据
         /// </summary>
         /// <param name="data"></param>
-        public void Decal_Remove(decaldata data)
+        public void Decal_Remove(ActionDecalData data)
         {
             DecalDatas.Remove(data);
         }

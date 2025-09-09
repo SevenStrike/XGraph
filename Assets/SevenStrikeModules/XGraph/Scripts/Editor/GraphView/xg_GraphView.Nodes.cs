@@ -3,11 +3,9 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
-    using static UnityEditor.Rendering.InspectorCurveEditor;
 
     public partial class xg_GraphView
     {
@@ -42,58 +40,72 @@ namespace SevenStrikeModules.XGraph
 
             ClearSelection(); // 清空当前选择（可选）
 
-            List<DuplicateNodeData> dup_objs = new List<DuplicateNodeData>();
+            List<DuplicateNodeData> dupDataList = new List<DuplicateNodeData>();
 
             foreach (var original in selectedNodes)
             {
-                DuplicateNodeData d = new DuplicateNodeData();
-                d.SourceNodeGuid = original.viewDataKey;
+                DuplicateNodeData dupData = new DuplicateNodeData();
+                dupData.SourceNodeGuid = original.viewDataKey;
 
-                if (original is VNode_Base xg_base)
+                if (original is VNode_Base target_base)
                 {
                     // 待复制的源节点
-                    ActionNode_Base actionnode = xg_base.ActionNodeData;
-
-                    // 待复制的源节点的命名空间
-                    string prefix_namespace = actionnode.GetType().Namespace;
-                    // 待复制的源节点的类名
-                    string class_name = actionnode.GetType().Name;
-                    // 待复制的源节点的行为节点名
-                    string actiontype_name = actionnode.actionNodeType.ToString();
-                    // 待复制的源节点的类名的前缀
-                    string prefix_class = class_name.Substring(0, class_name.Length - actiontype_name.Length);
-
-                    //Debug.Log($"{prefix_namespace} - {class_name} - {actiontype_name} - {prefix_class}");
+                    ActionNode_Base actionnode = target_base.ActionData;
 
                     // 克隆出新的节点
-                    d.DuplicatedNode = Node_Create(actionnode.identifyName, prefix_namespace, prefix_class, actionnode.actionNodeType, actionnode.icon, actionnode.NodeIcon, actionnode.visualNodeType, actionnode.HasAvatar, actionnode.Avatar, actionnode.themeSolution, actionnode.themeColor, actionnode.TransparentNode, actionnode.content, actionnode.nodeGraphPosition + new Vector2(50, 20), actionnode.nodeGraphSize);
+                    NodeCreateArgs_Action args = new NodeCreateArgs_Action();
+                    args.visualName = actionnode.identifyName;
+                    args.prefixNamespace = actionnode.namespaces;
+                    args.prefixClass = actionnode.classes;
+                    args.actionNodeType = actionnode.actionNodeType;
+                    args.iconName = actionnode.icon;
+                    args.nodeIcon = actionnode.NodeIcon;
+                    args.visualNodeType = actionnode.visualNodeType;
+                    args.hasAvatar = actionnode.HasAvatar;
+                    args.avatar = actionnode.Avatar;
+                    args.themeSolution = actionnode.themeSolution;
+                    args.themeColor = actionnode.themeColor;
+                    args.transparentNode = actionnode.TransparentNode;
+                    args.content = actionnode.content;
+                    args.position = actionnode.nodeGraphPosition + new Vector2(81, 46.5f);
+                    args.size = actionnode.nodeGraphSize;
+
+                    dupData.DuplicatedNode = CreateNode(args);
                 }
-                else if (original is VNode_Stick xg_sticknote)
+                else if (original is VNode_Stick target_stick)
                 {
-                    stickdata stickData = xg_sticknote.stickData.Clone(true);
-                    Undo.RecordObject(ActionTreeAsset, "Duplicate StickNoteData");
-                    ActionTreeAsset.StickNoteDatas.Add(stickData);
+                    ActionStickData data = target_stick.StickData.Clone(true);
 
-                    d.DuplicatedNode = Node_MakeStick(stickData.position + new Vector2(50, 20), stickData).Draw();
+                    NodeCreateArgs_Stick args = new NodeCreateArgs_Stick();
+                    args.stickName = data.name;
+                    args.stickContent = data.content;
+                    args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
+                    args.size = data.size;
+
+                    dupData.DuplicatedNode = CreateNode(args);
                 }
-                else if (original is VNode_Decal xg_decal)
+                else if (original is VNode_Decal target_decal)
                 {
-                    decaldata decalData = xg_decal.decalData.Clone(true);
-                    Undo.RecordObject(ActionTreeAsset, "Duplicate DecalData");
-                    ActionTreeAsset.DecalDatas.Add(decalData);
+                    ActionDecalData data = target_decal.DecalData.Clone(true);
 
-                    d.DuplicatedNode = Node_MakeDecal(decalData.position + new Vector2(0, 20), decalData).Draw();
+                    NodeCreateArgs_Decal args = new NodeCreateArgs_Decal();
+                    args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
+                    args.size = data.size;
+                    args.opacity = data.opacity;
+                    args.hasTexture = data.HasTexture;
+                    args.decalTexture = data.DecalTexture;
+                    object decalNode = CreateNode(args);
+
+                    dupData.DuplicatedNode = decalNode as VNode_Decal;
                 }
 
-                dup_objs.Add(d);
+                dupDataList.Add(dupData);
 
-                AddToSelection(d.DuplicatedNode as Node);
+                AddToSelection(dupData.DuplicatedNode as Node);
             }
 
             if (OnDuplicateNodes != null)
-                OnDuplicateNodes(dup_objs);
-
-
+                OnDuplicateNodes(dupDataList);
 
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
@@ -109,7 +121,7 @@ namespace SevenStrikeModules.XGraph
             var selectedNodes = selection.OfType<Node>().ToList();
             if (selectedNodes.Count == 0) return;
 
-            // 特化处理 - ActionNodeData
+            // 特化处理 - ActionData
             foreach (var node in CurrentSelectedNodes_Base)
             {
                 // 将选中的节点拷贝进缓冲区
@@ -139,22 +151,26 @@ namespace SevenStrikeModules.XGraph
             {
                 if (node is VNode_Base node_base)
                 {
-                    Debug.Log(JsonUtility.ToJson(node_base.ActionNodeData));
+                    //ActionNode_Base data = node_base.ActionData;
 
-                    VNode_Base vNode_Base = Node_Make(Vector2.zero, node_base.ActionNodeData);
-                    vNode_Base.Draw();
-                    vNode_Base.RefreshExpandedState();
-                    vNode_Base.RefreshPorts();
+                    //CreateNode(data.identifyName, data.namespaces, data.classes, data.actionNodeType, data.iconName, data.NodeIcon, data.visualNodeType, data.HasAvatar, data.Avatar, data.themeSolution, data.themeColor, data.TransparentNode, data.content, null, null, data.nodeGraphPosition, data.nodeGraphSize);
                 }
                 if (node is VNode_Decal node_decal)
-                    Debug.Log(JsonUtility.ToJson(node_decal.decalData));
+                {
+                    //ActionDecalData data = node_decal.data;
+
+                    //CreateNode(actionNodeType: "Stick");
+                }
                 if (node is VNode_Stick node_stick)
-                    Debug.Log(JsonUtility.ToJson(node_stick.stickData));
+                {
+                    //ActionNode_Base data = node_base.ActionData;
+
+                    //CreateNode(data.identifyName, data.namespaces, data.classes, data.actionNodeType, data.iconName, data.NodeIcon, data.visualNodeType, data.HasAvatar, data.Avatar, data.themeSolution, data.themeColor, data.TransparentNode, data.content, data.nodeGraphPosition, data.nodeGraphSize);
+                }
             }
 
             Debug.Log($"粘贴 {gv_CopiedNodeList.Count} 节点");
         }
-
         /// <summary>
         /// 移除当前选择的所有节点及其相关的连线
         /// </summary>
@@ -233,13 +249,14 @@ namespace SevenStrikeModules.XGraph
                 RemoveElement(edge);
             }
         }
+
         /// <summary>
         /// 创建视觉节点
         /// </summary>
-        /// <param h_name="pos"></param>
+        /// <param h_name="position"></param>
         /// <param h_name="dat"></param>
         /// <returns></returns>
-        public VNode_Base Node_Make(Vector2 pos, ActionNode_Base data = null)
+        public VNode_Base Node_MakeAction(Vector2 pos, ActionNode_Base data = null)
         {
             if (data.visualNodeType == "None")
                 return null;
@@ -277,9 +294,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建视觉节点 - 贴纸
         /// </summary>
-        /// <param h_name="pos"></param>
+        /// <param h_name="position"></param>
         /// <returns></returns>
-        public VNode_Decal Node_MakeDecal(Vector2 pos, decaldata data = null)
+        public VNode_Decal Node_MakeDecal(Vector2 pos, ActionDecalData data = null)
         {
             #region 根据枚举类型创建 NodeView
             // 根据枚举名称获取 NodeView 节点类
@@ -308,9 +325,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建视觉节点 - 便签
         /// </summary>
-        /// <param h_name="pos"></param>
+        /// <param h_name="position"></param>
         /// <returns></returns>
-        public VNode_Stick Node_MakeStick(Vector2 pos, stickdata data = null)
+        public VNode_Stick Node_MakeStick(Vector2 pos, ActionStickData data = null)
         {
             #region 根据枚举类型创建 NodeView
             // 根据枚举名称获取 NodeView 节点类
@@ -340,7 +357,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建中继节点
         /// </summary>
         /// <param name="node_base"></param>
-        public VNode_Relay Node_MakeRelay(Vector2 pos, ActionNode_Base data)
+        public VNode_Relay Node_MakeRelay(Vector2 pos, ActionNode_Base data = null)
         {
             if (data.visualNodeType == "None")
                 return null;
@@ -373,38 +390,7 @@ namespace SevenStrikeModules.XGraph
 
             return relay;
         }
-        /// <summary>
-        /// 创建行为树节点
-        /// </summary>
-        /// <param h_name="prefix_namespace"></param>
-        /// <param h_name="prefix_class"></param>
-        /// <param h_name="type"></param>
-        /// <param h_name="action_nodeType"></param>
-        /// <param h_name="visual_nodeType"></param>
-        /// <param h_name="action_name"></param>
-        /// <returns></returns>
-        public ActionNode_Base InstantiateActionNode(string prefix_namespace, string prefix_class, Type type, string action_nodeType, string icon, Texture2D titleicon, string visual_nodeType, string action_name, bool hasAvatar, Texture2D avatar, string themeSolution, Color themeColor, bool transparentNode, string content, Vector2 nodeGraphSize)
-        {
-            ActionNode_Base data = ScriptableObject.CreateInstance(type) as ActionNode_Base;
-            data.name = action_name;
-            data.guid = GUID.Generate().ToString();
-            data.actionNodeType = action_nodeType;
-            data.icon = icon;
-            data.NodeIcon = titleicon;
-            data.visualNodeType = visual_nodeType;
-            data.identifyName = action_name;
-            data.namespaces = prefix_namespace;
-            data.classes = prefix_class;
-            data.HasAvatar = hasAvatar;
-            data.Avatar = avatar;
-            data.themeSolution = themeSolution;
-            data.themeColor = themeColor;
-            data.TransparentNode = transparentNode;
-            data.content = content;
-            data.nodeGraphSize = nodeGraphSize;
-            ActionTreeAsset.Create(data);
-            return data;
-        }
+
         /// <summary>
         /// 创建包装节点
         /// </summary>
@@ -422,85 +408,73 @@ namespace SevenStrikeModules.XGraph
         /// <param name="transparentNode"></param>
         /// <param name="content"></param>
         /// <param name="size"></param>
-        /// <returns>返回的类型根据 action_nodeType 来决定是：VNode_Base、VNode_Stick、VNode_Decal这几个当中的哪一个</returns>
-        public object Node_Create(string visualName, string prefix_namespace, string prefix_class, string action_nodeType, string icon, Texture2D titleIcon, string visual_nodeType, bool hasAvatar, Texture2D avatar, string themeSolution, Color themeColor, bool transparentNode, string content, Vector2 pos, Vector2 size)
+        /// <returns>返回的类型根据 actionNodeType 来决定是：VNode_Base、VNode_Stick、VNode_Decal这几个当中的哪一个</returns>
+        public object CreateNode(NodeCreateArgs_Action args)
+        {
+            // 创建新的节点并指定资源数据项
+            VNode_Base visualNode = Node_MakeAction(args.position, ActionTreeAsset.Create(args));
+
+            // 刷新节点
+            visualNode.Draw();
+            visualNode.RefreshExpandedState();
+            visualNode.RefreshPorts();
+            visualNode.CheckTransparentDisplay(args.transparentNode);
+            visualNode.CheckAvatarChanged();
+
+            return visualNode;
+        }
+
+        /// <summary>
+        /// 创建节点 - 便签
+        /// </summary>
+        /// <param name="stick_Name"></param>
+        /// <param name="stick_Content"></param>
+        /// <param name="pos"></param>
+        /// <param name="size"></param>
+        /// <returns>返回 VNode_Stick 类型</returns>
+        public object CreateNode(NodeCreateArgs_Stick args)
         {
             // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
-            if (action_nodeType == "Stick")
-            {
-                Undo.RecordObject(ActionTreeAsset, "Create StickNote");
-                // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
-                stickdata stickdata = new stickdata("便签", "点击此处更改内容", GUID.Generate().ToString(), gv_NodeCreatedPosition, new Vector2(100, 100));
-                ActionTreeAsset.StickNote_Add(stickdata);
+            Undo.RecordObject(ActionTreeAsset, "Create StickNode");
+            // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
+            ActionStickData stickdata = new ActionStickData(args.stickName, args.stickContent, GUID.Generate().ToString(), args.position, args.size);
+            ActionTreeAsset.StickNote_Add(stickdata);
 
-                // 创建新的节点并指定资源数据项
-                VNode_Stick stickNode = Node_MakeStick(gv_NodeCreatedPosition, stickdata);
+            // 创建新的节点并指定资源数据项
+            VNode_Stick stickNode = Node_MakeStick(args.position, stickdata);
 
-                // 刷新节点
-                stickNode.Draw();
-                stickNode.RefreshExpandedState();
-                stickNode.RefreshPorts();
+            // 刷新节点
+            stickNode.Draw();
+            stickNode.RefreshExpandedState();
+            stickNode.RefreshPorts();
 
-                return stickNode;
-            }
+            return stickNode;
+        }
+
+        /// <summary>
+        /// 创建节点 - 贴图
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="size"></param>
+        /// <param name="opacity"></param>
+        /// <returns></returns>
+        public object CreateNode(NodeCreateArgs_Decal args)
+        {
             // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 DecalDatas 变量中
-            else if (action_nodeType == "Decal")
-            {
-                Undo.RecordObject(ActionTreeAsset, "Create Decal");
-                // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
-                decaldata decaldata = new decaldata(GUID.Generate().ToString(), pos, new Vector2(100, 100), Vector3.one, 1);
-                ActionTreeAsset.Decal_Add(decaldata);
+            Undo.RecordObject(ActionTreeAsset, "Create DecalNode");
+            // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
+            ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, Vector3.one, args.opacity, args.hasTexture, args.decalTexture);
+            ActionTreeAsset.Decal_Add(decaldata);
 
-                // 创建新的节点并指定资源数据项
-                VNode_Decal decalNode = Node_MakeDecal(gv_NodeCreatedPosition, decaldata);
+            // 创建新的节点并指定资源数据项
+            VNode_Decal decalNode = Node_MakeDecal(args.position, decaldata);
 
-                // 刷新节点
-                decalNode.Draw();
-                decalNode.RefreshExpandedState();
-                decalNode.RefreshPorts();
+            // 刷新节点
+            decalNode.Draw();
+            decalNode.RefreshExpandedState();
+            decalNode.RefreshPorts();
 
-                return decalNode;
-            }
-            // 行为节点创建，行为类是加入行为树根资源中的
-            else
-            {
-                string asm = typeof(ActionNode_Base).Assembly.FullName;
-                // 目标类名字是拼接的，通过命名空间 + 类前缀 + 通用的 xg_ActionTreeType 枚举类型
-                // asm: 作用域
-                // ex:  SevenStrikeModules.XGraph + ActionTree_ + Start  = SevenStrikeModules.XGraph.ActionTree_Start.cs
-
-                Type scriptType_Actiontree = Type.GetType($"{prefix_namespace}.{prefix_class}{action_nodeType},{asm}", true);
-
-                // 在行为树根资源中加入新的数据项
-                ActionNode_Base database = InstantiateActionNode(
-                    prefix_namespace,
-                    prefix_class,
-                    scriptType_Actiontree,
-                    action_nodeType,
-                    icon,
-                    titleIcon,
-                    visual_nodeType,
-                    visualName,
-                    hasAvatar,
-                    avatar,
-                    themeSolution,
-                    themeColor,
-                    transparentNode,
-                    content,
-                    size);
-
-                // 创建新的节点并指定资源数据项
-                VNode_Base visualNode = Node_Make(pos + new Vector2(-81, -46.5f), database);
-
-                // 刷新节点
-                visualNode.Draw();
-                visualNode.RefreshExpandedState();
-                visualNode.RefreshPorts();
-                visualNode.CheckTransparentDisplay(transparentNode);
-                visualNode.CheckAvatarChanged();
-
-                return visualNode;
-            }
+            return decalNode;
         }
     }
 }

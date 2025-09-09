@@ -122,7 +122,7 @@ namespace SevenStrikeModules.XGraph
             list.ForEach(d =>
             {
                 // 如果被克隆的节点是源于自身，就将 MindActionNode 的额外参数同步过去，使克隆的节点数据保持和克隆源一致
-                if (d.SourceNodeGuid == ActionNodeData.guid)
+                if (d.SourceNodeGuid == ActionData.guid)
                 {
                     Mind_GraphNode_Start node = d.DuplicatedNode as Mind_GraphNode_Start;
                     if (node != null)

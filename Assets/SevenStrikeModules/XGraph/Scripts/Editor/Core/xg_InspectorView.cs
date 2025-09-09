@@ -24,7 +24,7 @@ namespace SevenStrikeModules.XGraph
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);
 
-            var target = nodeview.ActionNodeData;
+            var target = nodeview.ActionData;
             if (target == null) return;
 
             // 尝试查找是否有自定义 Editor
@@ -57,7 +57,11 @@ namespace SevenStrikeModules.XGraph
         internal void UpdateSelection(ActionNode_Asset nodesasset)
         {
             Clear();
-            UnityEngine.Object.DestroyImmediate(editor);
+            if (editor != null)
+            {
+                UnityEngine.Object.DestroyImmediate(editor);
+                editor = null;
+            }
 
             var target = nodesasset;
             if (target == null)
@@ -67,6 +71,7 @@ namespace SevenStrikeModules.XGraph
             var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
             if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
             {
+                // 如果定义了自定义Inspector界面
                 editor = Editor.CreateEditor(target, editorType);
             }
             else

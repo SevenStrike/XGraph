@@ -227,6 +227,8 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<PointerMoveEvent>(Action_MouseMove);
             // 注册处理快捷键
             RegisterCallback<KeyDownEvent>(Action_KeyDown);
+            // 注册处理鼠标抬起
+            RegisterCallback<PointerUpEvent>(Action_PointerUp);
             // 注册鼠标点击事件
             RegisterCallback<PointerDownEvent>(Action_PointerDown, TrickleDown.TrickleDown);
             #endregion
@@ -349,9 +351,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == node.ActionNodeData.themeSolution)
+                if (colorData.solution == node.ActionData.themeSolution)
                 {
-                    node.ActionNodeData.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
+                    node.ActionData.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
                 }
             });
 
@@ -476,7 +478,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (n is VNode_Base node)
                 {
-                    if (node.ActionNodeData.actionNodeType != "StickNote")
+                    if (node.ActionData.actionNodeType != "StickNote")
                         gvs.Add(node);
                 }
                 if (n is VNode_Decal decal)

@@ -332,13 +332,13 @@
                 util_XGraphEditorUtility.Element_Visibility_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
                 // 设置移动式属性视图容器可见性按钮开关状态
                 wnd.xw_toggle_InspectorViewDisplay.value = inspector_view_toggle;
-                EditorApplication.delayCall += () =>
+
+                if (inspector_view_toggle)
                 {
-                    if (inspector_view_toggle)
-                    {
+                    if (wnd.CloneTree != null)
                         wnd.xw_InspectorView.UpdateSelection(wnd.CloneTree);
-                    }
-                };
+                }
+
                 wnd.InspectorViewAction_SetTitle($"{wnd.SourceTree.name} 行为根节点属性");
                 #endregion
 
@@ -738,6 +738,8 @@
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
             xw_DestroyGraphView();
+
+            Debug.Log(456);
         }
 
         #region 重新编译时XGraph资源重载操作
@@ -771,8 +773,8 @@
         /// <summary>
         /// 重新引用行为树编辑器的目标行为树资源
         /// </summary>
-        /// <param h_name="tree_source"></param>
-        /// <param h_name="tree_clone"></param>
+        /// <param name="tree_source"></param>
+        /// <param name="tree_clone"></param>
         public void ReloadTreeFromPath(ActionNode_Asset tree_source, ActionNode_Asset tree_clone)
         {
             if (tree_source == null) return;
@@ -882,10 +884,10 @@
             xw_InspectorView.UpdateSelection(nodeview);
 
             // 加载 Inspector 面板标题文字
-            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionNodeData.identifyName}");
+            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionData.identifyName}");
 
             // 显示当前选中的节点的类型信息
-            InspectorViewAction_SetNodeInfo(nodeview.ActionNodeData.GetInfo(), nodeview.ActionNodeData.GetPath());
+            InspectorViewAction_SetNodeInfo(nodeview.ActionData.GetInfo(), nodeview.ActionData.GetPath());
             xw_isUnSelectedNode = false;
         }
         /// <summary>
@@ -909,10 +911,10 @@
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
                 // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionNodeData.identifyName}");
+                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionData.identifyName}");
 
                 // 显示当前选中的节点的类型信息
-                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionNodeData.GetInfo(), nodeviews[0].ActionNodeData.GetPath());
+                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionData.GetInfo(), nodeviews[0].ActionData.GetPath());
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -1919,7 +1921,7 @@
         /// <summary>
         /// 设置工具栏前端图标
         /// </summary>
-        /// <param h_name="icon"></param>
+        /// <param h_name="iconName"></param>
         /// <returns></returns>
         public Texture2D xw_Toolbar_IconSet(Texture2D icon)
         {

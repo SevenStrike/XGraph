@@ -53,15 +53,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public decaldata decalData { get; set; }
+        public ActionDecalData DecalData { get; set; }
 
         /// <summary>
-        /// 初始化节点 - stickdata
+        /// 初始化节点 - ActionStickData
         /// </summary>
         /// <param h_name="graphView"></param>
-        /// <param h_name="pos"></param>
+        /// <param h_name="position"></param>
         /// <param h_name="data"></param>
-        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, decaldata data = null)
+        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionDecalData data = null)
         {
             // 指定可调整大小
             capabilities |= Capabilities.Resizable;
@@ -75,7 +75,7 @@ namespace SevenStrikeModules.XGraph
 
             // 携带数据
             if (data != null)
-                decalData = data;
+                DecalData = data;
 
             style.width = data.size.x;
             style.height = data.size.y;
@@ -112,7 +112,7 @@ namespace SevenStrikeModules.XGraph
             {
                 m_LastSize = newSize;
 
-                decalData.size = newSize;
+                DecalData.size = newSize;
             }
         }
 
@@ -121,9 +121,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void SetNativeSize()
         {
-            decalData.size = new Vector2(decalData.DecalTexture.width, decalData.DecalTexture.height);
-            style.width = decalData.size.x;
-            style.height = decalData.size.y;
+            DecalData.size = new Vector2(DecalData.DecalTexture.width, DecalData.DecalTexture.height);
+            style.width = DecalData.size.x;
+            style.height = DecalData.size.y;
         }
 
         /// <summary>
@@ -135,10 +135,10 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Position");
             base.SetPosition(newPos);
 
-            if (decalData != null)
+            if (DecalData != null)
             {
-                decalData.position.x = newPos.xMin;
-                decalData.position.y = newPos.yMin;
+                DecalData.position.x = newPos.xMin;
+                DecalData.position.y = newPos.yMin;
             }
         }
 
@@ -217,11 +217,11 @@ namespace SevenStrikeModules.XGraph
             #region 创建贴图组件
             DecalTextureElement = new VisualElement();
             DecalTextureElement.name = "DecalTexture";
-            DecalTextureElement.style.opacity = decalData.opacity;
-            DecalTextureElement.style.scale = new StyleScale(decalData.scale);
+            DecalTextureElement.style.opacity = DecalData.opacity;
+            DecalTextureElement.style.scale = new StyleScale(DecalData.scale);
             DecalTextureElement.pickingMode = PickingMode.Position;
-            if (decalData.DecalTexture != null)
-                DecalTextureElement.style.backgroundImage = decalData.DecalTexture;
+            if (DecalData.DecalTexture != null)
+                DecalTextureElement.style.backgroundImage = DecalData.DecalTexture;
             else
                 DecalTextureElement.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png"); ;
             DecalTextureElement.AddToClassList("DecalTexture");
@@ -289,7 +289,7 @@ namespace SevenStrikeModules.XGraph
             newOpacity = Mathf.Clamp01(newOpacity);
 
             DecalTextureElement.style.opacity = newOpacity;
-            decalData.opacity = newOpacity;
+            DecalData.opacity = newOpacity;
             evt.StopPropagation();
         }
 
@@ -303,7 +303,7 @@ namespace SevenStrikeModules.XGraph
             if (evt.button == (int)MouseButton.MiddleMouse)
             {
                 DecalTextureElement.style.opacity = 1;
-                decalData.opacity = 1;
+                DecalData.opacity = 1;
             }
         }
         #endregion
@@ -348,7 +348,7 @@ namespace SevenStrikeModules.XGraph
                 return;
 
             // 如果该节点设置了贴图
-            if (decalData.HasTexture)
+            if (DecalData.HasTexture)
             {
                 NodeDecalTexture_IsSet();
             }
@@ -375,9 +375,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeDecalTexture_IsSet()
         {
-            if (decalData.DecalTexture != null)
+            if (DecalData.DecalTexture != null)
             {
-                DecalTextureElement.style.backgroundImage = decalData.DecalTexture;
+                DecalTextureElement.style.backgroundImage = DecalData.DecalTexture;
                 DecalTextureElement.style.borderTopWidth = 0;
                 DecalTextureElement.style.borderBottomWidth = 0;
                 DecalTextureElement.style.borderLeftWidth = 0;
@@ -395,9 +395,9 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Set DecalData Texture");
             // 贴图状态开关 = 开
-            decalData.HasTexture = true;
+            DecalData.HasTexture = true;
             // 贴图图像设置
-            decalData.DecalTexture = tex;
+            DecalData.DecalTexture = tex;
 
             CheckDecalTextureChanged();
         }
@@ -410,9 +410,9 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Remove DecalData Texture");
             // 贴图状态开关 = 开
-            decalData.HasTexture = false;
+            DecalData.HasTexture = false;
             // 贴图图像设置
-            decalData.DecalTexture = null;
+            DecalData.DecalTexture = null;
 
             CheckDecalTextureChanged();
         }
@@ -519,18 +519,18 @@ namespace SevenStrikeModules.XGraph
             }
 
             element.style.scale = new StyleScale(flipedValue);
-            decalData.scale = flipedValue;
+            DecalData.scale = flipedValue;
         }
         /// <summary>
         /// 将节点置顶显示（最上层显示级别）
         /// </summary>
         public void VisualElementBringToFront()
         {
-            decaldata data = null;
+            ActionDecalData data = null;
 
             for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
             {
-                if (graphView.ActionTreeAsset.DecalDatas[i].guid == decalData.guid)
+                if (graphView.ActionTreeAsset.DecalDatas[i].guid == DecalData.guid)
                 {
                     data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
                     graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
@@ -545,11 +545,11 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void VisualElementSendToBack()
         {
-            decaldata data = null;
+            ActionDecalData data = null;
 
             for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
             {
-                if (graphView.ActionTreeAsset.DecalDatas[i].guid == decalData.guid)
+                if (graphView.ActionTreeAsset.DecalDatas[i].guid == DecalData.guid)
                 {
                     data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
                     graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
@@ -626,7 +626,7 @@ namespace SevenStrikeModules.XGraph
                 Add(m_ObjectPickerIMGUI);
             }
 
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(decalData.DecalTexture, false, typefilter, 0);
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(DecalData.DecalTexture, false, typefilter, 0);
         }
 
         private void OnObjectPickerGUI()

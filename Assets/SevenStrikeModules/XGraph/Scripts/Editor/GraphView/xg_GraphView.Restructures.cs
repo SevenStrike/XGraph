@@ -31,18 +31,18 @@ namespace SevenStrikeModules.XGraph
                 {
                     VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
                     vNode_Relay.Draw();
-                    vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionNodeData.TransparentNode);
+                    vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.TransparentNode);
                     vNode_Relay.RefreshExpandedState();
                 }
                 else
                 {
-                    VNode_Base vNode_Base = Node_Make(data.nodeGraphPosition, data);
+                    VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
                     vNode_Base.Draw();
                     vNode_Base.RefreshExpandedState();
 
                     // 检查头像设置情况
                     vNode_Base.CheckAvatarChanged();
-                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionNodeData.TransparentNode);
+                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
                 }
             });
 
@@ -136,8 +136,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
         /// </summary>
-        /// <param h_name="decaldata"></param>
-        public void Restructure_Sticks(List<stickdata> stickdata)
+        /// <param h_name="ActionDecalData"></param>
+        public void Restructure_Sticks(List<ActionStickData> stickdata)
         {
             // 根据根节点的数据列表重建 NodeViews
             stickdata.ForEach(data =>
@@ -149,8 +149,8 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
         /// </summary>
-        /// <param h_name="decaldata"></param>
-        public void Restructure_Decals(List<decaldata> decaldata)
+        /// <param h_name="ActionDecalData"></param>
+        public void Restructure_Decals(List<ActionDecalData> decaldata)
         {
             // 根据根节点的数据列表重建 NodeViews
             decaldata.ForEach(data =>
@@ -181,7 +181,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 查找 - 行为节点
                     var node = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Base baseNode && baseNode.ActionNodeData.guid == guid);
+                        n is VNode_Base baseNode && baseNode.ActionData.guid == guid);
 
                     if (node != null)
                     {
@@ -191,7 +191,7 @@ namespace SevenStrikeModules.XGraph
 
                     // 查找 - 便签节点
                     var stickNote = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Stick stickNode && stickNode.stickData.guid == guid);
+                        n is VNode_Stick stickNode && stickNode.StickData.guid == guid);
 
                     if (stickNote != null)
                     {
@@ -200,7 +200,7 @@ namespace SevenStrikeModules.XGraph
 
                     // 查找 - 贴图节点
                     var decalNote = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Decal decalNote && decalNote.decalData.guid == guid);
+                        n is VNode_Decal decalNote && decalNote.DecalData.guid == guid);
 
                     if (decalNote != null)
                     {

@@ -43,23 +43,23 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点级类型命名空间 - 前缀
         /// </summary>
-        public string prefix_namespace;
+        public string prefixNamespace;
         /// <summary>
         /// 节点级类型类名 - 前缀
         /// </summary>
-        public string prefix_class;
+        public string prefixClass;
         /// <summary>
         /// 节点级类型行为节点枚举
         /// </summary>
-        public string action_nodeType;
+        public string actionNodeType;
         /// <summary>
         /// 图标名称
         /// </summary>
-        public string icon;
+        public string iconName;
         /// <summary>
         /// 节点级类型视觉节点枚举
         /// </summary>
-        public string visual_nodeType;
+        public string visualNodeType;
     }
     #endregion
 
@@ -159,18 +159,18 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 节点二级分类
                     searchBox_Node item = list[s].catergory_nodes[i];
-                    Texture2D icon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{item.icon}.png");
+                    Texture2D icon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{item.iconName}.png");
                     entries.Add(new SearchTreeEntry(new GUIContent($"   {item.name}", icon))
                     {
                         level = 3,
                         // 需要使用自定义的结构体装箱：行为树节点类型 & 可视化节点类型，传递给菜单项执行OnSelectEntry的时候的创建节点时必要的参数
                         userData = new NodeMenuParam(
                             item.name,
-                            item.prefix_namespace,
-                            item.prefix_class,
-                            item.action_nodeType,
-                            item.icon,
-                            item.visual_nodeType)
+                            item.prefixNamespace,
+                            item.prefixClass,
+                            item.actionNodeType,
+                            item.iconName,
+                            item.visualNodeType)
                     });
                 }
             }
@@ -189,23 +189,49 @@ namespace SevenStrikeModules.XGraph
             graphView.gv_NodeCreatedPosition = graphView.GetGraphMousePosition_With_ScreenMousePosition(context.screenMousePosition);
             NodeMenuParam types = (NodeMenuParam)SearchTreeEntry.userData;
 
-            // 创建对应的节点
-            graphView.Node_Create(
-                types.visual_name,
-                prefix_namespace: types.prefix_namespace,
-                prefix_class: types.prefix_class,
-                action_nodeType: types.action_nodeType,
-                icon: types.icon,
-                titleIcon: null,
-                visual_nodeType: types.visual_nodeType,
-                hasAvatar: false,
-                avatar: null,
-                themeSolution: null,
-                themeColor: Color.white,
-                transparentNode: false,
-                content: null,
-                pos: graphView.GetNodeCreatedPosition(),
-                size: Vector2.one * 100);
+            if (types.action_nodeType == "Stick")
+            {
+                NodeCreateArgs_Stick args = new NodeCreateArgs_Stick();
+                args.stickName = "便签";
+                args.stickContent = "点击此处更改内容";
+                args.position = graphView.GetNodeCreatedPosition();
+                args.size = Vector2.one * 100;
+
+                graphView.CreateNode(args);
+            }
+            else if (types.action_nodeType == "Decal")
+            {
+                NodeCreateArgs_Decal args = new NodeCreateArgs_Decal();
+                args.position = graphView.GetNodeCreatedPosition();
+                args.size = Vector2.one * 100;
+                args.opacity = 1;
+                args.hasTexture = false;
+                args.decalTexture = null;
+
+                graphView.CreateNode(args);
+            }
+            else
+            {
+                NodeCreateArgs_Action args = new NodeCreateArgs_Action();
+                args.visualName = types.visual_name;
+                args.prefixNamespace = types.prefix_namespace;
+                args.prefixClass = types.prefix_class;
+                args.actionNodeType = types.action_nodeType;
+                args.iconName = types.icon;
+                args.nodeIcon = null;
+                args.visualNodeType = types.visual_nodeType;
+                args.hasAvatar = false;
+                args.avatar = null;
+                args.themeSolution = null;
+                args.themeColor = Color.white;
+                args.transparentNode = false;
+                args.content = null;
+                args.position = graphView.GetNodeCreatedPosition();
+                args.size = Vector2.one * 100;
+
+                graphView.CreateNode(args);
+            }
+
             return true;
         }
     }

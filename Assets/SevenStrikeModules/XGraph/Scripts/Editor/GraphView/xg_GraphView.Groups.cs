@@ -142,15 +142,15 @@ namespace SevenStrikeModules.XGraph
             {
                 if (n is VNode_Base node)
                 {
-                    nodes_guid.Add(node.ActionNodeData.guid);
+                    nodes_guid.Add(node.ActionData.guid);
                 }
                 else if (n is VNode_Stick stick)
                 {
-                    nodes_guid.Add(stick.stickData.guid);
+                    nodes_guid.Add(stick.StickData.guid);
                 }
                 else if (n is VNode_Decal decal)
                 {
-                    nodes_guid.Add(decal.decalData.guid);
+                    nodes_guid.Add(decal.DecalData.guid);
                 }
             });
 
@@ -218,7 +218,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (node is VNode_Base bs)
                 {
-                    if (bs.ActionNodeData.actionNodeType != "Relay" && bs.ActionNodeData.HasAvatar)
+                    if (bs.ActionData.actionNodeType != "Relay" && bs.ActionData.HasAvatar)
                     {
                         hasmark = true;
                         break;
@@ -373,7 +373,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is VNode_Base node)
                 {
                     // 获取移入的节点的guid
-                    guid = node.ActionNodeData.guid;
+                    guid = node.ActionData.guid;
 
                     // 注册委托 - 节点头像设置
                     node.OnNodeAvatar_Set += ((n) =>
@@ -391,12 +391,12 @@ namespace SevenStrikeModules.XGraph
                 else if (item is VNode_Stick stick)
                 {
                     // 获取移入的节点的guid
-                    guid = stick.stickData.guid;
+                    guid = stick.StickData.guid;
                 }
                 else if (item is VNode_Decal decal)
                 {
                     // 获取移入的节点的guid
-                    guid = decal.decalData.guid;
+                    guid = decal.DecalData.guid;
                 }
                 // 不重复的节点Guids数据加入
                 if (!string.IsNullOrEmpty(guid) && !groupData.guids.Contains(guid))
@@ -424,7 +424,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is VNode_Base node)
                 {
                     // 获取移出的节点的guid
-                    guid = node.ActionNodeData.guid;
+                    guid = node.ActionData.guid;
 
                     // 清空委托 - 节点头像设置
                     node.OnNodeAvatar_Set = null;
@@ -434,12 +434,12 @@ namespace SevenStrikeModules.XGraph
                 else if (item is VNode_Stick stick)
                 {
                     // 获取移出的节点的guid
-                    guid = stick.stickData.guid;
+                    guid = stick.StickData.guid;
                 }
                 else if (item is VNode_Decal decal)
                 {
                     // 获取移出的节点的guid
-                    guid = decal.decalData.guid;
+                    guid = decal.DecalData.guid;
                 }
                 // 包含节点Guids数据移除
                 if (!string.IsNullOrEmpty(guid) && groupData.guids.Contains(guid))

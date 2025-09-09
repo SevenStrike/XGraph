@@ -17,7 +17,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 鼠标点击事件的回调函数
         /// </summary>
-        /// <param assetName="evt"></param>
+        /// <param name="evt"></param>
         private void Action_PointerDown(PointerDownEvent evt)
         {
             if (gv_GraphWindow == null)
@@ -33,33 +33,38 @@ namespace SevenStrikeModules.XGraph
                 var p_child = edge.input;
                 var p_parent = edge.output;
 
-                // 断开并移除边
+                VNode_Base node_parent = null;
+                VNode_Base node_child = null;
+
+                if (p_parent.node is VNode_Base p_node)
+                    node_parent = p_node;
+                if (p_child.node is VNode_Base c_node)
+                    node_child = c_node;
+
+                //断开并移除边
                 p_parent.Disconnect(edge);
                 p_child.Disconnect(edge);
                 RemoveElement(edge);
 
-                string asm = typeof(ActionNode_Base).Assembly.FullName;
-                Type scriptType_Actiontree = Type.GetType($"SevenStrikeModules.XGraph.ActionNode_Relay,{asm}", true);
+                // 克隆出新的节点
+                NodeCreateArgs_Action args = new NodeCreateArgs_Action();
+                args.visualName = "延展";
+                args.prefixNamespace = "SevenStrikeModules.XGraph";
+                args.prefixClass = "ActionNode_";
+                args.actionNodeType = "Relay";
+                args.iconName = "relay";
+                args.nodeIcon = null;
+                args.visualNodeType = "VNode_Relay";
+                args.hasAvatar = false;
+                args.avatar = null;
+                args.themeSolution = null;
+                args.themeColor = Color.white;
+                args.transparentNode = false;
+                args.content = null;
+                args.position = graphMouse_pos;
+                args.size = Vector2.one * 100;
 
-                // 在行为树根资源中加入新的数据项
-                ActionNode_Base data = InstantiateActionNode(
-                    prefix_namespace: "SevenStrikeModules.XGraph",
-                    prefix_class: "ActionNode_",
-                    type: scriptType_Actiontree,
-                    action_nodeType: "Relay",
-                    icon: "relay",
-                    titleicon: null,
-                    visual_nodeType: "VNode_Relay",
-                    action_name: "延展",
-                    hasAvatar: false,
-                    avatar: null,
-                    themeSolution: null,
-                    themeColor: Color.white,
-                    transparentNode: false,
-                    content: null,
-                    nodeGraphSize: Vector2.one * 100);
-
-                VNode_Relay relaynode = Node_MakeRelay(graphMouse_pos, data);
+                VNode_Relay relaynode = Node_MakeRelay(graphMouse_pos, ActionTreeAsset.Create(args));
                 relaynode.Draw();
                 relaynode.expanded = true;
                 relaynode.RefreshExpandedState();
@@ -94,8 +99,23 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
+            // 隐藏选项面板
+            if (evt.button == (int)MouseButton.MiddleMouse)
+            {
+                gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
+                gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
+            }
+
             // 清空 VariableList 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
+        }
+        /// <summary>
+        /// 鼠标抬起事件的回调函数
+        /// </summary>
+        /// <param name="evt"></param>
+        private void Action_PointerUp(PointerUpEvent evt)
+        {
+            throw new NotImplementedException();
         }
         /// <summary>
         /// 处理快捷键

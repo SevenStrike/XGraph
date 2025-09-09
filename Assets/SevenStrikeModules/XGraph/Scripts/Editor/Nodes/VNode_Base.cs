@@ -143,11 +143,12 @@ namespace SevenStrikeModules.XGraph
 
         public Texture2D tex_logo_dir_sequential;
         public Texture2D tex_logo_dir_concurrent;
+        public Texture2D arrow;
 
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public ActionNode_Base ActionNodeData { get; set; }
+        public ActionNode_Base ActionData { get; set; }
 
         #region 端口
         /// <summary>
@@ -184,7 +185,7 @@ namespace SevenStrikeModules.XGraph
 
             tex_logo_dir_sequential = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
             tex_logo_dir_concurrent = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/concurrent.png");
-
+            arrow = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/arrow.png");
             // 指定GraphView 组件
             this.graphView = graphView;
 
@@ -192,7 +193,7 @@ namespace SevenStrikeModules.XGraph
 
             // 携带数据
             if (data != null)
-                ActionNodeData = data;
+                ActionData = data;
 
             #region 基础参数设置
             this.icon = data.icon;
@@ -239,12 +240,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(this.ActionNodeData, "SetPosition VisualNode");
+            Undo.RecordObject(this.ActionData, "SetPosition VisualNode");
             base.SetPosition(newPos);
-            if (ActionNodeData != null)
+            if (ActionData != null)
             {
-                ActionNodeData.nodeGraphPosition.x = newPos.xMin;
-                ActionNodeData.nodeGraphPosition.y = newPos.yMin;
+                ActionData.nodeGraphPosition.x = newPos.xMin;
+                ActionData.nodeGraphPosition.y = newPos.yMin;
             }
 
             VisualElementDisplay(TitleLabel, true);
@@ -258,7 +259,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragUpdated(DragUpdatedEvent evt)
         {
-            if (ActionNodeData.actionNodeType == "Relay")
+            if (ActionData.actionNodeType == "Relay")
                 return;
 
             // 只关心贴图
@@ -291,7 +292,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragPerform(DragPerformEvent evt)
         {
-            if (ActionNodeData.actionNodeType == "Relay")
+            if (ActionData.actionNodeType == "Relay")
                 return;
             var tex = DragAndDrop.objectReferences[0] as Texture2D;
             if (tex == null) return;
@@ -382,7 +383,7 @@ namespace SevenStrikeModules.XGraph
             Port_Outputs.ForEach(x =>
             {
                 // 绘制端口 - 输出
-                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionNodeData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionNodeData.themeColor);
+                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
 
                 x.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
                 x.Port.Q<Label>().AddToClassList("PortText_Out");
@@ -396,7 +397,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Input()
         {
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionNodeData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionNodeData.themeColor);
+            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
 
             // 样式指定
             Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
@@ -419,9 +420,9 @@ namespace SevenStrikeModules.XGraph
             #region 应用配置文件的颜色到节点的标识颜色
             graphView.ThemesList.Node.ForEach(colorData =>
             {
-                if (colorData.solution == ActionNodeData.themeSolution)
+                if (colorData.solution == ActionData.themeSolution)
                 {
-                    SeperateIconLabel.style.unityBackgroundImageTintColor = ActionNodeData.themeSolution == "M 默认" ? Color.white : ActionNodeData.themeColor;
+                    SeperateIconLabel.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
                 }
             });
             #endregion
@@ -447,14 +448,14 @@ namespace SevenStrikeModules.XGraph
             NodeTitleIconLabel.AddToClassList("Title_Icon");
 
             // 如果指定了图标就不用根据名称指定的图标了
-            if (ActionNodeData.NodeIcon != null)
-                NodeTitleIcon_Set(ActionNodeData.NodeIcon);
+            if (ActionData.NodeIcon != null)
+                NodeTitleIcon_Set(ActionData.NodeIcon);
             else
                 NodeTitleIcon_Restore();
             NodeTitleIconLabel.RegisterCallback<PointerDownEvent>(ChangeTitleIcon);
 
             // 用于显示节点名称
-            TitleLabel = new Label(ActionNodeData.identifyName);
+            TitleLabel = new Label(ActionData.identifyName);
             TitleLabel.AddToClassList("Title_Label");
             TitleLabel.RegisterCallback<PointerDownEvent>((evt) =>
             {
@@ -475,7 +476,7 @@ namespace SevenStrikeModules.XGraph
             {
                 multiline = false
             };
-            TitleInputField.value = ActionNodeData.identifyName;
+            TitleInputField.value = ActionData.identifyName;
             TitleInputField.AddToClassList("Title_TextField");
             TitleInputField.RegisterCallback<BlurEvent>(OnTitleInputFieldBlur);
             VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
@@ -501,7 +502,7 @@ namespace SevenStrikeModules.XGraph
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
             #region 头像组件
-            if (ActionNodeData.HasAvatar)
+            if (ActionData.HasAvatar)
             {
                 RegisterAvatarClicked();
             }
@@ -522,7 +523,7 @@ namespace SevenStrikeModules.XGraph
 
             if (evt.clickCount == 2)
             {
-                OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", ActionNodeData.NodeIcon);
+                OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", ActionData.NodeIcon);
             }
 
             evt.StopPropagation();
@@ -534,12 +535,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnTitleInputFieldBlur(BlurEvent evt)
         {
-            Undo.RecordObject(ActionNodeData, "Change ActionNode Name");
+            Undo.RecordObject(ActionData, "Change ActionNode Name");
 
-            if (TitleInputField.value != ActionNodeData.name && TitleInputField.value != ActionNodeData.identifyName)
-                TitleLabel.text = ActionNodeData.name = ActionNodeData.identifyName = TitleInputField.value;
+            if (TitleInputField.value != ActionData.name && TitleInputField.value != ActionData.identifyName)
+                TitleLabel.text = ActionData.name = ActionData.identifyName = TitleInputField.value;
 
-            ActionNodeData.path = Regex.Replace(ActionNodeData.path, @" > .*?\.asset$", $" > {TitleInputField.value}.asset");
+            ActionData.path = Regex.Replace(ActionData.path, @" > .*?\.asset$", $" > {TitleInputField.value}.asset");
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
@@ -593,7 +594,7 @@ namespace SevenStrikeModules.XGraph
             {
                 m_LastSize = newSize;
 
-                ActionNodeData.nodeGraphSize = newSize;
+                ActionData.nodeGraphSize = newSize;
             }
         }
         /// <summary>
@@ -617,7 +618,7 @@ namespace SevenStrikeModules.XGraph
                 AvatarIcon = new VisualElement();
                 AvatarIcon.name = "AvatarIcon";
                 AvatarIcon.pickingMode = PickingMode.Position;
-                AvatarIcon.style.backgroundImage = ActionNodeData.Avatar;
+                AvatarIcon.style.backgroundImage = ActionData.Avatar;
                 AvatarIcon.AddToClassList("Avatar_Icon");
                 AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
             }
@@ -627,7 +628,7 @@ namespace SevenStrikeModules.XGraph
                 // 双击头像以更换头像
                 if (evt.clickCount == 2)
                 {
-                    OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", ActionNodeData.Avatar);
+                    OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", ActionData.Avatar);
                     evt.StopPropagation();
                 }
             });
@@ -652,11 +653,11 @@ namespace SevenStrikeModules.XGraph
                 return;
 
             // 如果该节点设置了头像
-            if (ActionNodeData.HasAvatar)
+            if (ActionData.HasAvatar)
             {
                 // 头像组件的图片设置
-                if (ActionNodeData.Avatar != null)
-                    AvatarIcon.style.backgroundImage = ActionNodeData.Avatar;
+                if (ActionData.Avatar != null)
+                    AvatarIcon.style.backgroundImage = ActionData.Avatar;
                 else
                     AvatarIcon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png");
                 // 标题组件的缩进内边距
@@ -678,11 +679,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeAvatar_Set(Texture2D tex)
         {
-            Undo.RecordObject(ActionNodeData, "Set ActionNode Avatar");
+            Undo.RecordObject(ActionData, "Set ActionNode Avatar");
             // 头像状态开关 = 开
-            ActionNodeData.HasAvatar = true;
+            ActionData.HasAvatar = true;
             // 头像图像设置
-            ActionNodeData.Avatar = tex;
+            ActionData.Avatar = tex;
 
             CheckAvatarChanged();
 
@@ -696,11 +697,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeAvatar_Remove()
         {
-            Undo.RecordObject(ActionNodeData, "Remove ActionNode Avatar");
+            Undo.RecordObject(ActionData, "Remove ActionNode Avatar");
             // 头像状态开关 = 关
-            ActionNodeData.HasAvatar = false;
+            ActionData.HasAvatar = false;
             // 头像图像移除
-            ActionNodeData.Avatar = null;
+            ActionData.Avatar = null;
 
             CheckAvatarChanged();
 
@@ -733,8 +734,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         public void TransparentDisplay_Set(bool state)
         {
-            Undo.RecordObject(ActionNodeData, $"Set NodeTransparentMode - {state}");
-            ActionNodeData.TransparentNode = state;
+            Undo.RecordObject(ActionData, $"Set NodeTransparentMode - {state}");
+            ActionData.TransparentNode = state;
             CheckTransparentDisplay(state);
         }
         #endregion
@@ -746,9 +747,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeTitleIcon_Set(Texture2D tex)
         {
-            Undo.RecordObject(ActionNodeData, "Set ActionNode TitleIcon");
+            Undo.RecordObject(ActionData, "Set ActionNode TitleIcon");
 
-            ActionNodeData.NodeIcon = tex;
+            ActionData.NodeIcon = tex;
             NodeTitleIconLabel.style.backgroundImage = tex;
         }
 
@@ -775,7 +776,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void UpdateMarkColor()
         {
-            titleContainer.style.borderBottomColor = ActionNodeData.themeColor;
+            titleContainer.style.borderBottomColor = ActionData.themeColor;
         }
         /// <summary>
         /// 节点配色 - 隐藏
@@ -789,7 +790,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void MarkColor_Dislay()
         {
-            titleContainer.style.borderBottomColor = ActionNodeData.themeColor;
+            titleContainer.style.borderBottomColor = ActionData.themeColor;
             titleContainer.style.borderBottomWidth = 1;
         }
         /// <summary>
@@ -830,7 +831,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void CheckExecutionModel()
         {
-            if (ActionNodeData.isConcurrentExecution)
+            if (ActionData.isConcurrentExecution)
                 SetConcurrent();
             else
                 SetSequential();
@@ -867,7 +868,7 @@ namespace SevenStrikeModules.XGraph
                 m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
                 Add(m_ObjectPickerIMGUI);
             }
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionNodeData.Avatar, false, typefilter, 0);
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionData.Avatar, false, typefilter, 0);
         }
 
         private void OnObjectPickerGUI()

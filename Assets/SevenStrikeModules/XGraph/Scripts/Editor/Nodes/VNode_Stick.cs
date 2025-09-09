@@ -58,15 +58,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public stickdata stickData { get; set; }
+        public ActionStickData StickData { get; set; }
 
         /// <summary>
-        /// 初始化节点 - stickdata
+        /// 初始化节点 - ActionStickData
         /// </summary>
         /// <param name="graphView"></param>
         /// <param name="pos"></param>
         /// <param name="data"></param>
-        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, stickdata data = null)
+        public virtual void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionStickData data = null)
         {
             // 指定可调整大小
             capabilities |= Capabilities.Resizable;
@@ -81,7 +81,7 @@ namespace SevenStrikeModules.XGraph
 
             // 携带数据
             if (data != null)
-                stickData = data;
+                StickData = data;
 
             style.width = data.size.x;
             style.height = data.size.y;
@@ -113,7 +113,7 @@ namespace SevenStrikeModules.XGraph
             {
                 m_LastSize = newSize;
 
-                stickData.size = newSize;
+                StickData.size = newSize;
             }
         }
 
@@ -126,10 +126,10 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Position");
             base.SetPosition(newPos);
 
-            if (stickData != null)
+            if (StickData != null)
             {
-                stickData.position.x = newPos.xMin;
-                stickData.position.y = newPos.yMin;
+                StickData.position.x = newPos.xMin;
+                StickData.position.y = newPos.yMin;
             }
         }
 
@@ -166,7 +166,7 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Top()
         {
             #region 便签内容
-            stickContentlabel = new Label(stickData.content);
+            stickContentlabel = new Label(StickData.content);
             stickContentlabel.AddToClassList("Content_Label");
             stickContentlabel.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -186,7 +186,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 便签内容输入框
             stickContentInput = new TextField();
-            stickContentInput.value = stickData.content;
+            stickContentInput.value = StickData.content;
             StyleLength len_width = stickContentInput.style.width;
 
             Length len_w = len_width.value;
@@ -216,7 +216,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 便签标题
-            stickTitlelabel = new Label(stickData.name);
+            stickTitlelabel = new Label(StickData.name);
             stickTitlelabel.AddToClassList("Title_Label");
             stickTitlelabel.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -236,7 +236,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 便签标题输入框
             stickTitleInput = new TextField();
-            stickTitleInput.value = stickData.name;
+            stickTitleInput.value = StickData.name;
             stickTitleInput.AddToClassList("Title_Input");
             stickTitleInput.RegisterCallback<BlurEvent>(OnStickTitleInputBlur);
 
@@ -282,7 +282,7 @@ namespace SevenStrikeModules.XGraph
         private void OnStickContentInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Content");
-            stickData.content = stickContentlabel.text = stickContentInput.value;
+            StickData.content = stickContentlabel.text = stickContentInput.value;
             VisualElementDisplay(stickContentlabel, true);
             VisualElementDisplay(stickContentInput, false);
         }
@@ -293,7 +293,7 @@ namespace SevenStrikeModules.XGraph
         private void OnStickTitleInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Name");
-            stickData.name = stickTitlelabel.text = stickTitleInput.value;
+            StickData.name = stickTitlelabel.text = stickTitleInput.value;
             VisualElementDisplay(stickTitlelabel, true);
             VisualElementDisplay(stickTitleInput, false);
         }
