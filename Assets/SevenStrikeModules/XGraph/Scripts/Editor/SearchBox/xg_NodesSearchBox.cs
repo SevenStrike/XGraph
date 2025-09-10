@@ -207,7 +207,7 @@ namespace SevenStrikeModules.XGraph
                 args.opacity = 1;
                 args.hasTexture = false;
                 args.decalTexture = null;
-
+                args.scale = Vector3.one;
                 graphView.CreateNode(args);
             }
             else

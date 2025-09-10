@@ -55,6 +55,7 @@ namespace SevenStrikeModules.XGraph
         public float opacity;
         public bool hasTexture;
         public Texture2D decalTexture;
+        public Vector3 scale;
     }
 
     [System.Serializable]

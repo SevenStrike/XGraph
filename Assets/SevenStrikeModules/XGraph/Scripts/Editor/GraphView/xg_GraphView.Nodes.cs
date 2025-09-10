@@ -199,7 +199,7 @@ namespace SevenStrikeModules.XGraph
                         args.hasTexture = data.HasTexture;
                         args.decalTexture = data.DecalTexture;
                         args.position = realpos;
-
+                        args.scale = data.scale;
                         AddToSelection(CreateNode(args));
                     }
                     if (node is VNode_Stick node_stick)
@@ -498,7 +498,7 @@ namespace SevenStrikeModules.XGraph
             // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 DecalDatas 变量中
             Undo.RecordObject(ActionTreeAsset, "Create DecalNode");
             // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
-            ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, Vector3.one, args.opacity, args.hasTexture, args.decalTexture);
+            ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, args.scale, args.opacity, args.hasTexture, args.decalTexture);
             ActionTreeAsset.Decal_Add(decaldata);
 
             // 创建新的节点并指定资源数据项
