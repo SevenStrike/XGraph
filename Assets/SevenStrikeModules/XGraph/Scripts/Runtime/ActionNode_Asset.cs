@@ -9,11 +9,12 @@ namespace SevenStrikeModules.XGraph
 #endif
     using UnityEngine;
     using UnityEngine.UIElements;
-    using static UnityEngine.Rendering.GPUSort;
     using Object = UnityEngine.Object;
 
+    #region 创建节点信息结构体
+    [Serializable]
     /// <summary>
-    /// 节点信息结构体 - 行为
+    /// 创建节点信息结构体 - 行为
     /// </summary>
     public struct NodeCreateArgs_Action
     {
@@ -34,8 +35,9 @@ namespace SevenStrikeModules.XGraph
         public Vector2 size;
     }
 
+    [Serializable]
     /// <summary>
-    /// 节点信息结构体 - 便签
+    /// 创建节点信息结构体 - 便签
     /// </summary>
     public struct NodeCreateArgs_Stick
     {
@@ -45,8 +47,9 @@ namespace SevenStrikeModules.XGraph
         public Vector2 size;
     }
 
+    [Serializable]
     /// <summary>
-    /// 节点信息结构体 - 贴图
+    /// 创建节点信息结构体 - 贴图
     /// </summary>
     public struct NodeCreateArgs_Decal
     {
@@ -58,7 +61,24 @@ namespace SevenStrikeModules.XGraph
         public Vector3 scale;
     }
 
-    [System.Serializable]
+    [Serializable]
+    /// <summary>
+    /// 创建节点信息结构体 - 变量
+    /// </summary>
+    public struct NodeCreateArgs_Variable
+    {
+        public string name;
+        public string description;
+        public VariableType type;
+        public Vector2 position;
+        public Vector2 size;
+        public string varguid;
+        public bool transparentNode;
+    }
+    #endregion
+
+    #region 节点数据类
+    [Serializable]
     /// <summary>
     /// 贴纸数据
     /// </summary>
@@ -129,7 +149,7 @@ namespace SevenStrikeModules.XGraph
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     /// <summary>
     /// 便签数据
     /// </summary>
@@ -194,11 +214,11 @@ namespace SevenStrikeModules.XGraph
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     /// <summary>
     /// 编组数据
     /// </summary>
-    public class groupdata
+    public class ActionGroupData
     {
 #if UNITY_EDITOR
         /// <summary>
@@ -239,9 +259,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid_create"></param>
         /// <returns></returns>
-        public groupdata Clone(bool guid_create)
+        public ActionGroupData Clone(bool guid_create)
         {
-            var clone = new groupdata();
+            var clone = new ActionGroupData();
             clone.name = name;
             clone.guid = guid_create ? GUID.Generate().ToString() : guid;
             clone.pos = pos;
@@ -257,7 +277,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 构造器
         /// </summary>
-        public groupdata() { }
+        public ActionGroupData() { }
 
         /// <summary>
         /// 构造器
@@ -267,7 +287,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="pos"></param>
         /// <param name="guids"></param>
         /// <param name="group"></param>
-        public groupdata(string name, string guid, Vector2 pos, List<string> guids, string solution, Group group, VisualElement groupcontainer)
+        public ActionGroupData(string name, string guid, Vector2 pos, List<string> guids, string solution, Group group, VisualElement groupcontainer)
         {
             this.name = name;
             this.guid = guid;
@@ -280,106 +300,96 @@ namespace SevenStrikeModules.XGraph
 #endif
     }
 
-    [System.Serializable]
-    public class BlackboardVariable
+    [Serializable]
+    /// <summary>
+    /// 变量数据
+    /// </summary>
+    public class ActionVariableData
     {
-#if UNITY_EDITOR
-        public string name;
-        public BlackboardVariableType type;
-        public string stringValue;
-        public string des;
-        public float floatValue;
-        public int intValue;
-        public bool boolValue;
-        public Vector2 vector2Value;
-        public Vector3 vector3Value;
-        public Vector4 vector4Value;
-        public Color colorValue;
-        public UnityEngine.Object objectValue;
-        public string variableGUID;
         /// <summary>
-        /// 所有用到属性的节点的guid列表，用于重建节点图连线关系
+        /// 变量节点显示名称
         /// </summary>
-        public List<string> guidsconnector = new List<string>();
+        [SerializeField] public string name;
+        /// <summary>
+        /// 变量节点显示解释
+        /// </summary>
+        [SerializeField] public string description;
+        /// <summary>
+        /// 变量节点识别ID码
+        /// </summary>
+        [SerializeField] public string guid;
+        /// <summary>
+        /// 变量原始识别ID码
+        /// </summary>
+        [SerializeField] public string varguid;
+        /// <summary>
+        /// 变量节点显示类型
+        /// </summary>
+        [SerializeField] public VariableType type;
+        /// <summary>
+        /// 透明背景节点模式
+        /// </summary>
+        [SerializeField] public bool TransparentNode = false;
+        /// <summary>
+        /// 节点位置
+        /// </summary>
+        [SerializeField] public Vector2 position;
+        /// <summary>
+        /// 节点尺寸
+        /// </summary>
+        [SerializeField] public Vector2 size;
 
         /// <summary>
-        /// 黑板属性克隆
+        /// 变量构造器
         /// </summary>
-        /// <returns></returns>
-        public BlackboardVariable Clone(bool guid_create)
+        public ActionVariableData() { }
+        /// <summary>
+        /// 变量构造器
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="type"></param>
+        /// <param name="guid"></param>
+        /// <param name="pos"></param>
+        /// <param name="varguid"></param>
+        public ActionVariableData(string name, string description, VariableType type, string guid, Vector2 pos, Vector2 size, string varguid, bool transparentNode)
         {
-            var clone = new BlackboardVariable();
-            clone.name = name;
-            clone.des = des;
-            clone.type = type;
-            clone.stringValue = stringValue;
-            clone.floatValue = floatValue;
-            clone.intValue = intValue;
-            clone.boolValue = boolValue;
-            clone.vector2Value = vector2Value;
-            clone.vector3Value = vector3Value;
-            clone.vector4Value = vector4Value;
-            clone.objectValue = objectValue;
-            clone.colorValue = colorValue;
-            clone.variableGUID = guid_create ? UnityEditor.GUID.Generate().ToString() : variableGUID;
+            this.name = name;
+            this.description = description;
+            this.type = type;
+            this.guid = guid;
+            this.position = pos;
+            this.size = size;
+            this.varguid = varguid;
+        }
+        /// <summary>
+        /// 变量克隆
+        /// </summary>
+        /// <param name="guid_create"></param>
+        /// <returns></returns>
+        public ActionVariableData Clone(bool guid_create)
+        {
+            var clone = new ActionVariableData();
+            clone.name = this.name;
+            clone.description = this.description;
+            clone.type = this.type;
+#if UNITY_EDITOR
+            clone.guid = guid_create ? GUID.Generate().ToString() : guid;
+#endif
+            clone.position = position;
+            clone.varguid = varguid;
+            clone.size = size;
+            clone.TransparentNode = TransparentNode;
             return clone;
         }
-
-        /// <summary>
-        /// 黑板属性构造
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="stringValue"></param>
-        /// <param name="floatValue"></param>
-        /// <param name="intValue"></param>
-        /// <param name="boolValue"></param>
-        /// <param name="vector2Value"></param>
-        /// <param name="vector3Value"></param>
-        /// <param name="vector4Value"></param>
-        /// <param name="objectValue"></param>
-        /// <returns></returns>
-        public BlackboardVariable(string name = null, string des = null, BlackboardVariableType type = BlackboardVariableType.String, string stringValue = null, float floatValue = 0f, int intValue = 0, bool boolValue = false, Vector2 vector2Value = default, Vector3 vector3Value = default, Vector4 vector4Value = default, Color colorValue = default, Object objectValue = null)
-        {
-            this.name = name;
-            this.des = des;
-            this.type = type;
-            this.stringValue = stringValue;
-            this.floatValue = floatValue;
-            this.intValue = intValue;
-            this.boolValue = boolValue;
-            this.vector2Value = vector2Value;
-            this.vector3Value = vector3Value;
-            this.vector4Value = vector4Value;
-            this.objectValue = objectValue;
-            this.colorValue = colorValue;
-            this.variableGUID = UnityEditor.GUID.Generate().ToString();
-        }
-
-        /// <summary>
-        /// 黑板属性构造
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public BlackboardVariable(string name = null, BlackboardVariableType type = BlackboardVariableType.String)
-        {
-            this.name = name;
-            this.type = type;
-            this.variableGUID = UnityEditor.GUID.Generate().ToString();
-        }
-
-        /// <summary>
-        /// 黑板属性构造
-        /// </summary>
-        public BlackboardVariable() { }
-#endif
     }
+    #endregion
 
+    #region 黑板变量
     /// <summary>
-    /// 黑板值类型
+    /// 黑板变量值类型
     /// </summary>
-    public enum BlackboardVariableType
+    public enum VariableType
     {
         /// <summary>
         /// 值 - 字符串
@@ -420,6 +430,567 @@ namespace SevenStrikeModules.XGraph
     }
 
     [Serializable]
+    /// <summary>
+    /// 黑板变量类
+    /// </summary>
+    public abstract class Variable
+    {
+        public string name;
+        public string guid;
+        public string description;
+        public VariableType type;
+
+        /// <summary>
+        /// 所有用到变量的节点的guid列表，用于重建节点图连线关系
+        /// </summary>
+        public List<string> guidsconnector = new List<string>();
+
+        /// <summary>
+        /// 黑板变量构造
+        /// </summary>
+        public Variable() { }
+
+        /// <summary>
+        /// 黑板变量构造
+        /// </summary>
+        public Variable(string name = null, VariableType type = VariableType.String)
+        {
+            this.name = name;
+            this.type = type;
+#if UNITY_EDITOR
+            this.guid = UnityEditor.GUID.Generate().ToString();
+#endif
+        }
+
+        /// <summary>
+        /// 黑板变量构造（带描述）
+        /// </summary>
+        public Variable(string name = null, string des = null, VariableType type = VariableType.String)
+            : this(name, type) // 调用上面的构造函数
+        {
+            this.description = des;
+        }
+
+        /// <summary>
+        /// 克隆字段到目标变量
+        /// </summary>
+        protected void CloneVars(Variable target, bool guid_create)
+        {
+            target.name = name;
+#if UNITY_EDITOR
+            target.guid = guid_create ? UnityEditor.GUID.Generate().ToString() : guid;
+#endif
+            target.description = description;
+            target.type = type;
+            target.guidsconnector = new List<string>(guidsconnector);
+        }
+
+        /// <summary>
+        /// 克隆变量
+        /// </summary>
+        /// <param name="guid_create"></param>
+        /// <returns></returns>
+        public abstract Variable Clone(bool guid_create);
+
+        /// <summary>
+        /// 获取值 - 拆箱值
+        /// </summary>
+        /// <returns></returns>
+        public abstract object GetValue();
+
+        /// <summary>
+        /// 获取值 - 根据类型
+        /// </summary>
+        /// <param name="T"></param>
+        /// <returns></returns>
+        public abstract T GetValue<T>();
+
+        /// <summary>
+        /// 设置值 - 装箱
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public abstract void SetValue(object value);
+
+        /// <summary>
+        /// 设置值 - 根据类型
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public abstract void SetValue<T>(T value);
+
+        /// <summary>
+        /// 获取值类型
+        /// </summary>
+        /// <returns></returns>
+        public VariableType GetActiveType() => type;
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 整数
+    /// </summary>
+    public class Variable_Int : Variable
+    {
+        public int value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Int(string name, int value = 0) : base(name, VariableType.Int)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is int intValue)
+                this.value = intValue;
+            else
+                throw new InvalidCastException($"Cannot set Int from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(int) && value is int intValue)
+                this.value = intValue;
+            else
+                throw new InvalidCastException($"Cannot set Int from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Int(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 浮点数
+    /// </summary>
+    public class Variable_Float : Variable
+    {
+        public float value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Float(string name, float value = 0) : base(name, VariableType.Float)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is float floatValue)
+                this.value = floatValue;
+            else
+                throw new InvalidCastException($"Cannot set Float from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(float) && value is float floatValue)
+                this.value = floatValue;
+            else
+                throw new InvalidCastException($"Cannot set Float from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Float(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 字符串
+    /// </summary>
+    public class Variable_String : Variable
+    {
+        public string value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_String(string name, string value = "") : base(name, VariableType.String)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is string stringValue)
+                this.value = stringValue;
+            else
+                throw new InvalidCastException($"Cannot set String from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(string) && value is string stringValue)
+                this.value = stringValue;
+            else
+                throw new InvalidCastException($"Cannot set String from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_String(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 布尔
+    /// </summary>
+    public class Variable_Bool : Variable
+    {
+        public bool value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Bool(string name, bool value = false) : base(name, VariableType.Bool)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is bool boolValue)
+                this.value = boolValue;
+            else
+                throw new InvalidCastException($"Cannot set Bool from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(bool) && value is bool boolValue)
+                this.value = boolValue;
+            else
+                throw new InvalidCastException($"Cannot set Bool from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Bool(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - Vector2
+    /// </summary>
+    public class Variable_Vector2 : Variable
+    {
+        public Vector2 value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Vector2(string name, Vector2 value = default) : base(name, VariableType.Vector2)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is Vector2 Vector2Value)
+                this.value = Vector2Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector2 from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(Vector2) && value is Vector2 Vector2Value)
+                this.value = Vector2Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector2 from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Vector2(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - Vector3
+    /// </summary>
+    public class Variable_Vector3 : Variable
+    {
+        public Vector3 value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Vector3(string name, Vector3 value = default) : base(name, VariableType.Vector3)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is Vector3 Vector3Value)
+                this.value = Vector3Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector3 from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(Vector3) && value is Vector3 Vector3Value)
+                this.value = Vector3Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector3 from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Vector3(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - Vector4
+    /// </summary>
+    public class Variable_Vector4 : Variable
+    {
+        public Vector4 value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Vector4(string name, Vector4 value = default) : base(name, VariableType.Vector4)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is Vector4 Vector4Value)
+                this.value = Vector4Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector4 from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(Vector4) && value is Vector4 Vector4Value)
+                this.value = Vector4Value;
+            else
+                throw new InvalidCastException($"Cannot set Vector4 from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Vector4(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 颜色
+    /// </summary>
+    public class Variable_Color : Variable
+    {
+        public Color value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Color(string name, Color value = default) : base(name, VariableType.Color)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is Color ColorValue)
+                this.value = ColorValue;
+            else
+                throw new InvalidCastException($"Cannot set Color from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(Color) && value is Color ColorValue)
+                this.value = ColorValue;
+            else
+                throw new InvalidCastException($"Cannot set Color from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Color(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 变量类型 - 物体
+    /// </summary>
+    public class Variable_Object : Variable
+    {
+        public Object value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_Object(string name, Object value = default) : base(name, VariableType.Object)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is Object ObjectValue)
+                this.value = ObjectValue;
+            else
+                throw new InvalidCastException($"Cannot set Object from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(Object) && value is Object ObjectValue)
+                this.value = ObjectValue;
+            else
+                throw new InvalidCastException($"Cannot set Object from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_Object(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+    #endregion
+
+    #region Graphview 主题类
+    [Serializable]
+    /// <summary>
+    /// Graphview 背景主题样式参数类
+    /// </summary>
     public class GraphviewGridBackgroundThemes
     {
         public Color bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
@@ -448,6 +1019,9 @@ namespace SevenStrikeModules.XGraph
     }
 
     [Serializable]
+    /// <summary>
+    /// Graphview 选择框主题样式参数类
+    /// </summary>
     public class GraphviewRectangleSelectorThemes
     {
         public Color rectangleSelectorLineColor = new Color(1, 1, 1, 0.6f);
@@ -464,6 +1038,77 @@ namespace SevenStrikeModules.XGraph
             t.displayCoordinate = displayCoordinate;
             return t;
         }
+    }
+    #endregion
+
+    #region 主题配置文件类结构
+    [Serializable]
+    /// <summary>
+    /// 编组主题结构
+    /// </summary>
+    public class ThemeData_Group
+    {
+        public string solution = "默认";
+        public string title_bg_color = "#3C725D";
+        public string title_text_color = "#FFFFFF";
+        public string content_bg_color = "#DBDBDB1A";
+        public string logo_color = "#ffffff";
+
+        public ThemeData_Group() { }
+
+        public ThemeData_Group(string solution, string bg_color, string text_color, string content_bg_color, string logo_color)
+        {
+            this.solution = solution;
+            this.title_bg_color = bg_color;
+            this.title_text_color = text_color;
+            this.content_bg_color = content_bg_color;
+            this.logo_color = logo_color;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 节点主题结构
+    /// </summary>
+    public class ThemeData_Node
+    {
+        public string solution = "默认";
+        public string nodecolor = "#747474";
+
+        public ThemeData_Node() { }
+
+        public ThemeData_Node(string solution, string nodecolor)
+        {
+            this.solution = solution;
+            this.nodecolor = nodecolor;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 主题列表
+    /// </summary>
+    public class ThemesList
+    {
+        /// <summary>
+        /// ThemeData_Group 颜色集
+        /// </summary>
+        public List<ThemeData_Group> Group = new List<ThemeData_Group>();
+        /// <summary>
+        /// ThemeData_Node 颜色集
+        /// </summary>
+        public List<ThemeData_Node> Node = new List<ThemeData_Node>();
+    }
+    #endregion
+
+    [Serializable]
+    /// <summary>
+    /// 克隆节点时的参数引用传递类
+    /// </summary>
+    public class DuplicateNodeData
+    {
+        public string SourceNodeGuid;
+        public object DuplicatedNode;
     }
 
     [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionGraphAsset")]
@@ -496,23 +1141,27 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 数据节点列表
         /// </summary>
-        [SerializeField] public List<ActionNode_Base> ActionNodes = new List<ActionNode_Base>();
+        [SerializeField] public List<ActionNode_Base> Actions = new List<ActionNode_Base>();
+        /// <summary>
+        /// 变量节点列表
+        /// </summary>
+        [SerializeField] public List<ActionVariableData> Variables = new List<ActionVariableData>();
         /// <summary>
         /// 便签列表
         /// </summary>
-        [SerializeField] public List<ActionStickData> StickNoteDatas = new List<ActionStickData>();
+        [SerializeField] public List<ActionStickData> Sticks = new List<ActionStickData>();
         /// <summary>
         /// 贴纸列表
         /// </summary>
-        [SerializeField] public List<ActionDecalData> DecalDatas = new List<ActionDecalData>();
+        [SerializeField] public List<ActionDecalData> Decals = new List<ActionDecalData>();
         /// <summary>
         /// 编组列表
         /// </summary>
-        [SerializeField] public List<groupdata> NodeGroupDatas = new List<groupdata>();
+        [SerializeField] public List<ActionGroupData> Groups = new List<ActionGroupData>();
         /// <summary>
-        /// 黑板值列表
+        /// 黑板变量列表
         /// </summary>
-        [SerializeField] public List<BlackboardVariable> BlackboardVariables = new List<BlackboardVariable>();
+        [SerializeReference] public List<Variable> VariableItems = new List<Variable>();
 
         /// <summary>
         /// 刷新
@@ -526,7 +1175,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 创建数据节点到列表中
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
         public ActionNode_Base Create(NodeCreateArgs_Action args)
         {
@@ -558,17 +1207,17 @@ namespace SevenStrikeModules.XGraph
             actionData.nodeGraphSize = args.size;
 
             // 添加到列表中
-            ActionNodes.Add(actionData);
+            Actions.Add(actionData);
 
             // 添加到资源文件下
             AssetDatabase.AddObjectToAsset(actionData, this);
             //AssetDatabase.SaveAssets();
 
             // 创建后获取该行为树节点相对行为树资源根节点的路径
-            string re_path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(ActionNodes[^1]));
+            string re_path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(Actions[^1]));
             string opt_path = re_path.Replace("Temp", $"{this.name}");
-            string combine_path = $"{opt_path}   >   {ActionNodes[^1].name}.asset";
-            ActionNodes[^1].path = combine_path;
+            string combine_path = $"{opt_path}   >   {Actions[^1].name}.asset";
+            Actions[^1].path = combine_path;
 #endif
             return actionData;
         }
@@ -582,7 +1231,7 @@ namespace SevenStrikeModules.XGraph
 
 #if UNITY_EDITOR
             Undo.RecordObject(this, "Removed ChildAction");
-            ActionNodes.Remove(node);
+            Actions.Remove(node);
             Undo.DestroyObjectImmediate(node);
             //AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -595,18 +1244,20 @@ namespace SevenStrikeModules.XGraph
         {
 #if UNITY_EDITOR
             // 移除子级的所有资源
-            foreach (var node in ActionNodes)
+            foreach (var node in Actions)
             {
                 AssetDatabase.RemoveObjectFromAsset(node);
                 DestroyImmediate(node, true);
             }
 
             // 清空资源列表
-            ActionNodes.Clear();
+            Actions.Clear();
             // 清空便签列表
             StickNote_Clear();
             // 清空贴图列表
             Decal_Clear();
+            // 清空变量列表
+            Variable_Clear();
             // 清空编组列表
             NodeGroup_Clear();
 
@@ -634,48 +1285,55 @@ namespace SevenStrikeModules.XGraph
 
             GraphviewRectangleSelectorThemes = root.GraphviewRectangleSelectorThemes.Clone();
 
-            // 覆盖原有的贴图数据列表
-            DecalDatas = new List<ActionDecalData>();
-            foreach (var decal in root.DecalDatas)
+            // 覆盖原有的 Decals 数据列表
+            Decals = new List<ActionDecalData>();
+            foreach (var decal in root.Decals)
             {
-                DecalDatas.Add(decal.Clone(false));
+                Decals.Add(decal.Clone(false));
             }
 
-            // 覆盖原有的便签数据列表
-            StickNoteDatas = new List<ActionStickData>();
-            foreach (var stick in root.StickNoteDatas)
+            // 覆盖原有的 Sticks 数据列表
+            Sticks = new List<ActionStickData>();
+            foreach (var stick in root.Sticks)
             {
-                StickNoteDatas.Add(stick.Clone(false));
+                Sticks.Add(stick.Clone(false));
             }
 
-            // 覆盖原有的编组数据列表
-            NodeGroupDatas = new List<groupdata>();
-            foreach (var group in root.NodeGroupDatas)
+            // 覆盖原有的 Groups 数据列表
+            Groups = new List<ActionGroupData>();
+            foreach (var group in root.Groups)
             {
-                NodeGroupDatas.Add(group.Clone(false));
+                Groups.Add(group.Clone(false));
             }
 
-            // 覆盖原有的黑板数据列表
-            BlackboardVariables = new List<BlackboardVariable>();
-            foreach (var bbv in root.BlackboardVariables)
+            // 覆盖原有的 Variables 数据列表
+            Variables = new List<ActionVariableData>();
+            foreach (var vare in root.Variables)
             {
-                BlackboardVariables.Add(bbv.Clone(false));
+                Variables.Add(vare.Clone(false));
+            }
+
+            // 覆盖原有的 VariableItems 数据列表
+            VariableItems = new List<Variable>();
+            foreach (var vare in root.VariableItems)
+            {
+                VariableItems.Add(vare.Clone(false));
             }
 
             // 创建新节点副本并添加到原始资源中
             Dictionary<ActionNode_Base, ActionNode_Base> dictionary = new Dictionary<ActionNode_Base, ActionNode_Base>();
-            foreach (var sourceNode in root.ActionNodes)
+            foreach (var sourceNode in root.Actions)
             {
                 var newNode = Instantiate(sourceNode);
                 newNode.name = sourceNode.name;
                 newNode.hideFlags = HideFlags.None;
-                ActionNodes.Add(newNode);
+                Actions.Add(newNode);
                 AssetDatabase.AddObjectToAsset(newNode, this);
                 dictionary[sourceNode] = newNode;
             }
 
             // 重建父子引用关系
-            foreach (var source in root.ActionNodes)
+            foreach (var source in root.Actions)
             {
                 if (source is ActionNode_Start s && s.childNode != null)
                 {
@@ -728,35 +1386,42 @@ namespace SevenStrikeModules.XGraph
 
             newRoot.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
 
-            // 实例化新的 StickNoteDatas 列表，并从原始资源复制项
-            newRoot.StickNoteDatas = new List<ActionStickData>();
-            foreach (var item in StickNoteDatas)
+            // 实例化新的 Sticks 列表，并从原始资源复制项
+            newRoot.Sticks = new List<ActionStickData>();
+            foreach (var item in Sticks)
             {
-                newRoot.StickNoteDatas.Add(item.Clone(false));
+                newRoot.Sticks.Add(item.Clone(false));
             }
 
-            // 实例化新的 DecalDatas 列表，并从原始资源复制项
-            newRoot.DecalDatas = new List<ActionDecalData>();
-            foreach (var item in DecalDatas)
+            // 实例化新的 Decals 列表，并从原始资源复制项
+            newRoot.Decals = new List<ActionDecalData>();
+            foreach (var item in Decals)
             {
-                newRoot.DecalDatas.Add(item.Clone(false));
+                newRoot.Decals.Add(item.Clone(false));
             }
 
-            // 实例化新的 groupdata 列表，并从原始资源复制项
-            newRoot.NodeGroupDatas = new List<groupdata>();
-            foreach (var item in NodeGroupDatas)
+            // 实例化新的 Variables 列表，并从原始资源复制项
+            newRoot.Variables = new List<ActionVariableData>();
+            foreach (var item in Variables)
+            {
+                newRoot.Variables.Add(item.Clone(false));
+            }
+
+            // 实例化新的 Groups 列表，并从原始资源复制项
+            newRoot.Groups = new List<ActionGroupData>();
+            foreach (var item in Groups)
             {
 #if UNITY_EDITOR
-                newRoot.NodeGroupDatas.Add(item.Clone(false));
+                newRoot.Groups.Add(item.Clone(false));
 #endif
             }
 
-            // 实例化新的 blackboardVariable 列表，并从原始资源复制项
-            newRoot.BlackboardVariables = new List<BlackboardVariable>();
-            foreach (var bbv in BlackboardVariables)
+            // 实例化新的 VariableItems 列表，并从原始资源复制项
+            newRoot.VariableItems = new List<Variable>();
+            foreach (var bbv in VariableItems)
             {
 #if UNITY_EDITOR
-                newRoot.BlackboardVariables.Add(bbv.Clone(false));
+                newRoot.VariableItems.Add(bbv.Clone(false));
 #endif
             }
 
@@ -769,7 +1434,7 @@ namespace SevenStrikeModules.XGraph
             Dictionary<ActionNode_Base, ActionNode_Base> originalRootDic = new Dictionary<ActionNode_Base, ActionNode_Base>();
 
             // 第一步：复制所有节点（不处理父子关系）
-            foreach (var node in this.ActionNodes)
+            foreach (var node in this.Actions)
             {
                 ActionNode_Base newTreeNode = Object.Instantiate(node);
                 newTreeNode.name = node.name;
@@ -785,12 +1450,12 @@ namespace SevenStrikeModules.XGraph
                 else if (newTreeNode is ActionNode_Composite newComp)
                     newComp.childNodes.Clear();
 
-                newRoot.ActionNodes.Add(newTreeNode);
+                newRoot.Actions.Add(newTreeNode);
                 originalRootDic[node] = newTreeNode;
             }
 
             // 第二步：重建父子关系
-            foreach (var node in this.ActionNodes)
+            foreach (var node in this.Actions)
             {
                 ActionNode_Base newParentNode = originalRootDic[node];
 
@@ -872,7 +1537,7 @@ namespace SevenStrikeModules.XGraph
 
             // 保存为临时.asset 文件，供Unity资源系统进行操作
             AssetDatabase.CreateAsset(root, path);
-            foreach (var treenode in root.ActionNodes)
+            foreach (var treenode in root.Actions)
             {
                 AssetDatabase.AddObjectToAsset(treenode, root);
             }
@@ -1096,14 +1761,14 @@ namespace SevenStrikeModules.XGraph
         /// <param name="data"></param>
         public void StickNote_Add(ActionStickData data)
         {
-            StickNoteDatas.Add(data);
+            Sticks.Add(data);
         }
         /// <summary>
         /// 清空便签数据列表
         /// </summary>
         public void StickNote_Clear()
         {
-            StickNoteDatas.Clear();
+            Sticks.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif
@@ -1114,7 +1779,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="data"></param>
         public void StickNote_Remove(ActionStickData data)
         {
-            StickNoteDatas.Remove(data);
+            Sticks.Remove(data);
         }
         #endregion
 
@@ -1125,25 +1790,71 @@ namespace SevenStrikeModules.XGraph
         /// <param name="data"></param>
         public void Decal_Add(ActionDecalData data)
         {
-            DecalDatas.Add(data);
+            Decals.Add(data);
         }
         /// <summary>
-        /// 清空便签数据列表
+        /// 清空贴图数据列表
         /// </summary>
         public void Decal_Clear()
         {
-            DecalDatas.Clear();
+            Decals.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif
         }
         /// <summary>
-        /// 移除目标便签数据
+        /// 移除目标贴图数据
         /// </summary>
         /// <param name="data"></param>
         public void Decal_Remove(ActionDecalData data)
         {
-            DecalDatas.Remove(data);
+            Decals.Remove(data);
+        }
+        #endregion
+
+        #region 变量操作
+        /// <summary>
+        /// 添加变量数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Variable_Add(ActionVariableData data)
+        {
+            Variables.Add(data);
+        }
+        /// <summary>
+        /// 清空变量数据列表
+        /// </summary>
+        public void Variable_Clear()
+        {
+            Variables.Clear();
+#if UNITY_EDITOR
+            //AssetDatabase.SaveAssets();
+#endif
+        }
+        /// <summary>
+        /// 移除目标变量数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Variable_Remove(ActionVariableData data)
+        {
+            Variables.Remove(data);
+        }
+        /// <summary>
+        /// 获取目标变量源头数据
+        /// </summary>
+        /// <param name="data"></param>
+        public Variable Variable_GetVarSource(string varguid)
+        {
+            Variable vare = null;
+            VariableItems.ForEach((n) =>
+            {
+                if (varguid == n.guid)
+                {
+                    vare = n;
+                }
+            });
+
+            return vare;
         }
         #endregion
 
@@ -1152,16 +1863,16 @@ namespace SevenStrikeModules.XGraph
         /// 添加编组数据
         /// </summary>
         /// <param name="data"></param>
-        public void NodeGroup_Add(groupdata data)
+        public void NodeGroup_Add(ActionGroupData data)
         {
-            NodeGroupDatas.Add(data);
+            Groups.Add(data);
         }
         /// <summary>
         /// 清空编组数据列表
         /// </summary>
         public void NodeGroup_Clear()
         {
-            BlackboardVariables.Clear();
+            VariableItems.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif
@@ -1170,9 +1881,9 @@ namespace SevenStrikeModules.XGraph
         /// 移除目标编组数据
         /// </summary>
         /// <param name="data"></param>
-        public void NodeGroup_Remove(groupdata data)
+        public void NodeGroup_Remove(ActionGroupData data)
         {
-            NodeGroupDatas.Remove(data);
+            Groups.Remove(data);
         }
         #endregion
     }

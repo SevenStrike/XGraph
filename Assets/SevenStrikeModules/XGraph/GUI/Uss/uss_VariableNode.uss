@@ -1,0 +1,113 @@
+.unity-text-element.Title_Label
+{
+     font-size: 12px;
+     height: 20px;
+     width: auto;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     padding-right: 10px;
+     letter-spacing: 10px;
+     left: 22px;
+     -unity-text-align: middle-left;
+     margin-right: 25px;
+     flex-grow: 1;
+}
+
+.Title_Icon
+{
+     top: 0px;
+     left: 12px;
+     border-bottom-left-radius: 10px;
+     border-bottom-right-radius: 10px;
+     border-top-left-radius: 10px;
+     border-top-right-radius: 10px;
+     height: 5px;
+     width: 5px;
+     margin-right: 0;
+}
+
+.Title_Group
+{
+     flex-direction: row;
+     width: 100%;
+     height: 100%;
+     align-items: center;
+}
+
+.port.output > #type.PortTextOut
+{
+     font-size: 12px;
+     -unity-font-style: bold;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     margin-right: 18px;
+}
+
+.port.output.PortOut
+{
+     width: auto;
+     height: 35px;
+     margin-right: -25px;
+}
+
+#contents > #top > #input
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+#contents > #top
+{
+     background-color: rgba(0, 0, 0, 0);
+     height: 30px;
+}
+
+#node-border
+{
+     background-color: rgba(40, 40, 40, 1);
+     border-top-left-radius: 16px;
+     border-top-right-radius: 16px;
+     border-bottom-right-radius: 16px;
+     border-bottom-left-radius: 16px;
+     min-width: 120px;
+}
+
+#divider.horizontal
+{
+     display: none;
+}
+
+#divider.vertical
+{
+     display: none;
+}
+
+#contents > #top > #output
+{
+     background-color: rgba(0, 0, 0, 0);
+}
+
+.TitleContainer
+{
+     display: none;
+}
+
+#selection-border
+{
+     border-top-left-radius: 18px;
+     border-top-right-radius: 18px;
+     border-bottom-right-radius: 18px;
+     border-bottom-left-radius: 18px;
+}
+
+.Highlighter
+{
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     border-top-left-radius: 16px;
+     border-top-right-radius: 16px;
+     border-bottom-right-radius: 16px;
+     border-bottom-left-radius: 16px;
+     transition-property: background-color,opacity;
+     transition-duration: 0.3s,0.3s;
+     transition-timing-function: ease-out-cubic,ease-out-cubic;
+}

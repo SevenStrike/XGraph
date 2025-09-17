@@ -1,9 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -77,8 +74,8 @@ namespace SevenStrikeModules.XGraph
                 relaynode.RefreshExpandedState();
                 relaynode.RefreshPorts();
 
-                Edge edge1 = relaynode.Port_Input.Port.ConnectTo(p_parent);
-                Edge edge2 = relaynode.Port_Outputs.First().Port.ConnectTo(p_child);
+                Edge edge1 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(relaynode.Port_Inputs).ConnectTo(p_parent);
+                Edge edge2 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(relaynode.Port_Outputs).ConnectTo(p_child);
 
                 AddElement(edge1);
                 AddElement(edge2);
@@ -106,7 +103,7 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
-            // 清空 VariableList 选中状态
+            // 清空 VariableItems 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
         }
         /// <summary>
@@ -188,7 +185,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         private void Action_On_NodeColorDisplayer_Changed(bool state)
         {
-            ActionTreeAsset.ActionNodes.ForEach(data =>
+            ActionTreeAsset.Actions.ForEach(data =>
             {
                 nodes.ForEach(nodes =>
                 {

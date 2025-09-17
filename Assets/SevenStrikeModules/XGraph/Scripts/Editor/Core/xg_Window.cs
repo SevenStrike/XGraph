@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
     using UnityEditor;
     using UnityEditor.Callbacks;
+    using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -257,7 +257,7 @@
         /// <summary>
         /// 当前选中的视觉节点
         /// </summary>
-        VNode_Base xw_currentSelectedVisualNode;
+        Node xw_currentSelectedVisualNode;
         /// <summary>
         /// 此参数用于当取消选中视觉节点的时候的单次执行的判断开关，
         /// </summary>
@@ -572,18 +572,18 @@
 
             VisualElement paramtypes = xw_OptionsContainerRegion_Reg_BlackBoards.Q<VisualElement>(name: "paramTypes");
 
-            // 获取所有名称为dot的VisualElement
+            // 获取所有名称为dot的 VisualElement
             var dotElements = paramtypes.Query<VisualElement>(name: "dot").ToList();
 
             for (int i = 0; i < dotElements.Count; i++)
             {
                 VisualElement dot = dotElements[i];
                 string dotparentName = dot.parent.name;
-                for (int s = 0; s < xw_BlackBoardView.VariableThemes.VariableThemes.Count; s++)
+                for (int s = 0; s < xw_BlackBoardView.VariableThemeList.VariableThemes.Count; s++)
                 {
-                    if (dotparentName == $"param_type_{xw_BlackBoardView.VariableThemes.VariableThemes[s].type.ToLower()}")
+                    if (dotparentName == $"param_type_{xw_BlackBoardView.VariableThemeList.VariableThemes[s].type}")
                     {
-                        dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemes.VariableThemes[s].color);
+                        dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemeList.VariableThemes[s].color);
                     }
                 }
             }
@@ -592,6 +592,10 @@
             var labelElements = paramtypes.Query<Label>().ToList();
             foreach (var item in labelElements)
             {
+                // 便于查找高亮节点
+                string typeName = item.name.Substring(4, item.name.Length - 4);
+                item.userData = typeName;
+
                 item.RegisterCallback<PointerEnterEvent>(ValriablesInGraphview_SyncDisplay);
                 item.RegisterCallback<PointerLeaveEvent>(ValriablesInGraphview_SyncHide);
             }
@@ -870,7 +874,7 @@
         /// 当选中视觉节点时执行
         /// </summary>
         /// <param name="nodeview"></param>
-        private void OnSelectNodeView(VNode_Base nodeview)
+        private void OnSelectNodeView(Node nodeview)
         {
             if (nodeview == null) return;
 
@@ -884,18 +888,33 @@
             // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
             xw_InspectorView.UpdateSelection(nodeview);
 
-            // 加载 Inspector 面板标题文字
-            InspectorViewAction_SetTitle($"节点属性 - {nodeview.ActionData.identifyName}");
+            // 如果选中的节点是 VNode_Base 类型
+            if (nodeview is VNode_Base n_base)
+            {
+                // 加载 Inspector 面板标题文字
+                InspectorViewAction_SetTitle($"节点属性 - {n_base.ActionData.identifyName}");
 
-            // 显示当前选中的节点的类型信息
-            InspectorViewAction_SetNodeInfo(nodeview.ActionData.GetInfo(), nodeview.ActionData.GetPath());
+                // 显示当前选中的节点的类型信息
+                InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
+            }
+
+            // 如果选中的节点是 VNode_Variable 类型
+            if (nodeview is VNode_Variable n_vare)
+            {
+                // 加载 Inspector 面板标题文字
+                InspectorViewAction_SetTitle($"变量属性 - {n_vare.VariableData.varguid}");
+
+                // 显示当前选中的节点的类型信息
+                InspectorViewAction_SetNodeInfo("...", "...");
+            }
+
             xw_isUnSelectedNode = false;
         }
         /// <summary>
-        /// 当选中视觉节点时执行
+        /// 当选中多个视觉节点时执行
         /// </summary>
         /// <param name="nodeviews"></param>
-        private void OnSelectionNodesView(List<VNode_Base> nodeviews)
+        private void OnSelectionNodesView(List<Node> nodeviews)
         {
             if (nodeviews == null) return;
 
@@ -911,11 +930,24 @@
                 // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
                 xw_InspectorView.UpdateSelection(nodeviews[0]);
 
-                // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"节点属性 - {nodeviews[0].ActionData.identifyName}");
 
-                // 显示当前选中的节点的类型信息
-                InspectorViewAction_SetNodeInfo(nodeviews[0].ActionData.GetInfo(), nodeviews[0].ActionData.GetPath());
+                if (nodeviews[0] is VNode_Base n_base)
+                {
+                    // 加载 Inspector 面板标题文字
+                    InspectorViewAction_SetTitle($"节点属性 - {n_base.title}");
+                    // 显示当前选中的节点的类型信息
+                    InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
+                    Debug.Log("选中了行为节点");
+                }
+
+                if (nodeviews[0] is VNode_Variable n_vare)
+                {
+                    // 加载 Inspector 面板标题文字
+                    InspectorViewAction_SetTitle($"节点属性 - {n_vare.VariableData.varguid}");
+                    // 显示当前选中的节点的类型信息
+                    InspectorViewAction_SetNodeInfo("", "");
+                    Debug.Log("选中了变量节点");
+                }
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -936,7 +968,7 @@
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
         /// <param name="nodeviews"></param>
-        private void OnRemovedSelectionNodesView(List<VNode_Base> nodeviews)
+        private void OnRemovedSelectionNodesView(List<Node> nodeviews)
         {
             if (nodeviews == null) return;
             if (nodeviews.Count > 1 || nodeviews.Count == 0)
@@ -948,7 +980,7 @@
         /// 取消选中视觉节点时执行
         /// </summary>
         /// <param name="nodeview"></param>
-        private void OnUnSelectNodeView(VNode_Base nodeview)
+        private void OnUnSelectNodeView(Node nodeview)
         {
             if (!xw_isUnSelectedNode)
             {
@@ -1210,7 +1242,26 @@
         private void ValriablesInGraphview_SyncDisplay(PointerEnterEvent evt)
         {
             Label label = evt.target as Label;
-            //Debug.Log($"Variable - 高亮显示：{label.name}");
+
+            #region 鼠标悬停样式           
+            for (int s = 0; s < xw_BlackBoardView.VariableThemeList.VariableThemes.Count; s++)
+            {
+                if ((string)label.userData == xw_BlackBoardView.VariableThemeList.VariableThemes[s].type)
+                {
+                    util_XGraphEditorUtility.Element_BackgroundColor_Set(label, util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemeList.VariableThemes[s].color));
+                    util_XGraphEditorUtility.Element_Color_Set(label, Color.black);
+                }
+            }
+            #endregion
+
+            #region 高亮显示节点
+            VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
+            List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
+            vNode_Variables.ForEach(v =>
+            {
+                v.Highlight();
+            });
+            #endregion
         }
         /// <summary>
         /// 鼠标离开时在节点视图中同类型节点恢复正常
@@ -1219,7 +1270,21 @@
         private void ValriablesInGraphview_SyncHide(PointerLeaveEvent evt)
         {
             Label label = evt.target as Label;
-            //Debug.Log($"Variable - 恢复正常显示：{label.name}");
+
+            #region 鼠标离开样式
+            label.style.backgroundColor = Color.clear;
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(label, Color.clear);
+            util_XGraphEditorUtility.Element_Color_Set(label, Color.white);
+            #endregion
+
+            #region 取消高亮显示节点
+            VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
+            List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
+            vNode_Variables.ForEach(v =>
+            {
+                v.UnHighlight();
+            });
+            #endregion
         }
         #endregion
 
@@ -1792,7 +1857,7 @@
             /* 撤销或重做操作时对节点视图进行刷新的逻辑*/
 
             // 检测并刷新所有视觉节点的位置
-            foreach (var dataNode in CloneTree.ActionNodes)
+            foreach (var dataNode in CloneTree.Actions)
             {
                 var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as VNode_Base;
                 if (visualNode != null)
@@ -1910,14 +1975,14 @@
         public void xw_BlackBoard_UpdateTitleInfo()
         {
             xw_BlackBoardView.label_title.text = SourceTree.name;
-            xw_BlackBoardView.label_sub.text = $"节点：{CloneTree.ActionNodes.Count}  /  便签：{CloneTree.StickNoteDatas.Count}  /  编组：{CloneTree.NodeGroupDatas.Count}";
+            xw_BlackBoardView.label_sub.text = $"行为：{CloneTree.Actions.Count}  /  便签：{CloneTree.Sticks.Count}  /  贴图：{CloneTree.Decals.Count}  /  变量：{CloneTree.VariableItems.Count}";
         }
         /// <summary>
         /// 读取 BlackBoardVariables 属性列表
         /// </summary>
         public void xw_BlackBoard_VariablesRestructure()
         {
-            xw_BlackBoardView.Restructure(CloneTree.BlackboardVariables);
+            xw_BlackBoardView.Restructure(CloneTree.VariableItems);
         }
         /// <summary>
         /// 设置工具栏前端图标

@@ -10,62 +10,95 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine.UIElements;
     using Color = UnityEngine.Color;
 
-    #region 主题配置文件类结构
-    [Serializable]
-    public class ThemeData_Group
+    public class xGraph_NodePort
     {
-        public string solution = "默认";
-        public string title_bg_color = "#3C725D";
-        public string title_text_color = "#FFFFFF";
-        public string content_bg_color = "#DBDBDB1A";
-        public string logo_color = "#ffffff";
-
-        public ThemeData_Group() { }
-
-        public ThemeData_Group(string solution, string bg_color, string text_color, string content_bg_color, string logo_color)
+        /// <summary>
+        /// 端口
+        /// </summary>
+        public Port Port;
+        /// <summary>
+        /// 端口圈
+        /// </summary>
+        public VisualElement PortDonut;
+        /// <summary>
+        /// 端口名称
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 端口类型
+        /// </summary>
+        public Type Type { get; set; }
+        /// <summary>
+        /// 连线方式
+        /// </summary>
+        public Port.Capacity Capacity { get; set; }
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param root_title="catergory_title"></param>
+        /// <param root_title="type"></param>
+        /// <param root_title="capacity"></param>
+        public xGraph_NodePort(string name, Type type, Port.Capacity capacity)
         {
-            this.solution = solution;
-            this.title_bg_color = bg_color;
-            this.title_text_color = text_color;
-            this.content_bg_color = content_bg_color;
-            this.logo_color = logo_color;
+            Name = name;
+            Type = type;
+            Capacity = capacity;
+        }
+
+        public xGraph_NodePort()
+        {
+
         }
     }
 
-    [Serializable]
-    public class ThemeData_Node
-    {
-        public string solution = "默认";
-        public string nodecolor = "#747474";
-
-        public ThemeData_Node() { }
-
-        public ThemeData_Node(string solution, string nodecolor)
-        {
-            this.solution = solution;
-            this.nodecolor = nodecolor;
-        }
-    }
-
-    [Serializable]
-    public class ThemesList
+    /// <summary>
+    /// GraphView 容器类型
+    /// </summary>
+    public enum GraphNodeContainerType
     {
         /// <summary>
-        /// Graphview Group 颜色集
+        /// 主容器
         /// </summary>
-        public List<ThemeData_Group> Group = new List<ThemeData_Group>();
+        MainContainer = 0,
         /// <summary>
-        /// Graphview BgGrid 颜色集
+        /// 标题
         /// </summary>
-        public List<ThemeData_Node> Node = new List<ThemeData_Node>();
+        TitleContainer = 1,
+        /// <summary>
+        /// 标题按钮
+        /// </summary>
+        TitleButtonContainer = 2,
+        /// <summary>
+        /// 顶部容器
+        /// </summary>
+        TopContainer = 3,
+        /// <summary>
+        /// 输入端口容器
+        /// </summary>
+        InputContainer = 4,
+        /// <summary>
+        /// 输出端口容器
+        /// </summary>
+        OutputContainer = 5,
+        /// <summary>
+        /// 扩展容器
+        /// </summary>
+        ExtensionContainer = 6,
     }
-    #endregion
 
-    [Serializable]
-    public class DuplicateNodeData
+    /// <summary>
+    /// PortStyle 类型
+    /// </summary>
+    public enum PortStyleType
     {
-        public string SourceNodeGuid;
-        public object DuplicatedNode;
+        /// <summary>
+        /// 输入
+        /// </summary>
+        In = 0,
+        /// <summary>
+        /// 输出
+        /// </summary>
+        Out = 1,
     }
 
     /// <summary>
@@ -101,19 +134,19 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当节点被选中时的回调委托
         /// </summary>
-        public Action<VNode_Base> OnSelectedNode;
+        public Action<Node> OnSelectedNode;
         /// <summary>
         /// 当节点被取消选中时的回调委托
         /// </summary>
-        public Action<VNode_Base> OnUnSelectedNode;
+        public Action<Node> OnUnSelectedNode;
         /// <summary>
         /// 当节点被选中时的回调委托
         /// </summary>
-        public Action<List<VNode_Base>> OnSelectionNodes;
+        public Action<List<Node>> OnSelectionNodes;
         /// <summary>
         /// 当节点被移除选中时的回调委托
         /// </summary>
-        public Action<List<VNode_Base>> OnRemoveSelectionNodes;
+        public Action<List<Node>> OnRemoveSelectionNodes;
         /// <summary>
         /// 当节点被移除选中时的回调委托
         /// </summary>
@@ -141,11 +174,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当前选中的所有节点 - 基础
         /// </summary>
-        private List<VNode_Base> CurrentSelectedNodes_Base = new List<VNode_Base>();
+        private List<Node> CurrentSelectedNodes_Base = new List<Node>();
         /// <summary>
         /// 当前选中的所有节点 - 贴图
         /// </summary>
         private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
+        /// <summary>
+        /// 当前选中的所有节点 - 变量
+        /// </summary>
+        private List<Node> CurrentSelectedNodes_Variable = new List<Node>();
         /// <summary>
         /// 当前选中的所有节点 - 便签
         /// </summary>
@@ -166,10 +203,6 @@ namespace SevenStrikeModules.XGraph
         /// 节点颜色标记开关
         /// </summary>
         private bool NodeColorDisplay = false;
-        /// <summary>
-        /// 指示物体选择器是否已经打开
-        /// </summary>
-        private bool monitoringObjectPicker = false;
         private IMGUIContainer m_ObjectPickerIMGUI;
         /// <summary>
         /// 用于打开贴图选择器后选择贴图应用的模式
@@ -372,7 +405,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        private VNode_Base FindNodeView(string guid)
+        public VNode_Base FindNodeView(string guid)
         {
             return GetNodeByGuid(guid) as VNode_Base;
         }
@@ -381,7 +414,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        private Node FindNode(string guid)
+        public Node FindNode(string guid)
         {
             return GetNodeByGuid(guid) as Node;
         }
@@ -456,11 +489,10 @@ namespace SevenStrikeModules.XGraph
             // 第二个参数是缩放，这里设为 scale,scale,1 表示缩放到scale，Z值保持1即可
             UpdateViewTransform(position, new Vector3(scale, scale, 1));
         }
-        #endregion
+        #endregion       
         #endregion
 
         #region 内部重写方法
-
         /// <summary>
         /// 添加到选择集中
         /// </summary>
@@ -468,37 +500,52 @@ namespace SevenStrikeModules.XGraph
         public override void AddToSelection(ISelectable selectable)
         {
             base.AddToSelection(selectable);
-            List<VNode_Base> gvs = new List<VNode_Base>();
-            List<VNode_Decal> gvd = new List<VNode_Decal>();
-            List<VNode_Stick> gvk = new List<VNode_Stick>();
-            List<Group> gps = new List<Group>();
+            List<Node> g_node_actions = new List<Node>();
+            List<Node> g_node_variables = new List<Node>();
+            List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
+            List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
+            List<Group> g_node_groups = new List<Group>();
             selection.ForEach(n =>
             {
                 if (n is VNode_Base node)
                 {
-                    if (node.ActionData.actionNodeType != "StickNote")
-                        gvs.Add(node);
+                    if (node.ActionData.actionNodeType != "Stick")
+                        g_node_actions.Add(node);
+                }
+                if (n is VNode_Variable vare)
+                {
+                    g_node_variables.Add(vare);
                 }
                 if (n is VNode_Decal decal)
                 {
-                    gvd.Add(decal);
+                    g_node_decals.Add(decal);
                 }
                 if (n is VNode_Stick stick)
                 {
-                    gvk.Add(stick);
+                    g_node_sticks.Add(stick);
                 }
                 if (n is Group gp)
                 {
-                    gps.Add(gp);
+                    g_node_groups.Add(gp);
                 }
             });
-            CurrentSelectedGroups = gps;
-            CurrentSelectedNodes_Base = gvs;
-            CurrentSelectedNodes_Decal = gvd;
-            CurrentSelectedNodes_Stick = gvk;
+            CurrentSelectedNodes_Base = g_node_actions;
+            CurrentSelectedNodes_Variable = g_node_variables;
+            CurrentSelectedNodes_Decal = g_node_decals;
+            CurrentSelectedNodes_Stick = g_node_sticks;
+            CurrentSelectedGroups = g_node_groups;
 
             if (OnSelectionNodes != null)
-                OnSelectionNodes(gvs);
+            {
+                // 此处为何要这样做？
+                // 因为 xg_Window 会调用该回调来明确点击的节点的属性在Inspector面板上显示
+                // 请关注 xg_Window 中的 OnSelectionNodesView 回调方法
+                // 如果此处不合并行为节点和变量节点就会导致在节点视图中点击行为节点可以看到属性，但是变量节点则不能
+                List<Node> selectionNodes = new List<Node>();
+                selectionNodes.AddRange(g_node_actions);
+                selectionNodes.AddRange(g_node_variables);
+                OnSelectionNodes(selectionNodes);
+            }
         }
         /// <summary>
         /// 从节点选择集中移除
@@ -507,36 +554,51 @@ namespace SevenStrikeModules.XGraph
         public override void RemoveFromSelection(ISelectable selectable)
         {
             base.RemoveFromSelection(selectable);
-            List<VNode_Base> gvs = new List<VNode_Base>();
-            List<VNode_Decal> gvd = new List<VNode_Decal>();
-            List<VNode_Stick> gvk = new List<VNode_Stick>();
-            List<Group> gps = new List<Group>();
+            List<Node> g_node_actions = new List<Node>();
+            List<Node> g_node_variables = new List<Node>();
+            List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
+            List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
+            List<Group> g_node_groups = new List<Group>();
             selection.ForEach(n =>
             {
                 if (n is VNode_Base node)
                 {
-                    gvs.Add(node);
+                    g_node_actions.Add(node);
+                }
+                if (n is VNode_Variable vare)
+                {
+                    g_node_variables.Add(vare);
                 }
                 if (n is VNode_Decal decal)
                 {
-                    gvd.Add(decal);
+                    g_node_decals.Add(decal);
                 }
                 if (n is VNode_Stick stick)
                 {
-                    gvk.Add(stick);
+                    g_node_sticks.Add(stick);
                 }
                 if (n is Group gp)
                 {
-                    gps.Add(gp);
+                    g_node_groups.Add(gp);
                 }
             });
-            CurrentSelectedGroups = gps;
-            CurrentSelectedNodes_Base = gvs;
-            CurrentSelectedNodes_Decal = gvd;
-            CurrentSelectedNodes_Stick = gvk;
+            CurrentSelectedNodes_Base = g_node_actions;
+            CurrentSelectedNodes_Variable = g_node_variables;
+            CurrentSelectedNodes_Decal = g_node_decals;
+            CurrentSelectedNodes_Stick = g_node_sticks;
+            CurrentSelectedGroups = g_node_groups;
 
             if (OnRemoveSelectionNodes != null)
-                OnRemoveSelectionNodes(gvs);
+            {
+                // 此处为何要这样做？
+                // 因为 xg_Window 会调用该回调来明确点击的节点的属性在Inspector面板上显示
+                // 请关注 xg_Window 中的 OnSelectionNodesView 回调方法
+                // 如果此处不合并行为节点和变量节点就会导致在节点视图中点击行为节点可以看到属性，但是变量节点则不能
+                List<Node> selectionNodes = new List<Node>();
+                selectionNodes.AddRange(g_node_actions);
+                selectionNodes.AddRange(g_node_variables);
+                OnRemoveSelectionNodes(selectionNodes);
+            }
         }
         /// <summary>
         /// 重写删除方法，为了确保编组删除时保留内部节点
@@ -556,7 +618,6 @@ namespace SevenStrikeModules.XGraph
             // 3. 处理其他元素的删除
             return base.DeleteSelection(); // 调用原始逻辑删除非Group元素
         }
-
         #endregion
 
         #region 连线规则
@@ -586,6 +647,9 @@ namespace SevenStrikeModules.XGraph
 
                 // 确保不是同一个节点的端口（防止自连接）
                 if (startNode == port.node)
+                    return;
+
+                if (startPort.portType != port.portType)
                     return;
 
                 compatiblePorts.Add(port);

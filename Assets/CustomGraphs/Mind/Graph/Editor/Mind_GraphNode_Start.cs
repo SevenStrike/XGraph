@@ -43,7 +43,7 @@ namespace SevenStrikeModules.XGraph
             #region 端口设置
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
             port_out.Add(new xGraph_NodePort("out", typeof(bool), Port.Capacity.Multi));
-            SetPort_Output(port_out);
+            OutputPort_Set(port_out);
             #endregion           
         }
 

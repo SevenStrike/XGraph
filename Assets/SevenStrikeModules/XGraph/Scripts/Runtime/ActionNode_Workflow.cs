@@ -77,7 +77,7 @@ namespace SevenStrikeModules.XGraph
             isRunning = true;
             Log("----------------->> Actions Start");
 
-            var startNode = ActionAsset.ActionNodes.Find(n => n.actionNodeType == "Start");
+            var startNode = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             yield return Action_Execute(startNode);
 
             isRunning = false;
@@ -243,13 +243,13 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private bool Action_Validate()
         {
-            if (ActionAsset == null || ActionAsset.ActionNodes.Count == 0)
+            if (ActionAsset == null || ActionAsset.Actions.Count == 0)
             {
                 LogError("没有行为树资源！");
                 return false;
             }
 
-            var start = ActionAsset.ActionNodes.Find(n => n.actionNodeType == "Start");
+            var start = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             if (start == null)
             {
                 LogError("缺少 Start 节点！");

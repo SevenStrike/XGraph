@@ -23,8 +23,7 @@ namespace SevenStrikeModules.XGraph
             return graphViewChange;
         }
 
-        //------------------------------ 创建连线时
-
+        #region 创建连线时
         /// <summary>
         /// 当有连线被创建时
         /// </summary>
@@ -41,6 +40,12 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
+        /// <summary>
+        /// 创建连线时
+        /// </summary>
+        /// <param name="n_parent"></param>
+        /// <param name="n_child"></param>
+        /// <param name="edge"></param>
         private void CreateEdge(Node n_parent, Node n_child, Edge edge)
         {
             VNode_Base vbs_parent = n_parent as VNode_Base;
@@ -58,9 +63,9 @@ namespace SevenStrikeModules.XGraph
                 relay_child.Connected();
             }
         }
+        #endregion
 
-        //------------------------------移除元素时
-
+        #region 移除元素时
         /// <summary>
         /// 当有节点被移除时
         /// </summary>
@@ -76,6 +81,7 @@ namespace SevenStrikeModules.XGraph
                     Removed_Node(element);
                     Removed_Stick(element);
                     Removed_Decal(element);
+                    Removed_Variable(element);
                     Removed_Edge(element);
                     Removed_Group(element);
                 });
@@ -93,10 +99,10 @@ namespace SevenStrikeModules.XGraph
                 Undo.RecordObject(ActionTreeAsset, "Remove Group");
 
                 // 查找对应的 NodeGroupData
-                groupdata groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+                ActionGroupData groupData = ActionTreeAsset.Groups.FirstOrDefault(g => g.group == group);
                 if (groupData != null)
                 {
-                    // 从 NodeGroupDatas 中移除
+                    // 从 Groups 中移除
                     ActionTreeAsset.NodeGroup_Remove(groupData);
                 }
 
@@ -161,6 +167,19 @@ namespace SevenStrikeModules.XGraph
             }
         }
         /// <summary>
+        /// 当移除变量时
+        /// </summary>
+        /// <param name="element"></param>
+        private void Removed_Variable(GraphElement element)
+        {
+            VNode_Variable vare = element as VNode_Variable;
+            if (vare != null)
+            {
+                Undo.RecordObject(ActionTreeAsset, "Remove Variable");
+                ActionTreeAsset.Variable_Remove(vare.VariableData);
+            }
+        }
+        /// <summary>
         /// 当移除节点时
         /// </summary>
         /// <param name="element"></param>
@@ -175,5 +194,6 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion          
         }
+        #endregion
     }
 }

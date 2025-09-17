@@ -22,7 +22,7 @@ namespace SevenStrikeModules.XGraph
             {
                 AddToSelection(node);
             }
-            foreach (var node in ActionTreeAsset.NodeGroupDatas)
+            foreach (var node in ActionTreeAsset.Groups)
             {
                 AddToSelection(node.group);
             }
@@ -47,6 +47,7 @@ namespace SevenStrikeModules.XGraph
                 DuplicateNodeData dupData = new DuplicateNodeData();
                 dupData.SourceNodeGuid = original.viewDataKey;
 
+                // 如果克隆的节点为： VNode_Base
                 if (original is VNode_Base target_base)
                 {
                     // 待复制的源节点
@@ -72,6 +73,7 @@ namespace SevenStrikeModules.XGraph
 
                     dupData.DuplicatedNode = CreateNode(args);
                 }
+                // 如果克隆的节点为： VNode_Stick
                 else if (original is VNode_Stick target_stick)
                 {
                     ActionStickData data = target_stick.StickData.Clone(true);
@@ -84,6 +86,7 @@ namespace SevenStrikeModules.XGraph
 
                     dupData.DuplicatedNode = CreateNode(args);
                 }
+                // 如果克隆的节点为： VNode_Decal
                 else if (original is VNode_Decal target_decal)
                 {
                     ActionDecalData data = target_decal.DecalData.Clone(true);
@@ -97,6 +100,23 @@ namespace SevenStrikeModules.XGraph
                     object decalNode = CreateNode(args);
 
                     dupData.DuplicatedNode = decalNode as VNode_Decal;
+                }
+                // 如果克隆的节点为： VNode_Variable
+                else if (original is VNode_Variable target_vare)
+                {
+                    ActionVariableData data = target_vare.VariableData.Clone(true);
+
+                    NodeCreateArgs_Variable args = new NodeCreateArgs_Variable();
+                    args.name = data.name;
+                    args.description = data.description;
+                    args.type = data.type;
+                    args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
+                    args.varguid = data.varguid;
+                    args.size = data.size;
+
+                    object vareNode = CreateNode(args);
+
+                    dupData.DuplicatedNode = vareNode as VNode_Variable;
                 }
 
                 dupDataList.Add(dupData);
@@ -121,21 +141,27 @@ namespace SevenStrikeModules.XGraph
             var selectedNodes = selection.OfType<Node>().ToList();
             if (selectedNodes.Count == 0) return;
 
-            // 特化处理 - ActionData
+            // 特化处理 - Action
             foreach (var node in CurrentSelectedNodes_Base)
             {
                 // 将选中的节点拷贝进缓冲区
                 gv_CopiedNodeList.Add(node);
             }
 
-            // 特化处理 - DecalData
+            // 特化处理 - Decal
             foreach (var node in CurrentSelectedNodes_Decal)
             {
                 // 将选中的节点拷贝进缓冲区
                 gv_CopiedNodeList.Add(node);
             }
+            // 特化处理 - Variable
+            foreach (var node in CurrentSelectedNodes_Variable)
+            {
+                // 将选中的节点拷贝进缓冲区
+                gv_CopiedNodeList.Add(node);
+            }
 
-            // 特化处理 - StickNoteData
+            // 特化处理 - Stick
             foreach (var node in CurrentSelectedNodes_Stick)
             {
                 // 将选中的节点拷贝进缓冲区
@@ -200,6 +226,20 @@ namespace SevenStrikeModules.XGraph
                         args.decalTexture = data.DecalTexture;
                         args.position = realpos;
                         args.scale = data.scale;
+                        AddToSelection(CreateNode(args));
+                    }
+                    if (node is VNode_Variable node_vare)
+                    {
+                        ActionVariableData data = node_vare.VariableData;
+
+                        NodeCreateArgs_Variable args = new NodeCreateArgs_Variable();
+                        args.name = data.name;
+                        args.description = data.description;
+                        args.type = data.type;
+                        args.position = realpos;
+                        args.varguid = data.varguid;
+                        args.size = data.size;
+
                         AddToSelection(CreateNode(args));
                     }
                     if (node is VNode_Stick node_stick)
@@ -272,6 +312,47 @@ namespace SevenStrikeModules.XGraph
             OnGraphViewChanged(graphViewChange);
         }
         /// <summary>
+        /// 移除指定的节点及其相关的连线
+        /// </summary>
+        public void Node_Delete(Node node)
+        {
+            // 如果没有节点，直接返回
+            if (node == null)
+            {
+                Debug.LogWarning("无法删除无效的节点！");
+                return;
+            }
+
+            // 创建一个 GraphViewChange 对象用于调用GraphView的OnGraphViewChanged事件
+            var graphViewChange = new GraphViewChange();
+            graphViewChange.elementsToRemove = new List<GraphElement>();
+
+            // 移除节点的所有连线
+            var edgesToRemove = edges.ToList()
+                .Where(edge => edge.input.node == node || edge.output.node == node)
+                .ToList();
+            foreach (var edge in edgesToRemove)
+            {
+                // 移除连线
+                RemoveElement(edge);
+                graphViewChange.elementsToRemove.Add(edge); // 添加到 GraphViewChange
+            }
+
+            // 移除节点本身
+            RemoveElement(node);
+            graphViewChange.elementsToRemove.Add(node); // 添加到 GraphViewChange
+
+            // 与删除的节点的端口断开连接
+            foreach (var edge in edgesToRemove)
+            {
+                edge.input.Disconnect(edge);
+                edge.output.Disconnect(edge);
+            }
+
+            // 调用 OnGraphViewChanged 方法
+            OnGraphViewChanged(graphViewChange);
+        }
+        /// <summary>
         /// 清空视觉节点
         /// </summary>
         public void Node_Clear()
@@ -281,6 +362,8 @@ namespace SevenStrikeModules.XGraph
             {
                 if (node is VNode_Base b)
                     b.DuplicateAction_Remove();
+                if (node is VNode_Variable v)
+                    v.DuplicateAction_Remove();
                 RemoveElement(node);
             }
 
@@ -373,6 +456,42 @@ namespace SevenStrikeModules.XGraph
             return node;
         }
         /// <summary>
+        /// 创建视觉节点 - 变量
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public VNode_Variable Node_MakeVariable(Vector2 pos, ActionVariableData data = null)
+        {
+            #region 根据枚举类型创建 NodeView
+            // 根据枚举名称获取 NodeView 节点类
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.VNode_Variable");
+            // 创建 NodeView 类型的实例为 visualNode 基类
+            VNode_Variable node = Activator.CreateInstance(type_nodeview) as VNode_Variable;
+            #endregion
+
+            // 初始化节点并将data数据容器赋值过来便于后面使用
+            node.Initialize(this, pos, data);
+
+            #region GraphView 视图操作
+            // 添加进当前主GraphView视图中
+            this.AddElement(node);
+
+            // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
+            node.OnSelectedNode = OnSelectedNode;
+            node.OnUnSelectedNode = OnUnSelectedNode;
+
+            // 刷新GraphView视图
+            node.RefreshExpandedState();
+            node.RefreshPorts();
+            #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            return node;
+        }
+        /// <summary>
         /// 创建视觉节点 - 便签
         /// </summary>
         /// <param name="pos"></param>
@@ -405,7 +524,7 @@ namespace SevenStrikeModules.XGraph
             return node;
         }
         /// <summary>
-        /// 创建中继节点
+        /// 创建延展节点
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="data"></param>
@@ -471,9 +590,9 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Stick args)
         {
-            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 StickNoteDatas 变量中
+            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
             Undo.RecordObject(ActionTreeAsset, "Create StickNode");
-            // 新建行为树便签内容加入到行为树根资源的 StickNoteDatas 变量中
+            // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
             ActionStickData stickdata = new ActionStickData(args.stickName, args.stickContent, GUID.Generate().ToString(), args.position, args.size);
             ActionTreeAsset.StickNote_Add(stickdata);
 
@@ -495,14 +614,38 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Decal args)
         {
-            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 DecalDatas 变量中
+            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Decals 变量中
             Undo.RecordObject(ActionTreeAsset, "Create DecalNode");
-            // 新建行为树贴图内容加入到行为树根资源的 DecalDatas 变量中
+            // 新建行为树贴图内容加入到行为树根资源的 Decals 变量中
             ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, args.scale, args.opacity, args.hasTexture, args.decalTexture);
             ActionTreeAsset.Decal_Add(decaldata);
 
             // 创建新的节点并指定资源数据项
             VNode_Decal decalNode = Node_MakeDecal(args.position, decaldata);
+
+            // 刷新节点
+            decalNode.Draw();
+            decalNode.RefreshExpandedState();
+            decalNode.RefreshPorts();
+
+            return decalNode;
+        }
+
+        /// <summary>
+        /// 创建节点 - 变量
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public Node CreateNode(NodeCreateArgs_Variable args)
+        {
+            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Variables 变量中
+            Undo.RecordObject(ActionTreeAsset, "Create VariablelNode");
+            // 新建行为树贴图内容加入到行为树根资源的 Variables 变量中
+            ActionVariableData vardata = new ActionVariableData(args.name, args.description, args.type, GUID.Generate().ToString(), args.position, args.size, args.varguid, args.transparentNode);
+            ActionTreeAsset.Variable_Add(vardata);
+
+            // 创建新的节点并指定资源数据项
+            VNode_Variable decalNode = Node_MakeVariable(args.position, vardata);
 
             // 刷新节点
             decalNode.Draw();

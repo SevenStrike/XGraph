@@ -12,12 +12,9 @@ namespace SevenStrikeModules.XGraph
 
             #region 端口设置
             List<xGraph_NodePort> ports_out = new List<xGraph_NodePort>();
-
-            xGraph_NodePort port_out = new xGraph_NodePort("out", typeof(bool), Port.Capacity.Single);
-
-            ports_out.Add(port_out);
-
-            SetPort_Output(ports_out);
+            // 加入行为端口
+            ports_out.Add(new xGraph_NodePort("out", typeof(ActionNode_Base), Port.Capacity.Single));
+            OutputPort_Set(ports_out);
             #endregion
         }
 

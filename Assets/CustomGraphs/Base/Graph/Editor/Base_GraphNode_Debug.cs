@@ -11,12 +11,18 @@ namespace SevenStrikeModules.XGraph
             base.Initialize(graphView, pos, data);
 
             #region 端口设置
-            xGraph_NodePort port_in = new xGraph_NodePort("in", typeof(bool), Port.Capacity.Single);
-            SetPort_Input(port_in);
+            List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
+            // 加入行为端口
+            port_in.Add(new xGraph_NodePort("in", typeof(ActionNode_Base), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("var", typeof(Variable_String), Port.Capacity.Single));
+            InputPort_Set(port_in);
+
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-            port_out.Add(new xGraph_NodePort("out", typeof(bool), Port.Capacity.Single));
-            SetPort_Output(port_out);
+            // 加入行为端口
+            port_out.Add(new xGraph_NodePort("out", typeof(ActionNode_Base), Port.Capacity.Single));
+            OutputPort_Set(port_out);
             #endregion
         }
 
@@ -45,6 +51,11 @@ namespace SevenStrikeModules.XGraph
             Draw_Extension();
 
             return this;
+        }
+
+        public override void Draw_Input()
+        {
+            base.Draw_Input();
         }
         #endregion
     }

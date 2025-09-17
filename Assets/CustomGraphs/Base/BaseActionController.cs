@@ -4,7 +4,7 @@ namespace SevenStrikeModules.XGraph
 
     public class BaseActionController : MonoBehaviour
     {
-        ActionNode_Workflow ActionTreeController;
+        public ActionNode_Workflow ActionTreeController;
 
         void Start()
         {

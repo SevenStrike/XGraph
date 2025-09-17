@@ -10,7 +10,7 @@
         },
         {
             "type": "Int",
-            "color": "#31A8FF"
+            "color": "#31e6ff"
         },
         {
             "type": "Bool",
@@ -18,19 +18,19 @@
         },
         {
             "type": "Vector2",
-            "color": "#17FF86"
+            "color": "#0DFF82"
         },
         {
             "type": "Vector3",
-            "color": "#17FF86"
+            "color": "#2389ff"
         },
         {
             "type": "Vector4",
-            "color": "#17FF86"
+            "color": "#FF8635"
         },
         {
             "type": "Color",
-            "color": "#FF6FB7"
+            "color": "#ff6fd1"
         },
         {
             "type": "Object",

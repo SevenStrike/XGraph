@@ -25,7 +25,7 @@ namespace SevenStrikeModules.XGraph
             graphViewChanged += OnGraphViewChanged;
 
             // 根据根节点的数据列表  -  重建 Nodes
-            ActionTreeAsset.ActionNodes.ForEach(data =>
+            ActionTreeAsset.Actions.ForEach(data =>
             {
                 if (data.actionNodeType == "Relay")
                 {
@@ -47,7 +47,7 @@ namespace SevenStrikeModules.XGraph
             });
 
             // 根据行为树根节点的数据列表  -  重建 Edges
-            ActionTreeAsset.ActionNodes.ForEach(d =>
+            ActionTreeAsset.Actions.ForEach(d =>
             {
                 // 获取的目标数据节点的子数据节点
                 var children = ActionTreeAsset.GetChildrenNodes(d);
@@ -59,14 +59,14 @@ namespace SevenStrikeModules.XGraph
 
                     n_parent.Port_Outputs.ForEach(p =>
                     {
-                        Edge edge = p.Port.ConnectTo(n_child.Port_Input.Port);
+                        Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                         AddElement(edge);
                     });
                 });
             });
 
             // 根据行为树根节点的数据列表  -  检查 所有Relay的连线状态
-            ActionTreeAsset.ActionNodes.ForEach(d =>
+            ActionTreeAsset.Actions.ForEach(d =>
             {
                 // 获取延展节点
                 VNode_Base n_parent = FindNodeView(d.guid);
@@ -78,13 +78,16 @@ namespace SevenStrikeModules.XGraph
             });
 
             // 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
-            Restructure_Sticks(ActionTreeAsset.StickNoteDatas);
+            Restructure_Sticks(ActionTreeAsset.Sticks);
 
             // 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
-            Restructure_Decals(ActionTreeAsset.DecalDatas);
+            Restructure_Decals(ActionTreeAsset.Decals);
+
+            // 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
+            Restructure_Variable(ActionTreeAsset.Variables);
 
             // 重建编组
-            Restructure_Groups(ActionTreeAsset.NodeGroupDatas);
+            Restructure_Groups(ActionTreeAsset.Groups);
 
             #region 编辑器主面板UI逻辑
 
@@ -162,9 +165,26 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
+        /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
+        /// </summary>
+        /// <param name="ActionDecalData"></param>
+        public void Restructure_Variable(List<ActionVariableData> vardata)
+        {
+            // 根据根节点的数据列表重建 NodeViews
+            vardata.ForEach(data =>
+            {
+                data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
+                VNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
+                vNode_Variable.Draw();
+                vNode_Variable.CheckTransparentDisplay(vNode_Variable.VariableData.TransparentNode);
+                vNode_Variable.RefreshExpandedState();
+            });
+        }
+
+        /// <summary>
         /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉编组
         /// </summary>
-        public void Restructure_Groups(List<groupdata> groupDatas)
+        public void Restructure_Groups(List<ActionGroupData> groupDatas)
         {
             if (groupDatas == null || groupDatas.Count == 0) return;
 

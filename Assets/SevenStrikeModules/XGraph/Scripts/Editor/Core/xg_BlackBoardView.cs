@@ -1,7 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using Codice.CM.Common.Tree;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Unity.Plastic.Newtonsoft.Json;
@@ -67,7 +65,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量图标主题
         /// </summary>
-        public VariableThemesGroup VariableThemes;
+        public VariableThemesGroup VariableThemeList;
         #endregion
 
         /// <summary>
@@ -76,8 +74,8 @@ namespace SevenStrikeModules.XGraph
         public xg_BlackBoardView()
         {
             // 读取菜单结构列表内容
-            string theme = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/BlackBoarVariablesThemes.json").text;
-            VariableThemes = JsonConvert.DeserializeObject<VariableThemesGroup>(theme);
+            string theme = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/VariablesMarkThemes.json").text;
+            VariableThemeList = JsonConvert.DeserializeObject<VariableThemesGroup>(theme);
 
             // 指定样式
             util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_ListViewItem.uss");
@@ -136,7 +134,7 @@ namespace SevenStrikeModules.XGraph
             var graphView = FindGraphViewUnderPosition(evt.mousePosition);
             if (graphView != null)
             {
-                // 获取选中的 BlackboardVariables
+                // 获取选中的 Variable
                 var selectedVariables = VariableList.selectedItems;
 
                 // 创建变量节点
@@ -207,7 +205,7 @@ namespace SevenStrikeModules.XGraph
             foreach (var variableItem in selectedVariables)
             {
                 // 根据解析的黑板变量类型来创建变量节点到编辑器中
-                BlackboardVariable variable = variableItem as BlackboardVariable;
+                Variable variable = variableItem as Variable;
                 if (variable != null)
                 {
                     index = CreateVariableNode(localMousePosition, index, variable);
@@ -222,18 +220,18 @@ namespace SevenStrikeModules.XGraph
         /// <param name="index"></param>
         /// <param name="variable"></param>
         /// <returns></returns>
-        private int CreateVariableNode(Vector2 localMousePosition, int index, BlackboardVariable variable)
+        private int CreateVariableNode(Vector2 localMousePosition, int index, Variable variable)
         {
             #region 计算偏移值
             Vector2 offset = Vector2.zero;
+            float step_x = 81;
+            float step_y = 46.5f;
 
             /* 如果是只有一个被拖入Graphview则该节点会居中对齐鼠标位置
              * 如果是批量加入从第2个节点开始按照步数和缩放的系数进行堆叠排列
              */
             if (index > 0)
             {
-                float step_x = 81;
-                float step_y = 46.5f;
                 offset = new Vector2(-(step_x * 0.4f) * index, (step_y * 0.9f) * index);
             }
 
@@ -245,36 +243,18 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 创建变量节点
-            //object node = graphWindow.xw_graphView.CreateNode(variable.name, "SevenStrikeModules.XGraph", "Base_ActionNode_", "Start", "start", null, "Base_GraphNode_Start", false, null, "自定义", node_color, false, "", localMousePosition + offset + new Vector2(-81, -46.5f), Vector2.one);
+            NodeCreateArgs_Variable args = new NodeCreateArgs_Variable();
+            args.name = variable.name;
+            args.description = variable.description;
+            args.type = variable.type;
+            args.position = localMousePosition + offset;
+            args.varguid = variable.guid;
+            args.transparentNode = false;
 
-            //VNode_Base node_base = node as VNode_Base;
-            //if (node_base != null)
-            //{
-
-            //}
+            graphWindow.xw_graphView.AddToSelection(graphWindow.xw_graphView.CreateNode(args));
             #endregion
 
-            //graphWindow.xw_graphView.AddToSelection(node_base);
-
             return index;
-        }
-
-        /// <summary>
-        /// 获取黑板变量的专属主题色
-        /// </summary>
-        /// <param name="variable"></param>
-        /// <returns></returns>
-        private Color GetVariableThemeColor(BlackboardVariable variable)
-        {
-            Color node_color = Color.white;
-            VariableThemes.VariableThemes.ForEach(theme =>
-            {
-                if (theme.type == variable.type.ToString())
-                {
-                    node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
-                }
-            });
-            return node_color;
         }
         #endregion
 
@@ -305,7 +285,7 @@ namespace SevenStrikeModules.XGraph
         private void BindData(VisualElement element, int index)
         {
             // 获取黑板变量数据
-            var variable = graphWindow.CloneTree.BlackboardVariables[index];
+            var variable = graphWindow.CloneTree.VariableItems[index];
 
             #region 获取变量项的UI元素
             // 变量名称容器
@@ -367,6 +347,8 @@ namespace SevenStrikeModules.XGraph
                     Undo.RecordObject(graphWindow.CloneTree, "Change BlackBoard Variable Name");
                     // 改变行为资源的黑板变量列表中的变量名称
                     variable.name = value;
+
+                    SyncVariableNodeDatas(variable);
                 }
 
                 x_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
@@ -386,7 +368,7 @@ namespace SevenStrikeModules.XGraph
                     VisualElement description = (VisualElement)evt.target;
                     TextField x_textfield = description.Q<TextField>("des_textfield");
                     x_textfield.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-                    x_textfield.value = variable.des;
+                    x_textfield.value = variable.description;
                     EditorApplication.delayCall += () =>
                     {
                         x_textfield.Focus();
@@ -409,21 +391,23 @@ namespace SevenStrikeModules.XGraph
                     x_des.text = value;
                     Undo.RecordObject(graphWindow.CloneTree, "Change BlackBoard Variable Description");
                     // 改变行为资源的黑板变量列表中的变量名称
-                    variable.des = value;
+                    variable.description = value;
                 }
 
                 x_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
                 var_textfield_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+                SyncVariableNodeDatas(variable);
             });
             #endregion
 
             // 将行为资源的黑板变量列表中的 "变量名称" 赋予给标签
             var_label_name.text = variable.name;
             // 将行为资源的黑板变量列表中的 "变量解释" 赋予给标签
-            var_label_des.text = variable.des;
+            var_label_des.text = variable.description;
 
             // 变量图标的颜色根据变量类型来定（通过 json 配置对应主题色）
-            VariableThemes.VariableThemes.ForEach(theme =>
+            VariableThemeList.VariableThemes.ForEach(theme =>
             {
                 if (theme.type == variable.type.ToString())
                 {
@@ -431,45 +415,55 @@ namespace SevenStrikeModules.XGraph
                 }
             });
 
-            element.RegisterCallback<PointerEnterEvent>((evt) =>
-            {
-                //Debug.Log("在节点视图中高亮显示 Variable 节点");
-            });
-        }
-        #endregion
+            // 赋值Key便于高亮查找
+            element.viewDataKey = variable.guid;
 
-        #region 辅助
-        public bool ChceckVariableVisual()
-        {
-            if (VariableList.itemsSource == null || VariableList.itemsSource.Count <= 0)
-            {
-                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, false);
-                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, true);
-                return false;
-            }
-            else
-            {
-                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, true);
-                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, false);
-                return true;
-            }
+            // 注册鼠标进入变量标签节点时 - 高亮节点
+            element.RegisterCallback<PointerEnterEvent>(HighlightVariableNodes);
+
+            // 注册鼠标离开变量标签节点时 - 取消高亮节点
+            element.RegisterCallback<PointerLeaveEvent>(UnHighlightVariableNodes);
         }
 
         /// <summary>
-        /// 重建黑板的所有变量
+        /// 高亮显示匹配色所有目标节点
         /// </summary>
-        /// <param name="vars"></param>
-        public void Restructure(List<BlackboardVariable> vars)
+        /// <param name="evt"></param>
+        private void HighlightVariableNodes(PointerEnterEvent evt)
         {
-            // 设置数据源并刷新
-            VariableList.itemsSource = vars;
+            VisualElement ele = (VisualElement)evt.target;
+            string guid = ele.viewDataKey;
 
-            VariableList.Rebuild();
-            VariableList.RefreshItems();
-
-            ChceckVariableVisual();
+            #region 高亮显示节点
+            List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
+            vNode_Variables.ForEach(v =>
+            {
+                v.Highlight();
+            });
+            #endregion
         }
 
+        /// <summary>
+        /// 取消高亮显示匹配色所有目标节点
+        /// </summary>
+        /// <param name="evt"></param>
+        private void UnHighlightVariableNodes(PointerLeaveEvent evt)
+        {
+            VisualElement ele = (VisualElement)evt.target;
+            string guid = ele.viewDataKey;
+
+            #region 取消高亮显示节点
+            List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
+            vNode_Variables.ForEach(v =>
+            {
+                v.UnHighlight();
+            });
+            #endregion
+        }
+
+        #endregion
+
+        #region 变量添加与删除
         /// <summary>
         /// 添加变量的按钮的事件
         /// </summary>
@@ -493,39 +487,39 @@ namespace SevenStrikeModules.XGraph
                 // 添加菜单项
                 menu.AddItem(new GUIContent("S 字符串变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.String));
+                    AddVariable(Variable_Create(VariableType.String));
                 });
                 menu.AddItem(new GUIContent("F 浮点数变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Float));
+                    AddVariable(Variable_Create(VariableType.Float));
                 });
                 menu.AddItem(new GUIContent("I 整数变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Int));
+                    AddVariable(Variable_Create(VariableType.Int));
                 });
                 menu.AddItem(new GUIContent("B 布尔变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Bool));
+                    AddVariable(Variable_Create(VariableType.Bool));
                 });
                 menu.AddItem(new GUIContent("V 2维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Vector2));
+                    AddVariable(Variable_Create(VariableType.Vector2));
                 });
                 menu.AddItem(new GUIContent("V 3维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Vector3));
+                    AddVariable(Variable_Create(VariableType.Vector3));
                 });
                 menu.AddItem(new GUIContent("V 4维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Vector4));
+                    AddVariable(Variable_Create(VariableType.Vector4));
                 });
                 menu.AddItem(new GUIContent("C 颜色变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Color));
+                    AddVariable(Variable_Create(VariableType.Color));
                 });
                 menu.AddItem(new GUIContent("O 物体变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(BlackboardVariableType.Object));
+                    AddVariable(Variable_Create(VariableType.Object));
                 });
                 // 显示菜单
                 menu.DropDown(new Rect(screenPosition, Vector2.zero));
@@ -539,11 +533,11 @@ namespace SevenStrikeModules.XGraph
         /// 添加黑板变量
         /// </summary>
         /// <param name="vars"></param>
-        public void AddVariable(BlackboardVariable vars)
+        public void AddVariable(Variable vars)
         {
             // 确保ListView的Item不为空
             if (VariableList.itemsSource == null)
-                VariableList.itemsSource = new List<BlackboardVariable>();
+                VariableList.itemsSource = new List<Variable>();
 
             Undo.RecordObject(graphWindow.CloneTree, "Added BlackBoardVariable");
 
@@ -561,19 +555,49 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 移除当前选择的黑板变量
+        /// 创建黑板的变量
         /// </summary>
-        public void Remove_CurrentSelectedVariable()
+        /// <param name="type"></param>
+        public Variable Variable_Create(VariableType type)
         {
-            Undo.RecordObject(graphWindow.CloneTree, "Removed BlackBoardVariable");
-            // 设置数据源并刷新
-            VariableList.itemsSource.RemoveAt(VariableList.selectedIndex);
+            Variable vare = null;
+            switch (type)
+            {
+                case VariableType.String:
+                    vare = new Variable_String(type.ToString());
+                    break;
+                case VariableType.Float:
+                    vare = new Variable_Float(type.ToString());
+                    break;
+                case VariableType.Int:
+                    vare = new Variable_Int(type.ToString());
+                    break;
+                case VariableType.Bool:
+                    vare = new Variable_Bool(type.ToString());
+                    break;
+                case VariableType.Vector2:
+                    vare = new Variable_Vector2(type.ToString());
+                    break;
+                case VariableType.Vector3:
+                    vare = new Variable_Vector3(type.ToString());
+                    break;
+                case VariableType.Vector4:
+                    vare = new Variable_Vector4(type.ToString());
+                    break;
+                case VariableType.Color:
+                    vare = new Variable_Color(type.ToString());
+                    break;
+                case VariableType.Object:
+                    vare = new Variable_Object(type.ToString());
+                    break;
+            }
 
-            Debug.Log(warningtext.text);
-            VariableList.Rebuild();
-            VariableList.RefreshItems();
-
-
+#if UNITY_EDITOR
+            vare.guid = UnityEditor.GUID.Generate().ToString();
+#endif
+            vare.description = type.ToString();
+            //Debug.Log($"创建了： {vare.type.ToString()} 到黑板中！");
+            return vare;
         }
 
         /// <summary>
@@ -585,6 +609,15 @@ namespace SevenStrikeModules.XGraph
 
             foreach (var item in VariableList.selectedItems)
             {
+                // 获取到变量结构类
+                Variable var = item as Variable;
+
+                List<VNode_Variable> varNodes = FindVariableNodes(var.guid);
+                foreach (var node in varNodes)
+                {
+                    graphWindow.xw_graphView.Node_Delete(node);
+                }
+
                 // 设置数据源并刷新
                 VariableList.itemsSource.Remove(item);
             }
@@ -597,26 +630,104 @@ namespace SevenStrikeModules.XGraph
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
                 graphWindow.xw_InspectorView.UpdateSelection(graphWindow.CloneTree);
             }
+        }
+        #endregion
 
+        #region 辅助
+        /// <summary>
+        /// 获取黑板变量的专属主题色
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        public Color GetVariableThemeColor(Variable variable)
+        {
+            Color node_color = Color.white;
+            VariableThemeList.VariableThemes.ForEach(theme =>
+            {
+                if (theme.type == variable.type.ToString())
+                {
+                    node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                }
+            });
+            return node_color;
+        }
+        /// <summary>
+        /// 获取黑板变量的专属主题色
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        public Color GetVariableThemeColor(VariableType type)
+        {
+            Color node_color = Color.white;
+            VariableThemeList.VariableThemes.ForEach(theme =>
+            {
+                if (theme.type == type.ToString())
+                {
+                    node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                }
+            });
+            return node_color;
+        }
+        /// <summary>
+        /// 同步目标 VariableItems 的属性到 Variable 列表中匹配项并将匹配的目标 Variable 节点的显示更新
+        /// </summary>
+        /// <param name="variable"></param>
+        private void SyncVariableNodeDatas(Variable variable)
+        {
+            // 同步修改 Variables 列表中匹配的项的变量名称
+            graphWindow.CloneTree.Variables.ForEach((node) =>
+            {
+                if (node.varguid == variable.guid)
+                {
+                    node.name = variable.name;
+                    node.description = variable.description;
+
+                    // 注意：同时通过匹配到的 node 节点数据的guid找到节点并修改节点的显示名称！
+                    VNode_Variable varNode = graphWindow.xw_graphView.FindNode(node.guid) as VNode_Variable;
+                    if (varNode != null)
+                    {
+                        // 设置 Variable 节点的标题名称
+                        varNode.SetNode_TitleLabel(variable.name);
+                        // 设置 Variable 节点的解释文字
+                        varNode.SetNode_Description(variable.description);
+                    }
+                }
+            });
         }
 
         /// <summary>
-        /// 创建黑板的变量
+        /// 列表是否为空检查
         /// </summary>
-        /// <param name="type"></param>
-        public BlackboardVariable Variable_Create(BlackboardVariableType type)
+        /// <returns></returns>
+        public bool ChceckVariableVisual()
         {
-            BlackboardVariable vare = new BlackboardVariable();
-            vare.type = type;
-            vare.name = type.ToString();
-            vare.des = $"{type}";
-#if UNITY_EDITOR
-            vare.variableGUID = UnityEditor.GUID.Generate().ToString();
-            Undo.RecordObject(graphWindow.CloneTree, "Create BlackboardVariable");
-#endif
-            //Debug.Log($"创建了： {vare.type.ToString()} 到黑板中！");
+            if (VariableList.itemsSource == null || VariableList.itemsSource.Count <= 0)
+            {
+                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, false);
+                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, true);
+                return false;
+            }
+            else
+            {
+                util_XGraphEditorUtility.Element_Dispaly_Set(VariableList, true);
+                util_XGraphEditorUtility.Element_Dispaly_Set(warningtext, false);
+                return true;
+            }
+        }
 
-            return vare;
+        /// <summary>
+        /// 重建黑板的所有变量
+        /// </summary>
+        /// <param name="vars"></param>
+        public void Restructure(List<Variable> vars)
+        {
+            // 设置数据源并刷新
+            VariableList.itemsSource = vars;
+
+            VariableList.Rebuild();
+            VariableList.RefreshItems();
+
+            ChceckVariableVisual();
         }
 
         /// <summary>
@@ -630,7 +741,7 @@ namespace SevenStrikeModules.XGraph
             {
                 foreach (var obj in enumerable)
                 {
-                    BlackboardVariable vare = obj as BlackboardVariable;
+                    Variable vare = obj as Variable;
                     util_XGraphEditorUtility.Element_Label_ValueSet(graphWindow.xw_label_InspectorView_Container_Title, $"黑板变量 - {vare.name}");
                     graphWindow.xw_InspectorView.UpdateSelection(vare);
                 }
@@ -656,10 +767,10 @@ namespace SevenStrikeModules.XGraph
             }
             if (evt.keyCode == KeyCode.D && (evt.ctrlKey || evt.commandKey))
             {
-                List<BlackboardVariable> vares = new List<BlackboardVariable>();
+                List<Variable> vares = new List<Variable>();
                 foreach (var item in VariableList.selectedItems)
                 {
-                    BlackboardVariable vare = item as BlackboardVariable;
+                    Variable vare = item as Variable;
                     if (vare != null)
                         vares.Add(vare);
                     Debug.Log(vare.type);
@@ -667,7 +778,7 @@ namespace SevenStrikeModules.XGraph
 
                 vares.ForEach(v =>
                 {
-                    AddVariable(v);
+                    AddVariable(v.Clone(true));
                 });
 
                 evt.StopPropagation();
@@ -678,6 +789,44 @@ namespace SevenStrikeModules.XGraph
                 evt.StopPropagation();
             }
 
+        }
+
+        /// <summary>
+        /// 寻找节点中所有匹配目标类型的节点
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<VNode_Variable> FindVariableNodes(VariableType type)
+        {
+            List<VNode_Variable> list = new List<VNode_Variable>();
+
+            graphWindow.CloneTree.Variables.ForEach(v =>
+            {
+                if (v.type == type)
+                {
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
+                }
+            });
+            return list;
+        }
+
+        /// <summary>
+        /// 寻找节点中所有匹配目标类型的节点
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<VNode_Variable> FindVariableNodes(string guid)
+        {
+            List<VNode_Variable> list = new List<VNode_Variable>();
+
+            graphWindow.CloneTree.Variables.ForEach(v =>
+            {
+                if (v.varguid == guid)
+                {
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
+                }
+            });
+            return list;
         }
         #endregion
     }

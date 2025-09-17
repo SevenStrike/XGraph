@@ -8,78 +8,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class xGraph_NodePort
-    {
-        /// <summary>
-        /// 端口
-        /// </summary>
-        public Port Port;
-        /// <summary>
-        /// 端口名称
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// 端口类型
-        /// </summary>
-        public Type Type { get; set; }
-        /// <summary>
-        /// 连线方式
-        /// </summary>
-        public Port.Capacity Capacity { get; set; }
-        /// <summary>
-        /// 构造器
-        /// </summary>
-        /// <param root_title="catergory_title"></param>
-        /// <param root_title="type"></param>
-        /// <param root_title="capacity"></param>
-        public xGraph_NodePort(string name, Type type, Port.Capacity capacity)
-        {
-            Name = name;
-            Type = type;
-            Capacity = capacity;
-        }
-
-        public xGraph_NodePort()
-        {
-
-        }
-    }
-
-    /// <summary>
-    /// GraphView 容器类型
-    /// </summary>
-    public enum GraphNodeContainerType
-    {
-        /// <summary>
-        /// 主容器
-        /// </summary>
-        MainContainer = 0,
-        /// <summary>
-        /// 标题
-        /// </summary>
-        TitleContainer = 1,
-        /// <summary>
-        /// 标题按钮
-        /// </summary>
-        TitleButtonContainer = 2,
-        /// <summary>
-        /// 顶部容器
-        /// </summary>
-        TopContainer = 3,
-        /// <summary>
-        /// 输入端口容器
-        /// </summary>
-        InputContainer = 4,
-        /// <summary>
-        /// 输出端口容器
-        /// </summary>
-        OutputContainer = 5,
-        /// <summary>
-        /// 扩展容器
-        /// </summary>
-        ExtensionContainer = 6,
-    }
-
     public class VNode_Base : Node
     {
         /// <summary>
@@ -153,7 +81,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 输入端口
         /// </summary>
-        public xGraph_NodePort Port_Input = new xGraph_NodePort();
+        public List<xGraph_NodePort> Port_Inputs = new List<xGraph_NodePort>();
         /// <summary>
         /// 输出端口
         /// </summary>
@@ -251,7 +179,7 @@ namespace SevenStrikeModules.XGraph
             VisualElementDisplay(TitleInputField, false);
         }
 
-        #region 拖拽到节点
+        #region 拖拽素材到节点
         /// <summary>
         /// 拖拽贴图到节点时
         /// </summary>
@@ -304,13 +232,13 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 端口设置
-
-        public virtual VNode_Base SetPort_Input(xGraph_NodePort portInfo)
+        public virtual VNode_Base InputPort_Set(List<xGraph_NodePort> portInfos)
         {
-            Port_Input = portInfo;
+            Port_Inputs = portInfos;
             return this;
         }
-        public virtual VNode_Base SetPort_Output(List<xGraph_NodePort> portInfos)
+
+        public virtual VNode_Base OutputPort_Set(List<xGraph_NodePort> portInfos)
         {
             Port_Outputs = portInfos;
             return this;
@@ -326,7 +254,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="type"></param>
         /// <param name="nodeThemeColor"></param>
         /// <returns></returns>
-        public virtual Port CreatePort(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
+        public virtual Port Port_Create(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
         {
             Port port = InstantiatePort(orientation, direction, capacity, type);
             port.portName = name;
@@ -374,35 +302,30 @@ namespace SevenStrikeModules.XGraph
             AppendElement(GraphNodeContainerType.ExtensionContainer, label);
         }
 
+        public virtual void Draw_Input()
+        {
+            Port_Inputs.ForEach(p =>
+            {
+                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Input, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
+                p.PortDonut = p.Port.Q<VisualElement>("connector");
+                SetPortStyle(p, PortStyleType.In);
+                AppendElement(GraphNodeContainerType.InputContainer, p.Port);
+            });
+        }
+
         /// <summary>
         /// 绘制输出节点容器
         /// </summary>
         public virtual void Draw_Output()
         {
-            Port_Outputs.ForEach(x =>
+            Port_Outputs.ForEach(p =>
             {
                 // 绘制端口 - 输出
-                x.Port = CreatePort(x.Name, Orientation.Horizontal, Direction.Output, x.Capacity, x.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
-
-                x.Port.Q<VisualElement>(className: "port").AddToClassList("Port_Out");
-                x.Port.Q<Label>().AddToClassList("PortText_Out");
-
-                AppendElement(GraphNodeContainerType.OutputContainer, x.Port);
+                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Output, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
+                p.PortDonut = p.Port.Q<VisualElement>("connector");
+                SetPortStyle(p, PortStyleType.Out);
+                AppendElement(GraphNodeContainerType.OutputContainer, p.Port);
             });
-        }
-
-        /// <summary>
-        /// 绘制输入节点容器
-        /// </summary>
-        public virtual void Draw_Input()
-        {
-            Port_Input.Port = CreatePort(Port_Input.Name, Orientation.Horizontal, Direction.Input, Port_Input.Capacity, Port_Input.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
-
-            // 样式指定
-            Port_Input.Port.Q<VisualElement>(className: "port").AddToClassList("Port_In");
-            Port_Input.Port.Q<Label>().AddToClassList("PortText_In");
-
-            AppendElement(GraphNodeContainerType.InputContainer, Port_Input.Port);
         }
 
         /// <summary>
@@ -848,6 +771,15 @@ namespace SevenStrikeModules.XGraph
         public void SetSequential()
         {
             SeperateIconLabel.style.backgroundImage = tex_logo_dir_sequential;
+        }
+        /// <summary>
+        /// 设置端口样式 - In
+        /// </summary>
+        /// <param name="nodeport"></param>
+        public void SetPortStyle(xGraph_NodePort nodeport, PortStyleType type)
+        {
+            nodeport.Port.Q<VisualElement>(className: "port").AddToClassList(type == PortStyleType.In ? "Port_In" : "Port_Out");
+            nodeport.Port.Q<Label>().AddToClassList(type == PortStyleType.In ? "PortText_In" : "PortText_Out");
         }
         #endregion
 

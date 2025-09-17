@@ -2,6 +2,8 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using UnityEditor;
+    using UnityEditor.Experimental.GraphView;
+    using UnityEngine;
     using UnityEngine.UIElements;
 
     /// <summary>
@@ -19,25 +21,40 @@ namespace SevenStrikeModules.XGraph
         /// 显示目标节点的属性控件
         /// </summary>
         /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(VNode_Base nodeview)
+        internal void UpdateSelection(Node nodeview)
         {
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);
 
-            var target = nodeview.ActionData;
-            if (target == null) return;
+            VNode_Base n_base = nodeview as VNode_Base;
+            VNode_Variable n_var = nodeview as VNode_Variable;
 
-            // 尝试查找是否有自定义 Editor
-            string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
-            if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
+            // 如果选中的节点时 VNode_Base
+            if (n_base != null)
             {
-                editor = Editor.CreateEditor(target, editorType);
+                var target = n_base.ActionData;
+                if (target == null) return;
+
+                // 尝试查找是否有自定义 Editor
+                string asm = "Assembly-CSharp-Editor";
+                var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
+                if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
+                {
+                    editor = Editor.CreateEditor(target, editorType);
+                }
+                else
+                {
+                    // 回退到默认编辑器
+                    editor = Editor.CreateEditor(target);
+                }
             }
-            else
+
+            // 如果选中的节点时 VNode_Variable
+            if (n_var != null)
             {
-                // 回退到默认编辑器
-                editor = Editor.CreateEditor(target);
+                var target = n_var.VariableData;
+                if (target == null) return;
+                //UpdateSelection(target);
             }
 
             if (editor != null)
@@ -94,7 +111,7 @@ namespace SevenStrikeModules.XGraph
         /// 显示目标黑板变量的属性控件
         /// </summary>
         /// <param root_title="nodesasset"></param>
-        internal void UpdateSelection(BlackboardVariable vare)
+        internal void UpdateSelection(Variable vare)
         {
             Clear();
             UnityEngine.Object.DestroyImmediate(editor);
@@ -103,6 +120,11 @@ namespace SevenStrikeModules.XGraph
             lab.style.fontSize = 25;
             lab.text = vare.name;
             Add(lab);
+
+            Label val = new Label();
+            val.style.fontSize = 25;
+            val.text = vare.GetValue().ToString();
+            Add(val);
         }
 
         /// <summary>

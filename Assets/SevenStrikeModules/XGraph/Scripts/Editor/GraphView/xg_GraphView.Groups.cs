@@ -12,7 +12,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 初始化编组并注册相关事件
         /// </summary>
-        private Group CreateGroup(string title, Vector2 position, groupdata groupData = null)
+        private Group CreateGroup(string title, Vector2 position, ActionGroupData groupData = null)
         {
             Group group = new Group
             {
@@ -84,7 +84,7 @@ namespace SevenStrikeModules.XGraph
                                 Group gp = CurrentSelectedGroups[i];
 
                                 // 同步修改行为树根节点中的对应的编组数据的配色方案
-                                ActionTreeAsset.NodeGroupDatas.ForEach(data => { if (data.group == gp) { data.solution = dat.solution; } });
+                                ActionTreeAsset.Groups.ForEach(data => { if (data.group == gp) { data.solution = dat.solution; } });
 
                                 gp.Q<VisualElement>("headerContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color);
                                 gp.Q<VisualElement>("centralContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color);
@@ -155,7 +155,7 @@ namespace SevenStrikeModules.XGraph
             });
 
             // 创建编组数据
-            groupdata gp_data = new groupdata(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
+            ActionGroupData gp_data = new ActionGroupData(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
 
             // 初始化编组
             Group gp = CreateGroup(title, localMousePosition, gp_data);
@@ -181,7 +181,7 @@ namespace SevenStrikeModules.XGraph
         /// <param solution="newName"></param>
         private void ChangeGroupName(Group group, string newName)
         {
-            groupdata groupData = ActionTreeAsset.NodeGroupDatas
+            ActionGroupData groupData = ActionTreeAsset.Groups
                 .FirstOrDefault(g => g.group == group);
 
             if (groupData != null && groupData.name != newName)
@@ -270,7 +270,7 @@ namespace SevenStrikeModules.XGraph
             // 清空行为树中的编组数据
             if (ClearGroupData && ActionTreeAsset != null)
             {
-                ActionTreeAsset.NodeGroupDatas.Clear();
+                ActionTreeAsset.Groups.Clear();
             }
         }
         /// <summary>
@@ -296,7 +296,7 @@ namespace SevenStrikeModules.XGraph
             }
 
             // 3. 删除Group数据
-            var groupData = ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+            var groupData = ActionTreeAsset.Groups.FirstOrDefault(g => g.group == group);
             if (groupData != null)
             {
                 ActionTreeAsset.NodeGroup_Remove(groupData);
@@ -320,7 +320,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private void CollectGroupsPosition()
         {
-            ActionTreeAsset.NodeGroupDatas.ForEach(g =>
+            ActionTreeAsset.Groups.ForEach(g =>
             {
                 g.pos = g.group.GetPosition().position;
             });
@@ -330,15 +330,15 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        private groupdata FindGroupData(Group group)
+        private ActionGroupData FindGroupData(Group group)
         {
-            return ActionTreeAsset.NodeGroupDatas.FirstOrDefault(g => g.group == group);
+            return ActionTreeAsset.Groups.FirstOrDefault(g => g.group == group);
         }
         /// <summary>
         /// 检查编组内是否存在设置了头像的节点
         /// </summary>
         /// <param name="groupData"></param>
-        private void CheckHasAvatarNode(groupdata groupData)
+        private void CheckHasAvatarNode(ActionGroupData groupData)
         {
             // 检查编组中是否存在设置了Avatar的节点
             groupData.hasAvatarNodes = HasMarkIconNodes(groupData.group);
@@ -362,8 +362,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="nodes"></param>
         public void On_Group_AddedElements(Group group, IEnumerable<GraphElement> nodes)
         {
-            // 查找对应的 groupdata
-            groupdata groupData = FindGroupData(group);
+            // 查找对应的 ActionGroupData
+            ActionGroupData groupData = FindGroupData(group);
             Undo.RecordObject(ActionTreeAsset, "Group AddedElements");
 
             // ---------------------处理  移入  的节点
@@ -413,8 +413,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="nodes"></param>
         public void On_Group_RemoveElements(Group group, IEnumerable<GraphElement> nodes)
         {
-            // 查找对应的 groupdata
-            groupdata groupData = FindGroupData(group);
+            // 查找对应的 ActionGroupData
+            ActionGroupData groupData = FindGroupData(group);
             Undo.RecordObject(ActionTreeAsset, "Group RemovedElements");
 
             // ---------------------处理  移出  的节点

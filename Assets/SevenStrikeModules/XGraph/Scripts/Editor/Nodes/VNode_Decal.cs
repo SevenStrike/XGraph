@@ -25,7 +25,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement DecalTextureElement;
         /// <summary>
-        /// 便签的最后一次尺寸
+        /// 贴图节点的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
 
@@ -71,7 +71,7 @@ namespace SevenStrikeModules.XGraph
 
             // 设置节点的容器样式
             util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_DecalNode.uss");
-            SetContainersStyle("uss_DecalNode");
+            SetContainersStyle();
 
             // 携带数据
             if (data != null)
@@ -284,7 +284,7 @@ namespace SevenStrikeModules.XGraph
             if (Event.current != null && Event.current.type == EventType.ScrollWheel)
                 imDelta = Event.current.delta;
 
-            float delta = imDelta.x * 0.02f;   // 滚一格 ≈ ±3
+            float delta = imDelta.x * 0.014f;   // 滚一格 ≈ ±3
             float newOpacity = DecalTextureElement.resolvedStyle.opacity - delta;
             newOpacity = Mathf.Clamp01(newOpacity);
 
@@ -300,7 +300,7 @@ namespace SevenStrikeModules.XGraph
         /// <exception cref="NotImplementedException"></exception>
         private void OnDecalPointerDown(PointerDownEvent evt)
         {
-            if (evt.button == (int)MouseButton.MiddleMouse)
+            if (evt.button == (int)MouseButton.MiddleMouse && evt.shiftKey)
             {
                 DecalTextureElement.style.opacity = 1;
                 DecalData.opacity = 1;
@@ -528,16 +528,16 @@ namespace SevenStrikeModules.XGraph
         {
             ActionDecalData data = null;
 
-            for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
+            for (int i = 0; i < graphView.ActionTreeAsset.Decals.Count; i++)
             {
-                if (graphView.ActionTreeAsset.DecalDatas[i].guid == DecalData.guid)
+                if (graphView.ActionTreeAsset.Decals[i].guid == DecalData.guid)
                 {
-                    data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
-                    graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
+                    data = graphView.ActionTreeAsset.Decals[i].Clone(false);
+                    graphView.ActionTreeAsset.Decals.RemoveAt(i);
                     break;
                 }
             }
-            graphView.ActionTreeAsset.DecalDatas.Add(data);
+            graphView.ActionTreeAsset.Decals.Add(data);
             BringToFront();
         }
         /// <summary>
@@ -547,23 +547,23 @@ namespace SevenStrikeModules.XGraph
         {
             ActionDecalData data = null;
 
-            for (int i = 0; i < graphView.ActionTreeAsset.DecalDatas.Count; i++)
+            for (int i = 0; i < graphView.ActionTreeAsset.Decals.Count; i++)
             {
-                if (graphView.ActionTreeAsset.DecalDatas[i].guid == DecalData.guid)
+                if (graphView.ActionTreeAsset.Decals[i].guid == DecalData.guid)
                 {
-                    data = graphView.ActionTreeAsset.DecalDatas[i].Clone(false);
-                    graphView.ActionTreeAsset.DecalDatas.RemoveAt(i);
+                    data = graphView.ActionTreeAsset.Decals[i].Clone(false);
+                    graphView.ActionTreeAsset.Decals.RemoveAt(i);
                     break;
                 }
             }
-            graphView.ActionTreeAsset.DecalDatas.Insert(0, data);
+            graphView.ActionTreeAsset.Decals.Insert(0, data);
             SendToBack();
         }
         /// <summary>
         /// 设置节点的样式应用
         /// </summary>
         /// <param name="StyleName"></param>
-        protected void SetContainersStyle(string StyleName)
+        protected void SetContainersStyle()
         {
             contentContainer.AddToClassList("ContentContainer");
             mainContainer.AddToClassList("MainContainer");

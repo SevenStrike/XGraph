@@ -1,9 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
-    using UnityEditor.Experimental.GraphView;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public class Base_GraphNode_Relay : VNode_Relay
     {

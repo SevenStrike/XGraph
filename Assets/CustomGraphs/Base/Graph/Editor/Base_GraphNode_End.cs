@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
@@ -10,8 +11,10 @@ namespace SevenStrikeModules.XGraph
             base.Initialize(graphView, pos, data);
 
             #region 端口设置
-            xGraph_NodePort port_in = new xGraph_NodePort("in", typeof(bool), Port.Capacity.Single);
-            SetPort_Input(port_in);
+            List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
+            // 加入行为端口
+            port_in.Add(new xGraph_NodePort("in", typeof(ActionNode_Base), Port.Capacity.Single));
+            InputPort_Set(port_in);
             #endregion
         }
 

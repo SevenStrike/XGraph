@@ -1,10 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
     using UnityEditor;
+    using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -520,6 +522,84 @@ namespace SevenStrikeModules.XGraph
             {
                 element.style.display = new StyleEnum<DisplayStyle>(StyleKeyword.None);
             }
+        }
+        /// <summary>
+        /// 控制元素 - 边框颜色设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="col_top"></param>
+        /// <param name="col_bottom"></param>
+        /// <param name="col_left"></param>
+        /// <param name="col_right"></param>
+        public static void Element_BoderColor_Set(VisualElement element, Color col_top, Color col_bottom, Color col_left, Color col_right)
+        {
+            element.style.borderTopColor = col_top;
+            element.style.borderBottomColor = col_bottom;
+            element.style.borderLeftColor = col_left;
+            element.style.borderRightColor = col_right;
+        }
+        /// <summary>
+        /// 控制元素 - 边框颜色设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="color"></param>
+        public static void Element_BoderColor_Set(VisualElement element, Color color)
+        {
+            element.style.borderTopColor = color;
+            element.style.borderBottomColor = color;
+            element.style.borderLeftColor = color;
+            element.style.borderRightColor = color;
+        }
+        /// <summary>
+        /// 控制元素 - 背景颜色设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="color"></param>
+        public static void Element_BackgroundColor_Set(VisualElement element, Color color)
+        {
+            element.style.backgroundColor = color;
+        }
+        /// <summary>
+        /// 控制元素 - 颜色设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="color"></param>
+        public static void Element_Color_Set(VisualElement element, Color color)
+        {
+            element.style.color = color;
+        }
+        /// <summary>
+        /// 控制元素 - 透明度设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="alpha"></param>
+        public static void Element_Opacity_Set(VisualElement element, float alpha)
+        {
+            element.style.opacity = alpha;
+        }
+        #endregion
+
+        #region 端口获取
+        /// <summary>
+        /// 从端口列表中获取指定类型的端口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="portlist"></param>
+        /// <returns></returns>
+        public static Port GetPort_WithType_OfPortList<T>(List<xGraph_NodePort> portlist)
+        {
+            Port port = null;
+            portlist.ForEach(p =>
+            {
+                if (p is xGraph_NodePort x)
+                {
+                    if (x.Type == typeof(T))
+                    {
+                        port = x.Port;
+                    }
+                }
+            });
+            return port;
         }
         #endregion
     }
