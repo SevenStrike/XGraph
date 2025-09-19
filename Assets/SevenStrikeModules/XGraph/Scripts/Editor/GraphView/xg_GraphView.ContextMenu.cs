@@ -77,6 +77,10 @@ namespace SevenStrikeModules.XGraph
                                 // 改变分割图标颜色
                                 node.SeperateIconLabel.style.unityBackgroundImageTintColor = pickedColor;
 
+                                //if(node is VNode_Variable_Internal vnode_var_internal)
+                                //{
+
+                                //}
 
                                 // 改变连线颜色
                                 if (node.Port_Inputs != null)
@@ -84,7 +88,7 @@ namespace SevenStrikeModules.XGraph
                                     node.Port_Inputs.ForEach(x =>
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BoderColor_Set(x.PortDonut, node.ActionData.themeColor);
+                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
                                         var edges = x.Port.connections.ToList();
                                         // 遍历所有连线
                                         foreach (var edge in edges)
@@ -98,7 +102,7 @@ namespace SevenStrikeModules.XGraph
                                     node.Port_Outputs.ForEach(x =>
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BoderColor_Set(x.PortDonut, node.ActionData.themeColor);
+                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
 
                                         var edges = x.Port.connections.ToList();
                                         // 遍历所有连线
@@ -142,7 +146,7 @@ namespace SevenStrikeModules.XGraph
                                     node.Port_Inputs.ForEach(x =>
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BoderColor_Set(x.PortDonut, node.ActionData.themeColor);
+                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
 
                                         var edges = x.Port.connections.ToList();
                                         // 遍历所有连线
@@ -158,7 +162,7 @@ namespace SevenStrikeModules.XGraph
                                     node.Port_Outputs.ForEach(x =>
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BoderColor_Set(x.PortDonut, node.ActionData.themeColor);
+                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
 
                                         var edges = x.Port.connections.ToList();
                                         // 遍历所有连线

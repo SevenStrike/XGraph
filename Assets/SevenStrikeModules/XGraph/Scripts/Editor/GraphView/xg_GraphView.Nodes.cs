@@ -71,6 +71,33 @@ namespace SevenStrikeModules.XGraph
                     args.position = actionnode.nodeGraphPosition + new Vector2(81, 46.5f);
                     args.size = actionnode.nodeGraphSize;
 
+                    // 为变量类型节点数据特化处理，需要初始化类型 Variable
+                    if (actionnode is ActionNode_Variable avnode)
+                    {
+                        args.variable = avnode.variable.CloneVars(true);
+
+                        switch (avnode.variable.type)
+                        {
+                            case VariableType.String:
+                                args.variable.SetValue<string>(avnode.variable.GetValue<string>());
+                                break;
+                            case VariableType.Float:
+                                break;
+                            case VariableType.Int:
+                                break;
+                            case VariableType.Bool:
+                                break;
+                            case VariableType.Vector2:
+                                break;
+                            case VariableType.Vector3:
+                                break;
+                            case VariableType.Vector4:
+                                break;
+                            case VariableType.Color:
+                                break;
+                        }
+                    }
+
                     dupData.DuplicatedNode = CreateNode(args);
                 }
                 // 如果克隆的节点为： VNode_Stick
@@ -97,7 +124,7 @@ namespace SevenStrikeModules.XGraph
                     args.opacity = data.opacity;
                     args.hasTexture = data.HasTexture;
                     args.decalTexture = data.DecalTexture;
-                    object decalNode = CreateNode(args);
+                    Node decalNode = CreateNode(args);
 
                     dupData.DuplicatedNode = decalNode as VNode_Decal;
                 }
@@ -113,8 +140,9 @@ namespace SevenStrikeModules.XGraph
                     args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
                     args.varguid = data.varguid;
                     args.size = data.size;
+                    args.variable = data.variable;
 
-                    object vareNode = CreateNode(args);
+                    Node vareNode = CreateNode(args);
 
                     dupData.DuplicatedNode = vareNode as VNode_Variable;
                 }
@@ -147,7 +175,6 @@ namespace SevenStrikeModules.XGraph
                 // 将选中的节点拷贝进缓冲区
                 gv_CopiedNodeList.Add(node);
             }
-
             // 特化处理 - Decal
             foreach (var node in CurrentSelectedNodes_Decal)
             {
@@ -160,7 +187,6 @@ namespace SevenStrikeModules.XGraph
                 // 将选中的节点拷贝进缓冲区
                 gv_CopiedNodeList.Add(node);
             }
-
             // 特化处理 - Stick
             foreach (var node in CurrentSelectedNodes_Stick)
             {
@@ -213,6 +239,12 @@ namespace SevenStrikeModules.XGraph
                         args.position = realpos;
                         args.size = data.nodeGraphSize;
 
+                        // 为变量类型节点数据特化处理，需要初始化类型 Variable
+                        if (data is ActionNode_Variable avnode)
+                        {
+                            args.variable = avnode.variable.CloneVars(true);
+                        }
+
                         AddToSelection(CreateNode(args));
                     }
                     if (node is VNode_Decal node_decal)
@@ -239,7 +271,7 @@ namespace SevenStrikeModules.XGraph
                         args.position = realpos;
                         args.varguid = data.varguid;
                         args.size = data.size;
-
+                        args.variable = data.variable;
                         AddToSelection(CreateNode(args));
                     }
                     if (node is VNode_Stick node_stick)
@@ -641,7 +673,7 @@ namespace SevenStrikeModules.XGraph
             // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Variables 变量中
             Undo.RecordObject(ActionTreeAsset, "Create VariablelNode");
             // 新建行为树贴图内容加入到行为树根资源的 Variables 变量中
-            ActionVariableData vardata = new ActionVariableData(args.name, args.description, args.type, GUID.Generate().ToString(), args.position, args.size, args.varguid, args.transparentNode);
+            ActionVariableData vardata = new ActionVariableData(args.name, args.description, args.type, GUID.Generate().ToString(), args.position, args.size, args.varguid, args.variable, args.transparentNode);
             ActionTreeAsset.Variable_Add(vardata);
 
             // 创建新的节点并指定资源数据项

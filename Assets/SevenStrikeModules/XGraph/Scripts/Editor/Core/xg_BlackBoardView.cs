@@ -250,6 +250,7 @@ namespace SevenStrikeModules.XGraph
             args.position = localMousePosition + offset;
             args.varguid = variable.guid;
             args.transparentNode = false;
+            args.variable = variable;
 
             graphWindow.xw_graphView.AddToSelection(graphWindow.xw_graphView.CreateNode(args));
             #endregion
@@ -517,10 +518,6 @@ namespace SevenStrikeModules.XGraph
                 {
                     AddVariable(Variable_Create(VariableType.Color));
                 });
-                menu.AddItem(new GUIContent("O 物体变量"), false, () =>
-                {
-                    AddVariable(Variable_Create(VariableType.Object));
-                });
                 // 显示菜单
                 menu.DropDown(new Rect(screenPosition, Vector2.zero));
             }
@@ -586,9 +583,6 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Color:
                     vare = new Variable_Color(type.ToString());
-                    break;
-                case VariableType.Object:
-                    vare = new Variable_Object(type.ToString());
                     break;
             }
 

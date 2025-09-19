@@ -81,7 +81,6 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
         }
 
-
         /// <summary>
         /// 当拖动节点位置时，将位置数据传递给对应的目标数据节点位置变量
         /// </summary>
@@ -123,6 +122,11 @@ namespace SevenStrikeModules.XGraph
         public override void OnSelected()
         {
             base.OnSelected();
+
+            if (VariableData.type == VariableType.String)
+                Debug.Log(VariableData.variable.GetValue<string>());
+            if (VariableData.type == VariableType.Color)
+                Debug.Log(VariableData.variable.GetValue<Color>());
 
             // 调用回调事件
             if (OnSelectedNode != null)
@@ -350,7 +354,7 @@ namespace SevenStrikeModules.XGraph
         public void SetNode_Description(string des)
         {
             VariableData.description = des;
-            //util_XGraphEditorUtility.Element_Label_ValueSet(TitleLabel, VariableData.name);
+            //util_XGraphEditorUtility.Element_Label_ValueSet(TitleLabel, variable.name);
         }
         /// <summary>
         /// 设置端口样式

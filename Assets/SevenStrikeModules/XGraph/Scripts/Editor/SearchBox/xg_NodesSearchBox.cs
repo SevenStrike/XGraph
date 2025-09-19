@@ -228,7 +228,8 @@ namespace SevenStrikeModules.XGraph
                 args.content = null;
                 args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
-
+                VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), types.visual_name);
+                args.variable = new Variable(types.visual_name, v_type);
                 graphView.CreateNode(args);
             }
 

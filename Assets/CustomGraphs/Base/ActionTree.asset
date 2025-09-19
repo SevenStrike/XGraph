@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5712326784489090229
+--- !u!114 &-9025891123781788014
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31,8 +31,9 @@ MonoBehaviour:
   Avatar: {fileID: 0}
   NodeIcon: {fileID: 0}
   childNodes:
-  - {fileID: 7532576604759385082}
---- !u!114 &-4965503915068779665
+  - {fileID: 3539018593162730195}
+  - {fileID: 9091415894162338737}
+--- !u!114 &-8483093871760577993
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,28 +42,145 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed0502ddbc3936d44b8cacd5eb391990, type: 3}
-  m_Name: "\u5F00\u59CB"
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: String
   m_EditorClassIdentifier: 
-  identifyName: "\u5F00\u59CB"
+  identifyName: String
   content: 
-  guid: dbb4e91b3e315fc4695934160715d956
+  guid: 2e2de694168431f458fd2afd06c0b131
   namespaces: SevenStrikeModules.XGraph
-  classes: Base_ActionNode_
-  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u5F00\u59CB.asset"
-  actionNodeType: Start
-  icon: start
-  visualNodeType: Base_GraphNode_Start
-  nodeGraphPosition: {x: 225, y: 144}
-  nodeGraphSize: {x: 166, y: 97}
-  themeSolution: "\u81EA\u5B9A\u4E49"
-  themeColor: {r: 0.11792451, g: 1, b: 0.52232826, a: 1}
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   String.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 255, y: 406}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
   isConcurrentExecution: 0
   HasAvatar: 0
   TransparentNode: 0
   Avatar: {fileID: 0}
   NodeIcon: {fileID: 0}
-  childNode: {fileID: -5712326784489090229}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-7022912786102102114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: String
+  m_EditorClassIdentifier: 
+  identifyName: String
+  content: 
+  guid: c71a230c4194a0a42a646420992f3480
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   String.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 261, y: 561}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-6444822916988741924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: "\u6D6E\u70B9\u6570"
+  m_EditorClassIdentifier: 
+  identifyName: "\u6D6E\u70B9\u6570"
+  content: 
+  guid: 1c3ee125be1cb4c49a3dee7c99649504
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   > \u6D6E\u70B9\u6570.asset"
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 544, y: 721}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-5093303691351486186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: gfgfg
+  m_EditorClassIdentifier: 
+  identifyName: gfgfg
+  content: 
+  guid: 02e61c001d3f4f84697d95d3c095284f
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > gfgfg.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 519, y: 559}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-4478848639634695754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +218,7 @@ MonoBehaviour:
     type: 0
     guidsconnector: []
     value: sdfsdf
---- !u!114 &-83828866643928858
+--- !u!114 &-3577574724384308531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,29 +227,145 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 163931c7f2eec3f4c9d4c47c60e1f63b, type: 3}
-  m_Name: "\u7B49\u5F85"
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Float
   m_EditorClassIdentifier: 
-  identifyName: "\u7B49\u5F85"
+  identifyName: Float
   content: 
-  guid: f22ef801bd89d5e4fbf86766e0395428
+  guid: b70ba94a873a34b47857922aa10d6244
   namespaces: SevenStrikeModules.XGraph
-  classes: Base_ActionNode_
-  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u7B49\u5F85.asset"
-  actionNodeType: Wait
-  icon: wait
-  visualNodeType: Base_GraphNode_Wait
-  nodeGraphPosition: {x: 765, y: 491}
-  nodeGraphSize: {x: 166, y: 132}
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Float.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 261, y: 632}
+  nodeGraphSize: {x: 166, y: 64}
   themeSolution: 
   themeColor: {r: 1, g: 1, b: 1, a: 1}
   isConcurrentExecution: 0
-  HasAvatar: 1
+  HasAvatar: 0
   TransparentNode: 0
-  Avatar: {fileID: 2800000, guid: 44fb137c64c18814fb5a66a05b5bda4d, type: 3}
+  Avatar: {fileID: 0}
   NodeIcon: {fileID: 0}
-  childNodes: []
-  Time: 0
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-2820608890899250974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Float
+  m_EditorClassIdentifier: 
+  identifyName: Float
+  content: 
+  guid: 198a914f79e0b3f408ca95b6e750f396
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Float.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 255, y: 488}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-1713740093035925047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: String
+  m_EditorClassIdentifier: 
+  identifyName: String
+  content: 
+  guid: b9b6d0b64d2f1c447968aacc568ca206
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   String.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 765, y: 696}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &-1421345490207053810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: String
+  m_EditorClassIdentifier: 
+  identifyName: String
+  content: 
+  guid: ce132f8fc239d194d9e8079a1d950099
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   String.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 544, y: 644}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,10 +378,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
   m_Name: ActionTree
   m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1603, y: 956}
-  LastGraphViewPosition: {x: 208, y: 117}
+  LastGraphWindowSize: {x: 1681, y: 1005}
+  LastGraphViewPosition: {x: 19, y: 107}
   LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-09-17  -  10:46:50
+  LastSaveDateTime: 2025-09-19  -  19:06:44
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.41154903, g: 0.512477, b: 0.5921569, a: 0.3764706}
     gridcolor: {r: 0, g: 0, b: 0, a: 0.09803922}
@@ -161,79 +395,168 @@ MonoBehaviour:
     segments: 4
     displayCoordinate: 0
   Actions:
-  - {fileID: -4965503915068779665}
-  - {fileID: 7532576604759385082}
-  - {fileID: -5712326784489090229}
-  - {fileID: 2187149969801621703}
-  - {fileID: 4014342599810389244}
-  - {fileID: -83828866643928858}
+  - {fileID: 1454074368509405135}
+  - {fileID: 3539018593162730195}
+  - {fileID: -9025891123781788014}
+  - {fileID: 8615218239182149329}
+  - {fileID: 3591175636198951311}
+  - {fileID: 9091415894162338737}
+  - {fileID: 880162909038595662}
+  - {fileID: 3468281065156491496}
+  - {fileID: 5136577589716106898}
+  - {fileID: 4343241294988582603}
   Variables:
-  - name: "\u89D2\u8272\u540D\u79F0"
+  - name: String
     description: String
-    guid: 30216a581b0fd0240834558bd0e714c7
-    varguid: 8ea428ed8a0d2064393ec944604936c5
+    guid: 7c7a073d840dba64bb5f93aa9931b74d
+    varguid: e31ec5174694a704191f602993e89cd7
     type: 0
+    variable:
+      rid: 8615089657595560474
     TransparentNode: 0
-    position: {x: 526, y: 418}
-    size: {x: 143, y: 38}
-  - name: "\u89D2\u8272\u540D\u79F0"
+    position: {x: 1081, y: -62}
+    size: {x: 131, y: 38}
+  - name: AbSCol
+    description: Color
+    guid: 2b0e0cbd93577604783162c6f81a823f
+    varguid: 04eefffd14dbcd14898349bc0d41317a
+    type: 7
+    variable:
+      rid: 8615089657595560475
+    TransparentNode: 0
+    position: {x: 1081, y: -16}
+    size: {x: 138, y: 38}
+  - name: AbSCol
+    description: Color
+    guid: a7fb6c5d631cbc942a6c39ded764d37b
+    varguid: 04eefffd14dbcd14898349bc0d41317a
+    type: 7
+    variable:
+      rid: 8615089657595560476
+    TransparentNode: 0
+    position: {x: 1081, y: 22}
+    size: {x: 138, y: 38}
+  - name: String
     description: String
-    guid: 6088b5b9ba074fa4fb5d89f1ff6be8af
-    varguid: 8ea428ed8a0d2064393ec944604936c5
+    guid: b86889035295b884abee1511a91f36e6
+    varguid: e31ec5174694a704191f602993e89cd7
     type: 0
+    variable:
+      rid: 8615089657595560474
     TransparentNode: 0
-    position: {x: 267, y: 283}
-    size: {x: 143, y: 38}
-  - name: "\u89D2\u8272\u540D\u79F0"
-    description: String
-    guid: e07a36dc77caca742a3a33359071a49c
-    varguid: 8ea428ed8a0d2064393ec944604936c5
-    type: 0
+    position: {x: 260, y: 261.00003}
+    size: {x: 131, y: 38}
+  - name: AbSCol
+    description: Color
+    guid: 4d37ae7644480d54b8c2c83136f6bb62
+    varguid: 04eefffd14dbcd14898349bc0d41317a
+    type: 7
+    variable:
+      rid: 8615089657595560475
     TransparentNode: 0
-    position: {x: 225, y: 387}
-    size: {x: 143, y: 38}
-  - name: "\u89D2\u8272\u540D\u79F0"
-    description: String
-    guid: 4cc05877ef2b54c4eac8f3949d4b3d9a
-    varguid: 8ea428ed8a0d2064393ec944604936c5
-    type: 0
+    position: {x: 1081, y: 114}
+    size: {x: 138, y: 38}
+  - name: AbSCol
+    description: Color
+    guid: ad38c132ddabe9f4b8285c9d8dedf852
+    varguid: 04eefffd14dbcd14898349bc0d41317a
+    type: 7
+    variable:
+      rid: 8615089657595560476
     TransparentNode: 0
-    position: {x: 602, y: 69}
-    size: {x: 143, y: 38}
-  - name: "\u89D2\u8272\u540D\u79F0"
-    description: String
-    guid: e7347f904e148d74e9834987abc86f16
-    varguid: 8ea428ed8a0d2064393ec944604936c5
-    type: 0
+    position: {x: 1081, y: 157}
+    size: {x: 138, y: 38}
+  - name: Float
+    description: Float
+    guid: 05aac8b15842f694fa55420559d819e8
+    varguid: 9f5828608a2012a49acb997633658c59
+    type: 1
+    variable:
+      rid: 8615089657595560477
     TransparentNode: 0
-    position: {x: 277.04346, y: 35.782604}
-    size: {x: 143, y: 38}
-  - name: "\u89D2\u8272\u540D\u79F0"
-    description: String
-    guid: b87ec89de5d59974ab18b5ae69c19851
-    varguid: 8ea428ed8a0d2064393ec944604936c5
-    type: 0
-    TransparentNode: 0
-    position: {x: 355, y: 470}
-    size: {x: 143, y: 38}
+    position: {x: 168.21455, y: 13.141438}
+    size: {x: 126, y: 38}
   Sticks: []
-  Decals: []
+  Decals:
+  - guid: 43d4fa24fa179bc41a599689e3f5eb4f
+    position: {x: 848.06537, y: 58.138573}
+    size: {x: 195, y: 200}
+    opacity: 1
+    HasTexture: 1
+    DecalTexture: {fileID: 2800000, guid: 9bb491ffcaef97847a7b780bfcf73876, type: 3}
+    scale: {x: -1, y: 1, z: 0}
   Groups: []
   VariableItems:
-  - rid: 8615089583685370834
+  - rid: 8615089657595560484
+  - rid: 8615089657595560485
+  - rid: 8615089657595560486
   references:
     version: 2
     RefIds:
-    - rid: 8615089583685370834
+    - rid: 8615089657595560474
       type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
-        name: "\u89D2\u8272\u540D\u79F0"
-        guid: 8ea428ed8a0d2064393ec944604936c5
+        name: String
+        guid: e31ec5174694a704191f602993e89cd7
         description: String
         type: 0
         guidsconnector: []
-        value: 
---- !u!114 &2187149969801621703
+        value: FuckVariables
+    - rid: 8615089657595560475
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Color
+        guid: 04eefffd14dbcd14898349bc0d41317a
+        description: Color
+        type: 7
+        guidsconnector: []
+        value: {r: 1, g: 0, b: 0, a: 0.9647059}
+    - rid: 8615089657595560476
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: AbSCol
+        guid: 04eefffd14dbcd14898349bc0d41317a
+        description: Color
+        type: 7
+        guidsconnector: []
+        value: {r: 1, g: 0, b: 0, a: 0.9647059}
+    - rid: 8615089657595560477
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Float
+        guid: 9f5828608a2012a49acb997633658c59
+        description: Float
+        type: 1
+        guidsconnector: []
+        value: 0
+    - rid: 8615089657595560484
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: String
+        guid: e31ec5174694a704191f602993e89cd7
+        description: String
+        type: 0
+        guidsconnector: []
+        value: FuckVariables
+    - rid: 8615089657595560485
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: AbSCol
+        guid: 04eefffd14dbcd14898349bc0d41317a
+        description: Color
+        type: 7
+        guidsconnector: []
+        value: {r: 1, g: 0, b: 0, a: 0.9647059}
+    - rid: 8615089657595560486
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Float
+        guid: 9f5828608a2012a49acb997633658c59
+        description: Float
+        type: 1
+        guidsconnector: []
+        value: 0
+--- !u!114 &880162909038595662
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,61 +565,117 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
-  m_Name: "\u8C03\u8BD5"
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: FFG
   m_EditorClassIdentifier: 
-  identifyName: "\u8C03\u8BD5"
+  identifyName: FFG
   content: 
-  guid: aa396a9e735ce1d47923223ccc39cdbe
+  guid: 21f386e1ff74b724aa639aea31eab45e
   namespaces: SevenStrikeModules.XGraph
-  classes: Base_ActionNode_
-  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u8C03\u8BD5.asset"
-  actionNodeType: Debug
-  icon: debug
-  visualNodeType: Base_GraphNode_Debug
-  nodeGraphPosition: {x: 765, y: 293}
-  nodeGraphSize: {x: 166, y: 132}
-  themeSolution: "\u81EA\u5B9A\u4E49"
-  themeColor: {r: 0.5387499, g: 0.24056602, b: 1, a: 1}
-  isConcurrentExecution: 0
-  HasAvatar: 1
-  TransparentNode: 0
-  Avatar: {fileID: 2800000, guid: acb2df4b84c17264fb6e482a8aae38ab, type: 3}
-  NodeIcon: {fileID: 0}
-  childNode: {fileID: 0}
-  Message: 
---- !u!114 &4014342599810389244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a7a8799d769afa45b1f5e196bb29e23, type: 3}
-  m_Name: "\u5408\u6210"
-  m_EditorClassIdentifier: 
-  identifyName: "\u5408\u6210"
-  content: 
-  guid: bfcd0f1364c84d04eadfe10ce718756f
-  namespaces: SevenStrikeModules.XGraph
-  classes: Base_ActionNode_
-  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u5408\u6210.asset"
-  actionNodeType: Composite
-  icon: composite
-  visualNodeType: Base_GraphNode_Composite
-  nodeGraphPosition: {x: 796, y: 110.5}
-  nodeGraphSize: {x: 166, y: 97}
-  themeSolution: "\u81EA\u5B9A\u4E49"
-  themeColor: {r: 0, g: 0.7241845, b: 1, a: 1}
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > FFG.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 260, y: 337}
+  nodeGraphSize: {x: 180, y: 120}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
   isConcurrentExecution: 0
   HasAvatar: 0
   TransparentNode: 0
   Avatar: {fileID: 0}
   NodeIcon: {fileID: 0}
-  childNodes: []
---- !u!114 &7532576604759385082
+  variable:
+    rid: 8615089657595560369
+  references:
+    version: 2
+    RefIds:
+    - rid: 8615089657595560369
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: FFG
+        guid: 7150cb83daa552f41a78a94a6c473da2
+        description: 
+        type: 0
+        guidsconnector: []
+        value: "\u7535\u529B\u79D1\u6280\u554A\u5237\u5361\u673A\u6253\u5F00\u4E86\u968F\u673A\u53D1\u8003\u62C9\u53D7\u6253\u51FB\u53D1\u5566\u7535\u529B\u79D1\u6280\u554A\u5237\u5361\u673A\u6253\u5F00\u4E86\u968F\u673A\u53D1\u8003\u62C9\u53D7\u6253\u51FB\u53D1\u5566\u7535\u529B\u79D1\u6280\u554A\u5237\u5361\u673A\u6253\u5F00\u4E86\u968F\u673A\u53D1\u8003\u62C9\u53D7\u6253\u51FB\u53D1\u5566"
+--- !u!114 &1454074368509405135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0502ddbc3936d44b8cacd5eb391990, type: 3}
+  m_Name: "\u5F00\u59CB"
+  m_EditorClassIdentifier: 
+  identifyName: "\u5F00\u59CB"
+  content: 
+  guid: dbb4e91b3e315fc4695934160715d956
+  namespaces: SevenStrikeModules.XGraph
+  classes: Base_ActionNode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u5F00\u59CB.asset"
+  actionNodeType: Start
+  icon: start
+  visualNodeType: Base_GraphNode_Start
+  nodeGraphPosition: {x: 225, y: 144}
+  nodeGraphSize: {x: 166, y: 97}
+  themeSolution: "\u81EA\u5B9A\u4E49"
+  themeColor: {r: 0.11792451, g: 1, b: 0.52232826, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  childNode: {fileID: -9025891123781788014}
+--- !u!114 &3468281065156491496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Int
+  m_EditorClassIdentifier: 
+  identifyName: Int
+  content: 
+  guid: b14d2a538d51a3a44bc2b91553466af4
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Int.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 513, y: 337}
+  nodeGraphSize: {x: 180, y: 120}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: 8615089657595560471
+  references:
+    version: 2
+    RefIds:
+    - rid: 8615089657595560471
+      type: {class: Variable_Int, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Int
+        guid: 9f84d404c63b27a459fb92c9d34a80c9
+        description: 
+        type: 2
+        guidsconnector: []
+        value: 0
+--- !u!114 &3539018593162730195
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -317,7 +696,7 @@ MonoBehaviour:
   actionNodeType: Composite
   icon: composite
   visualNodeType: Base_GraphNode_Composite
-  nodeGraphPosition: {x: 503, y: 240}
+  nodeGraphPosition: {x: 618.06537, y: 182.13858}
   nodeGraphSize: {x: 166, y: 97}
   themeSolution: "\u81EA\u5B9A\u4E49"
   themeColor: {r: 1, g: 0.5452057, b: 0.2028302, a: 1}
@@ -327,5 +706,260 @@ MonoBehaviour:
   Avatar: {fileID: 0}
   NodeIcon: {fileID: 0}
   childNodes:
-  - {fileID: 2187149969801621703}
-  - {fileID: 4014342599810389244}
+  - {fileID: 8615218239182149329}
+--- !u!114 &3591175636198951311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a31c353e3f246c41b9f77c89186d2ac, type: 3}
+  m_Name: "\u7ED3\u675F"
+  m_EditorClassIdentifier: 
+  identifyName: "\u7ED3\u675F"
+  content: 
+  guid: 1d9d135b1a5d0c3429a1e19d5b710ead
+  namespaces: SevenStrikeModules.XGraph
+  classes: Base_ActionNode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u7ED3\u675F.asset"
+  actionNodeType: End
+  icon: end
+  visualNodeType: Base_GraphNode_End
+  nodeGraphPosition: {x: 1096.5713, y: 240.2857}
+  nodeGraphSize: {x: 166, y: 97}
+  themeSolution: "\u81EA\u5B9A\u4E49"
+  themeColor: {r: 1, g: 0.59540224, b: 0, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+--- !u!114 &4343241294988582603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Color
+  m_EditorClassIdentifier: 
+  identifyName: Color
+  content: 
+  guid: fb25a3c12479d2d409f3ef77ee16fa4b
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Color.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 260, y: 497}
+  nodeGraphSize: {x: 180, y: 120}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: 8615089657595560473
+  references:
+    version: 2
+    RefIds:
+    - rid: 8615089657595560473
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Color
+        guid: 734e2075c623d80498eed46683e7aba4
+        description: 
+        type: 7
+        guidsconnector: []
+        value: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &5136577589716106898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Float
+  m_EditorClassIdentifier: 
+  identifyName: Float
+  content: 
+  guid: 5e6c7d25899f70346a83856b592462c9
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Float.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 513, y: 497}
+  nodeGraphSize: {x: 180, y: 120}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: 8615089657595560472
+  references:
+    version: 2
+    RefIds:
+    - rid: 8615089657595560472
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Float
+        guid: c4a83feb88e798448aa48e54a336fed8
+        description: 
+        type: 1
+        guidsconnector: []
+        value: 0
+--- !u!114 &5334598189050647447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: String
+  m_EditorClassIdentifier: 
+  identifyName: String
+  content: 
+  guid: 0cb35fd4f19da674087611b83f192de0
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   String.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 414, y: 790}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &7459803232051849714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: Float
+  m_EditorClassIdentifier: 
+  identifyName: Float
+  content: 
+  guid: 0f1bc03ecd13a8f45a2bfb6cee620ee5
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   >   Float.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 765, y: 780}
+  nodeGraphSize: {x: 166, y: 64}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  variable:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &8615218239182149329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a6eb91ce368e147aa1c36c6b449c8a, type: 3}
+  m_Name: "\u8C03\u8BD5"
+  m_EditorClassIdentifier: 
+  identifyName: "\u8C03\u8BD5"
+  content: 
+  guid: eacb4d3109548624ab07fb8bed416e64
+  namespaces: SevenStrikeModules.XGraph
+  classes: Base_ActionNode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u8C03\u8BD5.asset"
+  actionNodeType: Debug
+  icon: debug
+  visualNodeType: Base_GraphNode_Debug
+  nodeGraphPosition: {x: 857.13525, y: 298.56763}
+  nodeGraphSize: {x: 166, y: 132}
+  themeSolution: "\u81EA\u5B9A\u4E49"
+  themeColor: {r: 0.5387499, g: 0.24056602, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 1
+  TransparentNode: 0
+  Avatar: {fileID: 2800000, guid: acb2df4b84c17264fb6e482a8aae38ab, type: 3}
+  NodeIcon: {fileID: 0}
+  childNode: {fileID: 3591175636198951311}
+  Message: 
+--- !u!114 &9091415894162338737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 163931c7f2eec3f4c9d4c47c60e1f63b, type: 3}
+  m_Name: "\u7B49\u5F85"
+  m_EditorClassIdentifier: 
+  identifyName: "\u7B49\u5F85"
+  content: 
+  guid: 0ddc572e488cbf24281d93e699bd6873
+  namespaces: SevenStrikeModules.XGraph
+  classes: Base_ActionNode_
+  path: "Assets\\SevenStrikeModules\\XGraph\\CloneTree   >   \u7B49\u5F85.asset"
+  actionNodeType: Wait
+  icon: wait
+  visualNodeType: Base_GraphNode_Wait
+  nodeGraphPosition: {x: 618.1435, y: -29.571747}
+  nodeGraphSize: {x: 166, y: 132}
+  themeSolution: 
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 1
+  TransparentNode: 0
+  Avatar: {fileID: 2800000, guid: da183933ad5336b4cb31093e7f940330, type: 3}
+  NodeIcon: {fileID: 0}
+  childNodes: []
+  Time: 0

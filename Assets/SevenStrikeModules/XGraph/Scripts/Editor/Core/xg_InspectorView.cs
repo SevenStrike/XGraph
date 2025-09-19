@@ -123,7 +123,10 @@ namespace SevenStrikeModules.XGraph
 
             Label val = new Label();
             val.style.fontSize = 25;
-            val.text = vare.GetValue().ToString();
+            if (vare.type == VariableType.String)
+                val.text = vare.GetValue<string>().ToString();
+            if (vare.type == VariableType.Float)
+                val.text = vare.GetValue<float>().ToString();
             Add(val);
         }
 

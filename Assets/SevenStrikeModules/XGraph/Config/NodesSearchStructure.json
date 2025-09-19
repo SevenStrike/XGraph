@@ -87,6 +87,75 @@
                     "visualNodeType": "VNode_Decal"
                 }
             ]
+        },
+        {
+            "catergory_title": "变量",
+            "catergory_nodes": [
+                {
+                    "name": "String",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Float",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Int",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Bool",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector2",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector3",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector4",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Color",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                }
+            ]
         }
     ]
 }

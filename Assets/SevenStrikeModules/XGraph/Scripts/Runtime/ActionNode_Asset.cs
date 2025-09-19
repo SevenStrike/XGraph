@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Reflection.Emit;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
@@ -33,6 +34,7 @@ namespace SevenStrikeModules.XGraph
         public string content;
         public Vector2 position;
         public Vector2 size;
+        public Variable variable;
     }
 
     [Serializable]
@@ -74,6 +76,7 @@ namespace SevenStrikeModules.XGraph
         public Vector2 size;
         public string varguid;
         public bool transparentNode;
+        public Variable variable;
     }
     #endregion
 
@@ -327,6 +330,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public VariableType type;
         /// <summary>
+        /// 变量类
+        /// </summary>
+        [SerializeReference] public Variable variable;
+        /// <summary>
         /// 透明背景节点模式
         /// </summary>
         [SerializeField] public bool TransparentNode = false;
@@ -352,7 +359,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="guid"></param>
         /// <param name="pos"></param>
         /// <param name="varguid"></param>
-        public ActionVariableData(string name, string description, VariableType type, string guid, Vector2 pos, Vector2 size, string varguid, bool transparentNode)
+        public ActionVariableData(string name, string description, VariableType type, string guid, Vector2 pos, Vector2 size, string varguid, Variable variable, bool transparentNode)
         {
             this.name = name;
             this.description = description;
@@ -361,6 +368,7 @@ namespace SevenStrikeModules.XGraph
             this.position = pos;
             this.size = size;
             this.varguid = varguid;
+            this.variable = variable;
         }
         /// <summary>
         /// 变量克隆
@@ -380,6 +388,7 @@ namespace SevenStrikeModules.XGraph
             clone.varguid = varguid;
             clone.size = size;
             clone.TransparentNode = TransparentNode;
+            clone.variable = variable;
             return clone;
         }
     }
@@ -422,29 +431,25 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 值 - 颜色
         /// </summary>
-        Color = 7,
-        /// <summary>
-        /// 值 - 物体
-        /// </summary>
-        Object = 8
+        Color = 7
     }
 
     [Serializable]
     /// <summary>
     /// 黑板变量类
     /// </summary>
-    public abstract class Variable
+    public class Variable
     {
         public string name;
         public string guid;
         public string description;
         public VariableType type;
-
         /// <summary>
         /// 所有用到变量的节点的guid列表，用于重建节点图连线关系
         /// </summary>
         public List<string> guidsconnector = new List<string>();
 
+        #region 构造
         /// <summary>
         /// 黑板变量构造
         /// </summary>
@@ -470,11 +475,13 @@ namespace SevenStrikeModules.XGraph
         {
             this.description = des;
         }
+        #endregion
 
+        #region 克隆
         /// <summary>
         /// 克隆字段到目标变量
         /// </summary>
-        protected void CloneVars(Variable target, bool guid_create)
+        public void CloneVars(Variable target, bool guid_create)
         {
             target.name = name;
 #if UNITY_EDITOR
@@ -484,46 +491,83 @@ namespace SevenStrikeModules.XGraph
             target.type = type;
             target.guidsconnector = new List<string>(guidsconnector);
         }
+        /// <summary>
+        /// 克隆字段到目标变量
+        /// </summary>
+        public Variable CloneVars(bool guid_create)
+        {
+            Variable vare = new Variable();
+            vare.name = name;
+#if UNITY_EDITOR
+            vare.guid = guid_create ? UnityEditor.GUID.Generate().ToString() : guid;
+#endif
+            vare.description = description;
+            vare.type = type;
+            vare.guidsconnector = new List<string>(guidsconnector);
 
+            return vare;
+        }
         /// <summary>
         /// 克隆变量
         /// </summary>
         /// <param name="guid_create"></param>
         /// <returns></returns>
-        public abstract Variable Clone(bool guid_create);
+        public virtual Variable Clone(bool guid_create)
+        {
+            return null;
+        }
+        #endregion
 
+        #region 获取类型
+        /// <summary>
+        /// 获取值类型
+        /// </summary>
+        /// <returns></returns>
+        public VariableType GetActiveType() => type;
+        #endregion
+
+        #region 获取值
         /// <summary>
         /// 获取值 - 拆箱值
         /// </summary>
         /// <returns></returns>
-        public abstract object GetValue();
+        public virtual object GetValue()
+        {
+            return null;
+        }
 
         /// <summary>
         /// 获取值 - 根据类型
         /// </summary>
         /// <param name="T"></param>
         /// <returns></returns>
-        public abstract T GetValue<T>();
+        public virtual T GetValue<T>()
+        {
+            return (T)GetValue();
+        }
+        #endregion
 
+        #region 设置值
         /// <summary>
         /// 设置值 - 装箱
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public abstract void SetValue(object value);
+        public virtual void SetValue(object value)
+        {
+
+        }
 
         /// <summary>
         /// 设置值 - 根据类型
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public abstract void SetValue<T>(T value);
+        public virtual void SetValue<T>(T value)
+        {
 
-        /// <summary>
-        /// 获取值类型
-        /// </summary>
-        /// <returns></returns>
-        public VariableType GetActiveType() => type;
+        }
+        #endregion
     }
 
     [Serializable]
@@ -933,57 +977,6 @@ namespace SevenStrikeModules.XGraph
             return clone;
         }
     }
-
-    [Serializable]
-    /// <summary>
-    /// 变量类型 - 物体
-    /// </summary>
-    public class Variable_Object : Variable
-    {
-        public Object value;
-
-        /// <summary>
-        /// 构造器
-        /// </summary>
-        public Variable_Object(string name, Object value = default) : base(name, VariableType.Object)
-        {
-            this.value = value;
-        }
-
-        public override object GetValue()
-        {
-            return value;
-        }
-
-        public override T GetValue<T>()
-        {
-            // 直接强制转换，调用者知道正确的T类型
-            return (T)(object)value;
-        }
-
-        public override void SetValue(object value)
-        {
-            if (value is Object ObjectValue)
-                this.value = ObjectValue;
-            else
-                throw new InvalidCastException($"Cannot set Object from {value?.GetType()}");
-        }
-
-        public override void SetValue<T>(T value)
-        {
-            if (typeof(T) == typeof(Object) && value is Object ObjectValue)
-                this.value = ObjectValue;
-            else
-                throw new InvalidCastException($"Cannot set Object from {typeof(T)}");
-        }
-
-        public override Variable Clone(bool guid_create)
-        {
-            var clone = new Variable_Object(name, value);
-            CloneVars(clone, guid_create);
-            return clone;
-        }
-    }
     #endregion
 
     #region Graphview 主题类
@@ -1141,7 +1134,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 数据节点列表
         /// </summary>
-        [SerializeField] public List<ActionNode_Base> Actions = new List<ActionNode_Base>();
+        [SerializeReference] public List<ActionNode_Base> Actions = new List<ActionNode_Base>();
         /// <summary>
         /// 变量节点列表
         /// </summary>
@@ -1205,6 +1198,12 @@ namespace SevenStrikeModules.XGraph
             actionData.TransparentNode = args.transparentNode;
             actionData.content = args.content;
             actionData.nodeGraphSize = args.size;
+
+            // 为变量类型节点数据特化处理，需要初始化类型 Variable
+            if (actionData is ActionNode_Variable avnode)
+            {
+                avnode.variable = avnode.Initialized(args.visualName, args.variable.type);
+            }
 
             // 添加到列表中
             Actions.Add(actionData);

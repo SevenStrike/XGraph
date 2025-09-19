@@ -1,0 +1,80 @@
+.rootcontainer
+{
+     min-width: 180px;
+     min-height: 120px;
+}
+
+#contents
+{
+     flex-shrink: 1;
+}
+
+#top
+{
+     height: 30px;
+}
+
+.unity-text-element.Title_Label
+{
+     overflow: hidden;
+     text-overflow: ellipsis;
+     margin-right: 45px;
+     flex-shrink: 1;
+}
+
+#node-border
+{
+     height: 100%;
+}
+
+#extension
+{
+     height: 100%;
+}
+
+#title-button-container
+{
+     display: none;
+}
+
+.value_field
+{
+     height: 100%;
+     margin-left: 5px;
+     margin-top: 0px;
+     margin-bottom: 5px;
+     margin-right: 5px;
+     padding-bottom: 5px;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     white-space: normal;
+     text-overflow: clip;
+     flex-shrink: 1;
+}
+
+.value_field_text
+{
+     font-size: 13px;
+     flex-shrink: 1;
+     margin-top: 4px;
+     padding-left: 5px;
+     padding-right: 5px;
+}
+
+#unity-text-input
+{
+     -unity-text-align: upper-left;
+}
+
+.resizer-icon
+{
+     right: 10px;
+     bottom: 10px;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/resize.png?fileID=2800000&guid=7ee37ab7fc61a8a43bfae9fed2cb81cf&type=3#resize");
+     background-size: 100% 100%;
+     -unity-background-image-tint-color: rgba(74, 74, 74, 0.82);
+     background-color: rgba(0, 0, 0, 0);
+     width: 50%;
+     height: 50%;
+     position: absolute;
+}

@@ -296,6 +296,10 @@
         /// 窗口最后一次尺寸
         /// </summary>
         private Vector2 lastWindowSize;
+        /// <summary>
+        /// 节点编辑器窗口是否已经准备就绪
+        /// </summary>
+        private bool NodeEditorIsReady = false;
 
         /// <summary>
         /// 打开资源节点编辑器
@@ -328,8 +332,8 @@
                 #region 移动式属性面板的状态恢复
                 // 获取最后一次的移动式属性面板开关状态
                 bool inspector_view_toggle = wnd.Element_State_Load("XGraph_InspectorViewDisplay");
-                // 设置 InspectorView Remote 容器可见性
-                util_XGraphEditorUtility.Element_Visibility_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
+                // 设置 InspectorView 容器可见性
+                util_XGraphEditorUtility.Element_Dispaly_Set(wnd.xw_InspectorView_Container, inspector_view_toggle);
                 // 设置移动式属性视图容器可见性按钮开关状态
                 wnd.xw_toggle_InspectorViewDisplay.value = inspector_view_toggle;
 
@@ -346,7 +350,7 @@
                 // 获取最后一次的黑板面板开关状态
                 bool blackboard_view_toggle = wnd.Element_State_Load("XGraph_BlackBoardViewDisplay");
                 // 设置 BlackBoardView  容器可见性
-                util_XGraphEditorUtility.Element_Visibility_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
+                util_XGraphEditorUtility.Element_Dispaly_Set(wnd.xw_BlackBoardView_Container, blackboard_view_toggle);
                 // 设置黑板视图容器可见性按钮开关状态
                 wnd.xw_toggle_BlackBoardViewDisplay.value = blackboard_view_toggle;
                 EditorApplication.delayCall += () =>
@@ -388,6 +392,7 @@
                 }
                 #endregion
 
+                wnd.NodeEditorIsReady = true;
                 return true;
             }
             return false;
@@ -676,6 +681,7 @@
             xw_toggle_DisplayNodeColor = root.Q<Toggle>("toggle_DisplayNodeColor");
             xw_toggle_DisplayNodeColor.RegisterValueChangedCallback(xw_toggle_DisplayNodeColor_changed);
 
+            #region 选项面板
             // 选项面板开关按钮
             xw_toggle_Options = root.Q<Toggle>("toggle_Options");
             xw_toggle_Options.RegisterValueChangedCallback(xw_toggle_OptionsPanel_changed);
@@ -689,6 +695,7 @@
             xw_OptionsPanel_Btn_Close = xw_OptionsContainerRegion_Reg_Other.Q<Button>(name: "btn_close");
             xw_OptionsPanel_Btn_Close.clicked += xw_btn_OptionsPanel_CloseButton_Clicked;
             OptionsPanel_CloseButton_Hide();
+            #endregion
             #endregion
 
             #region 页脚信息容器
@@ -800,7 +807,7 @@
             // 获取最后一次的移动式属性面板开关状态
             bool remote_toggle = Element_State_Load("XGraph_InspectorViewDisplay");
             // 设置 InspectorView Remote 容器可见性
-            util_XGraphEditorUtility.Element_Visibility_Set(xw_InspectorView_Container, remote_toggle);
+            util_XGraphEditorUtility.Element_Dispaly_Set(xw_InspectorView_Container, remote_toggle);
             // 设置移动式属性视图容器可见性按钮开关状态
             xw_toggle_InspectorViewDisplay.value = remote_toggle;
             if (remote_toggle)
@@ -821,7 +828,7 @@
             // 获取最后一次的移动式变量面板开关状态
             bool blackboard_toggle = Element_State_Load("XGraph_BlackBoardViewDisplay");
             // 设置 InspectorView Remote 容器可见性
-            util_XGraphEditorUtility.Element_Visibility_Set(xw_BlackBoardView_Container, blackboard_toggle);
+            util_XGraphEditorUtility.Element_Dispaly_Set(xw_BlackBoardView_Container, blackboard_toggle);
             // 设置黑板变量视图容器可见性按钮开关状态
             xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
 
@@ -1395,7 +1402,7 @@
             bool state = evt.newValue;
 
             // 设置 InspectorView 容器可见性
-            util_XGraphEditorUtility.Element_Visibility_Set(xw_InspectorView_Container, state);
+            util_XGraphEditorUtility.Element_Dispaly_Set(xw_InspectorView_Container, state);
 
             // 如果打开开关的话，就让 InspectorView 更新节点属性显示（前提是当前存在节点被选中）
             xw_InspectorView.Clear();
@@ -1419,7 +1426,7 @@
             bool state = evt.newValue;
 
             // 设置 BlackBoardView 容器可见性
-            util_XGraphEditorUtility.Element_Visibility_Set(xw_BlackBoardView_Container, state);
+            util_XGraphEditorUtility.Element_Dispaly_Set(xw_BlackBoardView_Container, state);
 
             if (state)
             {
@@ -1911,24 +1918,26 @@
         /// </summary>
         private void xw_DestroyGraphView()
         {
-            // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
-            if (SourceTree != null)
+            if (NodeEditorIsReady)
             {
-                SourceTree.LastGraphWindowSize = new Vector2Int((int)position.size.x, (int)position.size.y);
-                SourceTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
-                SourceTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
+                // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
+                if (SourceTree != null)
+                {
+                    SourceTree.LastGraphWindowSize = new Vector2Int((int)position.size.x, (int)position.size.y);
+                    SourceTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
+                    SourceTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
+                }
+
+                // 保存 InspectorView 面板的位置
+                Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
+                // 保存 InspectorView 面板的尺寸
+                Element_Size_Save(xw_InspectorView_Container, "XGraph_InspectorViewSize");
+
+                // 保存 BlackBoardView 面板的位置
+                Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
+                // 保存 BlackBoardView 面板的尺寸
+                Element_Size_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewSize");
             }
-
-            // 保存 InspectorView 面板的位置
-            Element_Position_Save(xw_InspectorView_Container, "XGraph_InspectorViewPosition");
-            // 保存 InspectorView 面板的尺寸
-            Element_Size_Save(xw_InspectorView_Container, "XGraph_InspectorViewSize");
-
-            // 保存 BlackBoardView 面板的位置
-            Element_Position_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewPosition");
-            // 保存 BlackBoardView 面板的尺寸
-            Element_Size_Save(xw_BlackBoardView_Container, "XGraph_BlackBoardViewSize");
-
             xw_DeleteCloneTreeAsset();
         }
         /// <summary>

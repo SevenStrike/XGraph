@@ -31,10 +31,6 @@
         {
             "type": "Color",
             "color": "#ff6fd1"
-        },
-        {
-            "type": "Object",
-            "color": "#FFFFFF"
         }
     ]
 }

@@ -531,7 +531,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="col_bottom"></param>
         /// <param name="col_left"></param>
         /// <param name="col_right"></param>
-        public static void Element_BoderColor_Set(VisualElement element, Color col_top, Color col_bottom, Color col_left, Color col_right)
+        public static void Element_BorderColor_Set(VisualElement element, Color col_top, Color col_bottom, Color col_left, Color col_right)
         {
             element.style.borderTopColor = col_top;
             element.style.borderBottomColor = col_bottom;
@@ -543,7 +543,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="element"></param>
         /// <param name="color"></param>
-        public static void Element_BoderColor_Set(VisualElement element, Color color)
+        public static void Element_BorderColor_Set(VisualElement element, Color color)
         {
             element.style.borderTopColor = color;
             element.style.borderBottomColor = color;
