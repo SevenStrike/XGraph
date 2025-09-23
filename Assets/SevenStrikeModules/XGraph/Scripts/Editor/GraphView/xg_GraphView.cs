@@ -188,6 +188,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private List<VNode_Stick> CurrentSelectedNodes_Stick = new List<VNode_Stick>();
         /// <summary>
+        /// 当前选中的所有节点 - 标签
+        /// </summary>
+        private List<VNode_Label> CurrentSelectedNodes_Label = new List<VNode_Label>();
+        /// <summary>
         /// 当前选中的所有编组
         /// </summary>
         private List<Group> CurrentSelectedGroups = new List<Group>();
@@ -520,6 +524,7 @@ namespace SevenStrikeModules.XGraph
             List<Node> g_node_variables = new List<Node>();
             List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
             List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
+            List<VNode_Label> g_node_labels = new List<VNode_Label>();
             List<Group> g_node_groups = new List<Group>();
             selection.ForEach(n =>
             {
@@ -540,6 +545,10 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_sticks.Add(stick);
                 }
+                if (n is VNode_Label label)
+                {
+                    g_node_labels.Add(label);
+                }
                 if (n is Group gp)
                 {
                     g_node_groups.Add(gp);
@@ -549,6 +558,7 @@ namespace SevenStrikeModules.XGraph
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
             CurrentSelectedNodes_Stick = g_node_sticks;
+            CurrentSelectedNodes_Label = g_node_labels;
             CurrentSelectedGroups = g_node_groups;
 
             if (OnSelectionNodes != null)
@@ -574,6 +584,7 @@ namespace SevenStrikeModules.XGraph
             List<Node> g_node_variables = new List<Node>();
             List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
             List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
+            List<VNode_Label> g_node_labels = new List<VNode_Label>();
             List<Group> g_node_groups = new List<Group>();
             selection.ForEach(n =>
             {
@@ -593,6 +604,10 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_sticks.Add(stick);
                 }
+                if (n is VNode_Label label)
+                {
+                    g_node_labels.Add(label);
+                }
                 if (n is Group gp)
                 {
                     g_node_groups.Add(gp);
@@ -602,6 +617,7 @@ namespace SevenStrikeModules.XGraph
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
             CurrentSelectedNodes_Stick = g_node_sticks;
+            CurrentSelectedNodes_Label = g_node_labels;
             CurrentSelectedGroups = g_node_groups;
 
             if (OnRemoveSelectionNodes != null)

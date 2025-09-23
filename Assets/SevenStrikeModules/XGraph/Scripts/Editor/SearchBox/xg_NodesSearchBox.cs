@@ -202,7 +202,7 @@ namespace SevenStrikeModules.XGraph
             else if (types.action_nodeType == "Label")
             {
                 NodeCreateArgs_Label args = new NodeCreateArgs_Label();
-                args.labelContent = "双击此处以更改标签的内容";
+                args.content = "双击此处以更改标签的内容";
                 args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = new Vector2(210, 60);
                 args.opacity = 1;

@@ -261,6 +261,7 @@ namespace SevenStrikeModules.XGraph
             len_width.value = len_w;
             labelContentInput.multiline = true;
             labelContentInput.AddToClassList("Content_TextField");
+            labelContentInput.Q<VisualElement>(className: "unity-base-text-field__multiline-container").AddToClassList("sizefieldTextmultilinecontainer");
             labelContentInput.RegisterCallback<BlurEvent>(OnStickContentInputBlur);
 
             AppendElement(GraphNodeContainerType.TopContainer, labelContentlabel);

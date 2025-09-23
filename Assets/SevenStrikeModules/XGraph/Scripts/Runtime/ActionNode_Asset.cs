@@ -55,7 +55,7 @@ namespace SevenStrikeModules.XGraph
     /// </summary>
     public struct NodeCreateArgs_Label
     {
-        public string labelContent;
+        public string content;
         public Vector2 position;
         public Vector2 size;
         public float opacity;

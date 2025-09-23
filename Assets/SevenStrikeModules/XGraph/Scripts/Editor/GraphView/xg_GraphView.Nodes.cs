@@ -126,6 +126,22 @@ namespace SevenStrikeModules.XGraph
 
                     dupData.DuplicatedNode = CreateNode(args);
                 }
+                // 如果克隆的节点为： VNode_Stick
+                else if (original is VNode_Label target_label)
+                {
+                    ActionLabelData data = target_label.LabelData.Clone(true);
+
+                    NodeCreateArgs_Label args = new NodeCreateArgs_Label();
+                    args.content = data.content;
+                    args.italic = data.italic;
+                    args.bold = data.bold;
+                    args.opacity = data.opacity;
+                    args.fontSize = data.fontSize;
+                    args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
+                    args.size = data.size;
+
+                    dupData.DuplicatedNode = CreateNode(args);
+                }
                 // 如果克隆的节点为： VNode_Decal
                 else if (original is VNode_Decal target_decal)
                 {
@@ -203,6 +219,12 @@ namespace SevenStrikeModules.XGraph
             }
             // 特化处理 - Stick
             foreach (var node in CurrentSelectedNodes_Stick)
+            {
+                // 将选中的节点拷贝进缓冲区
+                gv_CopiedNodeList.Add(node);
+            }
+            // 特化处理 - Label
+            foreach (var node in CurrentSelectedNodes_Label)
             {
                 // 将选中的节点拷贝进缓冲区
                 gv_CopiedNodeList.Add(node);
@@ -334,7 +356,21 @@ namespace SevenStrikeModules.XGraph
 
                         AddToSelection(CreateNode(args));
                     }
+                    if (node is VNode_Label node_label)
+                    {
+                        ActionLabelData data = node_label.LabelData;
 
+                        NodeCreateArgs_Label args = new NodeCreateArgs_Label();
+                        args.size = data.size;
+                        args.content = data.content;
+                        args.opacity = data.opacity;
+                        args.position = realpos;
+                        args.bold = data.bold;
+                        args.italic = data.italic;
+                        args.fontSize = data.fontSize;
+
+                        AddToSelection(CreateNode(args));
+                    }
                     // 递增间距
                     realpos.y += nd_size.y + 5;
                 }
@@ -729,7 +765,7 @@ namespace SevenStrikeModules.XGraph
             // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
             Undo.RecordObject(ActionTreeAsset, "Create LabelNode");
             // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
-            ActionLabelData labeldata = new ActionLabelData(args.labelContent, GUID.Generate().ToString(), args.position, args.size, args.opacity, args.fontSize, args.bold, args.italic);
+            ActionLabelData labeldata = new ActionLabelData(args.content, GUID.Generate().ToString(), args.position, args.size, args.opacity, args.fontSize, args.bold, args.italic);
             ActionTreeAsset.Label_Add(labeldata);
 
             // 创建新的节点并指定资源数据项
