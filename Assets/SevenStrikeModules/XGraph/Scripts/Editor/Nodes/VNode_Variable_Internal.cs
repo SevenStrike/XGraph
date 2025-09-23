@@ -83,7 +83,6 @@ namespace SevenStrikeModules.XGraph
             Port_Outputs.Add(new xGraph_NodePort("Out", var_type, Port.Capacity.Multi));
             #endregion
 
-
             // 当Graphview编辑器的主题色改变时
             graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
         }
@@ -400,7 +399,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="color"></param>
         private void OnGraphViewEditorThemeColorChanged(Color color)
         {
-            if (tog_pill != null)
+            if (tog_pill != null && VariableData.variable.GetValue<bool>())
                 util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
         }
         /// <summary>
@@ -442,8 +441,5 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 辅助
-
-        #endregion
     }
 }

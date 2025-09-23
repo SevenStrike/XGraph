@@ -52,7 +52,7 @@ namespace SevenStrikeModules.XGraph
             gra.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}GraphViewViggnet.png");
             Add(gra);
 
-            TipLabel = new Label("请按下空格键创建节点");
+            TipLabel = new Label("请先创建节点");
             TipLabel.style.alignSelf = new StyleEnum<Align>(Align.Center);
             TipLabel.style.width = new StyleLength(StyleKeyword.Auto);
             TipLabel.style.flexGrow = 1;
