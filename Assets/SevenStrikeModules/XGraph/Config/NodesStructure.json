@@ -2,7 +2,8 @@
     "root_title": "节点列表",
     "root_types": [
         {
-            "catergory_title": "Base",
+            "catergory_title": "基础",
+            "catergory_icon": "category_base",
             "catergory_nodes": [
                 {
                     "name": "开始",
@@ -55,7 +56,8 @@
             ]
         },
         {
-            "catergory_title": "Mind",
+            "catergory_title": "导图",
+            "catergory_icon": "category_mind",
             "catergory_nodes": [
                 {
                     "name": "开始",
@@ -68,36 +70,8 @@
             ]
         },
         {
-            "catergory_title": "实用工具",
-            "catergory_nodes": [
-                {
-                    "name": "便签",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "",
-                    "actionNodeType": "Stick",
-                    "iconName": "stick",
-                    "visualNodeType": "VNode_Stick"
-                },
-                {
-                    "name": "标签",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "",
-                    "actionNodeType": "Label",
-                    "iconName": "label",
-                    "visualNodeType": "VNode_Label"
-                },
-                {
-                    "name": "贴图",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "",
-                    "actionNodeType": "Decal",
-                    "iconName": "decal",
-                    "visualNodeType": "VNode_Decal"
-                }
-            ]
-        },
-        {
             "catergory_title": "变量",
+            "catergory_icon": "category_variable",
             "catergory_nodes": [
                 {
                     "name": "String",
@@ -162,6 +136,36 @@
                     "actionNodeType": "Variable",
                     "iconName": "variable",
                     "visualNodeType": "VNode_Variable_Internal"
+                }
+            ]
+        },
+        {
+            "catergory_title": "零件",
+            "catergory_icon": "category_utilitys",
+            "catergory_nodes": [
+                {
+                    "name": "便签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Stick",
+                    "iconName": "stick",
+                    "visualNodeType": "VNode_Stick"
+                },
+                {
+                    "name": "标签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Label",
+                    "iconName": "label",
+                    "visualNodeType": "VNode_Label"
+                },
+                {
+                    "name": "贴图",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Decal",
+                    "iconName": "decal",
+                    "visualNodeType": "VNode_Decal"
                 }
             ]
         }

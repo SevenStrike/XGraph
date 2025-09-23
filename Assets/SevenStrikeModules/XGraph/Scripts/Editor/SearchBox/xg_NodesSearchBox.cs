@@ -28,6 +28,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public string catergory_title;
         /// <summary>
+        /// 节点一级分类图标
+        /// </summary>
+        public string catergory_icon;
+        /// <summary>
         /// 节点一级分类结构
         /// </summary>
         public List<searchBox_Node> catergory_nodes = new List<searchBox_Node>();
@@ -139,11 +143,11 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         private List<SearchTreeEntry> NodeMenuListStructure()
         {
-            //// 读取菜单结构列表内容
-            //TextAsset json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesSearchStructure.json");
+            // 读取菜单结构列表内容
+            graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesStructure.json");
 
-            //// 序列化解析到类
-            //searchBox_NodesRoot nv_SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(json.text);
+            // 序列化解析到类
+            graphView.SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.SearchStructures_Json.text);
 
             List<SearchTreeEntry> entries = new List<SearchTreeEntry>();
 
@@ -154,7 +158,8 @@ namespace SevenStrikeModules.XGraph
             List<searchBox_Nodes> list = graphView.SearchStructures.root_types;
             for (int s = 0; s < list.Count; s++)
             {
-                entries.Add(new SearchTreeGroupEntry(new GUIContent(list[s].catergory_title)) { level = 2 });
+                Texture2D categoryicon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{list[s].catergory_icon}.png");
+                entries.Add(new SearchTreeGroupEntry(new GUIContent($"   {list[s].catergory_title}", categoryicon)) { level = 2 });
                 for (int i = 0; i < list[s].catergory_nodes.Count; i++)
                 {
                     // 节点二级分类
