@@ -193,10 +193,22 @@ namespace SevenStrikeModules.XGraph
             {
                 NodeCreateArgs_Stick args = new NodeCreateArgs_Stick();
                 args.stickName = "便签";
-                args.stickContent = "点击此处更改内容";
+                args.stickContent = "双击此处更改内容";
                 args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
 
+                graphView.CreateNode(args);
+            }
+            else if (types.action_nodeType == "Label")
+            {
+                NodeCreateArgs_Label args = new NodeCreateArgs_Label();
+                args.labelContent = "双击此处以更改标签的内容";
+                args.position = graphView.GetNodeCreatedMousePosition();
+                args.size = new Vector2(210, 60);
+                args.opacity = 1;
+                args.fontSize = 13;
+                args.italic = false;
+                args.bold = false;
                 graphView.CreateNode(args);
             }
             else if (types.action_nodeType == "Decal")
@@ -228,11 +240,19 @@ namespace SevenStrikeModules.XGraph
                 args.content = null;
                 args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
-                VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), types.visual_name);
-                args.variable = new Variable(types.visual_name, v_type);
+
+                VariableType type;
+                // 判断类型是否是有效的类型
+                bool parsedVariableType = Enum.TryParse(types.visual_name, out type);
+                if (parsedVariableType)
+                {
+                    args.variable = new Variable(types.visual_name, type);
+                }
+
                 graphView.CreateNode(args);
             }
 
+            graphView.RecheckNodesIsExist();
             return true;
         }
     }

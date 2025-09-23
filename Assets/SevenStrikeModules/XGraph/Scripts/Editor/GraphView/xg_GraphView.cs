@@ -194,7 +194,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 自定义网格背景
         /// </summary>
-        private xg_GraphViewGridBackground GraphviewGridBackground;
+        public xg_GraphViewGridBackground GraphviewGridBackground;
         /// <summary>
         /// 自定义选择框
         /// </summary>
@@ -342,6 +342,22 @@ namespace SevenStrikeModules.XGraph
             this.RemoveManipulator(GraphviewCustomRectangleSelector);
             GraphviewCustomRectangleSelector = new xg_GraphViewRectangleSelector(theme.rectangleSelectorLineColor, theme.segments, theme.displayCoordinate);
             this.AddManipulator(GraphviewCustomRectangleSelector);
+        }
+
+        /// <summary>
+        /// 检查是否有任何节点存在，如果不存在将显示提示信息文字
+        /// </summary>
+        public void RecheckNodesIsExist()
+        {
+            // GraphviewGridBackground 检测是否有节点
+            if (ActionTreeAsset.Actions.Count <= 0 &&
+                ActionTreeAsset.Variables.Count <= 0 &&
+                ActionTreeAsset.Sticks.Count <= 0 &&
+                ActionTreeAsset.Labels.Count <= 0 &&
+                ActionTreeAsset.Decals.Count <= 0)
+                GraphviewGridBackground.TipLabel_Displayer(true);
+            else
+                GraphviewGridBackground.TipLabel_Displayer(false);
         }
 
         #region 编组事件

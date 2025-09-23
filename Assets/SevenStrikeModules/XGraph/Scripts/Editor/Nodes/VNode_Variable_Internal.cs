@@ -1,7 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -16,6 +18,22 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement Resizer;
         public ActionNode_Variable VariableData;
+        /// <summary>
+        /// 视觉开关组件
+        /// </summary>
+        public VisualElement VisualToggle;
+        /// <summary>
+        /// 开关背景
+        /// </summary>
+        public VisualElement tog_pill;
+        /// <summary>
+        /// 开关控制柄根物体（控制柄阴影）
+        /// </summary>
+        public VisualElement tog_handleRoot;
+        /// <summary>
+        /// 开关点击器
+        /// </summary>
+        public VisualElement tog_clicker;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -24,18 +42,36 @@ namespace SevenStrikeModules.XGraph
             // 设置节点的容器样式
             util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_VariableInternalNode.uss");
 
-            AddToClassList("rootcontainer");
-
             ActionNode_Variable actionvar = VariableData = data as ActionNode_Variable;
+
+            if (VariableData.variable.type == VariableType.Bool)
+            {
+                // 获取视觉开关的元素模版
+                util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_VisualToggle.uss");
+
+                var visual_toggle = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_VisualToggle.uxml");
+                VisualToggle = visual_toggle.CloneTree().Q<VisualElement>(name: "visualtoggle");
+                AppendElement(GraphNodeContainerType.ExtensionContainer, VisualToggle);
+
+                tog_pill = VisualToggle.Q<VisualElement>(name: "pill");
+                tog_handleRoot = tog_pill.Q<VisualElement>(name: "handleRoot");
+                tog_clicker = VisualToggle.Q<VisualElement>(name: "clicker");
+
+                Toggle_Check(VariableData.variable.GetValue<bool>());
+
+                tog_clicker.RegisterCallback<PointerDownEvent>(ToggleClicker);
+            }
 
             if (VariableData.variable.type == VariableType.String)
             {
+                AddToClassList("rootcontainer");
+
                 // 指定可调整大小
                 capabilities |= Capabilities.Resizable;
-            }
 
-            style.width = data.nodeGraphSize.x;
-            style.height = data.nodeGraphSize.y;
+                style.width = data.nodeGraphSize.x;
+                style.height = data.nodeGraphSize.y;
+            }
 
             // 动态获取变量类型
             string asm = "Assembly-CSharp";
@@ -46,6 +82,10 @@ namespace SevenStrikeModules.XGraph
             Port_Inputs.Add(new xGraph_NodePort("In", var_type, Port.Capacity.Single));
             Port_Outputs.Add(new xGraph_NodePort("Out", var_type, Port.Capacity.Multi));
             #endregion
+
+
+            // 当Graphview编辑器的主题色改变时
+            graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
         }
 
         /// <summary>
@@ -109,37 +149,131 @@ namespace SevenStrikeModules.XGraph
 
         public override void Draw_Extension()
         {
-            base.Draw_Extension();
+            //base.Draw_Extension();
 
+            // 创建控件
+            VisualElement element = CreateField();
+
+            if (element != null)
+                AppendElement(GraphNodeContainerType.ExtensionContainer, element);
+        }
+
+        /// <summary>
+        /// 创建相对应节点的变量类型的控件
+        /// </summary>
+        /// <returns></returns>
+        private VisualElement CreateField()
+        {
             VisualElement element = null;
 
             switch (VariableData.variable.type)
             {
                 case VariableType.String:
-                    TextField field = new TextField();
-                    field.value = VariableData.variable.GetValue<string>();
-                    field.RegisterCallback<BlurEvent>(VariableDataChanged_String);
-                    field.AddToClassList("value_field");
-                    field.Q<TextElement>().AddToClassList("value_field_text");
-                    element = field;
+                    TextField f_string = new TextField();
+                    f_string.multiline = true;
+                    f_string.value = VariableData.variable.GetValue<string>();
+                    f_string.RegisterCallback<BlurEvent>(VariableDataChanged_String);
+                    f_string.AddToClassList("value_field_string");
+                    f_string.Q(name: "unity-text-input").AddToClassList("value_field_string_input");
+                    element = f_string;
                     break;
                 case VariableType.Float:
+                    FloatField f_float = new FloatField();
+                    f_float.value = VariableData.variable.GetValue<float>();
+                    f_float.RegisterCallback<BlurEvent>(VariableDataChanged_Float);
+                    TextElement float_ele = f_float.Q<TextElement>();
+                    float_ele.AddToClassList("value_field_text");
+                    float_ele.AddToClassList("value_field_center_text");
+                    element = f_float;
+                    element.AddToClassList("value_field");
                     break;
                 case VariableType.Int:
+                    IntegerField f_int = new IntegerField();
+                    f_int.value = VariableData.variable.GetValue<int>();
+                    f_int.RegisterCallback<BlurEvent>(VariableDataChanged_Int);
+                    TextElement int_ele = f_int.Q<TextElement>();
+                    int_ele.AddToClassList("value_field_text");
+                    int_ele.AddToClassList("value_field_center_text");
+                    element = f_int;
+                    element.AddToClassList("value_field");
                     break;
                 case VariableType.Bool:
                     break;
                 case VariableType.Vector2:
+                    Vector2Field f_vec2 = new Vector2Field();
+                    f_vec2.value = VariableData.variable.GetValue<Vector2>();
+                    f_vec2.RegisterCallback<BlurEvent>(VariableDataChanged_Vector2);
+
+                    FloatField v2_field_input_x = f_vec2.Q<FloatField>("unity-x-input");
+                    FloatField v2_field_input_y = f_vec2.Q<FloatField>("unity-y-input");
+
+                    v2_field_input_x.AddToClassList("value_field_text");
+                    v2_field_input_x.Q<Label>().AddToClassList("value_field_vector_labelColor_x");
+
+                    v2_field_input_y.AddToClassList("value_field_text");
+                    v2_field_input_y.Q<Label>().AddToClassList("value_field_vector_labelColor_y");
+
+                    element = f_vec2;
+                    element.AddToClassList("value_field");
                     break;
                 case VariableType.Vector3:
+                    Vector3Field f_vec3 = new Vector3Field();
+                    f_vec3.AddToClassList("value_field_vector3");
+                    f_vec3.value = VariableData.variable.GetValue<Vector3>();
+                    f_vec3.RegisterCallback<BlurEvent>(VariableDataChanged_Vector3);
+
+                    FloatField v3_field_input_x = f_vec3.Q<FloatField>("unity-x-input");
+                    FloatField v3_field_input_y = f_vec3.Q<FloatField>("unity-y-input");
+                    FloatField v3_field_input_z = f_vec3.Q<FloatField>("unity-z-input");
+
+                    v3_field_input_x.AddToClassList("value_field_text");
+                    v3_field_input_x.Q<Label>().AddToClassList("value_field_vector_labelColor_x");
+
+                    v3_field_input_y.AddToClassList("value_field_text");
+                    v3_field_input_y.Q<Label>().AddToClassList("value_field_vector_labelColor_y");
+
+                    v3_field_input_z.AddToClassList("value_field_text");
+                    v3_field_input_z.Q<Label>().AddToClassList("value_field_vector_labelColor_z");
+
+                    element = f_vec3;
+                    element.AddToClassList("value_field");
                     break;
                 case VariableType.Vector4:
+                    Vector4Field f_vec4 = new Vector4Field();
+                    f_vec4.AddToClassList("value_field_vector4");
+                    f_vec4.value = VariableData.variable.GetValue<Vector4>();
+                    f_vec4.RegisterCallback<BlurEvent>(VariableDataChanged_Vector4);
+
+                    FloatField v4_field_input_x = f_vec4.Q<FloatField>("unity-x-input");
+                    FloatField v4_field_input_y = f_vec4.Q<FloatField>("unity-y-input");
+                    FloatField v4_field_input_z = f_vec4.Q<FloatField>("unity-z-input");
+                    FloatField v4_field_input_w = f_vec4.Q<FloatField>("unity-w-input");
+
+                    v4_field_input_x.AddToClassList("value_field_text");
+                    v4_field_input_x.Q<Label>().AddToClassList("value_field_vector_labelColor_x");
+
+                    v4_field_input_y.AddToClassList("value_field_text");
+                    v4_field_input_y.Q<Label>().AddToClassList("value_field_vector_labelColor_y");
+
+                    v4_field_input_z.AddToClassList("value_field_text");
+                    v4_field_input_z.Q<Label>().AddToClassList("value_field_vector_labelColor_z");
+
+                    v4_field_input_w.AddToClassList("value_field_text");
+                    v4_field_input_w.Q<Label>().AddToClassList("value_field_vector_labelColor_w");
+
+                    element = f_vec4;
+                    element.AddToClassList("value_field");
                     break;
                 case VariableType.Color:
+                    ColorField f_color = new ColorField();
+                    f_color.AddToClassList("value_field");
+                    f_color.value = VariableData.variable.GetValue<Color>();
+                    f_color.RegisterValueChangedCallback(VariableDataChanged_Color);
+                    element = f_color;
                     break;
             }
 
-            AppendElement(GraphNodeContainerType.ExtensionContainer, element);
+            return element;
         }
 
         public override void Draw_Title()
@@ -148,20 +282,135 @@ namespace SevenStrikeModules.XGraph
 
             TitleInputField.RegisterCallback<BlurEvent>(SyncChangeVariableName);
         }
+        #endregion
 
-        private void SyncChangeVariableName(BlurEvent evt)
+        #region 视觉开关
+        /// <summary>
+        /// 开关打开
+        /// </summary>
+        private void Toggle_On()
         {
-            VariableData.variable.name = VariableData.identifyName;
+            util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
+            tog_handleRoot.style.left = 15;
+        }
+
+        /// <summary>
+        /// 开关关闭
+        /// </summary>
+        private void Toggle_Off()
+        {
+            util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, Color.gray);
+            tog_handleRoot.style.left = -11;
+        }
+
+        /// <summary>
+        /// 检查开关
+        /// </summary>
+        /// <param name="state"></param>
+        private void Toggle_Check(bool state)
+        {
+            if (state)
+            {
+                Toggle_On();
+            }
+            else
+            {
+                Toggle_Off();
+            }
+        }
+        #endregion
+
+        #region 改变节点值时的回调
+        /// <summary>
+        /// 当字符串类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_String(BlurEvent evt)
+        {
+            TextField field = evt.target as TextField;
+            Undo.RecordObject(VariableData, "Change NodeData String Variable");
+            VariableData.variable.SetValue<string>(field.text);
+        }
+        /// <summary>
+        /// 当 Float 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Float(BlurEvent evt)
+        {
+            FloatField field = evt.target as FloatField;
+            Undo.RecordObject(VariableData, "Change NodeData Float Variable");
+            VariableData.variable.SetValue<float>(field.value);
+        }
+        /// <summary>
+        /// 当 Int 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Int(BlurEvent evt)
+        {
+            IntegerField field = evt.target as IntegerField;
+            Undo.RecordObject(VariableData, "Change NodeData Int Variable");
+            VariableData.variable.SetValue<int>(field.value);
+        }
+        /// <summary>
+        /// 当 Vector2 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Vector2(BlurEvent evt)
+        {
+            Vector2Field field = evt.target as Vector2Field;
+            Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
+            VariableData.variable.SetValue<Vector2>(field.value);
+        }
+        /// <summary>
+        /// 当 Vector3 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Vector3(BlurEvent evt)
+        {
+            Vector3Field field = evt.target as Vector3Field;
+            Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
+            VariableData.variable.SetValue<Vector3>(field.value);
+        }
+        /// <summary>
+        /// 当 Vector4 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Vector4(BlurEvent evt)
+        {
+            Vector4Field field = evt.target as Vector4Field;
+            Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
+            VariableData.variable.SetValue<Vector4>(field.value);
+        }
+        /// <summary>
+        /// 当 Color 类型的变量节点内容改变时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void VariableDataChanged_Color(ChangeEvent<Color> evt)
+        {
+            ColorField field = evt.target as ColorField;
+            Undo.RecordObject(VariableData, "Change NodeData Color Variable");
+            VariableData.variable.SetValue<Color>(field.value);
         }
         #endregion
 
         #region 回调
-        private void VariableDataChanged_String(BlurEvent evt)
+        /// <summary>
+        /// 当Graphview编辑器的主题色改变时
+        /// </summary>
+        /// <param name="color"></param>
+        private void OnGraphViewEditorThemeColorChanged(Color color)
         {
-            TextField textField = evt.target as TextField;
-            VariableData.variable.SetValue<string>(textField.text);
+            if (tog_pill != null)
+                util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
         }
-
+        /// <summary>
+        /// 改变节点名称的同时同步修改变量类的名称
+        /// </summary>
+        /// <param name="evt"></param>
+        private void SyncChangeVariableName(BlurEvent evt)
+        {
+            VariableData.variable.name = VariableData.identifyName;
+        }
         /// <summary>
         /// 鼠标移出时隐藏角点拖拽显示
         /// </summary>
@@ -177,6 +426,19 @@ namespace SevenStrikeModules.XGraph
         private void Decal_DisplayResizer(PointerEnterEvent evt)
         {
             ResizerIcon.style.opacity = 1f;
+        }
+        /// <summary>
+        /// 开关点击事件
+        /// </summary>
+        /// <param name="evt"></param>
+        private void ToggleClicker(PointerDownEvent evt)
+        {
+            Undo.RecordObject(VariableData, "Changed Toggle State");
+
+            bool sw = VariableData.variable.GetValue<bool>();
+            sw = !sw;
+            VariableData.variable.SetValue<bool>(sw);
+            Toggle_Check(sw);
         }
         #endregion
 

@@ -83,12 +83,12 @@ namespace SevenStrikeModules.XGraph
                 if (evt.clickCount == 2)
                 {
                     Debug.Log("222");
-                    //VisualElementDisplay(stickContentlabel, false);
-                    //VisualElementDisplay(stickContentInput, true);
+                    //VisualElementDisplay(labelContentlabel, false);
+                    //VisualElementDisplay(labelContentInput, true);
 
                     //EditorApplication.delayCall += () =>
                     //{
-                    //    stickContentInput.Focus();
+                    //    labelContentInput.Focus();
                     //};
                     evt.StopPropagation();
                 }

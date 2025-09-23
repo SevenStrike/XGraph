@@ -148,6 +148,10 @@ namespace SevenStrikeModules.XGraph
                 {
                     nodes_guid.Add(stick.StickData.guid);
                 }
+                else if (n is VNode_Label label)
+                {
+                    nodes_guid.Add(label.LabelData.guid);
+                }
                 else if (n is VNode_Decal decal)
                 {
                     nodes_guid.Add(decal.DecalData.guid);
@@ -393,6 +397,11 @@ namespace SevenStrikeModules.XGraph
                     // 获取移入的节点的guid
                     guid = stick.StickData.guid;
                 }
+                else if (item is VNode_Label label)
+                {
+                    // 获取移入的节点的guid
+                    guid = label.LabelData.guid;
+                }
                 else if (item is VNode_Decal decal)
                 {
                     // 获取移入的节点的guid
@@ -435,6 +444,11 @@ namespace SevenStrikeModules.XGraph
                 {
                     // 获取移出的节点的guid
                     guid = stick.StickData.guid;
+                }
+                else if (item is VNode_Label label)
+                {
+                    // 获取移出的节点的guid
+                    guid = label.LabelData.guid;
                 }
                 else if (item is VNode_Decal decal)
                 {

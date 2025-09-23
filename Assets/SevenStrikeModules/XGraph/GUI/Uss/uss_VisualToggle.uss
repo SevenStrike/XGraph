@@ -1,0 +1,78 @@
+.toggle_container
+{
+     position: relative;
+     height: 42px;
+     width: 78px;
+     justify-content: center;
+     align-items: center;
+     align-self: center;
+}
+
+.pill
+{
+     position: relative;
+     height: 20px;
+     width: 48px;
+     border-top-left-radius: 10px;
+     border-top-right-radius: 10px;
+     border-bottom-right-radius: 10px;
+     border-bottom-left-radius: 10px;
+     -unity-text-outline-width: 1px;
+     -unity-text-outline-color: rgb(255, 255, 255);
+     background-color: rgb(255, 255, 255);
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/%E6%9C%AA%E6%A0%87%E9%A2%98-4.png?fileID=2800000&guid=25767df7cf481a847a471975959e4c8f&type=3#未标题-4");
+     border-bottom-width: 1px;
+     border-top-width: 1px;
+     border-right-width: 1px;
+     border-left-width: 1px;
+     border-left-color: rgb(136, 136, 136);
+     border-right-color: rgb(136, 136, 136);
+     border-top-color: rgb(136, 136, 136);
+     border-bottom-color: rgb(136, 136, 136);
+     -unity-background-image-tint-color: rgb(77, 77, 77);
+     transition-property: -unity-background-image-tint-color;
+     transition-duration: 0.3s;
+     transition-timing-function: ease-out-cubic;
+}
+
+.handle_root
+{
+     width: 40px;
+     height: 40px;
+     background-color: rgba(0, 0, 0, 0);
+     position: absolute;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/togshadow.png?fileID=2800000&guid=e82e110605415844abde334f27aa0ccf&type=3#togshadow");
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.5);
+     top: -11px;
+     left: -11px;
+     background-size: 100% 100%;
+     align-items: center;
+     justify-content: center;
+     opacity: 1;
+     transition-property: left;
+     transition-duration: 0.1s;
+     transition-timing-function: ease-out-cubic;
+}
+
+.handle
+{
+     width: 21px;
+     height: 21px;
+     background-color: rgb(255, 255, 255);
+     border-top-left-radius: 12px;
+     border-top-right-radius: 12px;
+     border-bottom-right-radius: 12px;
+     border-bottom-left-radius: 12px;
+     position: absolute;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/gradient.png?fileID=2800000&guid=03cd17e286124c84b9d191dfa06f8c6c&type=3#gradient");
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.55);
+     align-self: center;
+     background-size: 100% 100%;
+}
+
+.clicker
+{
+     width: 100%;
+     height: 100%;
+     position: absolute;
+}

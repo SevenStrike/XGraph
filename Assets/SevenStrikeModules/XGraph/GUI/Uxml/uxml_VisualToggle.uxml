@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_VisualToggle.uss?fileID=7433441132597879392&amp;guid=53e238746c6592c4e92ad0a53b108314&amp;type=3#uss_VisualToggle" />
+    <engine:VisualElement name="visualtoggle" picking-mode="Ignore" class="toggle_container">
+        <engine:VisualElement name="pill" picking-mode="Ignore" class="pill">
+            <engine:VisualElement name="handleRoot" picking-mode="Ignore" class="handle_root">
+                <engine:VisualElement name="handle" picking-mode="Ignore" class="handle" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="clicker" class="clicker" />
+    </engine:VisualElement>
+</engine:UXML>

@@ -1,291 +1,264 @@
-.OptionsContainer
-{
-     flex-direction: row;
-     height: 160px;
-     width: 100%;
-     position: absolute;
-     justify-content: space-around;
-     background-color: rgb(56, 56, 56);
-     border-top-left-radius: 10px;
-     border-top-right-radius: 10px;
-     border-top-width: 1px;
-     border-left-color: rgba(114, 114, 114, 0.7);
-     border-right-color: rgba(114, 114, 114, 0.7);
-     border-top-color: rgba(114, 114, 114, 0.7);
-     border-bottom-color: rgba(114, 114, 114, 0.7);
-     border-right-width: 0;
-     border-left-width: 0;
-     bottom: 0;
+.OptionsContainer {
+    flex-direction: row;
+    height: 185px;
+    width: 100%;
+    position: absolute;
+    justify-content: space-around;
+    background-color: rgb(56, 56, 56);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top-width: 1px;
+    border-left-color: rgba(114, 114, 114, 0.7);
+    border-right-color: rgba(114, 114, 114, 0.7);
+    border-top-color: rgba(114, 114, 114, 0.7);
+    border-bottom-color: rgba(114, 114, 114, 0.7);
+    border-right-width: 0;
+    border-left-width: 0;
+    bottom: 0;
 }
 
-.OptionsContainer_Display
-{
-     transition-property: bottom;
-     transition-duration: 0.3s;
-     transition-timing-function: ease-out-cubic;
-     bottom: 20px;
+.OptionsContainer_Display {
+    transition-property: bottom;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out-cubic;
+    bottom: 15px;
 }
 
-.OptionsContainer_Hide
-{
-     transition-property: bottom;
-     transition-duration: 0.2s;
-     transition-timing-function: ease-in-cubic;
-     bottom: -170px;
+.OptionsContainer_Hide {
+    transition-property: bottom;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-cubic;
+    bottom: -170px;
 }
 
-.unity-button.btn_close
-{
-     position: absolute;
-     background-color: rgba(0, 0, 0, 0.1);
-     border-left-color: rgba(0, 0, 0, 0);
-     border-right-color: rgba(0, 0, 0, 0);
-     border-top-color: rgba(0, 0, 0, 0);
-     border-bottom-color: rgba(0, 0, 0, 0);
-     flex-direction: row-reverse;
-     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&guid=ebe30fe61a64f7b4a94633a76720d557&type=3#close");
-     right: 8px;
-     top: 5px;
-     width: 30px;
-     height: 30px;
+.unity-button.btn_close {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    flex-direction: row-reverse;
+    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/close.png?fileID=2800000&guid=ebe30fe61a64f7b4a94633a76720d557&type=3#close");
+    right: 8px;
+    top: 5px;
+    width: 30px;
+    height: 30px;
 }
 
-.unity-button:hover:enabled.btn_close
-{
-     -unity-background-image-tint-color: rgba(255, 255, 255, 0.7);
+.unity-button:hover:enabled.btn_close {
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.7);
 }
 
-.unity-button:active:enabled.btn_close
-{
-     -unity-background-image-tint-color: rgb(59, 254, 155);
+.unity-button:active:enabled.btn_close {
+    -unity-background-image-tint-color: rgb(59, 254, 155);
 }
 
-.btn_close_Display
-{
-     transition-property: background-size;
-     transition-duration: 1s;
-     transition-timing-function: ease-out-elastic;
-     transition-delay: 0.15s;
-     background-size: 30px 30px;
+.btn_close_Display {
+    transition-property: background-size;
+    transition-duration: 1s;
+    transition-timing-function: ease-out-elastic;
+    transition-delay: 0.15s;
+    background-size: 30px 30px;
 }
 
-.btn_close_Hide
-{
-     background-size: 0 0;
+.btn_close_Hide {
+    background-size: 0 0;
 }
 
-.unity-button.btn_expand
-{
-     background-color: rgba(0, 0, 0, 0);
-     border-top-width: 0;
-     border-right-width: 0;
-     border-bottom-width: 0;
-     border-left-width: 0;
-     border-top-left-radius: 0;
-     border-top-right-radius: 0;
-     border-bottom-right-radius: 0;
-     border-bottom-left-radius: 0;
-     border-left-color: rgba(0, 0, 0, 0);
-     border-right-color: rgba(0, 0, 0, 0);
-     border-top-color: rgba(0, 0, 0, 0);
-     border-bottom-color: rgba(0, 0, 0, 0);
-     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/expand.png?fileID=2800000&guid=8ce4ed13f4710bb42ad37aebb029077f&type=3#expand");
-     position: relative;
-     width: 100%;
-     height: 100%;
-     background-size: 25px 25px;
-     -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);
+.unity-button.btn_expand {
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/expand.png?fileID=2800000&guid=8ce4ed13f4710bb42ad37aebb029077f&type=3#expand");
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: 25px 25px;
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);
 }
 
-.unity-button:hover:enabled.btn_expand
-{
-     -unity-background-image-tint-color: rgb(255, 255, 255);
+.unity-button:hover:enabled.btn_expand {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
-.unity-button:active:enabled.btn_expand
-{
-     -unity-background-image-tint-color: rgb(59, 254, 155);
+.unity-button:active:enabled.btn_expand {
+    -unity-background-image-tint-color: rgb(59, 254, 155);
 }
 
-.btn_expand_Display
-{
-     transition-property: bottom;
-     transition-duration: 0.5s;
-     transition-timing-function: ease-out-cubic;
-     bottom: 20px;
-     transition-delay: 0.05s;
+.btn_expand_Display {
+    transition-property: bottom;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out-cubic;
+    bottom: 20px;
+    transition-delay: 0.05s;
 }
 
-.btn_expand_Hide
-{
-     bottom: -70px;
+.btn_expand_Hide {
+    bottom: -70px;
 }
 
-.OptionsContainer_InsideRegion_Color
-{
-     flex-grow: 1;
-     background-color: rgba(0, 0, 0, 0);
-     padding-top: 10px;
-     padding-left: 20px;
-     padding-right: 20px;
+.OptionsContainer_InsideRegion_Color {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.OptionsContainer_InsideRegion_Param
-{
-     flex-grow: 1;
-     background-color: rgba(0, 0, 0, 0);
-     padding-top: 10px;
-     padding-left: 20px;
-     padding-right: 20px;
+.OptionsContainer_InsideRegion_Param {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.OptionsContainer_InsideRegion_BlackBoards
-{
-     flex-grow: 1;
-     background-color: rgba(0, 0, 0, 0);
-     padding-top: 10px;
-     padding-left: 20px;
-     padding-right: 20px;
+.OptionsContainer_InsideRegion_BlackBoards {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.OptionsContainer_InsideRegion_Other
-{
-     background-color: rgba(0, 0, 0, 0);
-     width: 319px;
-     flex-grow: 1;
-     padding-top: 10px;
-     padding-left: 20px;
-     padding-right: 20px;
-     flex-direction: column;
+.OptionsContainer_InsideRegion_Other {
+    background-color: rgba(0, 0, 0, 0);
+    width: 319px;
+    flex-grow: 1;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    flex-direction: column;
 }
 
-.ParamFieldTitle
-{
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-     color: rgba(255, 255, 255, 0.58);
-     font-size: 13px;
-     text-overflow: ellipsis;
-     -unity-text-align: middle-left;
-     width: 100px;
+.ParamFieldTitle {
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-left;
+    width: 100px;
 }
 
-.ParamFieldContainer
-{
-     flex-direction: row;
-     flex-grow: 0;
-     width: 170px;
-     overflow: hidden;
-     text-overflow: ellipsis;
-     flex-shrink: 1;
-     padding-left: 10px;
-     padding-right: 10px;
-     height: auto;
-     align-items: center;
-     justify-content: space-between;
-     margin-bottom: 10px;
+.ParamFieldContainer {
+    flex-direction: row;
+    flex-grow: 0;
+    width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
-.OptionsTitle
-{
-     padding-left: 10px;
-     margin-bottom: 18px;
-     font-size: 14px;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
-     color: rgba(255, 255, 255, 0.8);
+.OptionsTitle {
+    padding-left: 10px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+    color: rgba(255, 255, 255, 0.8);
 }
 
-.ParamFieldTitle
-{
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-     color: rgba(255, 255, 255, 0.58);
-     font-size: 13px;
-     text-overflow: ellipsis;
-     -unity-text-align: middle-left;
+.ParamFieldTitle {
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-left;
 }
 
-.ParamFieldContainer
-{
-     flex-direction: row;
-     flex-grow: 0;
-     width: 170px;
-     overflow: hidden;
-     text-overflow: ellipsis;
-     flex-shrink: 1;
-     padding-left: 10px;
-     padding-right: 10px;
-     height: auto;
-     align-items: center;
-     justify-content: space-between;
-     margin-bottom: 10px;
+.ParamFieldContainer {
+    flex-direction: row;
+    flex-grow: 0;
+    width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
-.sepline
-{
-     width: 1px;
-     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&guid=df626e800f8f8744baf117e45cfdaf7a&type=3#sepline");
-     -unity-background-image-tint-color: rgba(114, 114, 114, 0.64);
+.sepline {
+    width: 1px;
+    background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&guid=df626e800f8f8744baf117e45cfdaf7a&type=3#sepline");
+    -unity-background-image-tint-color: rgba(114, 114, 114, 0.64);
 }
 
-.ParamField
-{
-     height: auto;
-     width: 60px;
-     margin-top: 0;
-     margin-right: 0;
-     margin-bottom: 0;
-     margin-left: 0;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+.ParamField {
+    height: auto;
+    width: 60px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
-.paramtype_container
-{
-     width: 100px;
-     justify-content: flex-start;
-     flex-direction: row;
-     align-items: center;
-     margin-bottom: 25px;
-     margin-right: 0;
-     left: 10px;
+.paramtype_container {
+    width: 100px;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 25px;
+    margin-right: 0;
+    left: 10px;
 }
 
-.ParamFieldBoldTitle
-{
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
-     color: rgba(255, 255, 255, 0.82);
-     font-size: 12px;
-     text-overflow: ellipsis;
-     -unity-text-align: middle-center;
-     -unity-font-style: normal;
-     border-top-left-radius: 11px;
-     border-top-right-radius: 11px;
-     border-bottom-right-radius: 11px;
-     border-bottom-left-radius: 11px;
-     border-left-color: rgba(116, 116, 116, 0.45);
-     border-right-color: rgba(116, 116, 116, 0.45);
-     border-top-color: rgba(116, 116, 116, 0.45);
-     border-bottom-color: rgba(116, 116, 116, 0.45);
-     border-top-width: 1px;
-     border-right-width: 1px;
-     border-bottom-width: 1px;
-     border-left-width: 1px;
-     padding-left: 10px;
-     padding-right: 10px;
-     padding-top: 10px;
-     padding-bottom: 10px;
-     width: 70px;
-     transition-property: background-color;
-     transition-duration: 0.5s;
-     transition-timing-function: ease-out-cubic;
+.ParamFieldBoldTitle {
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-center;
+    -unity-font-style: normal;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+    border-bottom-right-radius: 11px;
+    border-bottom-left-radius: 11px;
+    border-left-color: rgba(116, 116, 116, 0.45);
+    border-right-color: rgba(116, 116, 116, 0.45);
+    border-top-color: rgba(116, 116, 116, 0.45);
+    border-bottom-color: rgba(116, 116, 116, 0.45);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 70px;
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out-cubic;
 }
 
-.BlackBoardVarMark
-{
-     width: 5px;
-     height: 5px;
-     background-color: rgb(255, 255, 255);
-     border-top-left-radius: 5px;
-     border-top-right-radius: 5px;
-     border-bottom-right-radius: 5px;
-     border-bottom-left-radius: 5px;
-     margin-right: 10px;
+.BlackBoardVarMark {
+    width: 5px;
+    height: 5px;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-right: 10px;
 }

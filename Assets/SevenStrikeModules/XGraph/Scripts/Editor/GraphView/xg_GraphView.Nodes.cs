@@ -74,26 +74,39 @@ namespace SevenStrikeModules.XGraph
                     // 为变量类型节点数据特化处理，需要初始化类型 Variable
                     if (actionnode is ActionNode_Variable avnode)
                     {
-                        args.variable = avnode.variable.CloneVars(true);
-
                         switch (avnode.variable.type)
                         {
                             case VariableType.String:
-                                args.variable.SetValue<string>(avnode.variable.GetValue<string>());
+                                string val_String = avnode.variable.GetValue<string>();
+                                args.variable = new Variable_String(avnode.identifyName, val_String);
                                 break;
                             case VariableType.Float:
+                                float val_Float = avnode.variable.GetValue<float>();
+                                args.variable = new Variable_Float(avnode.identifyName, val_Float);
                                 break;
                             case VariableType.Int:
+                                int val_Int = avnode.variable.GetValue<int>();
+                                args.variable = new Variable_Int(avnode.identifyName, val_Int);
                                 break;
                             case VariableType.Bool:
+                                bool val_Bool = avnode.variable.GetValue<bool>();
+                                args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
                                 break;
                             case VariableType.Vector2:
+                                Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
+                                args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
                                 break;
                             case VariableType.Vector3:
+                                Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
+                                args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
                                 break;
                             case VariableType.Vector4:
+                                Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
+                                args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
                                 break;
                             case VariableType.Color:
+                                Color val_Color = avnode.variable.GetValue<Color>();
+                                args.variable = new Variable_Color(avnode.identifyName, val_Color);
                                 break;
                         }
                     }
@@ -124,6 +137,7 @@ namespace SevenStrikeModules.XGraph
                     args.opacity = data.opacity;
                     args.hasTexture = data.HasTexture;
                     args.decalTexture = data.DecalTexture;
+                    args.scale = data.scale;
                     Node decalNode = CreateNode(args);
 
                     dupData.DuplicatedNode = decalNode as VNode_Decal;
@@ -216,33 +230,67 @@ namespace SevenStrikeModules.XGraph
 
                     if (node is VNode_Base node_base)
                     {
-                        ActionNode_Base data = node_base.ActionData;
+                        ActionNode_Base actionnode = node_base.ActionData;
 
-                        if (data.actionNodeType == "Relay")
+                        if (actionnode.actionNodeType == "Relay")
                             continue;
 
                         // 从拷贝的节点中创建出新的节点数据
                         NodeCreateArgs_Action args = new NodeCreateArgs_Action();
-                        args.visualName = data.identifyName;
-                        args.prefixNamespace = data.namespaces;
-                        args.prefixClass = data.classes;
-                        args.actionNodeType = data.actionNodeType;
-                        args.iconName = data.icon;
-                        args.nodeIcon = data.NodeIcon;
-                        args.visualNodeType = data.visualNodeType;
-                        args.hasAvatar = data.HasAvatar;
-                        args.avatar = data.Avatar;
-                        args.themeSolution = data.themeSolution;
-                        args.themeColor = data.themeColor;
-                        args.transparentNode = data.TransparentNode;
-                        args.content = data.content;
+                        args.visualName = actionnode.identifyName;
+                        args.prefixNamespace = actionnode.namespaces;
+                        args.prefixClass = actionnode.classes;
+                        args.actionNodeType = actionnode.actionNodeType;
+                        args.iconName = actionnode.icon;
+                        args.nodeIcon = actionnode.NodeIcon;
+                        args.visualNodeType = actionnode.visualNodeType;
+                        args.hasAvatar = actionnode.HasAvatar;
+                        args.avatar = actionnode.Avatar;
+                        args.themeSolution = actionnode.themeSolution;
+                        args.themeColor = actionnode.themeColor;
+                        args.transparentNode = actionnode.TransparentNode;
+                        args.content = actionnode.content;
                         args.position = realpos;
-                        args.size = data.nodeGraphSize;
+                        args.size = actionnode.nodeGraphSize;
 
                         // 为变量类型节点数据特化处理，需要初始化类型 Variable
-                        if (data is ActionNode_Variable avnode)
+                        if (actionnode is ActionNode_Variable avnode)
                         {
-                            args.variable = avnode.variable.CloneVars(true);
+                            switch (avnode.variable.type)
+                            {
+                                case VariableType.String:
+                                    string val_String = avnode.variable.GetValue<string>();
+                                    args.variable = new Variable_String(avnode.identifyName, val_String);
+                                    break;
+                                case VariableType.Float:
+                                    float val_Float = avnode.variable.GetValue<float>();
+                                    args.variable = new Variable_Float(avnode.identifyName, val_Float);
+                                    break;
+                                case VariableType.Int:
+                                    int val_Int = avnode.variable.GetValue<int>();
+                                    args.variable = new Variable_Int(avnode.identifyName, val_Int);
+                                    break;
+                                case VariableType.Bool:
+                                    bool val_Bool = avnode.variable.GetValue<bool>();
+                                    args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
+                                    break;
+                                case VariableType.Vector2:
+                                    Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
+                                    args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
+                                    break;
+                                case VariableType.Vector3:
+                                    Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
+                                    args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
+                                    break;
+                                case VariableType.Vector4:
+                                    Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
+                                    args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
+                                    break;
+                                case VariableType.Color:
+                                    Color val_Color = avnode.variable.GetValue<Color>();
+                                    args.variable = new Variable_Color(avnode.identifyName, val_Color);
+                                    break;
+                            }
                         }
 
                         AddToSelection(CreateNode(args));
@@ -556,6 +604,38 @@ namespace SevenStrikeModules.XGraph
             return node;
         }
         /// <summary>
+        /// 创建视觉节点 - 标签
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public VNode_Label Node_MakeLabel(Vector2 pos, ActionLabelData data = null)
+        {
+            #region 根据枚举类型创建 NodeView
+            // 根据枚举名称获取 NodeView 节点类
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.VNode_Label");
+            // 创建 NodeView 类型的实例为 visualNode 基类
+            VNode_Label node = Activator.CreateInstance(type_nodeview) as VNode_Label;
+            #endregion
+
+            // 初始化节点并将data数据容器赋值过来便于后面使用
+            node.Initialize(this, pos, data);
+
+            #region GraphView 视图操作
+            // 添加进当前主GraphView视图中
+            this.AddElement(node);
+
+            // 刷新GraphView视图
+            node.RefreshExpandedState();
+            node.RefreshPorts();
+            #endregion
+
+            // 刷新 BlackBoard 信息显示
+            gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            return node;
+        }
+        /// <summary>
         /// 创建延展节点
         /// </summary>
         /// <param name="pos"></param>
@@ -637,6 +717,30 @@ namespace SevenStrikeModules.XGraph
             stickNode.RefreshPorts();
 
             return stickNode;
+        }
+
+        /// <summary>
+        /// 创建节点 - 标签
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public Node CreateNode(NodeCreateArgs_Label args)
+        {
+            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
+            Undo.RecordObject(ActionTreeAsset, "Create LabelNode");
+            // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
+            ActionLabelData labeldata = new ActionLabelData(args.labelContent, GUID.Generate().ToString(), args.position, args.size, args.opacity, args.fontSize, args.bold, args.italic);
+            ActionTreeAsset.Label_Add(labeldata);
+
+            // 创建新的节点并指定资源数据项
+            VNode_Label labelNode = Node_MakeLabel(args.position, labeldata);
+
+            // 刷新节点
+            labelNode.Draw();
+            labelNode.RefreshExpandedState();
+            labelNode.RefreshPorts();
+
+            return labelNode;
         }
 
         /// <summary>

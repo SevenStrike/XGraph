@@ -51,6 +51,21 @@ namespace SevenStrikeModules.XGraph
 
     [Serializable]
     /// <summary>
+    /// 创建节点信息结构体 - 标签
+    /// </summary>
+    public struct NodeCreateArgs_Label
+    {
+        public string labelContent;
+        public Vector2 position;
+        public Vector2 size;
+        public float opacity;
+        public int fontSize;
+        public bool bold;
+        public bool italic;
+    }
+
+    [Serializable]
+    /// <summary>
     /// 创建节点信息结构体 - 贴图
     /// </summary>
     public struct NodeCreateArgs_Decal
@@ -213,6 +228,90 @@ namespace SevenStrikeModules.XGraph
 #endif
             clone.position = position;
             clone.size = size;
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// 标签数据
+    /// </summary>
+    public class ActionLabelData
+    {
+        /// <summary>
+        /// 标签识别ID码
+        /// </summary>
+        public string guid;
+        /// <summary>
+        /// 标签内容
+        /// </summary>
+        public string content;
+        /// <summary>
+        /// 节点位置
+        /// </summary>
+        public Vector2 position;
+        /// <summary>
+        /// 节点尺寸
+        /// </summary>
+        public Vector2 size;
+        /// <summary>
+        /// 标签透明度
+        /// </summary>
+        public float opacity;
+        /// <summary>
+        /// 文字内容尺寸
+        /// </summary>
+        public int fontSize;
+        /// <summary>
+        /// 文字是否粗体
+        /// </summary>
+        public bool bold;
+        /// <summary>
+        /// 文字是否斜体
+        /// </summary>
+        public bool italic;
+
+        /// <summary>
+        /// 标签构造器
+        /// </summary>
+        public ActionLabelData() { }
+        /// <summary>
+        /// 标签构造器
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="guid"></param>
+        /// <param name="pos"></param>
+        /// <param name="size"></param>
+        /// <param name="opacity"></param>
+        public ActionLabelData(string content, string guid, Vector2 pos, Vector2 size, float opacity, int fontSize, bool bold, bool italic)
+        {
+            this.guid = guid;
+            this.content = content;
+            this.position = pos;
+            this.size = size;
+            this.opacity = opacity;
+            this.fontSize = fontSize;
+            this.bold = bold;
+            this.italic = italic;
+        }
+        /// <summary>
+        /// 标签克隆
+        /// </summary>
+        /// <param name="guid_create"></param>
+        /// <returns></returns>
+        public ActionLabelData Clone(bool guid_create)
+        {
+            var clone = new ActionLabelData();
+            clone.content = content;
+#if UNITY_EDITOR
+            clone.guid = guid_create ? GUID.Generate().ToString() : guid;
+#endif
+            clone.position = position;
+            clone.size = size;
+            clone.opacity = opacity;
+            clone.fontSize = fontSize;
+            clone.bold = bold;
+            clone.italic = italic;
             return clone;
         }
     }
@@ -990,6 +1089,7 @@ namespace SevenStrikeModules.XGraph
         public Color gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
         public Color customimagecolor = new Color(1, 1, 1, 0);
         public Color thickLinecolor = new Color(0, 0, 0, 0);
+        public Color themecolor = new Color(0.23f, 0.99f, 0.60f, 1);
         public float spacing = 18;
         public int thicklines = 18;
         public Texture2D customimage;
@@ -1006,7 +1106,7 @@ namespace SevenStrikeModules.XGraph
             t.thicklines = thicklines;
             t.customimagecolor = customimagecolor;
             t.customimage = customimage;
-
+            t.themecolor = themecolor;
             return t;
         }
     }
@@ -1144,6 +1244,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public List<ActionStickData> Sticks = new List<ActionStickData>();
         /// <summary>
+        /// 标签列表
+        /// </summary>
+        [SerializeField] public List<ActionLabelData> Labels = new List<ActionLabelData>();
+        /// <summary>
         /// 贴纸列表
         /// </summary>
         [SerializeField] public List<ActionDecalData> Decals = new List<ActionDecalData>();
@@ -1203,6 +1307,44 @@ namespace SevenStrikeModules.XGraph
             if (actionData is ActionNode_Variable avnode)
             {
                 avnode.variable = avnode.Initialized(args.visualName, args.variable.type);
+                if (args.variable != null)
+                {
+                    switch (args.variable.type)
+                    {
+                        case VariableType.String:
+                            if (args.variable is Variable_String v_string)
+                                avnode.variable.SetValue(v_string.GetValue<string>());
+                            break;
+                        case VariableType.Float:
+                            if (args.variable is Variable_Float v_float)
+                                avnode.variable.SetValue(v_float.GetValue<float>());
+                            break;
+                        case VariableType.Int:
+                            if (args.variable is Variable_Int v_int)
+                                avnode.variable.SetValue(v_int.GetValue<int>());
+                            break;
+                        case VariableType.Bool:
+                            if (args.variable is Variable_Bool v_bool)
+                                avnode.variable.SetValue(v_bool.GetValue<bool>());
+                            break;
+                        case VariableType.Vector2:
+                            if (args.variable is Variable_Vector2 v_Vector2)
+                                avnode.variable.SetValue(v_Vector2.GetValue<Vector2>());
+                            break;
+                        case VariableType.Vector3:
+                            if (args.variable is Variable_Vector3 v_Vector3)
+                                avnode.variable.SetValue(v_Vector3.GetValue<Vector3>());
+                            break;
+                        case VariableType.Vector4:
+                            if (args.variable is Variable_Vector4 v_Vector4)
+                                avnode.variable.SetValue(v_Vector4.GetValue<Vector4>());
+                            break;
+                        case VariableType.Color:
+                            if (args.variable is Variable_Color v_Color)
+                                avnode.variable.SetValue(v_Color.GetValue<Color>());
+                            break;
+                    }
+                }
             }
 
             // 添加到列表中
@@ -1298,6 +1440,13 @@ namespace SevenStrikeModules.XGraph
                 Sticks.Add(stick.Clone(false));
             }
 
+            // 覆盖原有的 Labels  数据列表
+            Labels = new List<ActionLabelData>();
+            foreach (var label in root.Labels)
+            {
+                Labels.Add(label.Clone(false));
+            }
+
             // 覆盖原有的 Groups 数据列表
             Groups = new List<ActionGroupData>();
             foreach (var group in root.Groups)
@@ -1390,6 +1539,13 @@ namespace SevenStrikeModules.XGraph
             foreach (var item in Sticks)
             {
                 newRoot.Sticks.Add(item.Clone(false));
+            }
+
+            // 实例化新的 Labels 列表，并从原始资源复制项
+            newRoot.Labels = new List<ActionLabelData>();
+            foreach (var item in Labels)
+            {
+                newRoot.Labels.Add(item.Clone(false));
             }
 
             // 实例化新的 Decals 列表，并从原始资源复制项
@@ -1779,6 +1935,35 @@ namespace SevenStrikeModules.XGraph
         public void StickNote_Remove(ActionStickData data)
         {
             Sticks.Remove(data);
+        }
+        #endregion
+
+        #region 标签操作
+        /// <summary>
+        /// 添加标签数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Label_Add(ActionLabelData data)
+        {
+            Labels.Add(data);
+        }
+        /// <summary>
+        /// 清空标签数据列表
+        /// </summary>
+        public void Label_Clear()
+        {
+            Labels.Clear();
+#if UNITY_EDITOR
+            //AssetDatabase.SaveAssets();
+#endif
+        }
+        /// <summary>
+        /// 移除目标标签数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void Label_Remove(ActionLabelData data)
+        {
+            Labels.Remove(data);
         }
         #endregion
 

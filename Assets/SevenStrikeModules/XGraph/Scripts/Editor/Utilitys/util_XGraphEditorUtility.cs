@@ -9,6 +9,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
+    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
 
     public static class util_XGraphEditorUtility
@@ -492,6 +493,47 @@ namespace SevenStrikeModules.XGraph
             label.text = text;
         }
         /// <summary>
+        /// 标签字体大小设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="size"></param>
+        public static void Element_Label_SizeSet(Label label, int size)
+        {
+            StyleLength fontSize = label.style.fontSize;
+            fontSize.value = size;
+            label.style.fontSize = fontSize;
+        }
+        /// <summary>
+        /// 标签字体粗细设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="bold"></param>
+        public static void Element_Label_BoldSet(Label label, bool bold)
+        {
+            if (bold)
+            {
+                label.style.unityFont = AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf");
+                label.style.unityFontDefinition = new StyleFontDefinition(AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
+            }
+            else
+            {
+                label.style.unityFont = AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Regular.ttf");
+                label.style.unityFontDefinition = new StyleFontDefinition(AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Regular.ttf"));
+            }
+        }
+        /// <summary>
+        /// 标签字体斜体设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="state"></param>
+        public static void Element_Label_ItalicSet(Label label, bool state)
+        {
+            if (state)
+                label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Italic);
+            else
+                label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Normal);
+        }
+        /// <summary>
         /// 控制元素 - 可见性
         /// </summary>
         /// <param name="state"></param>
@@ -558,6 +600,15 @@ namespace SevenStrikeModules.XGraph
         public static void Element_BackgroundColor_Set(VisualElement element, Color color)
         {
             element.style.backgroundColor = color;
+        }
+        /// <summary>
+        /// 控制元素 - 背景图像着色颜色设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="color"></param>
+        public static void Element_BackgroundColorTint_Set(VisualElement element, Color color)
+        {
+            element.style.unityBackgroundImageTintColor = color;
         }
         /// <summary>
         /// 控制元素 - 颜色设置

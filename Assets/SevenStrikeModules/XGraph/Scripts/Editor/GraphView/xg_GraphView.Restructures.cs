@@ -80,6 +80,9 @@ namespace SevenStrikeModules.XGraph
             // 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
 
+            // 根据行为树根节点里的标签列表数据来重建GraphView的视觉标签节点
+            Restructure_Labels(ActionTreeAsset.Labels);
+
             // 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
             Restructure_Decals(ActionTreeAsset.Decals);
 
@@ -93,6 +96,10 @@ namespace SevenStrikeModules.XGraph
 
             // 计算并显示行为资源的保存时间差
             gv_GraphWindow.xw_GraphInfo_LastSaveDateTime_Set(ActionTreeAsset.LastSaveDateTime);
+            // 行为资源的保存时间差文本颜色同步为主题色
+            gv_GraphWindow.xw_GraphInfo_LastSaveLag_ColorSyncUpdate();
+            // 编辑器图标的着色颜色同步为主题色
+            gv_GraphWindow.xw_GraphInfo_GraphViewIcon_ColorSyncUpdate();
 
             // 显示行为资源路径
             gv_GraphWindow.xw_GraphInfo_PathContent_Set(AssetDatabase.GetAssetPath(gv_GraphWindow.SourceTree));
@@ -109,6 +116,9 @@ namespace SevenStrikeModules.XGraph
             // OptionsPanel_GraphView背景图像颜色值设置
             util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_CustomImage, ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor);
 
+            // OptionsPanel_GraphView主题颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_ThemeColor, ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
+
             // OptionsPanel_GraphView网格间距值设置
             util_XGraphEditorUtility.Element_FloatField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Floatfield_GridSpace, ActionTreeAsset.GraphviewGridBackgroundThemes.spacing);
 
@@ -120,6 +130,9 @@ namespace SevenStrikeModules.XGraph
 
             // GraphviewGridBackground 网格背景主题改变
             GridBackgroundThemeUpdate();
+
+            // GraphviewGridBackground 检测是否有节点
+            RecheckNodesIsExist();
 
             // OptionsPanel_GraphView 选择框坐标显示开关值设置
             util_XGraphEditorUtility.Element_ToggleField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Toggle_DisplaySelectorCoordinate, ActionTreeAsset.GraphviewRectangleSelectorThemes.displayCoordinate);
@@ -139,13 +152,24 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
         /// </summary>
-        /// <param name="ActionDecalData"></param>
+        /// <param name="stickdata"></param>
         public void Restructure_Sticks(List<ActionStickData> stickdata)
         {
-            // 根据根节点的数据列表重建 NodeViews
             stickdata.ForEach(data =>
             {
                 Node_MakeStick(data.position, data).Draw();
+            });
+        }
+
+        /// <summary>
+        /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉标签节点
+        /// </summary>
+        /// <param name="labeldata"></param>
+        public void Restructure_Labels(List<ActionLabelData> labeldata)
+        {
+            labeldata.ForEach(data =>
+            {
+                Node_MakeLabel(data.position, data).Draw();
             });
         }
 
@@ -155,7 +179,6 @@ namespace SevenStrikeModules.XGraph
         /// <param name="ActionDecalData"></param>
         public void Restructure_Decals(List<ActionDecalData> decaldata)
         {
-            // 根据根节点的数据列表重建 NodeViews
             decaldata.ForEach(data =>
             {
                 VNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
@@ -167,10 +190,9 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
         /// </summary>
-        /// <param name="ActionDecalData"></param>
+        /// <param name="vardata"></param>
         public void Restructure_Variable(List<ActionVariableData> vardata)
         {
-            // 根据根节点的数据列表重建 NodeViews
             vardata.ForEach(data =>
             {
                 data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
@@ -184,6 +206,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉编组
         /// </summary>
+        /// <param name="groupDatas"></param>
         public void Restructure_Groups(List<ActionGroupData> groupDatas)
         {
             if (groupDatas == null || groupDatas.Count == 0) return;
@@ -200,9 +223,7 @@ namespace SevenStrikeModules.XGraph
                 foreach (string guid in groupData.guids)
                 {
                     // 查找 - 行为节点
-                    var node = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Base baseNode && baseNode.ActionData.guid == guid);
-
+                    var node = nodes.ToList().FirstOrDefault(n => n is VNode_Base baseNode && baseNode.ActionData.guid == guid);
                     if (node != null)
                     {
                         group.AddElement(node);
@@ -210,18 +231,21 @@ namespace SevenStrikeModules.XGraph
                     }
 
                     // 查找 - 便签节点
-                    var stickNote = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Stick stickNode && stickNode.StickData.guid == guid);
-
+                    var stickNote = nodes.ToList().FirstOrDefault(n => n is VNode_Stick stickNode && stickNode.StickData.guid == guid);
                     if (stickNote != null)
                     {
                         group.AddElement(stickNote);
                     }
 
-                    // 查找 - 贴图节点
-                    var decalNote = nodes.ToList().FirstOrDefault(n =>
-                        n is VNode_Decal decalNote && decalNote.DecalData.guid == guid);
+                    // 查找 - 标签节点
+                    var label = nodes.ToList().FirstOrDefault(n => n is VNode_Label label && label.LabelData.guid == guid);
+                    if (label != null)
+                    {
+                        group.AddElement(label);
+                    }
 
+                    // 查找 - 贴图节点
+                    var decalNote = nodes.ToList().FirstOrDefault(n => n is VNode_Decal decalNote && decalNote.DecalData.guid == guid);
                     if (decalNote != null)
                     {
                         group.AddElement(decalNote);

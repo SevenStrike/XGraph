@@ -79,6 +79,14 @@
                     "visualNodeType": "VNode_Stick"
                 },
                 {
+                    "name": "标签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Label",
+                    "iconName": "label",
+                    "visualNodeType": "VNode_Label"
+                },
+                {
                     "name": "贴图",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
                     "prefixClass": "",

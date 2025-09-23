@@ -23,6 +23,10 @@
                     <engine:Label text="背景图像着色" name="title" class="ParamFieldTitle" />
                     <editor:ColorField name="colorfield_customimage" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </engine:VisualElement>
+                <engine:VisualElement name="color_themecolor" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                    <engine:Label text="主题色" name="title" class="ParamFieldTitle" />
+                    <editor:ColorField name="colorfield_themecolor" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                </engine:VisualElement>
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" style="width: 1px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&amp;guid=df626e800f8f8744baf117e45cfdaf7a&amp;type=3#sepline&quot;);" />
             <engine:VisualElement name="reg_params" class="OptionsContainer_InsideRegion_Param" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
@@ -35,28 +39,28 @@
                     <engine:Label text="分界线数量" name="title" class="ParamFieldTitle" />
                     <engine:IntegerField value="0" name="integerfield_thicklinecount" class="ParamField" />
                 </engine:VisualElement>
-                <engine:VisualElement name="param_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                <engine:VisualElement name="param_bgimage" class="ColorFieldContainer ParamFieldContainer">
                     <engine:Label text="背景图像" name="title" class="ParamFieldTitle" />
                     <editor:ObjectField allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="objectfield_customimage" class="ParamField" />
                 </engine:VisualElement>
-                <engine:Button text="恢复默认配置" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
+                <engine:Button text="恢复默认" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; height: 30px; margin-top: 12px; font-size: 14px; -unity-font-style: normal; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;);" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_rectselector" class="OptionsContainer_InsideRegion_Param" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
                 <engine:Label text="选框" name="Title" class="OptionsTitle" />
-                <engine:VisualElement name="param_selectorlinecolor" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                <engine:VisualElement name="param_selectorlinecolor" class="ColorFieldContainer ParamFieldContainer">
                     <engine:Label text="线框色" name="title" class="ParamFieldTitle" />
                     <editor:ColorField name="colorfield_selectorlinecolor" value="#FFFFFFFF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </engine:VisualElement>
-                <engine:VisualElement name="param_selectorline_seg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                <engine:VisualElement name="param_selectorline_seg" class="ColorFieldContainer ParamFieldContainer">
                     <engine:Label text="线分段" name="title" class="ParamFieldTitle" />
                     <engine:IntegerField value="0" name="integerfield_selectorline_seg" class="ParamField" />
                 </engine:VisualElement>
-                <engine:VisualElement name="param_selectorline_displaycoordinate" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                <engine:VisualElement name="param_selectorline_displaycoordinate" class="ColorFieldContainer ParamFieldContainer" style="margin-bottom: 14px;">
                     <engine:Label text="坐标显示" name="title" class="ParamFieldTitle" />
                     <engine:Toggle name="toggle_selectorline_displaycoordinate" class="ParamField" />
                 </engine:VisualElement>
-                <engine:Button text="恢复默认配置" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;" />
+                <engine:Button text="恢复默认" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 12px; height: 30px; font-size: 14px; -unity-font-style: normal; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;);" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_blackboards" class="OptionsContainer_InsideRegion_BlackBoards" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">

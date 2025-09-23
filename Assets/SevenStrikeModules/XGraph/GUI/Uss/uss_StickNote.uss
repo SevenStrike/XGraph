@@ -74,8 +74,8 @@
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 3px;
      padding-top: 0;
-     padding-right: 10px;
-     padding-bottom: 5px;
+     padding-right: 20px;
+     padding-bottom: 10px;
      padding-left: 10px;
      margin-top: 0;
      top: 0;

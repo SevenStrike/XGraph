@@ -143,6 +143,11 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.ActionTree_Open();
                 evt.StopPropagation();
             }
+            if (evt.keyCode == KeyCode.R && (evt.ctrlKey || evt.commandKey))
+            {
+                gv_GraphWindow.RestuctureGraphViews();
+                evt.StopPropagation();
+            }
             if (evt.keyCode == KeyCode.G && (evt.ctrlKey || evt.commandKey))
             {
                 MakeGroup("节点编组", gv_NodeCreatedPosition);

@@ -27,6 +27,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private static System.Reflection.FieldInfo s_GridBackgroundColorField;
 
+        public Label TipLabel;
+
         static xg_GraphViewGridBackground()
         {
             // 在静态构造函数中通过反射获取私有字段信息
@@ -49,6 +51,18 @@ namespace SevenStrikeModules.XGraph
             gra.pickingMode = PickingMode.Ignore;
             gra.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}GraphViewViggnet.png");
             Add(gra);
+
+            TipLabel = new Label("请按下空格键创建节点");
+            TipLabel.style.alignSelf = new StyleEnum<Align>(Align.Center);
+            TipLabel.style.width = new StyleLength(StyleKeyword.Auto);
+            TipLabel.style.flexGrow = 1;
+            TipLabel.style.unityTextAlign = new StyleEnum<TextAnchor>(TextAnchor.MiddleCenter);
+            TipLabel.style.fontSize = 25;
+            TipLabel.style.unityFont = new StyleFont(util_XGraphEditorUtility.AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
+            TipLabel.style.unityFontDefinition = new StyleFontDefinition(util_XGraphEditorUtility.AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
+            TipLabel.style.opacity = 0.12f;
+            TipLabel.style.letterSpacing = 5;
+            Add(TipLabel);
         }
 
         /// <summary>
@@ -114,6 +128,33 @@ namespace SevenStrikeModules.XGraph
                 s_GridBackgroundColorField.SetValue(this, value);
                 MarkDirtyRepaint();
             }
+        }
+
+        /// <summary>
+        /// 获取提示文字组件
+        /// </summary>
+        /// <returns></returns>
+        public Label GetTipLabel()
+        {
+            return TipLabel;
+        }
+
+        /// <summary>
+        /// 提示文字组件的内容设置
+        /// </summary>
+        /// <param name="text"></param>
+        public void SetTipLabelText(string text)
+        {
+            TipLabel.text = text;
+        }
+
+        /// <summary>
+        /// 提示文字显示控制
+        /// </summary>
+        /// <param name="state"></param>
+        public void TipLabel_Displayer(bool state)
+        {
+            TipLabel.style.display = new StyleEnum<DisplayStyle>(state ? DisplayStyle.Flex : DisplayStyle.None);
         }
     }
 }

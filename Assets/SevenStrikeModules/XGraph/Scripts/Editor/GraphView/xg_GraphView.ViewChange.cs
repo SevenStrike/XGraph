@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEngine;
 
     public partial class xg_GraphView
     {
@@ -80,11 +81,13 @@ namespace SevenStrikeModules.XGraph
                 {
                     Removed_Node(element);
                     Removed_Stick(element);
+                    Removed_Label(element);
                     Removed_Decal(element);
                     Removed_Variable(element);
                     Removed_Edge(element);
                     Removed_Group(element);
                 });
+                RecheckNodesIsExist();
             }
         }
         /// <summary>
@@ -151,6 +154,19 @@ namespace SevenStrikeModules.XGraph
             {
                 Undo.RecordObject(ActionTreeAsset, "Remove StickNote");
                 ActionTreeAsset.StickNote_Remove(stickview.StickData);
+            }
+        }
+        /// <summary>
+        /// 当移除标签时
+        /// </summary>
+        /// <param name="element"></param>
+        private void Removed_Label(GraphElement element)
+        {
+            VNode_Label labelview = element as VNode_Label;
+            if (labelview != null)
+            {
+                Undo.RecordObject(ActionTreeAsset, "Remove Label");
+                ActionTreeAsset.Label_Remove(labelview.LabelData);
             }
         }
         /// <summary>

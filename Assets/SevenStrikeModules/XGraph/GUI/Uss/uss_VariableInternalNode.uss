@@ -41,7 +41,7 @@
 {
      height: 100%;
      margin-left: 5px;
-     margin-top: 0px;
+     margin-top: 10px;
      margin-bottom: 5px;
      margin-right: 5px;
      padding-bottom: 5px;
@@ -54,16 +54,72 @@
 
 .value_field_text
 {
-     font-size: 13px;
      flex-shrink: 1;
-     margin-top: 4px;
-     padding-left: 5px;
-     padding-right: 5px;
+     padding-top: 2px;
+     padding-bottom: 2px;
+     padding-left: 3px;
+     padding-right: 3px;
 }
 
-#unity-text-input
+.value_field_string
+{
+     flex-shrink: 1;
+     padding-top: 8px;
+     padding-bottom: 8px;
+     padding-left: 3px;
+     padding-right: 3px;
+     height: 100%;
+}
+
+#unity-text-input.value_field_string_input
 {
      -unity-text-align: upper-left;
+     white-space: normal;
+     height: 100%;
+}
+
+.unity-text-element
+{
+     font-size: 13.5px;
+}
+
+.value_field_center_text
+{
+     -unity-text-align: middle-center;
+}
+
+.value_field_vector3
+{
+     min-width: 220px;
+}
+
+.value_field_vector4
+{
+     min-width: 260px;
+}
+
+.value_field_vector_labelColor_x
+{
+     color: rgb(255, 117, 117);
+     opacity: 0.85;
+}
+
+.value_field_vector_labelColor_y
+{
+     color: rgb(173, 255, 116);
+     opacity: 0.85;
+}
+
+.value_field_vector_labelColor_z
+{
+     color: rgb(102, 189, 255);
+     opacity: 0.85;
+}
+
+.value_field_vector_labelColor_w
+{
+     color: rgb(255, 190, 73);
+     opacity: 0.85;
 }
 
 .resizer-icon
