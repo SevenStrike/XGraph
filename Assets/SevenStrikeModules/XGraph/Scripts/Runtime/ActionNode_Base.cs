@@ -1,5 +1,8 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
+    using UnityEditor;
+    using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
     public abstract class ActionNode_Base : ScriptableObject
@@ -76,6 +79,10 @@ namespace SevenStrikeModules.XGraph
         /// 标题图标
         /// </summary>
         [SerializeField] public Texture2D NodeIcon;
+        /// <summary>
+        /// 变量Guids接驳列表
+        /// </summary>
+        [SerializeField] public List<VarialbleGuidConnector> VariableDatas = new List<VarialbleGuidConnector>();
 
         /// <summary>
         /// 行为执行方法
@@ -83,14 +90,96 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public abstract void Execute();
 
+        /// <summary>
+        /// 获取行为的基础信息数据（行为类型 / 显示名称）
+        /// </summary>
+        /// <returns></returns>
         public string GetInfo()
         {
             return $"{namespaces}.{classes}{actionNodeType.ToString()}   /   {visualNodeType.ToString()}   /   {identifyName}";
         }
 
+        /// <summary>
+        /// 获取行为资源的路径
+        /// </summary>
+        /// <returns></returns>
         public string GetPath()
         {
             return $"{path}";
         }
+
+        #region VariableDatas
+        /// <summary>
+        /// 绑定变量数据到节点数据中
+        /// </summary>
+        /// <param name="data"></param>
+        public void VariableData_Bind(ActionVariableData data, string portName)
+        {
+            #region 检查节点的变量链接信息列表中是否存在重复的项
+            bool isExistConenctor = false;
+            foreach (var item in VariableDatas)
+            {
+                if (item.VariableNodeGuid == data.guid && item.TargetPortName == portName)
+                {
+                    isExistConenctor = true;
+                }
+            }
+            #endregion
+
+            // 如果已经存在则忽略，否则记录该变量链接信息
+            if (isExistConenctor)
+                return;
+            else
+            {
+                Undo.RecordObject(this, "Assigned Variable Connector");
+                VariableDatas.Add(new VarialbleGuidConnector(data.guid, portName, data.variable));
+            }
+        }
+        /// <summary>
+        /// 从节点中解绑变量数据
+        /// </summary>
+        /// <param name="variableData"></param>
+        public void VariableData_Unbind(string guid, string portName)
+        {
+            // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
+            int removedCount = VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+            if (removedCount > 0)
+            {
+                Undo.RecordObject(this, "Unassigned Variable Connector");
+            }
+        }
+        /// <summary>
+        /// 变量 - 值获取
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Variable VariableData_GetValue(string name)
+        {
+            Variable vare = null;
+            VariableDatas.ForEach(data =>
+            {
+                if (name == data.TargetPortName)
+                {
+                    vare = data.variable;
+                }
+            });
+            return vare;
+        }
+        /// <summary>
+        /// 变量 - 存在检查
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool VariableData_ValueExist(string name)
+        {
+            bool isExist = false;
+            VariableDatas.ForEach((data) =>
+            {
+                if (name == data.TargetPortName)
+                    isExist = true;
+            });
+            return isExist;
+        }
+        #endregion
     }
 }

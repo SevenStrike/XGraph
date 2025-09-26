@@ -186,5 +186,14 @@ namespace SevenStrikeModules.XGraph
             EditorPrefs.DeleteKey("XGraph_BlackBoardViewSize");
             EditorPrefs.DeleteKey("XGraph_BlackBoardViewDisplay");
         }
+        /// <summary>
+        /// 根据变量类型获取变量的值
+        /// </summary>
+        /// <param name="vare"></param>
+        /// <returns></returns>
+        public static T GetVariableValue<T>(Variable vare)
+        {
+            return vare.GetValue<T>();
+        }
     }
 }

@@ -5,7 +5,6 @@ namespace SevenStrikeModules.XGraph
     public class Base_ActionNode_Debug : ActionNode_Debug
     {
         public string Message;
-        //public BlackBoardVariable_String Variable;
 
         public override void Execute()
         {
@@ -14,12 +13,15 @@ namespace SevenStrikeModules.XGraph
 
         public void DebugMsg()
         {
-            //if (Variable != null)
-            //{
-            //    Debug.Log(Variable.GetValue());
-            //}
-            //else
-            //    Debug.Log(Message);
+            if (VariableData_ValueExist("string-s"))
+            {
+                string msg = VariableData_GetValue("string-s").GetValue<string>();
+                Debug.Log(msg);
+            }
+            else
+            {
+                Debug.Log(Message);
+            }
         }
     }
 }

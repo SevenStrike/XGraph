@@ -79,6 +79,9 @@ namespace SevenStrikeModules.XGraph
 
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
+
+            // 更新变量值
+            //RefreshVariableValue();
         }
 
         /// <summary>
@@ -443,6 +446,45 @@ namespace SevenStrikeModules.XGraph
         public void UnHighlight()
         {
             util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
+        }
+        /// <summary>
+        /// 根据VraiableCategory的变量列表源来更新在VariableData中的变量的值
+        /// </summary>
+        public void RefreshVariableValue()
+        {
+            foreach (var v in graphView.ActionTreeAsset.VariableCategory)
+            {
+                if (VariableData.variable.guid == v.guid)
+                {
+                    switch (VariableData.variable.type)
+                    {
+                        case VariableType.String:
+                            VariableData.variable.SetValue<string>(v.GetValue<string>());
+                            break;
+                        case VariableType.Float:
+                            VariableData.variable.SetValue<float>(v.GetValue<float>());
+                            break;
+                        case VariableType.Int:
+                            VariableData.variable.SetValue<int>(v.GetValue<int>());
+                            break;
+                        case VariableType.Bool:
+                            VariableData.variable.SetValue<bool>(v.GetValue<bool>());
+                            break;
+                        case VariableType.Vector2:
+                            VariableData.variable.SetValue<Vector2>(v.GetValue<Vector2>());
+                            break;
+                        case VariableType.Vector3:
+                            VariableData.variable.SetValue<Vector3>(v.GetValue<Vector3>());
+                            break;
+                        case VariableType.Vector4:
+                            VariableData.variable.SetValue<Vector4>(v.GetValue<Vector4>());
+                            break;
+                        case VariableType.Color:
+                            VariableData.variable.SetValue<Color>(v.GetValue<Color>());
+                            break;
+                    }
+                }
+            }
         }
         #endregion
     }

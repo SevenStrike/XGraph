@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Runtime.InteropServices;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -121,12 +122,40 @@ namespace SevenStrikeModules.XGraph
             lab.text = vare.name;
             Add(lab);
 
+            Label guid = new Label();
+            guid.style.fontSize = 25;
+            guid.text = vare.guid;
+            Add(guid);
+
             Label val = new Label();
             val.style.fontSize = 25;
-            if (vare.type == VariableType.String)
-                val.text = vare.GetValue<string>().ToString();
-            if (vare.type == VariableType.Float)
-                val.text = vare.GetValue<float>().ToString();
+            switch (vare.type)
+            {
+                case VariableType.String:
+                    val.text = util_Dashboard.GetVariableValue<string>(vare);
+                    break;
+                case VariableType.Float:
+                    val.text = util_Dashboard.GetVariableValue<float>(vare).ToString();
+                    break;
+                case VariableType.Int:
+                    val.text = util_Dashboard.GetVariableValue<int>(vare).ToString();
+                    break;
+                case VariableType.Bool:
+                    val.text = util_Dashboard.GetVariableValue<bool>(vare).ToString();
+                    break;
+                case VariableType.Vector2:
+                    val.text = util_Dashboard.GetVariableValue<Vector2>(vare).ToString();
+                    break;
+                case VariableType.Vector3:
+                    val.text = util_Dashboard.GetVariableValue<Vector3>(vare).ToString();
+                    break;
+                case VariableType.Vector4:
+                    val.text = util_Dashboard.GetVariableValue<Vector4>(vare).ToString();
+                    break;
+                case VariableType.Color:
+                    val.text = util_Dashboard.GetVariableValue<Color>(vare).ToString();
+                    break;
+            }
             Add(val);
         }
 

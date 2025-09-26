@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -103,7 +104,7 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
-            // 清空 VariableItems 选中状态
+            // 清空 VariableCategory 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
         }
         /// <summary>
@@ -145,7 +146,7 @@ namespace SevenStrikeModules.XGraph
             }
             if (evt.keyCode == KeyCode.R && (evt.ctrlKey || evt.commandKey))
             {
-                gv_GraphWindow.RestuctureGraphViews();
+                gv_GraphWindow.RestructureGraphViews();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.G && (evt.ctrlKey || evt.commandKey))
@@ -163,7 +164,14 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.Close();
                 evt.StopPropagation();
             }
-
+            if (evt.keyCode == KeyCode.G)
+            {
+                foreach (var item in nodes)
+                {
+                    Debug.Log($"{item.viewDataKey}  /  {item}");
+                }
+                evt.StopPropagation();
+            }
             //evt.StopPropagation();
         }
         /// <summary>

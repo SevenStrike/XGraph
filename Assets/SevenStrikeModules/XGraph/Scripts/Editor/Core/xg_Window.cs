@@ -208,6 +208,10 @@
         /// </summary>
         private Button xw_btn_save;
         /// <summary>
+        ///  xw_graphView 控件 - 刷新按钮（用于快速重载节点）
+        /// </summary>
+        private Button xw_btn_reload;
+        /// <summary>
         ///  xw_graphView 控件 - 打开按钮
         /// </summary>
         private Button xw_btn_open;
@@ -668,6 +672,10 @@
             xw_btn_save = root.Q<Button>("btn_Save");
             xw_btn_save.clicked += xw_btn_save_clicked;
 
+            // 重载节点按钮
+            xw_btn_reload = root.Q<Button>("btn_Reload");
+            xw_btn_reload.clicked += xw_btn_reload_clicked;
+
             // 打开按钮
             xw_btn_open = root.Q<Button>("btn_Load");
             xw_btn_open.clicked += xw_btn_open_clicked;
@@ -925,7 +933,7 @@
             if (nodeview is VNode_Variable n_vare)
             {
                 // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"变量属性 - {n_vare.VariableData.varguid}");
+                InspectorViewAction_SetTitle($"变量属性 - {n_vare.VariableData.guid}");
 
                 // 显示当前选中的节点的类型信息
                 InspectorViewAction_SetNodeInfo("...", "...");
@@ -966,7 +974,7 @@
                 if (nodeviews[0] is VNode_Variable n_vare)
                 {
                     // 加载 Inspector 面板标题文字
-                    InspectorViewAction_SetTitle($"节点属性 - {n_vare.VariableData.varguid}");
+                    InspectorViewAction_SetTitle($"节点属性 - {n_vare.VariableData.guid}");
                     // 显示当前选中的节点的类型信息
                     InspectorViewAction_SetNodeInfo("", "");
                     Debug.Log("选中了变量节点");
@@ -1388,6 +1396,13 @@
         #endregion
 
         #region 工具栏按钮逻辑
+        /// <summary>
+        /// 重载节点逻辑
+        /// </summary>
+        private void xw_btn_reload_clicked()
+        {
+            RestructureGraphViews();
+        }
         /// <summary>
         /// 清空按钮逻辑
         /// </summary>
@@ -1907,13 +1922,13 @@
         /// </summary>
         private void OnUndoRedoPerformed()
         {
-            RestuctureGraphViews();
+            RestructureGraphViews();
         }
 
         /// <summary>
         /// 重建GraphView相关的的所有设置和节点以及内容
         /// </summary>
-        public void RestuctureGraphViews()
+        public void RestructureGraphViews()
         {
             if (CloneTree == null || xw_graphView == null) return;
 
@@ -2041,14 +2056,14 @@
         public void xw_BlackBoard_UpdateTitleInfo()
         {
             xw_BlackBoardView.label_title.text = SourceTree.name;
-            xw_BlackBoardView.label_sub.text = $"行为：{CloneTree.Actions.Count}  /  便签：{CloneTree.Sticks.Count}  /  贴图：{CloneTree.Decals.Count}  /  变量：{CloneTree.VariableItems.Count}";
+            xw_BlackBoardView.label_sub.text = $"行为：{CloneTree.Actions.Count}  /  便签：{CloneTree.Sticks.Count}  /  贴图：{CloneTree.Decals.Count}  /  变量：{CloneTree.VariableCategory.Count}";
         }
         /// <summary>
         /// 读取 BlackBoardVariables 属性列表
         /// </summary>
         public void xw_BlackBoard_VariablesRestructure()
         {
-            xw_BlackBoardView.Restructure(CloneTree.VariableItems);
+            xw_BlackBoardView.Restructure(CloneTree.VariableCategory);
         }
         /// <summary>
         /// 设置工具栏前端图标

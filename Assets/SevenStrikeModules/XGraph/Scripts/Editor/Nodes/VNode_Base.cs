@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using Codice.CM.Common.Tree;
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
@@ -141,6 +142,9 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
             DuplicateAction_Add();
+
+            // 更新变量值
+            //RefreshVariableValue();
         }
 
         #region 订阅 Graphview 克隆动作
@@ -333,23 +337,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Top()
         {
-            VisualElement divider = topContainer.Q<VisualElement>("divider");
-            divider.style.borderRightWidth = 0;
-            SeperateIconLabel = new Label("");
-            SeperateIconLabel.AddToClassList("Seperate_Icon");
-            CheckExecutionModel();
 
-            #region 应用配置文件的颜色到节点的标识颜色
-            graphView.ThemesList.Node.ForEach(colorData =>
-            {
-                if (colorData.solution == ActionData.themeSolution)
-                {
-                    SeperateIconLabel.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
-                }
-            });
-            #endregion
-
-            divider.Add(SeperateIconLabel);
         }
 
         /// <summary>
@@ -407,14 +395,31 @@ namespace SevenStrikeModules.XGraph
             textelement.AddToClassList("Title_TextElement");
 
             // 节点折叠 / 展开按钮
-            VisualElement element = titleContainer.Q<VisualElement>("title-button-container");
+            VisualElement titlebuttoncontainer = titleContainer.Q<VisualElement>("title-button-container");
+
+            titlebuttoncontainer.style.borderRightWidth = 0;
+            SeperateIconLabel = new Label("");
+            SeperateIconLabel.AddToClassList("Seperate_Icon");
+            CheckExecutionModel();
+
+            #region 应用配置文件的颜色到节点的标识颜色
+            graphView.ThemesList.Node.ForEach(colorData =>
+            {
+                if (colorData.solution == ActionData.themeSolution)
+                {
+                    SeperateIconLabel.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
+                }
+            });
+            #endregion
+
+            titlebuttoncontainer.Add(SeperateIconLabel);
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
             AppendElement(GraphNodeContainerType.TitleContainer, NodeTitleIconLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, TitleInputField);
             AppendElement(GraphNodeContainerType.TitleContainer, TitleLabel);
-            AppendElement(GraphNodeContainerType.TitleContainer, element);
+            AppendElement(GraphNodeContainerType.TitleContainer, titlebuttoncontainer);
         }
 
         /// <summary>
@@ -781,6 +786,24 @@ namespace SevenStrikeModules.XGraph
             nodeport.Port.Q<VisualElement>(className: "port").AddToClassList(type == PortStyleType.In ? "Port_In" : "Port_Out");
             nodeport.Port.Q<Label>().AddToClassList(type == PortStyleType.In ? "PortText_In" : "PortText_Out");
         }
+        /// <summary>
+        /// 从输入端口获取特定的类型
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Port GetVariablePort(Type type, string portName)
+        {
+            Port port = null;
+            foreach (var item in Port_Inputs)
+            {
+                if (item.Type == type && item.Port.portName == portName)
+                {
+                    port = item.Port;
+                }
+            }
+
+            return port;
+        }
         #endregion
 
         #region 弹出物体选择面板
@@ -844,6 +867,52 @@ namespace SevenStrikeModules.XGraph
             if (SetTextureMode == "AvatarSet")
                 NodeAvatar_Set(selectedTexture);
         }
+
+        /// <summary>
+        /// 根据VraiableCategory的变量列表源来更新在Actions列表 & Variables列表中所有用到这些变量的值
+        /// </summary>
+        internal void RefreshVariableValue()
+        {
+            // 遍历VariableDatas，为每一项数据重新匹配到ActionTreeAsset.VariableCategory中对应的变量项
+            foreach (var v in graphView.ActionTreeAsset.VariableCategory)
+            {
+                foreach (var item in ActionData.VariableDatas)
+                {
+                    if (item.variable.guid == v.guid)
+                    {
+                        switch (item.variable.type)
+                        {
+                            case VariableType.String:
+                                item.variable.SetValue<string>(v.GetValue<string>());
+                                break;
+                            case VariableType.Float:
+                                item.variable.SetValue<float>(v.GetValue<float>());
+                                break;
+                            case VariableType.Int:
+                                item.variable.SetValue<int>(v.GetValue<int>());
+                                break;
+                            case VariableType.Bool:
+                                item.variable.SetValue<bool>(v.GetValue<bool>());
+                                break;
+                            case VariableType.Vector2:
+                                item.variable.SetValue<Vector2>(v.GetValue<Vector2>());
+                                break;
+                            case VariableType.Vector3:
+                                item.variable.SetValue<Vector3>(v.GetValue<Vector3>());
+                                break;
+                            case VariableType.Vector4:
+                                item.variable.SetValue<Vector4>(v.GetValue<Vector4>());
+                                break;
+                            case VariableType.Color:
+                                item.variable.SetValue<Color>(v.GetValue<Color>());
+                                break;
+                        }
+                    }
+                }
+            }
+        }
         #endregion
+
+
     }
 }

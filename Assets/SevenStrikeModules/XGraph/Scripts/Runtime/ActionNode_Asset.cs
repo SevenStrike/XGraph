@@ -493,7 +493,25 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
-    #region 黑板变量
+    [Serializable]
+    public class VarialbleGuidConnector
+    {
+        [SerializeField] public string VariableNodeGuid;
+        [SerializeField] public string TargetPortName;
+        [SerializeReference] public Variable variable;
+
+
+        public VarialbleGuidConnector() { }
+
+        public VarialbleGuidConnector(string guid, string name, Variable variable)
+        {
+            this.VariableNodeGuid = guid;
+            this.TargetPortName = name;
+            this.variable = variable.Clone(false);
+        }
+    }
+
+    #region 变量
     /// <summary>
     /// 黑板变量值类型
     /// </summary>
@@ -1258,7 +1276,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量列表
         /// </summary>
-        [SerializeReference] public List<Variable> VariableItems = new List<Variable>();
+        [SerializeReference] public List<Variable> VariableCategory = new List<Variable>();
 
         /// <summary>
         /// 刷新
@@ -1461,11 +1479,11 @@ namespace SevenStrikeModules.XGraph
                 Variables.Add(vare.Clone(false));
             }
 
-            // 覆盖原有的 VariableItems 数据列表
-            VariableItems = new List<Variable>();
-            foreach (var vare in root.VariableItems)
+            // 覆盖原有的 VariableCategory 数据列表
+            VariableCategory = new List<Variable>();
+            foreach (var vare in root.VariableCategory)
             {
-                VariableItems.Add(vare.Clone(false));
+                VariableCategory.Add(vare.Clone(false));
             }
 
             // 创建新节点副本并添加到原始资源中
@@ -1514,6 +1532,12 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
+
+            // 更新所有使用到的变量值（当前资源 - 更新）
+            RefreshVariableValues();
+
+            // 更新所有使用到的变量值（目标资源 - 更新）
+            root.RefreshVariableValues();
 
             AssetDatabase.SaveAssetIfDirty(this);
             AssetDatabase.SaveAssetIfDirty(root);
@@ -1571,12 +1595,12 @@ namespace SevenStrikeModules.XGraph
 #endif
             }
 
-            // 实例化新的 VariableItems 列表，并从原始资源复制项
-            newRoot.VariableItems = new List<Variable>();
-            foreach (var bbv in VariableItems)
+            // 实例化新的 VariableCategory 列表，并从原始资源复制项
+            newRoot.VariableCategory = new List<Variable>();
+            foreach (var bbv in VariableCategory)
             {
 #if UNITY_EDITOR
-                newRoot.VariableItems.Add(bbv.Clone(false));
+                newRoot.VariableCategory.Add(bbv.Clone(false));
 #endif
             }
 
@@ -1661,6 +1685,9 @@ namespace SevenStrikeModules.XGraph
                 }
             }
             SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
+
+            // 更新所有使用的变量值
+            newRoot.RefreshVariableValues();
 
             AssetDatabase.SaveAssetIfDirty(newRoot);
 
@@ -2030,7 +2057,7 @@ namespace SevenStrikeModules.XGraph
         public Variable Variable_GetVarSource(string varguid)
         {
             Variable vare = null;
-            VariableItems.ForEach((n) =>
+            VariableCategory.ForEach((n) =>
             {
                 if (varguid == n.guid)
                 {
@@ -2039,6 +2066,102 @@ namespace SevenStrikeModules.XGraph
             });
 
             return vare;
+        }
+        /// <summary>
+        /// 设置变量值
+        /// </summary>
+        public void Variable_SetValue<T>(string name, T value)
+        {
+            foreach (var item in VariableCategory)
+            {
+                if (name == item.name)
+                {
+                    item.SetValue<T>(value);
+                }
+            }
+
+            RefreshVariableValues();
+        }
+        /// <summary>
+        /// 根据VraiableCategory的变量列表源来更新在Actions列表 & Variables列表中所有用到这些变量的值
+        /// </summary>
+        public void RefreshVariableValues()
+        {
+            foreach (var variable in VariableCategory)
+            {
+                // 更新变量节点的值
+                foreach (var vare in Variables)
+                {
+                    if (vare.varguid == variable.guid)
+                    {
+                        switch (vare.variable.type)
+                        {
+                            case VariableType.String:
+                                vare.variable.SetValue<string>(variable.GetValue<string>());
+                                break;
+                            case VariableType.Float:
+                                vare.variable.SetValue<float>(variable.GetValue<float>());
+                                break;
+                            case VariableType.Int:
+                                vare.variable.SetValue<int>(variable.GetValue<int>());
+                                break;
+                            case VariableType.Bool:
+                                vare.variable.SetValue<bool>(variable.GetValue<bool>());
+                                break;
+                            case VariableType.Vector2:
+                                vare.variable.SetValue<Vector2>(variable.GetValue<Vector2>());
+                                break;
+                            case VariableType.Vector3:
+                                vare.variable.SetValue<Vector3>(variable.GetValue<Vector3>());
+                                break;
+                            case VariableType.Vector4:
+                                vare.variable.SetValue<Vector4>(variable.GetValue<Vector4>());
+                                break;
+                            case VariableType.Color:
+                                vare.variable.SetValue<Color>(variable.GetValue<Color>());
+                                break;
+                        }
+                    }
+                }
+
+                // 更新行为节点连接变量节点的端口值
+                foreach (var act in Actions)
+                {
+                    foreach (var data in act.VariableDatas)
+                    {
+                        if (data.variable.guid == variable.guid)
+                        {
+                            switch (data.variable.type)
+                            {
+                                case VariableType.String:
+                                    data.variable.SetValue<string>(variable.GetValue<string>());
+                                    break;
+                                case VariableType.Float:
+                                    data.variable.SetValue<float>(variable.GetValue<float>());
+                                    break;
+                                case VariableType.Int:
+                                    data.variable.SetValue<int>(variable.GetValue<int>());
+                                    break;
+                                case VariableType.Bool:
+                                    data.variable.SetValue<bool>(variable.GetValue<bool>());
+                                    break;
+                                case VariableType.Vector2:
+                                    data.variable.SetValue<Vector2>(variable.GetValue<Vector2>());
+                                    break;
+                                case VariableType.Vector3:
+                                    data.variable.SetValue<Vector3>(variable.GetValue<Vector3>());
+                                    break;
+                                case VariableType.Vector4:
+                                    data.variable.SetValue<Vector4>(variable.GetValue<Vector4>());
+                                    break;
+                                case VariableType.Color:
+                                    data.variable.SetValue<Color>(variable.GetValue<Color>());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
         }
         #endregion
 
@@ -2056,7 +2179,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeGroup_Clear()
         {
-            VariableItems.Clear();
+            VariableCategory.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif

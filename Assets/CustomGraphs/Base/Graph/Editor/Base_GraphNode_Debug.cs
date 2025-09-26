@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -15,9 +16,16 @@ namespace SevenStrikeModules.XGraph
             // 加入行为端口
             port_in.Add(new xGraph_NodePort("in", typeof(ActionNode_Base), Port.Capacity.Single));
             // 加入变量端口
-            port_in.Add(new xGraph_NodePort("var", typeof(Variable_String), Port.Capacity.Single));
+            port_in.Add(new xGraph_NodePort("string-s", typeof(Variable_String), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("string-t", typeof(Variable_String), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("bool", typeof(Variable_Bool), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("color", typeof(Variable_Color), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("float", typeof(Variable_Float), Port.Capacity.Single));
             InputPort_Set(port_in);
-
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
             // 加入行为端口

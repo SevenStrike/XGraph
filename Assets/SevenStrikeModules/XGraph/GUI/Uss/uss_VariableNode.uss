@@ -1,6 +1,6 @@
 .unity-text-element.Title_Label
 {
-     font-size: 12px;
+     font-size: 13px;
      height: 20px;
      width: auto;
      -unity-font-style: normal;
@@ -62,7 +62,7 @@
 
 #node-border
 {
-     background-color: rgba(40, 40, 40, 1);
+     background-color: rgba(35, 35, 35, 1);
      border-top-left-radius: 16px;
      border-top-right-radius: 16px;
      border-bottom-right-radius: 16px;

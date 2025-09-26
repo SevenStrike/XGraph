@@ -48,7 +48,7 @@
      flex-direction: row;
      flex-shrink: 0;
      align-items: center;
-     background-color: rgb(40, 40, 40);
+     background-color: rgb(35, 35, 35);
      height: 26px;
 }
 

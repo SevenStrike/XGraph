@@ -1,9 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEngine;
 
     public partial class xg_GraphView
     {
@@ -20,6 +20,9 @@ namespace SevenStrikeModules.XGraph
 
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            // 更新所有使用到的变量值
+            ActionTreeAsset.RefreshVariableValues();
 
             return graphViewChange;
         }
@@ -49,20 +52,34 @@ namespace SevenStrikeModules.XGraph
         /// <param name="edge"></param>
         private void CreateEdge(Node n_parent, Node n_child, Edge edge)
         {
-            VNode_Base vbs_parent = n_parent as VNode_Base;
-            VNode_Base vbs_child = n_child as VNode_Base;
-
-            if (vbs_parent != null && vbs_child != null)
+            #region 特化处理行为节点
+            VNode_Base node_parent = n_parent as VNode_Base;
+            VNode_Base node_child = n_child as VNode_Base;
+            if (node_parent != null && node_child != null)
             {
                 // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
-                ActionTreeAsset.ChildNode_Add(vbs_parent.ActionData, vbs_child.ActionData);
+                ActionTreeAsset.ChildNode_Add(node_parent.ActionData, node_child.ActionData);
             }
+            #endregion
 
-            VNode_Relay relay_child = edge.input.node as VNode_Relay;
-            if (relay_child != null)
+            #region 特化处理变量节点
+            VNode_Variable node_var = n_parent as VNode_Variable;
+            if (node_var != null && node_child != null)
             {
-                relay_child.Connected();
+                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
+                string portName = edge.input.portName;
+                node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
             }
+            #endregion
+
+            #region 特化处理延展节点
+            VNode_Relay node_relay = edge.input.node as VNode_Relay;
+            if (node_relay != null)
+            {
+                node_relay.Connected();
+            }
+            #endregion
+
         }
         #endregion
 
@@ -128,18 +145,35 @@ namespace SevenStrikeModules.XGraph
                 VNode_Base node_parent = edge.output.node as VNode_Base;
                 VNode_Base node_child = edge.input.node as VNode_Base;
 
-                // 连线的起点是 v-Base 终点是 v-Base
+                // 连线的起点是 v-Action 终点是 v-Action
                 if (node_parent != null && node_child != null)
                 {
                     // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
                     ActionTreeAsset.ChildNode_Remove(node_parent.ActionData, node_child.ActionData);
                 }
 
+                // 连线的起点是 v-Action 终点是 v-Relay
                 VNode_Relay relay_child = edge.input.node as VNode_Relay;
                 if (relay_child != null)
                 {
                     Undo.RecordObject(relay_child.ActionData, "Remove RelayConnector");
                     relay_child.Disconnected();
+                }
+
+                // 连线的起点是 v-Variable 终点是 带有Variable端口的v-Action
+                VNode_Variable node_var = edge.output.node as VNode_Variable;
+                if (node_var != null)
+                {
+                    string portName = edge.input.portName;
+                    // 获取变量节点的变量类型
+                    Type type = node_var.VariableData.variable.GetType();
+                    // 拿到行为节点上的对应的变量类型的端口
+                    Port port = node_child.GetVariablePort(type, portName);
+                    // 断开端口与连线的连接
+                    port.Disconnect(edge);
+
+                    // 将变量节点数据从行为节点解绑（就是从列中移除对应的变量数据项）
+                    node_child.ActionData.VariableData_Unbind(node_var.VariableData.guid, portName);
                 }
             }
         }

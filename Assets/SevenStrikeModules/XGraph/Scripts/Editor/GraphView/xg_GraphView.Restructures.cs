@@ -1,5 +1,8 @@
+using UnityEngine.UIElements;
+
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
@@ -24,7 +27,7 @@ namespace SevenStrikeModules.XGraph
 
             graphViewChanged += OnGraphViewChanged;
 
-            // 根据根节点的数据列表  -  重建 Nodes
+            // 根据根节点的数据列表  -  重建 行为节点
             ActionTreeAsset.Actions.ForEach(data =>
             {
                 if (data.actionNodeType == "Relay")
@@ -46,11 +49,12 @@ namespace SevenStrikeModules.XGraph
                 }
             });
 
-            // 根据行为树根节点的数据列表  -  重建 Edges
+            // 根据行为树根节点的数据列表  -  重建 行为连线
             ActionTreeAsset.Actions.ForEach(d =>
             {
                 // 获取的目标数据节点的子数据节点
                 var children = ActionTreeAsset.GetChildrenNodes(d);
+
                 // c 为每一个子数据节点
                 children.ForEach(c =>
                 {
@@ -62,10 +66,11 @@ namespace SevenStrikeModules.XGraph
                         Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                         AddElement(edge);
                     });
+
                 });
             });
 
-            // 根据行为树根节点的数据列表  -  检查 所有Relay的连线状态
+            // 根据行为树根节点的数据列表  -  检查并重建 行为延展
             ActionTreeAsset.Actions.ForEach(d =>
             {
                 // 获取延展节点
@@ -77,20 +82,25 @@ namespace SevenStrikeModules.XGraph
                 }
             });
 
-            // 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
+            // 根据行为树根节点里的  -便签-  列表数据来重建GraphView的视觉  -便签-  节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
 
-            // 根据行为树根节点里的标签列表数据来重建GraphView的视觉标签节点
+            // 根据行为树根节点里的  -标签-  列表数据来重建GraphView的视觉  -标签-  节点
             Restructure_Labels(ActionTreeAsset.Labels);
 
-            // 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
+            // 根据行为树根节点里的  -贴图-  列表数据来重建GraphView的视觉  -贴图-  节点
             Restructure_Decals(ActionTreeAsset.Decals);
 
-            // 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
+            // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
             Restructure_Variable(ActionTreeAsset.Variables);
 
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
+
+            // 根据行为树根节点里的  -行为-  列表数据中的每一个行为数据中Variable是否为空来重建变量与其的连线
+            Restructure_VariableConnector();
+
+            ActionTreeAsset.RefreshVariableValues();
 
             #region 编辑器主面板UI逻辑
 
@@ -252,6 +262,39 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 根据行为树根节点容器里的所有子资源是否包含VariableGuid的变量节点的条件来重建变量节点与其的连线
+        /// </summary>
+        public void Restructure_VariableConnector()
+        {
+            // 根据行为树根节点的数据列表  -  重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
+            ActionTreeAsset.Actions.ForEach(actiondata =>
+            {
+                if (actiondata.VariableDatas != null && actiondata.VariableDatas.Count > 0)
+                {
+                    // 父节点
+                    VNode_Base n_parent = FindNodeView(actiondata.guid);
+
+                    foreach (var item in actiondata.VariableDatas)
+                    {
+                        // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
+                        VNode_Variable n_var = FindNode(item.VariableNodeGuid) as VNode_Variable;
+                        // 获取变量节点的变量类型
+                        Type type = n_var.VariableData.variable.GetType();
+
+                        // 父节点存在的变量端口
+                        Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
+
+                        if (n_var != null && port_parent != null)
+                        {
+                            Edge edge = n_var.OutputPort.Port.ConnectTo(port_parent);
+                            AddElement(edge);
+                        }
+                    }
+                }
+            });
         }
     }
 }

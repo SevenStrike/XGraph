@@ -436,7 +436,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node FindNode(string guid)
         {
-            return GetNodeByGuid(guid) as Node;
+            return GetNodeByGuid(guid);
         }
         #endregion
 

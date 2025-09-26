@@ -52,12 +52,14 @@ namespace SevenStrikeModules.XGraph
             gra.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}GraphViewViggnet.png");
             Add(gra);
 
-            TipLabel = new Label("请先创建节点");
+            TipLabel = new Label();
+            TipLabel.enableRichText = true;
+            TipLabel.text = $"按下空格以创建节点\n<size=20>Pressed Space Key</size>";
             TipLabel.style.alignSelf = new StyleEnum<Align>(Align.Center);
             TipLabel.style.width = new StyleLength(StyleKeyword.Auto);
             TipLabel.style.flexGrow = 1;
             TipLabel.style.unityTextAlign = new StyleEnum<TextAnchor>(TextAnchor.MiddleCenter);
-            TipLabel.style.fontSize = 25;
+            TipLabel.style.fontSize = 40;
             TipLabel.style.unityFont = new StyleFont(util_XGraphEditorUtility.AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
             TipLabel.style.unityFontDefinition = new StyleFontDefinition(util_XGraphEditorUtility.AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
             TipLabel.style.opacity = 0.12f;

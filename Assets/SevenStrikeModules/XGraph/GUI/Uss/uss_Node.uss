@@ -39,7 +39,7 @@
      top: 6px;
      left: 22px;
      -unity-text-align: middle-left;
-     margin-right: 15px;
+     margin-right: 50px;
      flex-grow: 1;
 }
 
@@ -92,8 +92,8 @@
 
 .Seperate_Icon
 {
-     left: -9px;
-     top: -2px;
+     right: 10px;
+     top: 8px;
      height: 18px;
      width: 18px;
      -unity-text-align: middle-center;
@@ -190,4 +190,9 @@
 .ExtensionContainer
 {
      background-color: rgba(31, 31, 31, 0.95);
+}
+
+#collapse-button
+{
+     display: none;
 }
