@@ -2066,14 +2066,14 @@
         public void xw_BlackBoard_UpdateTitleInfo()
         {
             xw_BlackBoardView.label_title.text = SourceTree.name;
-            xw_BlackBoardView.label_sub.text = $"行为：{CloneTree.Actions.Count}  /  便签：{CloneTree.Sticks.Count}  /  贴图：{CloneTree.Decals.Count}  /  变量：{CloneTree.VariableCategory.Count}";
+            xw_BlackBoardView.label_sub.text = $"行为：{CloneTree.Actions.Count}  /  便签：{CloneTree.Sticks.Count}  /  贴图：{CloneTree.Decals.Count}  /  变量：{CloneTree.BlackboardVariable.Count}";
         }
         /// <summary>
         /// 读取 BlackBoardVariables 属性列表
         /// </summary>
         public void xw_BlackBoard_VariablesRestructure()
         {
-            xw_BlackBoardView.Restructure(CloneTree.VariableCategory);
+            xw_BlackBoardView.Restructure(CloneTree.BlackboardVariable);
         }
         /// <summary>
         /// 设置工具栏前端图标

@@ -104,7 +104,7 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.OptionsPanel_ToggleChange_WithoutNotify(false);
             }
 
-            // 清空 VariableCategory 选中状态
+            // 清空 BlackboardVariable 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
         }
         /// <summary>

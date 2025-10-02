@@ -452,7 +452,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void RefreshVariableValue()
         {
-            foreach (var v in graphView.ActionTreeAsset.VariableCategory)
+            foreach (var v in graphView.ActionTreeAsset.BlackboardVariable)
             {
                 if (VariableData.variable.guid == v.guid)
                 {

@@ -289,7 +289,7 @@ namespace SevenStrikeModules.XGraph
         private void BindData(VisualElement element, int index)
         {
             // 获取黑板变量数据
-            var variable = graphWindow.CloneTree.VariableCategory[index];
+            var variable = graphWindow.CloneTree.BlackboardVariable[index];
 
             #region 获取变量项的UI元素
             // 变量名称容器
@@ -672,7 +672,7 @@ namespace SevenStrikeModules.XGraph
             return node_color;
         }
         /// <summary>
-        /// 同步目标 VariableCategory 的属性到 Variable 列表中匹配项并将匹配的目标 Variable 节点的显示更新
+        /// 同步目标 BlackboardVariable 的属性到 Variable 列表中匹配项并将匹配的目标 Variable 节点的显示更新
         /// </summary>
         /// <param name="variable"></param>
         private void SyncVariableNodeDatas(Variable variable)

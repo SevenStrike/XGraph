@@ -877,7 +877,7 @@ namespace SevenStrikeModules.XGraph
         internal void RefreshVariableValue()
         {
             // 遍历VariableDatas，为每一项数据重新匹配到ActionTreeAsset.VariableCategory中对应的变量项
-            foreach (var v in graphView.ActionTreeAsset.VariableCategory)
+            foreach (var v in graphView.ActionTreeAsset.BlackboardVariable)
             {
                 foreach (var item in ActionData.VariableDatas)
                 {

@@ -1305,7 +1305,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量列表
         /// </summary>
-        [SerializeReference] public List<Variable> VariableCategory = new List<Variable>();
+        [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
 
         /// <summary>
         /// 刷新
@@ -1516,11 +1516,11 @@ namespace SevenStrikeModules.XGraph
                 Variables.Add(vare.Clone(false));
             }
 
-            // 覆盖原有的 VariableCategory 数据列表
-            VariableCategory = new List<Variable>();
-            foreach (var vare in root.VariableCategory)
+            // 覆盖原有的 BlackboardVariable 数据列表
+            BlackboardVariable = new List<Variable>();
+            foreach (var vare in root.BlackboardVariable)
             {
-                VariableCategory.Add(vare.Clone(false));
+                BlackboardVariable.Add(vare.Clone(false));
             }
 
             // 创建新节点副本并添加到原始资源中
@@ -1625,12 +1625,12 @@ namespace SevenStrikeModules.XGraph
 #endif
             }
 
-            // 实例化新的 VariableCategory 列表，并从原始资源复制项
-            newRoot.VariableCategory = new List<Variable>();
-            foreach (var bbv in VariableCategory)
+            // 实例化新的 BlackboardVariable 列表，并从原始资源复制项
+            newRoot.BlackboardVariable = new List<Variable>();
+            foreach (var bbv in BlackboardVariable)
             {
 #if UNITY_EDITOR
-                newRoot.VariableCategory.Add(bbv.Clone(false));
+                newRoot.BlackboardVariable.Add(bbv.Clone(false));
 #endif
             }
 
@@ -2104,7 +2104,7 @@ namespace SevenStrikeModules.XGraph
         public Variable Variable_GetVarSource(string varguid)
         {
             Variable vare = null;
-            VariableCategory.ForEach((n) =>
+            BlackboardVariable.ForEach((n) =>
             {
                 if (varguid == n.guid)
                 {
@@ -2119,7 +2119,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void Variable_SetValue<T>(string name, T value)
         {
-            foreach (var item in VariableCategory)
+            foreach (var item in BlackboardVariable)
             {
                 if (name == item.name)
                 {
@@ -2138,7 +2138,7 @@ namespace SevenStrikeModules.XGraph
             // 更新 “黑板变量数据列表”的变量信息
             foreach (var vare in Variables)
             {
-                foreach (var variable in VariableCategory)
+                foreach (var variable in BlackboardVariable)
                 {
                     // 匹配黑板变量
                     if (vare.varguid == variable.guid)
@@ -2182,7 +2182,7 @@ namespace SevenStrikeModules.XGraph
             {
                 foreach (var data in action.VariableDatas)
                 {
-                    foreach (var variable in VariableCategory)
+                    foreach (var variable in BlackboardVariable)
                     {
                         // 匹配黑板变量
                         if (data.variable.guid == variable.guid)
@@ -2285,7 +2285,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeGroup_Clear()
         {
-            VariableCategory.Clear();
+            BlackboardVariable.Clear();
 #if UNITY_EDITOR
             //AssetDatabase.SaveAssets();
 #endif
