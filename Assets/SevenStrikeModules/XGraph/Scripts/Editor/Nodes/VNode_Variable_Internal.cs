@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -34,6 +35,7 @@ namespace SevenStrikeModules.XGraph
         /// 开关点击器
         /// </summary>
         public VisualElement tog_clicker;
+        public VisualElement controller;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -151,10 +153,10 @@ namespace SevenStrikeModules.XGraph
             //base.Draw_Extension();
 
             // 创建控件
-            VisualElement element = CreateField();
+            controller = CreateField();
 
-            if (element != null)
-                AppendElement(GraphNodeContainerType.ExtensionContainer, element);
+            if (controller != null)
+                AppendElement(GraphNodeContainerType.ExtensionContainer, controller);
         }
 
         /// <summary>
@@ -169,6 +171,7 @@ namespace SevenStrikeModules.XGraph
             {
                 case VariableType.String:
                     TextField f_string = new TextField();
+                    f_string.name = "Field_String";
                     f_string.multiline = true;
                     f_string.value = VariableData.variable.GetValue<string>();
                     f_string.RegisterCallback<BlurEvent>(VariableDataChanged_String);
@@ -178,6 +181,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Float:
                     FloatField f_float = new FloatField();
+                    f_float.name = "Field_Float";
                     f_float.value = VariableData.variable.GetValue<float>();
                     f_float.RegisterCallback<BlurEvent>(VariableDataChanged_Float);
                     TextElement float_ele = f_float.Q<TextElement>();
@@ -188,6 +192,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Int:
                     IntegerField f_int = new IntegerField();
+                    f_int.name = "Field_Int";
                     f_int.value = VariableData.variable.GetValue<int>();
                     f_int.RegisterCallback<BlurEvent>(VariableDataChanged_Int);
                     TextElement int_ele = f_int.Q<TextElement>();
@@ -200,6 +205,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Vector2:
                     Vector2Field f_vec2 = new Vector2Field();
+                    f_vec2.name = "Field_Vector2";
                     f_vec2.value = VariableData.variable.GetValue<Vector2>();
                     f_vec2.RegisterCallback<BlurEvent>(VariableDataChanged_Vector2);
 
@@ -217,6 +223,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Vector3:
                     Vector3Field f_vec3 = new Vector3Field();
+                    f_vec3.name = "Field_Vector3";
                     f_vec3.AddToClassList("value_field_vector3");
                     f_vec3.value = VariableData.variable.GetValue<Vector3>();
                     f_vec3.RegisterCallback<BlurEvent>(VariableDataChanged_Vector3);
@@ -239,6 +246,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Vector4:
                     Vector4Field f_vec4 = new Vector4Field();
+                    f_vec4.name = "Field_Vector4";
                     f_vec4.AddToClassList("value_field_vector4");
                     f_vec4.value = VariableData.variable.GetValue<Vector4>();
                     f_vec4.RegisterCallback<BlurEvent>(VariableDataChanged_Vector4);
@@ -265,6 +273,7 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case VariableType.Color:
                     ColorField f_color = new ColorField();
+                    f_color.name = "Field_Color";
                     f_color.AddToClassList("value_field");
                     f_color.value = VariableData.variable.GetValue<Color>();
                     f_color.RegisterValueChangedCallback(VariableDataChanged_Color);
@@ -287,7 +296,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 开关打开
         /// </summary>
-        private void Toggle_On()
+        public void Toggle_On()
         {
             util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
             tog_handleRoot.style.left = 15;
@@ -296,7 +305,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 开关关闭
         /// </summary>
-        private void Toggle_Off()
+        public void Toggle_Off()
         {
             util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, Color.gray);
             tog_handleRoot.style.left = -11;
@@ -306,7 +315,7 @@ namespace SevenStrikeModules.XGraph
         /// 检查开关
         /// </summary>
         /// <param name="state"></param>
-        private void Toggle_Check(bool state)
+        public void Toggle_Check(bool state)
         {
             if (state)
             {
@@ -327,8 +336,16 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_String(BlurEvent evt)
         {
             TextField field = evt.target as TextField;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<string>();
+                return;
+            }
+
             Undo.RecordObject(VariableData, "Change NodeData String Variable");
             VariableData.variable.SetValue<string>(field.text);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Float 类型的变量节点内容改变时
@@ -337,8 +354,15 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Float(BlurEvent evt)
         {
             FloatField field = evt.target as FloatField;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<float>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Float Variable");
             VariableData.variable.SetValue<float>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Int 类型的变量节点内容改变时
@@ -347,8 +371,15 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Int(BlurEvent evt)
         {
             IntegerField field = evt.target as IntegerField;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<int>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Int Variable");
             VariableData.variable.SetValue<int>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Vector2 类型的变量节点内容改变时
@@ -357,8 +388,15 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector2(BlurEvent evt)
         {
             Vector2Field field = evt.target as Vector2Field;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector2>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
             VariableData.variable.SetValue<Vector2>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Vector3 类型的变量节点内容改变时
@@ -367,8 +405,15 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector3(BlurEvent evt)
         {
             Vector3Field field = evt.target as Vector3Field;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector3>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
             VariableData.variable.SetValue<Vector3>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Vector4 类型的变量节点内容改变时
@@ -377,8 +422,15 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector4(BlurEvent evt)
         {
             Vector4Field field = evt.target as Vector4Field;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector4>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
             VariableData.variable.SetValue<Vector4>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
         }
         /// <summary>
         /// 当 Color 类型的变量节点内容改变时
@@ -387,8 +439,25 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Color(ChangeEvent<Color> evt)
         {
             ColorField field = evt.target as ColorField;
+            if (VariableData.VariableDatas.Count > 0)
+            {
+                field.value = VariableData.VariableDatas.First().variable.GetValue<Color>();
+                return;
+            }
             Undo.RecordObject(VariableData, "Change NodeData Color Variable");
             VariableData.variable.SetValue<Color>(field.value);
+            // 更新变量值数据
+            RefreshVariables();
+        }
+        #endregion
+
+        #region 辅助
+        /// <summary>
+        /// 更新变量赋值数据
+        /// </summary>
+        private void RefreshVariables()
+        {
+            graphView.ActionTreeAsset.Variables_Refresh();
         }
         #endregion
 
@@ -432,14 +501,19 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void ToggleClicker(PointerDownEvent evt)
         {
+            if (VariableData.VariableDatas.Count > 0)
+                return;
+
             Undo.RecordObject(VariableData, "Changed Toggle State");
 
             bool sw = VariableData.variable.GetValue<bool>();
             sw = !sw;
             VariableData.variable.SetValue<bool>(sw);
             Toggle_Check(sw);
+
+            // 更新变量值数据
+            RefreshVariables();
         }
         #endregion
-
     }
 }

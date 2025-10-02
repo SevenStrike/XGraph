@@ -252,7 +252,10 @@ namespace SevenStrikeModules.XGraph
             args.transparentNode = false;
             args.variable = variable;
 
-            graphWindow.xw_graphView.AddToSelection(graphWindow.xw_graphView.CreateNode(args));
+            // 添加但不选中
+            graphWindow.xw_graphView.CreateNode(args);
+            // 添加并选中
+            //graphWindow.xw_graphView.AddToSelection(graphWindow.xw_graphView.CreateNode(args));
             #endregion
 
             return index;
@@ -354,6 +357,9 @@ namespace SevenStrikeModules.XGraph
 
                 x_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
                 var_textfield_name.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+                // 更新变量赋值数据
+                graphWindow.xw_graphView.ActionTreeAsset.Variables_Refresh();
             });
             #endregion
 
@@ -399,6 +405,9 @@ namespace SevenStrikeModules.XGraph
                 var_textfield_des.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
                 SyncVariableNodeDatas(variable);
+
+                // 更新变量赋值数据
+                graphWindow.xw_graphView.ActionTreeAsset.Variables_Refresh();
             });
             #endregion
 

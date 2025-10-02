@@ -7,6 +7,7 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.UIElements;
     using UnityEngine;
 
     public partial class xg_GraphView
@@ -97,10 +98,14 @@ namespace SevenStrikeModules.XGraph
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
 
-            // 根据行为树根节点里的  -行为-  列表数据中的每一个行为数据中Variable是否为空来重建变量与其的连线
-            Restructure_VariableConnector();
+            // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
+            Restructure_VariableConnector(ActionTreeAsset.Actions);
 
-            ActionTreeAsset.RefreshVariableValues();
+            // 根据行为节点里的  -内部变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
+            Restructure_InternalVariableConnector(ActionTreeAsset.Actions);
+
+            // 更新变量值数据
+            ActionTreeAsset.Variables_Refresh();
 
             #region 编辑器主面板UI逻辑
 
@@ -162,10 +167,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
         /// </summary>
-        /// <param name="stickdata"></param>
-        public void Restructure_Sticks(List<ActionStickData> stickdata)
+        /// <param name="datas_stick"></param>
+        public void Restructure_Sticks(List<ActionStickData> datas_stick)
         {
-            stickdata.ForEach(data =>
+            datas_stick.ForEach(data =>
             {
                 Node_MakeStick(data.position, data).Draw();
             });
@@ -174,10 +179,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉标签节点
         /// </summary>
-        /// <param name="labeldata"></param>
-        public void Restructure_Labels(List<ActionLabelData> labeldata)
+        /// <param name="datas_label"></param>
+        public void Restructure_Labels(List<ActionLabelData> datas_label)
         {
-            labeldata.ForEach(data =>
+            datas_label.ForEach(data =>
             {
                 Node_MakeLabel(data.position, data).Draw();
             });
@@ -187,9 +192,9 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
         /// </summary>
         /// <param name="ActionDecalData"></param>
-        public void Restructure_Decals(List<ActionDecalData> decaldata)
+        public void Restructure_Decals(List<ActionDecalData> datas_decal)
         {
-            decaldata.ForEach(data =>
+            datas_decal.ForEach(data =>
             {
                 VNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
                 // 检查头像设置情况
@@ -200,10 +205,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
         /// </summary>
-        /// <param name="vardata"></param>
-        public void Restructure_Variable(List<ActionVariableData> vardata)
+        /// <param name="datas_var"></param>
+        public void Restructure_Variable(List<ActionVariableData> datas_var)
         {
-            vardata.ForEach(data =>
+            datas_var.ForEach(data =>
             {
                 data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
                 VNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
@@ -216,12 +221,12 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉编组
         /// </summary>
-        /// <param name="groupDatas"></param>
-        public void Restructure_Groups(List<ActionGroupData> groupDatas)
+        /// <param name="datas_group"></param>
+        public void Restructure_Groups(List<ActionGroupData> datas_group)
         {
-            if (groupDatas == null || groupDatas.Count == 0) return;
+            if (datas_group == null || datas_group.Count == 0) return;
 
-            foreach (var groupData in groupDatas)
+            foreach (var groupData in datas_group)
             {
                 // 初始化编组
                 Group group = CreateGroup(groupData.name, groupData.pos, groupData);
@@ -265,19 +270,20 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点容器里的所有子资源是否包含VariableGuid的变量节点的条件来重建变量节点与其的连线
+        /// 根据所有行为节点的 “黑板变量数据列表”来重建 “黑板变量节点”与行为节点的连线
         /// </summary>
-        public void Restructure_VariableConnector()
+        /// <param name="datas_action"></param>
+        public void Restructure_VariableConnector(List<ActionNode_Base> datas_action)
         {
             // 根据行为树根节点的数据列表  -  重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
-            ActionTreeAsset.Actions.ForEach(actiondata =>
+            foreach (var action in datas_action)
             {
-                if (actiondata.VariableDatas != null && actiondata.VariableDatas.Count > 0)
+                if (action.VariableDatas != null && action.VariableDatas.Count > 0)
                 {
                     // 父节点
-                    VNode_Base n_parent = FindNodeView(actiondata.guid);
+                    VNode_Base n_parent = FindNodeView(action.guid);
 
-                    foreach (var item in actiondata.VariableDatas)
+                    foreach (var item in action.VariableDatas)
                     {
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
                         VNode_Variable n_var = FindNode(item.VariableNodeGuid) as VNode_Variable;
@@ -294,7 +300,125 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-            });
+            }
+        }
+
+        /// <summary>
+        /// 根据所有行为节点的 “内部变量数据列表”来重建 “内部变量节点”与行为节点的连线
+        /// </summary>
+        /// <param name="datas_action"></param>
+        public void Restructure_InternalVariableConnector(List<ActionNode_Base> datas_action)
+        {
+            foreach (var action in datas_action)
+            {
+                if (action.InternalVariableDatas != null && action.InternalVariableDatas.Count > 0)
+                {
+                    // 父节点
+                    VNode_Base n_parent = FindNodeView(action.guid);
+
+                    foreach (var item in action.InternalVariableDatas)
+                    {
+                        // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
+                        VNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as VNode_Variable_Internal;
+
+                        n_var.VariableData.variable = item.variable.Clone(false);
+                        n_var.VariableData.variable.name = "";
+                        // 根据类型来修改内部变量节点的变量值
+                        switch (item.variable.type)
+                        {
+                            case VariableType.String:
+                                string val_text = item.variable.GetValue<string>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<string>(val_text);
+                                // 修改控件值
+                                if (n_var.controller is TextField field_text)
+                                {
+                                    field_text.value = val_text;
+                                }
+                                break;
+                            case VariableType.Float:
+                                float val_float = item.variable.GetValue<float>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<float>(val_float);
+                                // 修改控件值
+                                if (n_var.controller is FloatField field_float)
+                                {
+                                    field_float.value = val_float;
+                                }
+                                break;
+                            case VariableType.Int:
+                                int val_int = item.variable.GetValue<int>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<int>(val_int);
+                                // 修改控件值
+                                if (n_var.controller is IntegerField field_int)
+                                {
+                                    field_int.value = val_int;
+                                }
+                                break;
+                            case VariableType.Bool:
+                                bool val_bool = item.variable.GetValue<bool>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<bool>(val_bool);
+                                // 修改控件值
+                                n_var.Toggle_Check(val_bool);
+                                break;
+                            case VariableType.Vector2:
+                                Vector2 val_vector2 = item.variable.GetValue<Vector2>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<Vector2>(val_vector2);
+                                // 修改控件值
+                                if (n_var.controller is Vector2Field field_v2)
+                                {
+                                    field_v2.value = val_vector2;
+                                }
+                                break;
+                            case VariableType.Vector3:
+                                Vector3 val_vector3 = item.variable.GetValue<Vector3>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<Vector3>(val_vector3);
+                                // 修改控件值
+                                if (n_var.controller is Vector3Field field_v3)
+                                {
+                                    field_v3.value = val_vector3;
+                                }
+                                break;
+                            case VariableType.Vector4:
+                                Vector4 val_vector4 = item.variable.GetValue<Vector4>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<Vector4>(val_vector4);
+                                // 修改控件值
+                                if (n_var.controller is Vector4Field field_v4)
+                                {
+                                    field_v4.value = val_vector4;
+                                }
+                                break;
+                            case VariableType.Color:
+                                Color val_color = item.variable.GetValue<Color>();
+                                // 修改变量值
+                                n_var.VariableData.variable.SetValue<Color>(val_color);
+                                // 修改控件值
+                                if (n_var.controller is ColorField field_color)
+                                {
+                                    field_color.value = val_color;
+                                }
+                                break;
+                        }
+
+                        // 获取变量节点的变量类型
+                        Type type = n_var.VariableData.variable.GetType();
+
+                        // 父节点存在的变量端口
+                        Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
+
+                        if (n_var != null && port_parent != null)
+                        {
+                            Edge edge = n_var.Port_Outputs.First().Port.ConnectTo(port_parent);
+                            AddElement(edge);
+                        }
+                    }
+                }
+            }
         }
     }
 }

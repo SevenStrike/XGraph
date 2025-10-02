@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection.Emit;
 #if UNITY_EDITOR
     using UnityEditor;
@@ -10,6 +11,7 @@ namespace SevenStrikeModules.XGraph
 #endif
     using UnityEngine;
     using UnityEngine.UIElements;
+    using static UnityEditor.Progress;
     using Object = UnityEngine.Object;
 
     #region 创建节点信息结构体
@@ -500,10 +502,43 @@ namespace SevenStrikeModules.XGraph
         [SerializeField] public string TargetPortName;
         [SerializeReference] public Variable variable;
 
-
         public VarialbleGuidConnector() { }
 
         public VarialbleGuidConnector(string guid, string name, Variable variable)
+        {
+            this.VariableNodeGuid = guid;
+            this.TargetPortName = name;
+            this.variable = variable.Clone(false);
+        }
+    }
+
+    [Serializable]
+    public class VarialbleInternalGuidConnector
+    {
+        [SerializeField] public string VariableNodeGuid;
+        [SerializeField] public string TargetPortName;
+        [SerializeReference] public Variable variable;
+
+        public VarialbleInternalGuidConnector() { }
+
+        public VarialbleInternalGuidConnector(string guid, string name, Variable variable)
+        {
+            this.VariableNodeGuid = guid;
+            this.TargetPortName = name;
+            this.variable = variable.Clone(false);
+        }
+    }
+
+    [Serializable]
+    public class VarialbleInternalConnector
+    {
+        [SerializeField] public string VariableNodeGuid;
+        [SerializeField] public string TargetPortName;
+        [SerializeReference] public Variable variable;
+
+        public VarialbleInternalConnector() { }
+
+        public VarialbleInternalConnector(string guid, string name, Variable variable)
         {
             this.VariableNodeGuid = guid;
             this.TargetPortName = name;
@@ -561,10 +596,6 @@ namespace SevenStrikeModules.XGraph
         public string guid;
         public string description;
         public VariableType type;
-        /// <summary>
-        /// 所有用到变量的节点的guid列表，用于重建节点图连线关系
-        /// </summary>
-        public List<string> guidsconnector = new List<string>();
 
         #region 构造
         /// <summary>
@@ -606,7 +637,6 @@ namespace SevenStrikeModules.XGraph
 #endif
             target.description = description;
             target.type = type;
-            target.guidsconnector = new List<string>(guidsconnector);
         }
         /// <summary>
         /// 克隆字段到目标变量
@@ -620,7 +650,6 @@ namespace SevenStrikeModules.XGraph
 #endif
             vare.description = description;
             vare.type = type;
-            vare.guidsconnector = new List<string>(guidsconnector);
 
             return vare;
         }
@@ -1438,6 +1467,14 @@ namespace SevenStrikeModules.XGraph
             // 清空当前原始资源的所有子节点
             Clear();
 
+            // 更新所有使用到的变量值（当前资源 - 更新）
+            this.Variables_Refresh();
+            AssetDatabase.SaveAssetIfDirty(this);
+
+            // 更新所有使用到的变量值（目标资源 - 更新）
+            root.Variables_Refresh();
+            AssetDatabase.SaveAssetIfDirty(root);
+
             LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
 
             GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
@@ -1533,14 +1570,7 @@ namespace SevenStrikeModules.XGraph
                 }
             }
 
-            // 更新所有使用到的变量值（当前资源 - 更新）
-            RefreshVariableValues();
 
-            // 更新所有使用到的变量值（目标资源 - 更新）
-            root.RefreshVariableValues();
-
-            AssetDatabase.SaveAssetIfDirty(this);
-            AssetDatabase.SaveAssetIfDirty(root);
 #endif
         }
         /// <summary>
@@ -1686,8 +1716,8 @@ namespace SevenStrikeModules.XGraph
             }
             SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
 
-            // 更新所有使用的变量值
-            newRoot.RefreshVariableValues();
+            // 更新变量赋值数据
+            newRoot.Variables_Refresh();
 
             AssetDatabase.SaveAssetIfDirty(newRoot);
 
@@ -1934,6 +1964,23 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
         }
+        /// <summary>
+        /// 寻找匹配guid的行为数据节点
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public ActionNode_Base FindActionNode(string guid)
+        {
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                if (Actions[i].guid == guid)
+                {
+                    return Actions[i];
+                }
+            }
+
+            return null;
+        }
         #endregion
 
         #region 便签操作
@@ -2080,20 +2127,25 @@ namespace SevenStrikeModules.XGraph
                 }
             }
 
-            RefreshVariableValues();
+            // 更新变量赋值数据
+            Variables_Refresh();
         }
         /// <summary>
         /// 根据VraiableCategory的变量列表源来更新在Actions列表 & Variables列表中所有用到这些变量的值
         /// </summary>
-        public void RefreshVariableValues()
+        public void Variables_Refresh()
         {
-            foreach (var variable in VariableCategory)
+            // 更新 “黑板变量数据列表”的变量信息
+            foreach (var vare in Variables)
             {
-                // 更新变量节点的值
-                foreach (var vare in Variables)
+                foreach (var variable in VariableCategory)
                 {
+                    // 匹配黑板变量
                     if (vare.varguid == variable.guid)
                     {
+                        vare.variable.name = variable.name;
+                        vare.description = variable.description;
+                        vare.variable.description = variable.description;
                         switch (vare.variable.type)
                         {
                             case VariableType.String:
@@ -2123,14 +2175,20 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
+            }
 
-                // 更新行为节点连接变量节点的端口值
-                foreach (var act in Actions)
+            // 更新行为节点中的 “黑板变量数据列表” 的变量信息
+            foreach (var action in Actions)
+            {
+                foreach (var data in action.VariableDatas)
                 {
-                    foreach (var data in act.VariableDatas)
+                    foreach (var variable in VariableCategory)
                     {
+                        // 匹配黑板变量
                         if (data.variable.guid == variable.guid)
                         {
+                            data.variable.name = variable.name;
+                            data.variable.description = variable.description;
                             switch (data.variable.type)
                             {
                                 case VariableType.String:
@@ -2158,7 +2216,55 @@ namespace SevenStrikeModules.XGraph
                                     data.variable.SetValue<Color>(variable.GetValue<Color>());
                                     break;
                             }
+
+                            if (action is ActionNode_Variable vare)
+                            {
+                                string originalGUID = vare.variable.guid;
+                                vare.variable = data.variable.Clone(false);
+                                vare.variable.guid = originalGUID;
+                                vare.variable.name = action.identifyName;
+                            }
                         }
+                    }
+                }
+            }
+
+            // 更新行为节点中的 “内部变量数据列表” 的变量信息
+            foreach (var action in Actions)
+            {
+                // 刷新内部变量数据数值
+                foreach (var data in action.InternalVariableDatas)
+                {
+                    ActionNode_Variable internalVar = FindActionNode(data.VariableNodeGuid) as ActionNode_Variable;
+                    internalVar.variable.name = internalVar.identifyName;
+                    data.variable.name = internalVar.identifyName;
+                    switch (data.variable.type)
+                    {
+                        case VariableType.String:
+                            string val_string = internalVar.variable.GetValue<string>();
+                            data.variable.SetValue<string>(val_string);
+                            break;
+                        case VariableType.Float:
+                            data.variable.SetValue<float>(internalVar.variable.GetValue<float>());
+                            break;
+                        case VariableType.Int:
+                            data.variable.SetValue<int>(internalVar.variable.GetValue<int>());
+                            break;
+                        case VariableType.Bool:
+                            data.variable.SetValue<bool>(internalVar.variable.GetValue<bool>());
+                            break;
+                        case VariableType.Vector2:
+                            data.variable.SetValue<Vector2>(internalVar.variable.GetValue<Vector2>());
+                            break;
+                        case VariableType.Vector3:
+                            data.variable.SetValue<Vector3>(internalVar.variable.GetValue<Vector3>());
+                            break;
+                        case VariableType.Vector4:
+                            data.variable.SetValue<Vector4>(internalVar.variable.GetValue<Vector4>());
+                            break;
+                        case VariableType.Color:
+                            data.variable.SetValue<Color>(internalVar.variable.GetValue<Color>());
+                            break;
                     }
                 }
             }

@@ -83,6 +83,10 @@ namespace SevenStrikeModules.XGraph
         /// 变量Guids接驳列表
         /// </summary>
         [SerializeField] public List<VarialbleGuidConnector> VariableDatas = new List<VarialbleGuidConnector>();
+        /// <summary>
+        /// 内部变量Guids接驳列表
+        /// </summary>
+        [SerializeField] public List<VarialbleInternalGuidConnector> InternalVariableDatas = new List<VarialbleInternalGuidConnector>();
 
         /// <summary>
         /// 行为执行方法
@@ -108,11 +112,12 @@ namespace SevenStrikeModules.XGraph
             return $"{path}";
         }
 
-        #region VariableDatas
+        #region 黑板变量 绑定/解绑
         /// <summary>
-        /// 绑定变量数据到节点数据中
+        /// 绑定黑板变量数据到行为节点的 ”黑板变量数据列表中“
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="portName"></param>
         public void VariableData_Bind(ActionVariableData data, string portName)
         {
             #region 检查节点的变量链接信息列表中是否存在重复的项
@@ -136,50 +141,160 @@ namespace SevenStrikeModules.XGraph
             }
         }
         /// <summary>
-        /// 从节点中解绑变量数据
+        /// 从行为节点的 ”黑板变量数据列表中“中解绑指定的guid和端口名称的变量数据的绑定
         /// </summary>
-        /// <param name="variableData"></param>
+        /// <param name="guid"></param>
+        /// <param name="portName"></param>
         public void VariableData_Unbind(string guid, string portName)
         {
+            Undo.RecordObject(this, "Unassigned Variable Connector");
+
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
-            int removedCount = VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
-            if (removedCount > 0)
+            VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+
+        }
+        #endregion
+
+        #region 内部变量 绑定/解绑
+        /// <summary>
+        /// 绑定内部变量数据到行为节点的 ”内部变量数据列表中“
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="portName"></param>
+        public void InternalVariableData_Bind(ActionNode_Variable data, string portName)
+        {
+            #region 检查节点的变量链接信息列表中是否存在重复的项
+            bool isExistConenctor = false;
+            foreach (var item in InternalVariableDatas)
             {
-                Undo.RecordObject(this, "Unassigned Variable Connector");
+                if (item.VariableNodeGuid == data.guid && item.TargetPortName == portName)
+                {
+                    isExistConenctor = true;
+                }
+            }
+            #endregion
+
+            // 如果已经存在则忽略，否则记录该变量链接信息
+            if (isExistConenctor)
+                return;
+            else
+            {
+                Undo.RecordObject(this, "Binded VariableInternal Connector");
+                VarialbleInternalGuidConnector con = new VarialbleInternalGuidConnector(data.guid, portName, data.variable);
+                con.variable.name = data.identifyName;
+                InternalVariableDatas.Add(con);
             }
         }
         /// <summary>
-        /// 变量 - 值获取
+        /// 从行为节点的 ”内部变量数据列表中“中解绑指定的guid和端口名称的变量数据的绑定
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="guid"></param>
+        /// <param name="portName"></param>
+        public void InternalVariableData_Unbind(string guid, string portName)
+        {
+            Undo.RecordObject(this, "Unbinded InternalVariable Connector");
+
+            // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
+            InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+
+        }
+        #endregion
+
+        /// <summary>
+        /// 获取变量值（根据预设的端口名称）
+        /// </summary>
+        /// <param name="portName"></param>
         /// <returns></returns>
-        public Variable VariableData_GetValue(string name)
+        public Variable VariableData_GetValue(string portName)
         {
             Variable vare = null;
-            VariableDatas.ForEach(data =>
+            bool exist = false;
+
+            // 先从绑定的黑板变量数据列表中找
+            foreach (var item in VariableDatas)
             {
-                if (name == data.TargetPortName)
+                if (portName == item.TargetPortName)
                 {
-                    vare = data.variable;
+                    vare = item.variable;
+                    exist = true;
                 }
-            });
+            }
+
+            // 再从绑定的内部变量数据列表中找
+            if (!exist)
+            {
+                foreach (var item in InternalVariableDatas)
+                {
+                    if (portName == item.TargetPortName)
+                    {
+                        vare = item.variable;
+                    }
+                }
+            }
+
             return vare;
         }
         /// <summary>
-        /// 变量 - 存在检查
+        /// 获取变量解释（根据预设的端口名称）
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="portName"></param>
         /// <returns></returns>
-        public bool VariableData_ValueExist(string name)
+        public string VariableData_GetDescription(string portName)
         {
-            bool isExist = false;
-            VariableDatas.ForEach((data) =>
+            string des = null;
+            bool exist = false;
+
+            // 先从绑定的黑板变量数据列表中找
+            foreach (var item in VariableDatas)
             {
-                if (name == data.TargetPortName)
-                    isExist = true;
-            });
-            return isExist;
+                if (portName == item.TargetPortName)
+                {
+                    des = item.variable.description;
+                    exist = true;
+                }
+            }
+
+            // 再从绑定的内部变量数据列表中找
+            if (!exist)
+            {
+                foreach (var item in InternalVariableDatas)
+                {
+                    if (portName == item.TargetPortName)
+                    {
+                        des = item.variable.description;
+                    }
+                }
+            }
+            return des;
         }
-        #endregion
+        /// <summary>
+        /// 检查变量是否存在（根据预设的端口名称）
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns></returns>
+        public bool VariableData_ValueExist(string portName)
+        {
+            bool varexist = false;
+            bool listexist = false;
+
+            // 先从绑定的黑板变量数据列表中找
+            foreach (var item in VariableDatas)
+            {
+                if (portName == item.TargetPortName)
+                    varexist = true;
+            }
+
+            // 再从绑定的内部变量数据列表中找
+            if (!listexist)
+            {
+                foreach (var item in InternalVariableDatas)
+                {
+                    if (portName == item.TargetPortName)
+                        varexist = true;
+                }
+            }
+
+            return varexist;
+        }
     }
 }

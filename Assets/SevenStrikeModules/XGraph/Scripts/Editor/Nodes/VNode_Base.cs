@@ -471,6 +471,9 @@ namespace SevenStrikeModules.XGraph
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
+
+            // 更新变量赋值数据
+            graphView.ActionTreeAsset.Variables_Refresh();
         }
         #endregion
 

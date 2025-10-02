@@ -137,6 +137,7 @@ namespace SevenStrikeModules.XGraph
             {
                 CollectGroupsPosition();
                 gv_GraphWindow.ActionTree_SaveAndReplace();
+                gv_GraphWindow.RestructureGraphViews();
                 evt.StopPropagation();
             }
             if (evt.keyCode == KeyCode.O && (evt.ctrlKey || evt.commandKey))
