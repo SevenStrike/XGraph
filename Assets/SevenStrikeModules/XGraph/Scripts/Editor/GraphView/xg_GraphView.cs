@@ -347,7 +347,6 @@ namespace SevenStrikeModules.XGraph
             GraphviewCustomRectangleSelector = new xg_GraphViewRectangleSelector(theme.rectangleSelectorLineColor, theme.segments, theme.displayCoordinate);
             this.AddManipulator(GraphviewCustomRectangleSelector);
         }
-
         /// <summary>
         /// 检查是否有任何节点存在，如果不存在将显示提示信息文字
         /// </summary>

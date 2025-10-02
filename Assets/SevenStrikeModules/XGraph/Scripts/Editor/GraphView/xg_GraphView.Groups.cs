@@ -144,6 +144,10 @@ namespace SevenStrikeModules.XGraph
                 {
                     nodes_guid.Add(node.ActionData.guid);
                 }
+                else if (n is VNode_Variable vare)
+                {
+                    nodes_guid.Add(vare.VariableData.guid);
+                }
                 else if (n is VNode_Stick stick)
                 {
                     nodes_guid.Add(stick.StickData.guid);
@@ -392,6 +396,11 @@ namespace SevenStrikeModules.XGraph
                         CheckHasAvatarNode(groupData);
                     });
                 }
+                else if (item is VNode_Variable vare)
+                {
+                    // 获取移入的节点的guid
+                    guid = vare.VariableData.guid;
+                }
                 else if (item is VNode_Stick stick)
                 {
                     // 获取移入的节点的guid
@@ -439,6 +448,11 @@ namespace SevenStrikeModules.XGraph
                     node.OnNodeAvatar_Set = null;
                     // 清空委托 - 节点头像移除
                     node.On_NodeAvatar_Clear = null;
+                }
+                else if (item is VNode_Variable vare)
+                {
+                    // 获取移出的节点的guid
+                    guid = vare.VariableData.guid;
                 }
                 else if (item is VNode_Stick stick)
                 {

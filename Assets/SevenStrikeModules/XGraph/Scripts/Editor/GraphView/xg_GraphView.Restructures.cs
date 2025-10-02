@@ -238,32 +238,39 @@ namespace SevenStrikeModules.XGraph
                 foreach (string guid in groupData.guids)
                 {
                     // 查找 - 行为节点
-                    var node = nodes.ToList().FirstOrDefault(n => n is VNode_Base baseNode && baseNode.ActionData.guid == guid);
-                    if (node != null)
+                    var action = nodes.ToList().FirstOrDefault(n => n is VNode_Base node_action && node_action.ActionData.guid == guid);
+                    if (action != null)
                     {
-                        group.AddElement(node);
+                        group.AddElement(action);
                         continue;
                     }
 
-                    // 查找 - 便签节点
-                    var stickNote = nodes.ToList().FirstOrDefault(n => n is VNode_Stick stickNode && stickNode.StickData.guid == guid);
-                    if (stickNote != null)
+                    // 查找 - 黑板变量节点
+                    var stick = nodes.ToList().FirstOrDefault(n => n is VNode_Stick node_stick && node_stick.StickData.guid == guid);
+                    if (stick != null)
                     {
-                        group.AddElement(stickNote);
+                        group.AddElement(stick);
                     }
 
                     // 查找 - 标签节点
-                    var label = nodes.ToList().FirstOrDefault(n => n is VNode_Label label && label.LabelData.guid == guid);
+                    var label = nodes.ToList().FirstOrDefault(n => n is VNode_Label node_label && node_label.LabelData.guid == guid);
                     if (label != null)
                     {
                         group.AddElement(label);
                     }
 
                     // 查找 - 贴图节点
-                    var decalNote = nodes.ToList().FirstOrDefault(n => n is VNode_Decal decalNote && decalNote.DecalData.guid == guid);
-                    if (decalNote != null)
+                    var decal = nodes.ToList().FirstOrDefault(n => n is VNode_Decal node_decal && node_decal.DecalData.guid == guid);
+                    if (decal != null)
                     {
-                        group.AddElement(decalNote);
+                        group.AddElement(decal);
+                    }
+
+                    // 查找 - 黑板变量节点
+                    var vare = nodes.ToList().FirstOrDefault(n => n is VNode_Variable node_var && node_var.VariableData.guid == guid);
+                    if (vare != null)
+                    {
+                        group.AddElement(vare);
                     }
                 }
             }

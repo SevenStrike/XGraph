@@ -165,14 +165,6 @@ namespace SevenStrikeModules.XGraph
                 gv_GraphWindow.Close();
                 evt.StopPropagation();
             }
-            if (evt.keyCode == KeyCode.G)
-            {
-                foreach (var item in nodes)
-                {
-                    Debug.Log($"{item.viewDataKey}  /  {item}");
-                }
-                evt.StopPropagation();
-            }
             //evt.StopPropagation();
         }
         /// <summary>
