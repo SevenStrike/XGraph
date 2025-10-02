@@ -964,20 +964,30 @@
 
                 if (nodeviews[0] is VNode_Base n_base)
                 {
-                    // 加载 Inspector 面板标题文字
-                    InspectorViewAction_SetTitle($"节点属性 - {n_base.title}");
-                    // 显示当前选中的节点的类型信息
-                    InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
-                    Debug.Log("选中了行为节点");
+                    if (n_base is VNode_Variable_Internal n_vare_internal)
+                    {
+                        // 加载 Inspector 面板标题文字
+                        InspectorViewAction_SetTitle($"内部变量属性 - {n_vare_internal.title}");
+                        // 显示当前选中的节点的类型信息
+                        InspectorViewAction_SetNodeInfo(n_vare_internal.VariableData.variable.type.ToString(), n_vare_internal.VariableData.variable.description);
+                        Debug.Log("选中节点：内部变量");
+                    }
+                    else
+                    {
+                        // 加载 Inspector 面板标题文字
+                        InspectorViewAction_SetTitle($"节点属性 - {n_base.title}");
+                        // 显示当前选中的节点的类型信息
+                        InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
+                        Debug.Log("选中节点：行为");
+                    }
                 }
-
-                if (nodeviews[0] is VNode_Variable n_vare)
+                else if (nodeviews[0] is VNode_Variable n_vare)
                 {
                     // 加载 Inspector 面板标题文字
-                    InspectorViewAction_SetTitle($"节点属性 - {n_vare.VariableData.guid}");
+                    InspectorViewAction_SetTitle($"黑板变量属性 - {n_vare.VariableData.guid}");
                     // 显示当前选中的节点的类型信息
                     InspectorViewAction_SetNodeInfo("", "");
-                    Debug.Log("选中了变量节点");
+                    Debug.Log("选中节点：黑板变量");
                 }
                 xw_isUnSelectedNode = false;
             }

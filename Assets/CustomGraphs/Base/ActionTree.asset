@@ -1,63 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4284983048099355369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
-  m_Name: ssss
-  m_EditorClassIdentifier: 
-  identifyName: ssss
-  content: 
-  guid: 8911718872c547642b5cdc5963b62685
-  namespaces: SevenStrikeModules.XGraph
-  classes: ActionNode_
-  path: Assets\SevenStrikeModules\XGraph\CloneTree   > ssss.asset
-  actionNodeType: Variable
-  icon: variable
-  visualNodeType: VNode_Variable_Internal
-  nodeGraphPosition: {x: 682.4286, y: -107.999985}
-  nodeGraphSize: {x: 180, y: 120}
-  themeSolution: "\u81EA\u5B9A\u4E49"
-  themeColor: {r: 1, g: 0.8279877, b: 0, a: 1}
-  isConcurrentExecution: 0
-  HasAvatar: 0
-  TransparentNode: 0
-  Avatar: {fileID: 0}
-  NodeIcon: {fileID: 0}
-  VariableDatas:
-  - VariableNodeGuid: 0a14102edd6293f4bbe19fa5fbe3d30b
-    TargetPortName: In
-    variable:
-      rid: 1897061114053133063
-  InternalVariableDatas: []
-  variable:
-    rid: 1897061129672459147
-  references:
-    version: 2
-    RefIds:
-    - rid: 1897061114053133063
-      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: String
-        guid: ad20d66600188b044a705650fac4a5c2
-        description: zzz
-        type: 0
-        value: sdd
-    - rid: 1897061129672459147
-      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: ssss
-        guid: ab4163bcf45ede14b82e0cfb2f3eeade
-        description: zzz
-        type: 0
-        value: sdd
---- !u!114 &-1193391110417359229
+--- !u!114 &-4301111779051473409
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,177 +32,11 @@ MonoBehaviour:
   NodeIcon: {fileID: 0}
   VariableDatas: []
   InternalVariableDatas: []
-  childNode: {fileID: 4086694934819532234}
+  childNode: {fileID: -387632322501817807}
   references:
     version: 2
     RefIds: []
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
-  m_Name: ActionTree
-  m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1800, y: 1152}
-  LastGraphViewPosition: {x: -96, y: 754}
-  LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-10-02  -  14:42:56
-  GraphviewGridBackgroundThemes:
-    bgcolor: {r: 0, g: 0, b: 0, a: 0}
-    gridcolor: {r: 0.4, g: 0.4, b: 0.4, a: 0.09803922}
-    customimagecolor: {r: 1, g: 1, b: 1, a: 0.36078432}
-    thickLinecolor: {r: 0.32599998, g: 0.32599998, b: 0.32599998, a: 0.15686275}
-    themecolor: {r: 0.23, g: 0.99, b: 0.6, a: 1}
-    spacing: 18
-    thicklines: 18
-    customimage: {fileID: 2800000, guid: 56fc61d24b6981f4cbf227798008d5e7, type: 3}
-  GraphviewRectangleSelectorThemes:
-    rectangleSelectorLineColor: {r: 1, g: 1, b: 1, a: 0.6}
-    segments: 4
-    displayCoordinate: 0
-  Actions:
-  - {fileID: -1193391110417359229}
-  - {fileID: 4086694934819532234}
-  - {fileID: 1439749749355397017}
-  - {fileID: -4284983048099355369}
-  Variables:
-  - name: String
-    description: zzz
-    guid: 3b9b5628062742f4ab3e9b33816bc6f5
-    varguid: ad20d66600188b044a705650fac4a5c2
-    type: 0
-    variable:
-      rid: 1897061129672459148
-    TransparentNode: 0
-    position: {x: 728, y: -180.99773}
-    size: {x: 134, y: 38}
-  - name: String
-    description: zzz
-    guid: 0a14102edd6293f4bbe19fa5fbe3d30b
-    varguid: ad20d66600188b044a705650fac4a5c2
-    type: 0
-    variable:
-      rid: 1897061129672459148
-    TransparentNode: 0
-    position: {x: 473.53793, y: -111.26896}
-    size: {x: 134, y: 38}
-  Sticks: []
-  Labels:
-  - guid: f86b0ff3c8e12554c999d97cbd3c583b
-    content: SEVENSTRIKE
-    position: {x: 1130, y: -89}
-    size: {x: 387, y: 89}
-    opacity: 1
-    fontSize: 35
-    bold: 1
-    italic: 0
-  - guid: ccccf604a7a29814194c3873b5d99bfa
-    content: Custom Graphs
-    position: {x: 1137, y: -38}
-    size: {x: 199, y: 42}
-    opacity: 0.45400006
-    fontSize: 15
-    bold: 0
-    italic: 0
-  Decals:
-  - guid: d4b1eec87eb90f8489de9d06fcbaaea0
-    position: {x: 1103, y: -430}
-    size: {x: 193, y: 221}
-    opacity: 1
-    HasTexture: 1
-    DecalTexture: {fileID: 2800000, guid: 4873fa5d7bd634c49a09de80e32c4415, type: 3}
-    scale: {x: -1, y: 1, z: 0}
-  Groups: []
-  VariableCategory:
-  - rid: 1897061129672459149
-  - rid: 1897061129672459150
-  - rid: 1897061129672459151
-  - rid: 1897061129672459152
-  - rid: 1897061129672459153
-  - rid: 1897061129672459154
-  - rid: 1897061129672459155
-  - rid: 1897061129672459156
-  references:
-    version: 2
-    RefIds:
-    - rid: 1897061129672459148
-      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: String
-        guid: ad20d66600188b044a705650fac4a5c2
-        description: zzz
-        type: 0
-        value: sdd
-    - rid: 1897061129672459149
-      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: String
-        guid: ad20d66600188b044a705650fac4a5c2
-        description: zzz
-        type: 0
-        value: sdd
-    - rid: 1897061129672459150
-      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Float
-        guid: b2b84564d7bbb9745b9b196f18e66d5b
-        description: Float
-        type: 1
-        value: 0
-    - rid: 1897061129672459151
-      type: {class: Variable_Int, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Int
-        guid: e1605f631d64d0c49af565b78336e28e
-        description: Int
-        type: 2
-        value: 0
-    - rid: 1897061129672459152
-      type: {class: Variable_Bool, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Bool
-        guid: 7aee55e74868138468b7e41e29481450
-        description: Bool
-        type: 3
-        value: 0
-    - rid: 1897061129672459153
-      type: {class: Variable_Vector2, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Vector2
-        guid: 2297348d87e917748827c70b601bf48b
-        description: Vector2
-        type: 4
-        value: {x: 0, y: 0}
-    - rid: 1897061129672459154
-      type: {class: Variable_Vector3, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Vector3
-        guid: 82f69c5a0eada304e9af2f7e61190b18
-        description: Vector3
-        type: 5
-        value: {x: 0, y: 0, z: 0}
-    - rid: 1897061129672459155
-      type: {class: Variable_Vector4, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Vector4
-        guid: 94651639861755e459f82c9ccbbe5739
-        description: Vector4
-        type: 6
-        value: {x: 0, y: 0, z: 0, w: 0}
-    - rid: 1897061129672459156
-      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: Color
-        guid: 8115c2299a927ee42be668b817cdea09
-        description: Color
-        type: 7
-        value: {r: 0, g: 0, b: 0, a: 0}
---- !u!114 &1439749749355397017
+--- !u!114 &-471916211835272881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -294,7 +71,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
---- !u!114 &4086694934819532234
+--- !u!114 &-387632322501817807
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -334,7 +111,7 @@ MonoBehaviour:
     TargetPortName: string-t
     variable:
       rid: 1897061114053133062
-  childNode: {fileID: 1439749749355397017}
+  childNode: {fileID: -471916211835272881}
   Message: 
   references:
     version: 2
@@ -353,5 +130,228 @@ MonoBehaviour:
         name: ssss
         guid: ab4163bcf45ede14b82e0cfb2f3eeade
         description: 
+        type: 0
+        value: sdd
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c7b7e8d8a922d43b2e83893296a664, type: 3}
+  m_Name: ActionTree
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 1800, y: 1152}
+  LastGraphViewPosition: {x: 37, y: 658}
+  LastGraphViewZoom: 1
+  LastSaveDateTime: 2025-10-02  -  18:38:38
+  GraphviewGridBackgroundThemes:
+    bgcolor: {r: 0, g: 0, b: 0, a: 0}
+    gridcolor: {r: 0.4, g: 0.4, b: 0.4, a: 0.09803922}
+    customimagecolor: {r: 1, g: 1, b: 1, a: 0.36078432}
+    thickLinecolor: {r: 0.32599998, g: 0.32599998, b: 0.32599998, a: 0.15686275}
+    themecolor: {r: 0.23, g: 0.99, b: 0.6, a: 1}
+    spacing: 18
+    thicklines: 18
+    customimage: {fileID: 2800000, guid: 56fc61d24b6981f4cbf227798008d5e7, type: 3}
+  GraphviewRectangleSelectorThemes:
+    rectangleSelectorLineColor: {r: 1, g: 1, b: 1, a: 0.6}
+    segments: 4
+    displayCoordinate: 0
+  Actions:
+  - {fileID: -4301111779051473409}
+  - {fileID: -387632322501817807}
+  - {fileID: -471916211835272881}
+  - {fileID: 3873494405042209610}
+  Variables:
+  - name: String
+    description: zzz
+    guid: 3b9b5628062742f4ab3e9b33816bc6f5
+    varguid: ad20d66600188b044a705650fac4a5c2
+    type: 0
+    variable:
+      rid: 1897061134024048652
+    TransparentNode: 0
+    position: {x: 728.0001, y: -181.37598}
+    size: {x: 134, y: 38}
+  - name: String
+    description: zzz
+    guid: 0a14102edd6293f4bbe19fa5fbe3d30b
+    varguid: ad20d66600188b044a705650fac4a5c2
+    type: 0
+    variable:
+      rid: 1897061134024048652
+    TransparentNode: 0
+    position: {x: 473.53793, y: -111.26896}
+    size: {x: 134, y: 38}
+  Sticks: []
+  Labels:
+  - guid: f86b0ff3c8e12554c999d97cbd3c583b
+    content: SEVENSTRIKE
+    position: {x: 1130, y: -89}
+    size: {x: 387, y: 89}
+    opacity: 1
+    fontSize: 35
+    bold: 1
+    italic: 0
+  - guid: ccccf604a7a29814194c3873b5d99bfa
+    content: Custom Graphs
+    position: {x: 1137, y: -38}
+    size: {x: 199, y: 42}
+    opacity: 0.45400006
+    fontSize: 15
+    bold: 0
+    italic: 0
+  Decals:
+  - guid: d4b1eec87eb90f8489de9d06fcbaaea0
+    position: {x: 1103, y: -430}
+    size: {x: 193, y: 221}
+    opacity: 1
+    HasTexture: 1
+    DecalTexture: {fileID: 2800000, guid: 4873fa5d7bd634c49a09de80e32c4415, type: 3}
+    scale: {x: -1, y: 1, z: 0}
+  Groups: []
+  VariableCategory:
+  - rid: 1897061134024048653
+  - rid: 1897061134024048654
+  - rid: 1897061134024048655
+  - rid: 1897061134024048656
+  - rid: 1897061134024048657
+  - rid: 1897061134024048658
+  - rid: 1897061134024048659
+  - rid: 1897061134024048660
+  references:
+    version: 2
+    RefIds:
+    - rid: 1897061134024048652
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: String
+        guid: ad20d66600188b044a705650fac4a5c2
+        description: zzz
+        type: 0
+        value: sdd
+    - rid: 1897061134024048653
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: String
+        guid: ad20d66600188b044a705650fac4a5c2
+        description: zzz
+        type: 0
+        value: sdd
+    - rid: 1897061134024048654
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Float
+        guid: b2b84564d7bbb9745b9b196f18e66d5b
+        description: Float
+        type: 1
+        value: 0
+    - rid: 1897061134024048655
+      type: {class: Variable_Int, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Int
+        guid: e1605f631d64d0c49af565b78336e28e
+        description: Int
+        type: 2
+        value: 0
+    - rid: 1897061134024048656
+      type: {class: Variable_Bool, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Bool
+        guid: 7aee55e74868138468b7e41e29481450
+        description: Bool
+        type: 3
+        value: 0
+    - rid: 1897061134024048657
+      type: {class: Variable_Vector2, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Vector2
+        guid: 2297348d87e917748827c70b601bf48b
+        description: Vector2
+        type: 4
+        value: {x: 0, y: 0}
+    - rid: 1897061134024048658
+      type: {class: Variable_Vector3, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Vector3
+        guid: 82f69c5a0eada304e9af2f7e61190b18
+        description: Vector3
+        type: 5
+        value: {x: 0, y: 0, z: 0}
+    - rid: 1897061134024048659
+      type: {class: Variable_Vector4, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Vector4
+        guid: 94651639861755e459f82c9ccbbe5739
+        description: Vector4
+        type: 6
+        value: {x: 0, y: 0, z: 0, w: 0}
+    - rid: 1897061134024048660
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: Color
+        guid: 8115c2299a927ee42be668b817cdea09
+        description: Color
+        type: 7
+        value: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &3873494405042209610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c763bc25bda80408366c0a28e11ebf, type: 3}
+  m_Name: ssss
+  m_EditorClassIdentifier: 
+  identifyName: ssss
+  content: 
+  guid: 8911718872c547642b5cdc5963b62685
+  namespaces: SevenStrikeModules.XGraph
+  classes: ActionNode_
+  path: Assets\SevenStrikeModules\XGraph\CloneTree   > ssss.asset
+  actionNodeType: Variable
+  icon: variable
+  visualNodeType: VNode_Variable_Internal
+  nodeGraphPosition: {x: 682, y: -108}
+  nodeGraphSize: {x: 180, y: 120}
+  themeSolution: "\u81EA\u5B9A\u4E49"
+  themeColor: {r: 1, g: 0.8279877, b: 0, a: 1}
+  isConcurrentExecution: 0
+  HasAvatar: 0
+  TransparentNode: 0
+  Avatar: {fileID: 0}
+  NodeIcon: {fileID: 0}
+  VariableDatas:
+  - VariableNodeGuid: 0a14102edd6293f4bbe19fa5fbe3d30b
+    TargetPortName: In
+    variable:
+      rid: 1897061114053133063
+  InternalVariableDatas: []
+  variable:
+    rid: 1897061134024048651
+  references:
+    version: 2
+    RefIds:
+    - rid: 1897061114053133063
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: String
+        guid: ad20d66600188b044a705650fac4a5c2
+        description: zzz
+        type: 0
+        value: sdd
+    - rid: 1897061134024048651
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: ssss
+        guid: ab4163bcf45ede14b82e0cfb2f3eeade
+        description: zzz
         type: 0
         value: sdd
