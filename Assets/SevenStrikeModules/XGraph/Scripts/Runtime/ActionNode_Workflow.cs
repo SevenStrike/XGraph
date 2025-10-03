@@ -369,21 +369,6 @@ namespace SevenStrikeModules.XGraph
             {
                 ActionAsset.Replace(ActionAssetClone);
                 Log("已恢复原始资源");
-
-                //#if UNITY_EDITOR
-                //                if (!Application.isPlaying)
-                //                {
-                //                    string path = UnityEditor.AssetDatabase.GetAssetPath(ActionAssetClone);
-                //                    Debug.Log(path);
-                //                    UnityEditor.AssetDatabase.DeleteAsset(path);
-                //                }
-                //                else
-                //                {
-                //                    Destroy(ActionAssetClone);
-                //                }
-                //#endif
-
-
                 ActionAssetClone = null;
             }
         }
