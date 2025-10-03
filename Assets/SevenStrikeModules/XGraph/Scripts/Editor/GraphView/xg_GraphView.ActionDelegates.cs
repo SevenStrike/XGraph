@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -191,9 +190,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         private void Action_On_NodeColorDisplayer_Changed(bool state)
         {
-            ActionTreeAsset.Actions.ForEach(data =>
+            foreach (var data in ActionTreeAsset.Actions)
             {
-                nodes.ForEach(nodes =>
+                foreach (var nodes in nodes)
                 {
                     if (data.guid == nodes.viewDataKey)
                     {
@@ -205,8 +204,8 @@ namespace SevenStrikeModules.XGraph
                                 bs.MarkColor_Dislay();
                         }
                     }
-                });
-            });
+                }
+            }
             NodeColorDisplay = state;
         }
     }

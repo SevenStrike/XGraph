@@ -28,7 +28,14 @@ namespace SevenStrikeModules.XGraph
         /// 贴图节点的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
-
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Decal> OnSelectedNode;
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Decal> OnUnSelectedNode;
         /// <summary>
         /// 指示物体选择器是否已经打开
         /// </summary>
@@ -151,10 +158,34 @@ namespace SevenStrikeModules.XGraph
             return true;
         }
 
+        #region 回调
+        /// <summary>
+        /// 当选择节点时
+        /// </summary>
         public override void OnSelected()
         {
-            //base.OnSelected();
+            base.OnSelected();
+
+            // 调用回调事件
+            if (OnSelectedNode != null)
+            {
+                OnSelectedNode.Invoke(this);
+            }
         }
+        /// <summary>
+        /// 取消选择时
+        /// </summary>
+        public override void OnUnselected()
+        {
+            base.OnUnselected();
+
+            // 调用回调事件
+            if (OnUnSelectedNode != null)
+            {
+                OnUnSelectedNode.Invoke(this);
+            }
+        }
+        #endregion
 
         #region 节点绘制
         /// <summary>

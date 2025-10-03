@@ -6,7 +6,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
-    using static UnityEngine.GraphicsBuffer;
 
     public class VNode_Variable : Node
     {
@@ -125,11 +124,6 @@ namespace SevenStrikeModules.XGraph
         public override void OnSelected()
         {
             base.OnSelected();
-
-            if (VariableData.type == VariableType.String)
-                Debug.Log(VariableData.variable.GetValue<string>());
-            if (VariableData.type == VariableType.Color)
-                Debug.Log(VariableData.variable.GetValue<Color>());
 
             // 调用回调事件
             if (OnSelectedNode != null)
@@ -424,13 +418,13 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(VariableType type)
         {
             Color node_color = Color.white;
-            graphView.gv_GraphWindow.xw_BlackBoardView.VariableThemeList.VariableThemes.ForEach(theme =>
+            foreach (var theme in graphView.gv_GraphWindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
             {
                 if (theme.type == type.ToString())
                 {
                     node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
-            });
+            }
             return node_color;
         }
         /// <summary>

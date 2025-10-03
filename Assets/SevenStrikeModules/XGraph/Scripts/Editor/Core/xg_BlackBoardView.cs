@@ -417,13 +417,13 @@ namespace SevenStrikeModules.XGraph
             var_label_des.text = variable.description;
 
             // 变量图标的颜色根据变量类型来定（通过 json 配置对应主题色）
-            VariableThemeList.VariableThemes.ForEach(theme =>
+            foreach (var theme in VariableThemeList.VariableThemes)
             {
                 if (theme.type == variable.type.ToString())
                 {
                     icon.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
-            });
+            }
 
             // 赋值Key便于高亮查找
             element.viewDataKey = variable.guid;
@@ -446,10 +446,10 @@ namespace SevenStrikeModules.XGraph
 
             #region 高亮显示节点
             List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
-            vNode_Variables.ForEach(v =>
+            foreach (VNode_Variable v in vNode_Variables)
             {
                 v.Highlight();
-            });
+            }
             #endregion
         }
 
@@ -464,10 +464,10 @@ namespace SevenStrikeModules.XGraph
 
             #region 取消高亮显示节点
             List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
-            vNode_Variables.ForEach(v =>
+            foreach (var v in vNode_Variables)
             {
                 v.UnHighlight();
-            });
+            }
             #endregion
         }
 
@@ -645,13 +645,13 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(Variable variable)
         {
             Color node_color = Color.white;
-            VariableThemeList.VariableThemes.ForEach(theme =>
+            foreach (var theme in VariableThemeList.VariableThemes)
             {
                 if (theme.type == variable.type.ToString())
                 {
                     node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
-            });
+            }
             return node_color;
         }
         /// <summary>
@@ -662,13 +662,13 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(VariableType type)
         {
             Color node_color = Color.white;
-            VariableThemeList.VariableThemes.ForEach(theme =>
+            foreach (var theme in VariableThemeList.VariableThemes)
             {
                 if (theme.type == type.ToString())
                 {
                     node_color = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
-            });
+            }
             return node_color;
         }
         /// <summary>
@@ -678,7 +678,7 @@ namespace SevenStrikeModules.XGraph
         private void SyncVariableNodeDatas(Variable variable)
         {
             // 同步修改 Variables 列表中匹配的项的变量名称
-            graphWindow.CloneTree.Variables.ForEach((node) =>
+            foreach (var node in graphWindow.CloneTree.Variables)
             {
                 if (node.varguid == variable.guid)
                 {
@@ -695,7 +695,7 @@ namespace SevenStrikeModules.XGraph
                         varNode.SetNode_Description(variable.description);
                     }
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -779,10 +779,10 @@ namespace SevenStrikeModules.XGraph
                     Debug.Log(vare.type);
                 }
 
-                vares.ForEach(v =>
+                foreach (var v in vares)
                 {
                     AddVariable(v.Clone(true));
-                });
+                }
 
                 evt.StopPropagation();
             }
@@ -803,32 +803,31 @@ namespace SevenStrikeModules.XGraph
         {
             List<VNode_Variable> list = new List<VNode_Variable>();
 
-            graphWindow.CloneTree.Variables.ForEach(v =>
+            foreach (var v in graphWindow.CloneTree.Variables)
             {
                 if (v.type == type)
                 {
                     list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
                 }
-            });
+            }
             return list;
         }
 
         /// <summary>
         /// 寻找节点中所有匹配目标类型的节点
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="guid"></param>
         /// <returns></returns>
         public List<VNode_Variable> FindVariableNodes(string guid)
         {
             List<VNode_Variable> list = new List<VNode_Variable>();
-
-            graphWindow.CloneTree.Variables.ForEach(v =>
+            foreach (var v in graphWindow.CloneTree.Variables)
             {
                 if (v.varguid == guid)
                 {
                     list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
                 }
-            });
+            }
             return list;
         }
         #endregion

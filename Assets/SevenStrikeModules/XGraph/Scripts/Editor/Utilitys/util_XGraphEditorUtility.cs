@@ -2,14 +2,10 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
-    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
 
     public static class util_XGraphEditorUtility
@@ -370,7 +366,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region Uss操作
+        #region Uss 增加/移除
         /// <summary>
         /// 设置元素的样式
         /// </summary>
@@ -640,7 +636,7 @@ namespace SevenStrikeModules.XGraph
         public static Port GetPort_WithType_OfPortList<T>(List<xGraph_NodePort> portlist)
         {
             Port port = null;
-            portlist.ForEach(p =>
+            foreach (var p in portlist)
             {
                 if (p is xGraph_NodePort x)
                 {
@@ -649,7 +645,7 @@ namespace SevenStrikeModules.XGraph
                         port = x.Port;
                     }
                 }
-            });
+            }
             return port;
         }
         #endregion

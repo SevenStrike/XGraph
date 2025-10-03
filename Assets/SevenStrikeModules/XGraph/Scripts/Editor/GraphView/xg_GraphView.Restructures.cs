@@ -1,5 +1,3 @@
-using UnityEngine.UIElements;
-
 namespace SevenStrikeModules.XGraph
 {
     using System;
@@ -9,6 +7,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
+    using UnityEngine.UIElements;
 
     public partial class xg_GraphView
     {
@@ -29,7 +28,7 @@ namespace SevenStrikeModules.XGraph
             graphViewChanged += OnGraphViewChanged;
 
             // 根据根节点的数据列表  -  重建 行为节点
-            ActionTreeAsset.Actions.ForEach(data =>
+            foreach (var data in ActionTreeAsset.Actions)
             {
                 if (data.actionNodeType == "Relay")
                 {
@@ -48,40 +47,37 @@ namespace SevenStrikeModules.XGraph
                     vNode_Base.CheckAvatarChanged();
                     vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
                 }
-            });
-
+            }
             // 根据行为树根节点的数据列表  -  重建 行为连线
-            ActionTreeAsset.Actions.ForEach(d =>
+            foreach (var data in ActionTreeAsset.Actions)
             {
                 // 获取的目标数据节点的子数据节点
-                var children = ActionTreeAsset.GetChildrenNodes(d);
+                var children = ActionTreeAsset.GetChildrenNodes(data);
 
-                // c 为每一个子数据节点
-                children.ForEach(c =>
+                // child 为每一个子数据节点
+                foreach (var child in children)
                 {
-                    VNode_Base n_parent = FindNodeView(d.guid);
-                    VNode_Base n_child = FindNodeView(c.guid);
+                    VNode_Base n_parent = FindNodeView(data.guid);
+                    VNode_Base n_child = FindNodeView(child.guid);
 
-                    n_parent.Port_Outputs.ForEach(p =>
+                    foreach (var p in n_parent.Port_Outputs)
                     {
                         Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                         AddElement(edge);
-                    });
-
-                });
-            });
-
+                    }
+                }
+            }
             // 根据行为树根节点的数据列表  -  检查并重建 行为延展
-            ActionTreeAsset.Actions.ForEach(d =>
+            foreach (var data in ActionTreeAsset.Actions)
             {
                 // 获取延展节点
-                VNode_Base n_parent = FindNodeView(d.guid);
+                VNode_Base n_parent = FindNodeView(data.guid);
                 // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
                 if (n_parent is VNode_Relay relay)
                 {
                     relay.CheckConnected();
                 }
-            });
+            }
 
             // 根据行为树根节点里的  -便签-  列表数据来重建GraphView的视觉  -便签-  节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
@@ -170,10 +166,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="datas_stick"></param>
         public void Restructure_Sticks(List<ActionStickData> datas_stick)
         {
-            datas_stick.ForEach(data =>
+            foreach (var data in datas_stick)
             {
                 Node_MakeStick(data.position, data).Draw();
-            });
+            }
         }
 
         /// <summary>
@@ -182,10 +178,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="datas_label"></param>
         public void Restructure_Labels(List<ActionLabelData> datas_label)
         {
-            datas_label.ForEach(data =>
+            foreach (var data in datas_label)
             {
                 Node_MakeLabel(data.position, data).Draw();
-            });
+            }
         }
 
         /// <summary>
@@ -194,12 +190,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="ActionDecalData"></param>
         public void Restructure_Decals(List<ActionDecalData> datas_decal)
         {
-            datas_decal.ForEach(data =>
+            foreach (var data in datas_decal)
             {
                 VNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
                 // 检查头像设置情况
                 vNode_Decal.CheckDecalTextureChanged();
-            });
+            }
         }
 
         /// <summary>
@@ -208,14 +204,14 @@ namespace SevenStrikeModules.XGraph
         /// <param name="datas_var"></param>
         public void Restructure_Variable(List<ActionVariableData> datas_var)
         {
-            datas_var.ForEach(data =>
+            foreach (var data in datas_var)
             {
                 data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
                 VNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
                 vNode_Variable.Draw();
                 vNode_Variable.CheckTransparentDisplay(vNode_Variable.VariableData.TransparentNode);
                 vNode_Variable.RefreshExpandedState();
-            });
+            }
         }
 
         /// <summary>

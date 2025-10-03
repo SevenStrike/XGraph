@@ -141,14 +141,14 @@ namespace UnityEditor.Experimental.GraphView
 
             // a copy is necessary because Add To selection might cause a SendElementToFront which will change the order.
             List<ISelectable> newSelection = new List<ISelectable>();
-            graphView.graphElements.ForEach(child =>
+            foreach (var child in graphView.graphElements)
             {
                 var localSelRect = graphView.contentViewContainer.ChangeCoordinatesTo(child, selectionRect);
                 if (child.IsSelectable() && child.Overlaps(localSelRect))
                 {
                     newSelection.Add(child);
                 }
-            });
+            }
 
             foreach (var selectable in newSelection)
             {

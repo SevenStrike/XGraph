@@ -85,7 +85,7 @@ namespace SevenStrikeModules.XGraph
                                 // 改变连线颜色
                                 if (node.Port_Inputs != null)
                                 {
-                                    node.Port_Inputs.ForEach(x =>
+                                    foreach (var x in node.Port_Inputs)
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
                                         util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
@@ -95,11 +95,11 @@ namespace SevenStrikeModules.XGraph
                                         {
                                             edge.edgeControl.inputColor = node.ActionData.themeColor;
                                         }
-                                    });
+                                    }
                                 }
                                 if (node.Port_Outputs != null)
                                 {
-                                    node.Port_Outputs.ForEach(x =>
+                                    foreach (var x in node.Port_Outputs)
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
                                         util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
@@ -110,7 +110,7 @@ namespace SevenStrikeModules.XGraph
                                         {
                                             edge.edgeControl.outputColor = pickedColor;
                                         }
-                                    });
+                                    }
                                 }
                                 node.UpdateMarkColor();
                                 if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
@@ -143,7 +143,7 @@ namespace SevenStrikeModules.XGraph
                                 // 改变连线颜色
                                 if (node.Port_Inputs != null)
                                 {
-                                    node.Port_Inputs.ForEach(x =>
+                                    foreach (var x in node.Port_Inputs)
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
                                         util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
@@ -155,11 +155,11 @@ namespace SevenStrikeModules.XGraph
                                             edge.edgeControl.inputColor = node.ActionData.themeColor;
 
                                         }
-                                    });
+                                    }
                                 }
                                 if (node.Port_Outputs != null)
                                 {
-                                    node.Port_Outputs.ForEach(x =>
+                                    foreach (var x in node.Port_Outputs)
                                     {
                                         x.Port.portColor = node.ActionData.themeColor;
                                         util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
@@ -170,7 +170,7 @@ namespace SevenStrikeModules.XGraph
                                         {
                                             edge.edgeControl.outputColor = node.ActionData.themeColor;
                                         }
-                                    });
+                                    }
                                 }
                                 node.UpdateMarkColor();
                                 if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)

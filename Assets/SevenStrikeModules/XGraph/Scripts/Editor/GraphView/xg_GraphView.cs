@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
     using System.Collections.Generic;
     using System.Linq;
     using Unity.Plastic.Newtonsoft.Json;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -399,13 +398,13 @@ namespace SevenStrikeModules.XGraph
         private void RefreshTheme_GraphNode(VNode_Base node)
         {
             // 应用配置文件的颜色到节点的标识颜色
-            ThemesList.Node.ForEach(colorData =>
+            foreach (var colorData in ThemesList.Node)
             {
                 if (colorData.solution == node.ActionData.themeSolution)
                 {
                     node.ActionData.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
                 }
-            });
+            }
 
             if (!NodeColorDisplay)
             {
@@ -525,7 +524,8 @@ namespace SevenStrikeModules.XGraph
             List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
             List<VNode_Label> g_node_labels = new List<VNode_Label>();
             List<Group> g_node_groups = new List<Group>();
-            selection.ForEach(n =>
+
+            foreach (var n in selection)
             {
                 if (n is VNode_Base node)
                 {
@@ -552,7 +552,8 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_groups.Add(gp);
                 }
-            });
+            }
+
             CurrentSelectedNodes_Base = g_node_actions;
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
@@ -569,6 +570,10 @@ namespace SevenStrikeModules.XGraph
                 List<Node> selectionNodes = new List<Node>();
                 selectionNodes.AddRange(g_node_actions);
                 selectionNodes.AddRange(g_node_variables);
+                selectionNodes.AddRange(g_node_decals);
+                selectionNodes.AddRange(g_node_sticks);
+                selectionNodes.AddRange(g_node_labels);
+
                 OnSelectionNodes(selectionNodes);
             }
         }
@@ -585,7 +590,8 @@ namespace SevenStrikeModules.XGraph
             List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
             List<VNode_Label> g_node_labels = new List<VNode_Label>();
             List<Group> g_node_groups = new List<Group>();
-            selection.ForEach(n =>
+
+            foreach (var n in selection)
             {
                 if (n is VNode_Base node)
                 {
@@ -611,7 +617,8 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_groups.Add(gp);
                 }
-            });
+            }
+
             CurrentSelectedNodes_Base = g_node_actions;
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
@@ -628,6 +635,9 @@ namespace SevenStrikeModules.XGraph
                 List<Node> selectionNodes = new List<Node>();
                 selectionNodes.AddRange(g_node_actions);
                 selectionNodes.AddRange(g_node_variables);
+                selectionNodes.AddRange(g_node_decals);
+                selectionNodes.AddRange(g_node_sticks);
+                selectionNodes.AddRange(g_node_labels);
                 OnRemoveSelectionNodes(selectionNodes);
             }
         }
@@ -666,25 +676,25 @@ namespace SevenStrikeModules.XGraph
             var startNode = startPort.node;
 
             // 遍历所有端口
-            ports.ForEach(port =>
+            foreach (var port in ports)
             {
                 // 确保不是同一个端口
                 if (startPort == port)
-                    return;
+                    continue;
 
                 // 确保方向相反（输入连输出，输出连输入）
                 if (startPort.direction == port.direction)
-                    return;
+                    continue;
 
                 // 确保不是同一个节点的端口（防止自连接）
                 if (startNode == port.node)
-                    return;
+                    continue;
 
                 if (startPort.portType != port.portType)
-                    return;
+                    continue;
 
                 compatiblePorts.Add(port);
-            });
+            }
 
             return compatiblePorts;
         }

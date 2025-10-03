@@ -561,6 +561,10 @@ namespace SevenStrikeModules.XGraph
             // 添加进当前主GraphView视图中
             this.AddElement(node);
 
+            // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
+            node.OnSelectedNode = OnSelectedNode;
+            node.OnUnSelectedNode = OnUnSelectedNode;
+
             // 刷新GraphView视图
             node.RefreshExpandedState();
             node.RefreshPorts();
@@ -629,6 +633,10 @@ namespace SevenStrikeModules.XGraph
             // 添加进当前主GraphView视图中
             this.AddElement(node);
 
+            // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
+            node.OnSelectedNode = OnSelectedNode;
+            node.OnUnSelectedNode = OnUnSelectedNode;
+
             // 刷新GraphView视图
             node.RefreshExpandedState();
             node.RefreshPorts();
@@ -660,6 +668,10 @@ namespace SevenStrikeModules.XGraph
             #region GraphView 视图操作
             // 添加进当前主GraphView视图中
             this.AddElement(node);
+
+            // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
+            node.OnSelectedNode = OnSelectedNode;
+            node.OnUnSelectedNode = OnUnSelectedNode;
 
             // 刷新GraphView视图
             node.RefreshExpandedState();
@@ -730,7 +742,6 @@ namespace SevenStrikeModules.XGraph
 
             return visualNode;
         }
-
         /// <summary>
         /// 创建节点 - 便签
         /// </summary>
@@ -754,7 +765,6 @@ namespace SevenStrikeModules.XGraph
 
             return stickNode;
         }
-
         /// <summary>
         /// 创建节点 - 标签
         /// </summary>
@@ -778,7 +788,6 @@ namespace SevenStrikeModules.XGraph
 
             return labelNode;
         }
-
         /// <summary>
         /// 创建节点 - 贴图
         /// </summary>
@@ -802,7 +811,6 @@ namespace SevenStrikeModules.XGraph
 
             return decalNode;
         }
-
         /// <summary>
         /// 创建节点 - 变量
         /// </summary>

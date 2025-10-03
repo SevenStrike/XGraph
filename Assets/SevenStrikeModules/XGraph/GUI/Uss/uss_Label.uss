@@ -54,7 +54,7 @@
      width: 100%;
      height: auto;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-     color: rgb(128, 128, 128);
+     color: rgba(255, 255, 255, 0.5);
      letter-spacing: 3px;
      padding-top: 0;
      padding-right: 10px;

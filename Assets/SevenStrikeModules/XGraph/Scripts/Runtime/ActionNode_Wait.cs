@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
+
     public abstract class ActionNode_Wait : ActionNode_Base
     {
         /// <summary>
@@ -15,9 +15,10 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-            if (VariableData_ValueExist("delay"))
+            Variable variable = Variable_Get("delay");
+            if (variable != null)
             {
-                Time = VariableData_GetValue("delay").GetValue<float>();
+                Time = variable.GetValue<float>();
             }
         }
     }

@@ -41,10 +41,10 @@ namespace SevenStrikeModules.XGraph
             if (graphViewChange.edgesToCreate != null)
             {
                 // 如果创建了连线，edge 为连线
-                graphViewChange.edgesToCreate.ForEach(edge =>
+                foreach (var edge in graphViewChange.edgesToCreate)
                 {
                     CreateEdge(edge.output.node, edge.input.node, edge);
-                });
+                }
             }
         }
         /// <summary>
@@ -198,7 +198,7 @@ namespace SevenStrikeModules.XGraph
             if (graphViewChange.elementsToRemove != null)
             {
                 // 当有元素被移除的时候
-                graphViewChange.elementsToRemove.ForEach(element =>
+                foreach (var element in graphViewChange.elementsToRemove)
                 {
                     Removed_Node(element);
                     Removed_Stick(element);
@@ -208,12 +208,10 @@ namespace SevenStrikeModules.XGraph
                     Removed_InternalVariable(element);
                     Removed_Edge(element);
                     Removed_Group(element);
-                });
+                }
                 RecheckNodesIsExist();
             }
         }
-
-
         /// <summary>
         /// 当移除编组时
         /// </summary>

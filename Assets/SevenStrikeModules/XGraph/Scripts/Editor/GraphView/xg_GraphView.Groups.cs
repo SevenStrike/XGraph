@@ -54,7 +54,7 @@ namespace SevenStrikeModules.XGraph
             group_element_title.AddToClassList("group_title");
 
             // 应用配置文件的颜色到编组标题的文字颜色和背景颜色
-            ThemesList.Group.ForEach(colorData =>
+            foreach (var colorData in ThemesList.Group)
             {
                 if (colorData.solution == groupData.solution)
                 {
@@ -63,7 +63,7 @@ namespace SevenStrikeModules.XGraph
                     group_element_title.style.color = util_XGraphEditorUtility.Color_From_HexString(colorData.title_text_color);
                     icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString(colorData.logo_color);
                 }
-            });
+            }
 
             // 绑定 Group 右键菜单
             group_element_header.AddManipulator(new ContextualMenuManipulator(evt =>
@@ -84,7 +84,13 @@ namespace SevenStrikeModules.XGraph
                                 Group gp = CurrentSelectedGroups[i];
 
                                 // 同步修改行为树根节点中的对应的编组数据的配色方案
-                                ActionTreeAsset.Groups.ForEach(data => { if (data.group == gp) { data.solution = dat.solution; } });
+                                foreach (var data in ActionTreeAsset.Groups)
+                                {
+                                    if (data.group == gp)
+                                    {
+                                        data.solution = dat.solution;
+                                    }
+                                }
 
                                 gp.Q<VisualElement>("headerContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color);
                                 gp.Q<VisualElement>("centralContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color);
@@ -138,7 +144,7 @@ namespace SevenStrikeModules.XGraph
             List<string> nodes_guid = new List<string>();
 
             // 收集选中节点的GUID
-            selectedNodes.ForEach(n =>
+            foreach (var n in selectedNodes)
             {
                 if (n is VNode_Base node)
                 {
@@ -160,7 +166,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     nodes_guid.Add(decal.DecalData.guid);
                 }
-            });
+            }
 
             // 创建编组数据
             ActionGroupData gp_data = new ActionGroupData(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
@@ -169,11 +175,11 @@ namespace SevenStrikeModules.XGraph
             Group gp = CreateGroup(title, localMousePosition, gp_data);
 
             // 添加选中节点到编组
-            selectedNodes.ForEach(n =>
+            foreach (var n in selectedNodes)
             {
                 gp.AddElement(n);
                 CheckHasAvatarNode(gp_data);
-            });
+            }
 
             Undo.RecordObject(ActionTreeAsset, "Create Group");
             // 添加编组到行为树数据
@@ -328,10 +334,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private void CollectGroupsPosition()
         {
-            ActionTreeAsset.Groups.ForEach(g =>
+            foreach (var g in ActionTreeAsset.Groups)
             {
                 g.pos = g.group.GetPosition().position;
-            });
+            }
         }
         /// <summary>
         /// 根据group寻找GroupData
@@ -362,7 +368,7 @@ namespace SevenStrikeModules.XGraph
             }
         }
 
-        #region 回调
+        #region 节点放入或取出编组的回调
         /// <summary>
         /// 当节点拖入编组
         /// </summary>

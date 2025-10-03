@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
-    using System.Runtime.InteropServices;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -132,28 +131,28 @@ namespace SevenStrikeModules.XGraph
             switch (vare.type)
             {
                 case VariableType.String:
-                    val.text = util_Dashboard.GetVariableValue<string>(vare);
+                    val.text = GetVariableValue<string>(vare);
                     break;
                 case VariableType.Float:
-                    val.text = util_Dashboard.GetVariableValue<float>(vare).ToString();
+                    val.text = GetVariableValue<float>(vare).ToString();
                     break;
                 case VariableType.Int:
-                    val.text = util_Dashboard.GetVariableValue<int>(vare).ToString();
+                    val.text = GetVariableValue<int>(vare).ToString();
                     break;
                 case VariableType.Bool:
-                    val.text = util_Dashboard.GetVariableValue<bool>(vare).ToString();
+                    val.text = GetVariableValue<bool>(vare).ToString();
                     break;
                 case VariableType.Vector2:
-                    val.text = util_Dashboard.GetVariableValue<Vector2>(vare).ToString();
+                    val.text = GetVariableValue<Vector2>(vare).ToString();
                     break;
                 case VariableType.Vector3:
-                    val.text = util_Dashboard.GetVariableValue<Vector3>(vare).ToString();
+                    val.text = GetVariableValue<Vector3>(vare).ToString();
                     break;
                 case VariableType.Vector4:
-                    val.text = util_Dashboard.GetVariableValue<Vector4>(vare).ToString();
+                    val.text = GetVariableValue<Vector4>(vare).ToString();
                     break;
                 case VariableType.Color:
-                    val.text = util_Dashboard.GetVariableValue<Color>(vare).ToString();
+                    val.text = GetVariableValue<Color>(vare).ToString();
                     break;
             }
             Add(val);
@@ -166,6 +165,16 @@ namespace SevenStrikeModules.XGraph
         {
             Clear();
             editor = null;
+        }
+
+        /// <summary>
+        /// 根据变量类型获取变量的值
+        /// </summary>
+        /// <param name="vare"></param>
+        /// <returns></returns>
+        public static T GetVariableValue<T>(Variable vare)
+        {
+            return vare.GetValue<T>();
         }
     }
 }

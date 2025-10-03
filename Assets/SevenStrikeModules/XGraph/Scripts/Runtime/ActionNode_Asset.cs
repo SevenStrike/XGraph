@@ -3,15 +3,12 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Reflection.Emit;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
     using UnityEngine.UIElements;
-    using static UnityEditor.Progress;
     using Object = UnityEngine.Object;
 
     #region 创建节点信息结构体
@@ -370,7 +367,10 @@ namespace SevenStrikeModules.XGraph
             clone.guid = guid_create ? GUID.Generate().ToString() : guid;
             clone.pos = pos;
             clone.guids = new List<string>();
-            guids.ForEach(guid => clone.guids.Add(guid));
+            foreach (string guid in guids)
+            {
+                clone.guids.Add(guid);
+            }
             clone.solution = solution;
             clone.group = null;
             clone.groupcontainer = null;
@@ -495,6 +495,7 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
+    #region 变量连接器
     [Serializable]
     public class VarialbleGuidConnector
     {
@@ -545,6 +546,7 @@ namespace SevenStrikeModules.XGraph
             this.variable = variable.Clone(false);
         }
     }
+    #endregion
 
     #region 变量
     /// <summary>
@@ -1251,7 +1253,7 @@ namespace SevenStrikeModules.XGraph
         public object DuplicatedNode;
     }
 
-    [CreateAssetMenu(fileName = "ActionTree", menuName = "XGraph/ActionGraphAsset")]
+    [CreateAssetMenu(fileName = "NewXGraph", menuName = "XGraphAsset")]
     public class ActionNode_Asset : ScriptableObject
     {
         /// <summary>
@@ -1442,6 +1444,8 @@ namespace SevenStrikeModules.XGraph
             Actions.Clear();
             // 清空便签列表
             StickNote_Clear();
+            // 清空标签
+            Label_Clear();
             // 清空贴图列表
             Decal_Clear();
             // 清空变量列表
@@ -1475,7 +1479,7 @@ namespace SevenStrikeModules.XGraph
             root.Variables_Refresh();
             AssetDatabase.SaveAssetIfDirty(root);
 
-            LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            LastSaveDateTime = root.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
 
             GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
 
@@ -1833,11 +1837,12 @@ namespace SevenStrikeModules.XGraph
                 Undo.RecordObject(wait, "Connect_WaitNode");
 #endif
                 bool existChild = false;
-                wait.childNodes.ForEach(c =>
+                foreach (var c in wait.childNodes)
                 {
                     if (child.guid == c.guid)
                         existChild = true;
-                });
+                }
+
                 if (existChild)
                 {
                     Debug.Log("wait 节点已经存在添加的指定资源！忽略它！");
@@ -1874,11 +1879,11 @@ namespace SevenStrikeModules.XGraph
                 Undo.RecordObject(comp, "Connect_CompositeNode");
 #endif
                 bool existChild = false;
-                comp.childNodes.ForEach(c =>
+                foreach (var c in comp.childNodes)
                 {
                     if (child.guid == c.guid)
                         existChild = true;
-                });
+                }
                 if (existChild)
                 {
                     Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
@@ -1896,11 +1901,11 @@ namespace SevenStrikeModules.XGraph
                 Undo.RecordObject(relay, "Connect_RelayNode");
 #endif
                 bool existChild = false;
-                relay.childNodes.ForEach(c =>
+                foreach (var c in relay.childNodes)
                 {
                     if (child.guid == c.guid)
                         existChild = true;
-                });
+                }
                 if (existChild)
                 {
                     //Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
@@ -2104,13 +2109,13 @@ namespace SevenStrikeModules.XGraph
         public Variable Variable_GetVarSource(string varguid)
         {
             Variable vare = null;
-            BlackboardVariable.ForEach((n) =>
+            foreach (Variable n in BlackboardVariable)
             {
                 if (varguid == n.guid)
                 {
                     vare = n;
                 }
-            });
+            }
 
             return vare;
         }

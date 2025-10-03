@@ -64,7 +64,14 @@ namespace SevenStrikeModules.XGraph
         /// 标签的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
-
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Label> OnSelectedNode;
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Label> OnUnSelectedNode;
         #region 节点信息
         /// <summary>
         /// 节点标题
@@ -155,19 +162,38 @@ namespace SevenStrikeModules.XGraph
             }
         }
 
+        #region 回调
+        /// <summary>
+        /// 当选择节点时
+        /// </summary>
         public override void OnSelected()
         {
             base.OnSelected();
 
             FontControlPanelDisplayer(true);
-        }
 
+            // 调用回调事件
+            if (OnSelectedNode != null)
+            {
+                OnSelectedNode.Invoke(this);
+            }
+        }
+        /// <summary>
+        /// 取消选择时
+        /// </summary>
         public override void OnUnselected()
         {
             base.OnUnselected();
 
             FontControlPanelDisplayer(false);
+
+            // 调用回调事件
+            if (OnUnSelectedNode != null)
+            {
+                OnUnSelectedNode.Invoke(this);
+            }
         }
+        #endregion
 
         /// <summary>
         /// 可改变尺寸

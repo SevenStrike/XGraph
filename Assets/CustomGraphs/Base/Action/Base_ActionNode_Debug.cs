@@ -13,9 +13,10 @@ namespace SevenStrikeModules.XGraph
 
         public void DebugMsg()
         {
-            if (VariableData_ValueExist("string-s"))
+            Variable variable = Variable_Get("string-s");
+            if (variable != null)
             {
-                string msg = VariableData_GetValue("string-s").GetValue<string>();
+                string msg = variable.GetValue<string>();
                 Debug.Log(msg);
             }
             else

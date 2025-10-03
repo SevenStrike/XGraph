@@ -1,6 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using Codice.CM.Common.Tree;
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
@@ -306,15 +305,18 @@ namespace SevenStrikeModules.XGraph
             AppendElement(GraphNodeContainerType.ExtensionContainer, label);
         }
 
+        /// <summary>
+        /// 绘制输入端口
+        /// </summary>
         public virtual void Draw_Input()
         {
-            Port_Inputs.ForEach(p =>
+            foreach (var p in Port_Inputs)
             {
                 p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Input, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
                 p.PortDonut = p.Port.Q<VisualElement>("connector");
                 SetPortStyle(p, PortStyleType.In);
                 AppendElement(GraphNodeContainerType.InputContainer, p.Port);
-            });
+            }
         }
 
         /// <summary>
@@ -322,14 +324,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Output()
         {
-            Port_Outputs.ForEach(p =>
+            foreach (var p in Port_Outputs)
             {
                 // 绘制端口 - 输出
                 p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Output, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
                 p.PortDonut = p.Port.Q<VisualElement>("connector");
                 SetPortStyle(p, PortStyleType.Out);
                 AppendElement(GraphNodeContainerType.OutputContainer, p.Port);
-            });
+            }
         }
 
         /// <summary>
@@ -403,13 +405,13 @@ namespace SevenStrikeModules.XGraph
             CheckExecutionModel();
 
             #region 应用配置文件的颜色到节点的标识颜色
-            graphView.ThemesList.Node.ForEach(colorData =>
+            foreach (var colorData in graphView.ThemesList.Node)
             {
                 if (colorData.solution == ActionData.themeSolution)
                 {
                     SeperateIconLabel.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
                 }
-            });
+            }
             #endregion
 
             titlebuttoncontainer.Add(SeperateIconLabel);
@@ -915,7 +917,5 @@ namespace SevenStrikeModules.XGraph
             }
         }
         #endregion
-
-
     }
 }

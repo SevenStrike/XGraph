@@ -1,8 +1,7 @@
-using System;
-using UnityEngine;
-
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEngine;
+
     public class ActionNode_Variable : ActionNode_Base
     {
         [SerializeReference]
@@ -41,6 +40,53 @@ namespace SevenStrikeModules.XGraph
             }
 
             return var;
+        }
+
+        /// <summary>
+        /// 获取变量解释
+        /// </summary>
+        /// <returns></returns>
+        public string GetVariableDescription()
+        {
+            return variable.description;
+        }
+
+        /// <summary>
+        /// 获取变量值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public T GetVariableValue<T>(T type)
+        {
+            return variable.GetValue<T>();
+        }
+
+        /// <summary>
+        /// 获取变量类型
+        /// </summary>
+        /// <returns></returns>
+        public VariableType GetVariableType()
+        {
+            return variable.type;
+        }
+
+        /// <summary>
+        /// 获取变量名称
+        /// </summary>
+        /// <returns></returns>
+        public string GetVariableName()
+        {
+            return variable.name;
+        }
+
+        /// <summary>
+        /// 获取变量Guid
+        /// </summary>
+        /// <returns></returns>
+        public string GetVariableGuid()
+        {
+            return variable.guid;
         }
 
         public override void Execute()

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEditor.Experimental.GraphView;
@@ -662,7 +663,7 @@
             #region GraphIntros 组件
             xw_label_graphTitle = root.Q<Label>("graphintro_Title");
             xw_label_graph_CurrentNodeName = root.Q<Label>("graphintro_currentNodeName");
-            xw_label_graph_CurrentNodeName.style.color = util_Dashboard.Theme_Primary;
+            xw_label_graph_CurrentNodeName.style.color = Color.white * 0.8f;
             xw_label_graph_CurrentNodePath = root.Q<Label>("graphintro_currentNodePath");
             xw_label_graphMarkText = root.Q<Label>("graphintro_MarkText");
             #endregion
@@ -735,7 +736,7 @@
             xw_GraphInfo_LastSaveDateTime = xw_GraphInfo_Container.Q<VisualElement>("right").Q<Label>("lastsavedatetime");
             // 行为资源信息容器 - 最后一次保存日期 & 时间的时差
             xw_GraphInfo_LastSaveLag = xw_GraphInfo_Container.Q<VisualElement>("right").Q<Label>("lastsavelag");
-            xw_GraphInfo_LastSaveLag.style.color = util_Dashboard.Theme_Primary;
+            xw_GraphInfo_LastSaveLag.style.color = Color.white * 0.8f;
             // 窗口尺寸大小显示
             xw_label_GraphWindowSize = xw_GraphInfo_Container.Q<VisualElement>("center").Q<Label>("size");
             // 鼠标位置
@@ -805,7 +806,6 @@
                 };
             };
         }
-
         /// <summary>
         /// 重新引用行为树编辑器的目标行为树资源
         /// </summary>
@@ -919,24 +919,39 @@
             // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
             xw_InspectorView.UpdateSelection(nodeview);
 
-            // 如果选中的节点是 VNode_Base 类型
+            // 选中的节点为：行为节点
             if (nodeview is VNode_Base n_base)
             {
-                // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"节点属性 - {n_base.ActionData.identifyName}");
-
-                // 显示当前选中的节点的类型信息
-                InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
+                // 选中的节点为：内部变量节点
+                if (n_base is VNode_Variable_Internal n_vare_internal)
+                {
+                    Node_InternalVariable_Selected(n_vare_internal);
+                }
+                // 选中的节点为：行为节点
+                else
+                {
+                    Node_Action_Selected(n_base);
+                }
             }
-
-            // 如果选中的节点是 VNode_Variable 类型
-            if (nodeview is VNode_Variable n_vare)
+            // 选中的节点为：黑板变量节点
+            else if (nodeview is VNode_Variable n_vare)
             {
-                // 加载 Inspector 面板标题文字
-                InspectorViewAction_SetTitle($"变量属性 - {n_vare.VariableData.guid}");
-
-                // 显示当前选中的节点的类型信息
-                InspectorViewAction_SetNodeInfo("...", "...");
+                Node_Variable_Selected(n_vare);
+            }
+            // 选中的节点为：贴图节点
+            else if (nodeview is VNode_Decal n_decal)
+            {
+                Node_Decal_Selected(n_decal);
+            }
+            // 选中的节点为：便签节点
+            else if (nodeview is VNode_Stick n_stick)
+            {
+                Node_Stick_Selected(n_stick);
+            }
+            // 选中的节点为：标签节点
+            else if (nodeview is VNode_Label n_label)
+            {
+                Node_Label_Selected(n_label);
             }
 
             xw_isUnSelectedNode = false;
@@ -953,42 +968,51 @@
             {
                 if (xw_InspectorView == null)
                     return;
-                xw_currentSelectedVisualNode = nodeviews[0];
+
+                Node selectedNode = nodeviews[0];
+                xw_currentSelectedVisualNode = selectedNode;
 
                 // 清空 Inspector 视图
                 xw_InspectorView.ClearInspector();
 
                 // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
-                xw_InspectorView.UpdateSelection(nodeviews[0]);
+                xw_InspectorView.UpdateSelection(selectedNode);
 
-
-                if (nodeviews[0] is VNode_Base n_base)
+                // 选中的节点为：行为节点
+                if (selectedNode is VNode_Base n_base)
                 {
+                    // 选中的节点为：内部变量节点
                     if (n_base is VNode_Variable_Internal n_vare_internal)
                     {
-                        // 加载 Inspector 面板标题文字
-                        InspectorViewAction_SetTitle($"内部变量属性 - {n_vare_internal.title}");
-                        // 显示当前选中的节点的类型信息
-                        InspectorViewAction_SetNodeInfo(n_vare_internal.VariableData.variable.type.ToString(), n_vare_internal.VariableData.variable.description);
-                        Debug.Log("选中节点：内部变量");
+                        Node_InternalVariable_Selected(n_vare_internal);
                     }
+                    // 选中的节点为：行为节点
                     else
                     {
-                        // 加载 Inspector 面板标题文字
-                        InspectorViewAction_SetTitle($"节点属性 - {n_base.title}");
-                        // 显示当前选中的节点的类型信息
-                        InspectorViewAction_SetNodeInfo(n_base.ActionData.GetInfo(), n_base.ActionData.GetPath());
-                        Debug.Log("选中节点：行为");
+                        Node_Action_Selected(n_base);
                     }
                 }
-                else if (nodeviews[0] is VNode_Variable n_vare)
+                // 选中的节点为：黑板变量节点
+                else if (selectedNode is VNode_Variable n_vare)
                 {
-                    // 加载 Inspector 面板标题文字
-                    InspectorViewAction_SetTitle($"黑板变量属性 - {n_vare.VariableData.guid}");
-                    // 显示当前选中的节点的类型信息
-                    InspectorViewAction_SetNodeInfo("", "");
-                    Debug.Log("选中节点：黑板变量");
+                    Node_Variable_Selected(n_vare);
                 }
+                // 选中的节点为：贴图节点
+                else if (selectedNode is VNode_Decal n_decal)
+                {
+                    Node_Decal_Selected(n_decal);
+                }
+                // 选中的节点为：便签节点
+                else if (selectedNode is VNode_Stick n_stick)
+                {
+                    Node_Stick_Selected(n_stick);
+                }
+                // 选中的节点为：标签节点
+                else if (selectedNode is VNode_Label n_label)
+                {
+                    Node_Label_Selected(n_label);
+                }
+
                 xw_isUnSelectedNode = false;
             }
             else if (nodeviews.Count > 1)
@@ -1002,9 +1026,11 @@
 
                 // 加载 Inspector 面板标题文字
                 InspectorViewAction_SetTitle($"节点属性 - 多选状态");
-                InspectorViewAction_SetNodeInfo("-", "-");
+                xw_SetNodeInfo("-", "-");
             }
         }
+
+
         /// <summary>
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
@@ -1039,8 +1065,77 @@
                 xw_currentSelectedVisualNode = null;
 
                 // 节点的类型信息 - 清空
-                InspectorViewAction_SetNodeInfo(null, null);
+                xw_SetNodeInfo(null, null);
             }
+        }
+        #endregion
+
+        #region 选中节点时
+        /// <summary>
+        /// 选中节点：变量
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Variable_Selected(VNode_Variable n_vare)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"黑板变量属性 - {n_vare.VariableData.variable.name}");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo($"{n_vare.VariableData.variable.name}  /  {n_vare.VariableData.variable.GetActiveType()}  /  {n_vare.VariableData.variable.guid}", $"{n_vare.VariableData.variable.description}  /  {n_vare.VariableData.variable.GetValue()}");
+        }
+        /// <summary>
+        /// 选中节点：行为
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Action_Selected(VNode_Base n_base)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"行为属性 - {n_base.title}");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}  \n  {n_base.ActionData.guid}");
+        }
+        /// <summary>
+        /// 选中节点：内部变量
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_InternalVariable_Selected(VNode_Variable_Internal n_vare_internal)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"内部变量属性 - {n_vare_internal.title}");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}  /  {n_vare_internal.VariableData.VariableDatas.First().variable.name}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
+        }
+        /// <summary>
+        /// 选中节点：标签
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Label_Selected(VNode_Label n_label)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"标签属性");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo($"{n_label.LabelData.guid}  /  {n_label.LabelData.position.ToString()}  /  {n_label.LabelData.size.ToString()}", $"{n_label.LabelData.content}");
+        }
+        /// <summary>
+        /// 选中节点：便签
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Stick_Selected(VNode_Stick n_stick)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"便签属性");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo($"{n_stick.StickData.guid}  /   {n_stick.StickData.position.ToString()}  /   {n_stick.StickData.size.ToString()}", $"{n_stick.StickData.content}");
+        }
+        /// <summary>
+        /// 选中节点：贴图
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Decal_Selected(VNode_Decal n_decal)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"贴图属性");
+            // 显示当前选中的节点的类型信息
+            xw_SetNodeInfo($"{n_decal.DecalData.guid}  /   {n_decal.DecalData.position.ToString()}  /   {n_decal.DecalData.size.ToString()}", $"{n_decal.DecalData.DecalTexture}");
         }
         #endregion
 
@@ -1094,6 +1189,9 @@
 
             xw_GraphInfo_GraphViewIcon_ColorSyncUpdate();
             xw_GraphInfo_LastSaveLag_ColorSyncUpdate();
+            xw_GraphInfo_LastSaveLag_ColorSyncUpdate();
+            xw_label_graph_CurrentNodeName_ColorSyncUpdate();
+            xw_label_graph_CurrentNodePath_ColorSyncUpdate();
 
             if (OnThemeColorChanged != null)
                 OnThemeColorChanged.Invoke(CloneTree.GraphviewGridBackgroundThemes.themecolor);
@@ -1316,10 +1414,10 @@
             #region 高亮显示节点
             VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
             List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
-            vNode_Variables.ForEach(v =>
+            foreach (VNode_Variable v in vNode_Variables)
             {
                 v.Highlight();
-            });
+            }
             #endregion
         }
         /// <summary>
@@ -1339,10 +1437,10 @@
             #region 取消高亮显示节点
             VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
             List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
-            vNode_Variables.ForEach(v =>
+            foreach (var v in vNode_Variables)
             {
                 v.UnHighlight();
-            });
+            }
             #endregion
         }
         #endregion
@@ -1531,14 +1629,6 @@
         public void xw_GraphInfo_LastSaveDateTime_Set(string lasttime)
         {
             xw_GraphInfo_LastSaveDateTime.text = $"{lasttime}";
-            xw_GraphInfo_LastSaveLag_Set(lasttime);
-        }
-        /// <summary>
-        /// 获取并计算正确的相差上一次保存时间的时差
-        /// </summary>
-        /// <param name="lasttime"></param>
-        public void xw_GraphInfo_LastSaveLag_Set(string lasttime)
-        {
             xw_GraphInfo_LastSaveLag.text = $"{util_XGraphEditorUtility.GetTimeSinceLastSavePrecise(lasttime)}";
         }
         /// <summary>
@@ -1598,13 +1688,28 @@
         /// </summary>
         /// <param name="name"></param>
         /// <param name="path"></param>
-        public void InspectorViewAction_SetNodeInfo(string name, string path)
+        public void xw_SetNodeInfo(string name, string path)
         {
-            // 节点的类型信息 - 清空
+            // 节点的类型信息
             util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodeName, name);
-            // 节点的挂载资源路径 - 清空
+            // 节点的挂载资源路径
             util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodePath, path);
         }
+        /// <summary>
+        /// 当前选择的节点名称的文本标签同步到主题色
+        /// </summary>
+        public void xw_label_graph_CurrentNodeName_ColorSyncUpdate()
+        {
+            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_CurrentNodeName, CloneTree.GraphviewGridBackgroundThemes.themecolor);
+        }
+        /// <summary>
+        /// 当前选择的节点的路径的文本标签同步到主题色
+        /// </summary>
+        public void xw_label_graph_CurrentNodePath_ColorSyncUpdate()
+        {
+            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_CurrentNodePath, CloneTree.GraphviewGridBackgroundThemes.themecolor);
+        }
+
         #endregion
         #endregion
 
@@ -1677,7 +1782,7 @@
         {
             // 将调整好的克隆Tree替换回原始Tree
             SourceTree.Replace(CloneTree);
-            xw_GraphInfo_LastSaveDateTime_Set(SourceTree.LastSaveDateTime);
+            xw_GraphInfo_LastSaveDateTime_Set(CloneTree.LastSaveDateTime);
         }
         #endregion
 
@@ -1934,7 +2039,6 @@
         {
             RestructureGraphViews();
         }
-
         /// <summary>
         /// 重建GraphView相关的的所有设置和节点以及内容
         /// </summary>
@@ -1994,7 +2098,6 @@
             // 刷新 BlackBoard 属性列表
             xw_BlackBoard_VariablesRestructure();
         }
-
         /// <summary>
         /// GraphView窗口关闭时的逻辑操作
         /// </summary>

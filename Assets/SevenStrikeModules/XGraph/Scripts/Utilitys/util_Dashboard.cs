@@ -1,16 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
-    using UnityEditor;
-    using UnityEngine;
-
     public static class util_Dashboard
     {
-        #region 主题色
-        public static Color Theme_Primary { get; set; } = GetHexString("#3BFE9B");
-        public static Color Theme_Secondary { get; set; } = GetHexString("#1E1E1E");
-        public static Color Theme_Part { get; set; } = GetHexString("#d2d2d2");
-        #endregion
-
         #region 公共路径
         public static string path_Temp = "Assets/SevenStrikeModules/XGraph/Temp/";
         public static string path_Root = "Assets/SevenStrikeModules/XGraph/";
@@ -115,85 +106,5 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
         #endregion
-
-        /// <summary>
-        /// 将十六位进制颜色码字符串转换到Color类型
-        /// </summary>
-        /// <param tweenName="hex">填写需要转换成Color类型的十六位进制的颜色码字符串（请忽略颜色代码开头的 #）</param>
-        /// <returns>此方法返回类型为 -> 颜色_Color</returns>
-        public static Color GetHexString(string hex)
-        {
-            Color nowColor = Color.black;
-
-            bool HasPrefix = false;
-            for (int i = 0; i < hex.Length; i++)
-            {
-                if (hex[i] == '#')
-                    HasPrefix = true;
-            }
-            if (HasPrefix)
-                ColorUtility.TryParseHtmlString(hex, out nowColor);
-            else
-                ColorUtility.TryParseHtmlString("#" + hex, out nowColor);
-            return nowColor;
-        }
-
-        [MenuItem("Assets/XGraph/C 清空所有子级资源", priority = 50, validate = true)]
-        private static bool validate_util_ClearChildNodes()
-        {
-            bool invalid = true;
-            // 获取当前选中的对象
-            var objs = Selection.objects;
-            if (objs != null)
-            {
-                foreach (var item in objs)
-                {
-                    if (item is ActionNode_Asset asset)
-                    {
-                        if (asset == null)
-                        {
-                            invalid = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            return invalid;
-        }
-        [MenuItem("Assets/XGraph/C 清空所有子级资源")]
-        public static void util_ClearChildNodes()
-        {
-            // 获取当前选中的对象
-            var objs = Selection.objects;
-            if (objs != null && objs.Length > 0)
-            {
-                foreach (var item in objs)
-                {
-                    if (item is ActionNode_Asset asset)
-                    {
-                        asset.Clear();
-                    }
-                }
-            }
-        }
-        [MenuItem("Assets/XGraph/F 复位编辑器黑板和属性面板配置")]
-        public static void util_ClearGraphWindowConfigs()
-        {
-            EditorPrefs.DeleteKey("XGraph_InspectorViewPosition");
-            EditorPrefs.DeleteKey("XGraph_InspectorViewSize");
-            EditorPrefs.DeleteKey("XGraph_InspectorViewDisplay");
-            EditorPrefs.DeleteKey("XGraph_BlackBoardViewPosition");
-            EditorPrefs.DeleteKey("XGraph_BlackBoardViewSize");
-            EditorPrefs.DeleteKey("XGraph_BlackBoardViewDisplay");
-        }
-        /// <summary>
-        /// 根据变量类型获取变量的值
-        /// </summary>
-        /// <param name="vare"></param>
-        /// <returns></returns>
-        public static T GetVariableValue<T>(Variable vare)
-        {
-            return vare.GetValue<T>();
-        }
     }
 }

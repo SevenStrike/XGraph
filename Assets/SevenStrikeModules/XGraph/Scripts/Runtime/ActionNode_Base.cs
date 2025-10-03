@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
     using UnityEditor;
-    using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
     public abstract class ActionNode_Base : ScriptableObject
@@ -109,7 +108,23 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public string GetPath()
         {
-            return $"{path}";
+            string val = "";
+            string[] texts = path.Split(new char[1] { '\\' });
+            int index = 0;
+            foreach (string t in texts)
+            {
+                if (index != texts.Length - 1)
+                {
+                    val += t + "  >  ";
+                    index++;
+                }
+                else
+                {
+                    val += t;
+                    index++;
+                }
+            }
+            return val;
         }
 
         #region 黑板变量 绑定/解绑
@@ -204,8 +219,8 @@ namespace SevenStrikeModules.XGraph
         /// 获取变量值（根据预设的端口名称）
         /// </summary>
         /// <param name="portName"></param>
-        /// <returns></returns>
-        public Variable VariableData_GetValue(string portName)
+        /// <returns>如果返回为空请检查传入的节点端口名称 "portName" 是否存在，或者 "portName" 端口是否链接了变量节点数据</returns>
+        public Variable Variable_Get(string portName)
         {
             Variable vare = null;
             bool exist = false;
@@ -233,68 +248,6 @@ namespace SevenStrikeModules.XGraph
             }
 
             return vare;
-        }
-        /// <summary>
-        /// 获取变量解释（根据预设的端口名称）
-        /// </summary>
-        /// <param name="portName"></param>
-        /// <returns></returns>
-        public string VariableData_GetDescription(string portName)
-        {
-            string des = null;
-            bool exist = false;
-
-            // 先从绑定的黑板变量数据列表中找
-            foreach (var item in VariableDatas)
-            {
-                if (portName == item.TargetPortName)
-                {
-                    des = item.variable.description;
-                    exist = true;
-                }
-            }
-
-            // 再从绑定的内部变量数据列表中找
-            if (!exist)
-            {
-                foreach (var item in InternalVariableDatas)
-                {
-                    if (portName == item.TargetPortName)
-                    {
-                        des = item.variable.description;
-                    }
-                }
-            }
-            return des;
-        }
-        /// <summary>
-        /// 检查变量是否存在（根据预设的端口名称）
-        /// </summary>
-        /// <param name="portName"></param>
-        /// <returns></returns>
-        public bool VariableData_ValueExist(string portName)
-        {
-            bool varexist = false;
-            bool listexist = false;
-
-            // 先从绑定的黑板变量数据列表中找
-            foreach (var item in VariableDatas)
-            {
-                if (portName == item.TargetPortName)
-                    varexist = true;
-            }
-
-            // 再从绑定的内部变量数据列表中找
-            if (!listexist)
-            {
-                foreach (var item in InternalVariableDatas)
-                {
-                    if (portName == item.TargetPortName)
-                        varexist = true;
-                }
-            }
-
-            return varexist;
         }
     }
 }
