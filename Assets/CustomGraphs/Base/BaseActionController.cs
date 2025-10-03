@@ -5,6 +5,8 @@ namespace SevenStrikeModules.XGraph
     public class BaseActionController : MonoBehaviour
     {
         public ActionNode_Workflow ActionTreeController;
+        public string msg;
+        public float delay;
 
         void Start()
         {
@@ -25,7 +27,10 @@ namespace SevenStrikeModules.XGraph
                 ActionTreeController.Action_Resume();
 
             if (Input.GetKeyDown(KeyCode.F))
-                ActionTreeController.ActionAsset.Variable_SetValue<string>("fff", "你好！我是一个变量哦！我被成功的赋值了！");
+            {
+                ActionTreeController.ActionAsset.Variable_SetValue("msg", msg);
+                ActionTreeController.ActionAsset.Variable_SetValue("delay", delay);
+            }
         }
     }
 }

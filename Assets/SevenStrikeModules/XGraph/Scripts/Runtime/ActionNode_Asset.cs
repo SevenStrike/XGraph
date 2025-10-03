@@ -1581,7 +1581,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建当前流程设计的克隆体（仅编辑器下）
         /// </summary>
         /// <returns></returns>
-        public ActionNode_Asset Clone(string clonepath = "")
+        public ActionNode_Asset Clone(string clonepath = "", bool editorMode = true)
         {
             // 创建新的 ActionNode_Asset
             ActionNode_Asset newRoot = ScriptableObject.CreateInstance<ActionNode_Asset>();
@@ -1718,12 +1718,15 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-            SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
+            if (editorMode)
+            {
+                SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
 
-            // 更新变量赋值数据
-            newRoot.Variables_Refresh();
+                // 更新变量赋值数据
+                newRoot.Variables_Refresh();
 
-            AssetDatabase.SaveAssetIfDirty(newRoot);
+                AssetDatabase.SaveAssetIfDirty(newRoot);
+            }
 
             return newRoot;
         }
@@ -2154,28 +2157,28 @@ namespace SevenStrikeModules.XGraph
                         switch (vare.variable.type)
                         {
                             case VariableType.String:
-                                vare.variable.SetValue<string>(variable.GetValue<string>());
+                                vare.variable.SetValue(variable.GetValue<string>());
                                 break;
                             case VariableType.Float:
-                                vare.variable.SetValue<float>(variable.GetValue<float>());
+                                vare.variable.SetValue(variable.GetValue<float>());
                                 break;
                             case VariableType.Int:
-                                vare.variable.SetValue<int>(variable.GetValue<int>());
+                                vare.variable.SetValue(variable.GetValue<int>());
                                 break;
                             case VariableType.Bool:
-                                vare.variable.SetValue<bool>(variable.GetValue<bool>());
+                                vare.variable.SetValue(variable.GetValue<bool>());
                                 break;
                             case VariableType.Vector2:
-                                vare.variable.SetValue<Vector2>(variable.GetValue<Vector2>());
+                                vare.variable.SetValue(variable.GetValue<Vector2>());
                                 break;
                             case VariableType.Vector3:
-                                vare.variable.SetValue<Vector3>(variable.GetValue<Vector3>());
+                                vare.variable.SetValue(variable.GetValue<Vector3>());
                                 break;
                             case VariableType.Vector4:
-                                vare.variable.SetValue<Vector4>(variable.GetValue<Vector4>());
+                                vare.variable.SetValue(variable.GetValue<Vector4>());
                                 break;
                             case VariableType.Color:
-                                vare.variable.SetValue<Color>(variable.GetValue<Color>());
+                                vare.variable.SetValue(variable.GetValue<Color>());
                                 break;
                         }
                     }
@@ -2246,29 +2249,28 @@ namespace SevenStrikeModules.XGraph
                     switch (data.variable.type)
                     {
                         case VariableType.String:
-                            string val_string = internalVar.variable.GetValue<string>();
-                            data.variable.SetValue<string>(val_string);
+                            data.variable.SetValue(internalVar.variable.GetValue<string>());
                             break;
                         case VariableType.Float:
-                            data.variable.SetValue<float>(internalVar.variable.GetValue<float>());
+                            data.variable.SetValue(internalVar.variable.GetValue<float>());
                             break;
                         case VariableType.Int:
-                            data.variable.SetValue<int>(internalVar.variable.GetValue<int>());
+                            data.variable.SetValue(internalVar.variable.GetValue<int>());
                             break;
                         case VariableType.Bool:
-                            data.variable.SetValue<bool>(internalVar.variable.GetValue<bool>());
+                            data.variable.SetValue(internalVar.variable.GetValue<bool>());
                             break;
                         case VariableType.Vector2:
-                            data.variable.SetValue<Vector2>(internalVar.variable.GetValue<Vector2>());
+                            data.variable.SetValue(internalVar.variable.GetValue<Vector2>());
                             break;
                         case VariableType.Vector3:
-                            data.variable.SetValue<Vector3>(internalVar.variable.GetValue<Vector3>());
+                            data.variable.SetValue(internalVar.variable.GetValue<Vector3>());
                             break;
                         case VariableType.Vector4:
-                            data.variable.SetValue<Vector4>(internalVar.variable.GetValue<Vector4>());
+                            data.variable.SetValue(internalVar.variable.GetValue<Vector4>());
                             break;
                         case VariableType.Color:
-                            data.variable.SetValue<Color>(internalVar.variable.GetValue<Color>());
+                            data.variable.SetValue(internalVar.variable.GetValue<Color>());
                             break;
                     }
                 }

@@ -5,6 +5,12 @@ namespace SevenStrikeModules.XGraph
         public override void Execute()
         {
             base.Execute();
+
+            Variable variable = Variable_Get("时间");
+            if (variable != null)
+            {
+                Time = variable.GetValue<float>();
+            }
         }
     }
 }

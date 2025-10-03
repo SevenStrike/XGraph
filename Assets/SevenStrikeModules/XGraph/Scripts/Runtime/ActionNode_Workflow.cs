@@ -3,15 +3,54 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEngine;
 
     public class ActionNode_Workflow : MonoBehaviour
     {
         public ActionNode_Asset ActionAsset;
+        // 运行时使用的克隆资源
+        public ActionNode_Asset ActionAssetClone;
         private bool isRunning = false;
         private bool isPaused = false;
+        /// <summary>
+        /// 编辑器内运行时保存参数的改动
+        /// </summary>
+        public bool canEditInRuntime = false;
+
         [Header("Debug Settings")]
         public bool showLogs = true;
+
+        private void Start()
+        {
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
+#endif
+        }
+
+        private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
+        {
+            if (canEditInRuntime)
+                return;
+
+#if UNITY_EDITOR
+            if (obj == PlayModeStateChange.EnteredPlayMode)
+            {
+                // 创建运行时克隆
+                if (!CreateRuntimeClone())
+                {
+                    LogError("无法创建运行时克隆，行为树启动失败");
+                    return;
+                }
+            }
+            if (obj == PlayModeStateChange.ExitingPlayMode)
+            {
+                EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+                // 恢复原始资源
+                RestoreOriginalAsset();
+            }
+#endif
+        }
 
         /// <summary>
         /// 行为开始
@@ -294,5 +333,51 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
+        #region 运行时克隆
+        /// <summary>
+        /// 创建运行时克隆
+        /// </summary>
+        private bool CreateRuntimeClone()
+        {
+            if (ActionAsset == null)
+            {
+                LogError("ActionAsset 为空，无法创建克隆");
+                return false;
+            }
+
+            ActionAssetClone = ActionAsset.Clone("", false);
+            ActionAssetClone.name += "_Clone";
+            ActionAsset = ActionAssetClone;
+            return true;
+        }
+
+        /// <summary>
+        /// 恢复原始资源
+        /// </summary>
+        private void RestoreOriginalAsset()
+        {
+            if (ActionAssetClone != null)
+            {
+                ActionAsset = ActionAssetClone.Clone("", false);
+                Log("已恢复原始资源");
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    string path = UnityEditor.AssetDatabase.GetAssetPath(ActionAssetClone);
+                    Debug.Log(path);
+                    UnityEditor.AssetDatabase.DeleteAsset(path);
+                }
+                else
+                {
+                    Destroy(ActionAssetClone);
+                }
+#endif
+
+
+                ActionAssetClone = null;
+            }
+        }
+        #endregion
     }
 }

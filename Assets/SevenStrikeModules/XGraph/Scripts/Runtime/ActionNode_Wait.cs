@@ -15,11 +15,7 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-            Variable variable = Variable_Get("delay");
-            if (variable != null)
-            {
-                Time = variable.GetValue<float>();
-            }
+
         }
     }
 }

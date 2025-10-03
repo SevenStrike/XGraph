@@ -13,7 +13,7 @@ namespace SevenStrikeModules.XGraph
 
         public void DebugMsg()
         {
-            Variable variable = Variable_Get("string-s");
+            Variable variable = Variable_Get("内容");
             if (variable != null)
             {
                 string msg = variable.GetValue<string>();
