@@ -1318,6 +1318,7 @@ namespace SevenStrikeModules.XGraph
         }
 
         #region 资源操作
+#if UNITY_EDITOR
         /// <summary>
         /// 创建数据节点到列表中
         /// </summary>
@@ -1325,7 +1326,6 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public ActionNode_Base Create(NodeCreateArgs_Action args)
         {
-#if UNITY_EDITOR
             Undo.RecordObject(this, "Added ActionTree Asset");
 
             // 解析得到行为基础类
@@ -1408,9 +1408,10 @@ namespace SevenStrikeModules.XGraph
             string opt_path = re_path.Replace("Temp", $"{this.name}");
             string combine_path = $"{opt_path}   >   {Actions[^1].name}.asset";
             Actions[^1].path = combine_path;
-#endif
+
             return actionData;
         }
+#endif
         /// <summary>
         /// 从列表中移除一个数据节点
         /// </summary>
@@ -1581,7 +1582,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建当前流程设计的克隆体（仅编辑器下）
         /// </summary>
         /// <returns></returns>
-        public ActionNode_Asset Clone(string clonepath = "", bool editorMode = true)
+        public ActionNode_Asset Clone(string clonepath = "", bool saveAsset = true)
         {
             // 创建新的 ActionNode_Asset
             ActionNode_Asset newRoot = ScriptableObject.CreateInstance<ActionNode_Asset>();
@@ -1718,14 +1719,17 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-            if (editorMode)
+
+            if (saveAsset)
             {
                 SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
 
                 // 更新变量赋值数据
                 newRoot.Variables_Refresh();
 
+#if UNITY_EDITOR
                 AssetDatabase.SaveAssetIfDirty(newRoot);
+#endif
             }
 
             return newRoot;

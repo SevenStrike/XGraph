@@ -151,8 +151,10 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
+#if UNITY_EDITOR
                 Undo.RecordObject(this, "Assigned Variable Connector");
                 VariableDatas.Add(new VarialbleGuidConnector(data.guid, portName, data.variable));
+#endif
             }
         }
         /// <summary>
@@ -162,11 +164,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="portName"></param>
         public void VariableData_Unbind(string guid, string portName)
         {
+#if UNITY_EDITOR
             Undo.RecordObject(this, "Unassigned Variable Connector");
 
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
-
+#endif
         }
         #endregion
 
@@ -194,10 +197,12 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
+#if UNITY_EDITOR
                 Undo.RecordObject(this, "Binded VariableInternal Connector");
                 VarialbleInternalGuidConnector con = new VarialbleInternalGuidConnector(data.guid, portName, data.variable);
                 con.variable.name = data.identifyName;
                 InternalVariableDatas.Add(con);
+#endif
             }
         }
         /// <summary>
@@ -207,11 +212,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="portName"></param>
         public void InternalVariableData_Unbind(string guid, string portName)
         {
+#if UNITY_EDITOR
             Undo.RecordObject(this, "Unbinded InternalVariable Connector");
 
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
-
+#endif
         }
         #endregion
 

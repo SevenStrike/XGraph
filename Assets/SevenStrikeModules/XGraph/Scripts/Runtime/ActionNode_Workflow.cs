@@ -8,15 +8,26 @@ namespace SevenStrikeModules.XGraph
 
     public class ActionNode_Workflow : MonoBehaviour
     {
+        /// <summary>
+        /// 原始行为资源
+        /// </summary>
         public ActionNode_Asset ActionAsset;
-        // 运行时使用的克隆资源
+        /// <summary>
+        /// 运行时使用的克隆行为资源
+        /// </summary>
         public ActionNode_Asset ActionAssetClone;
+        /// <summary>
+        /// 流程运行中
+        /// </summary>
         private bool isRunning = false;
+        /// <summary>
+        /// 流程暂停中
+        /// </summary>
         private bool isPaused = false;
         /// <summary>
         /// 编辑器内运行时保存参数的改动
         /// </summary>
-        public bool canEditInRuntime = false;
+        public bool SaveValueChangesInRuntime = true;
 
         [Header("Debug Settings")]
         public bool showLogs = true;
@@ -28,12 +39,12 @@ namespace SevenStrikeModules.XGraph
 #endif
         }
 
+#if UNITY_EDITOR
         private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
         {
-            if (canEditInRuntime)
+            if (SaveValueChangesInRuntime)
                 return;
 
-#if UNITY_EDITOR
             if (obj == PlayModeStateChange.EnteredPlayMode)
             {
                 // 创建运行时克隆
@@ -49,8 +60,8 @@ namespace SevenStrikeModules.XGraph
                 // 恢复原始资源
                 RestoreOriginalAsset();
             }
-#endif
         }
+#endif
 
         /// <summary>
         /// 行为开始
@@ -346,8 +357,6 @@ namespace SevenStrikeModules.XGraph
             }
 
             ActionAssetClone = ActionAsset.Clone("", false);
-            ActionAssetClone.name += "_Clone";
-            ActionAsset = ActionAssetClone;
             return true;
         }
 
@@ -358,21 +367,21 @@ namespace SevenStrikeModules.XGraph
         {
             if (ActionAssetClone != null)
             {
-                ActionAsset = ActionAssetClone.Clone("", false);
+                ActionAsset.Replace(ActionAssetClone);
                 Log("已恢复原始资源");
 
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
-                {
-                    string path = UnityEditor.AssetDatabase.GetAssetPath(ActionAssetClone);
-                    Debug.Log(path);
-                    UnityEditor.AssetDatabase.DeleteAsset(path);
-                }
-                else
-                {
-                    Destroy(ActionAssetClone);
-                }
-#endif
+                //#if UNITY_EDITOR
+                //                if (!Application.isPlaying)
+                //                {
+                //                    string path = UnityEditor.AssetDatabase.GetAssetPath(ActionAssetClone);
+                //                    Debug.Log(path);
+                //                    UnityEditor.AssetDatabase.DeleteAsset(path);
+                //                }
+                //                else
+                //                {
+                //                    Destroy(ActionAssetClone);
+                //                }
+                //#endif
 
 
                 ActionAssetClone = null;
