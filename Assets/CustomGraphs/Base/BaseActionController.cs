@@ -4,32 +4,33 @@ namespace SevenStrikeModules.XGraph
 
     public class BaseActionController : MonoBehaviour
     {
-        public ActionNode_Workflow ActionTreeController;
+        public ActionNode_Workflow ActionTreeWorkflow;
         public string msg;
         public float delay;
 
         void Start()
         {
-            if (ActionTreeController == null)
-                ActionTreeController = GetComponent<ActionNode_Workflow>();
+            if (ActionTreeWorkflow == null)
+                ActionTreeWorkflow = GetComponent<ActionNode_Workflow>();
         }
 
         // Update is called once per frame
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.S))
-                ActionTreeController.Action_Start();
+                ActionTreeWorkflow.Action_Start();
             if (Input.GetKeyDown(KeyCode.K))
-                ActionTreeController.Action_Stop();
+                ActionTreeWorkflow.Action_Stop();
             if (Input.GetKeyDown(KeyCode.P))
-                ActionTreeController.Action_Pause();
+                ActionTreeWorkflow.Action_Pause();
             if (Input.GetKeyDown(KeyCode.R))
-                ActionTreeController.Action_Resume();
+                ActionTreeWorkflow.Action_Resume();
 
             if (Input.GetKeyDown(KeyCode.F))
             {
-                ActionTreeController.ActionAsset.Variable_SetValue("msg", msg);
-                ActionTreeController.ActionAsset.Variable_SetValue("delay", delay);
+                ActionTreeWorkflow.ActionAsset.FindActionNode("8b5f6576e6ba48b48ab3a44232d1e631").Variable_Set("内容", "9876543210");
+                ActionTreeWorkflow.ActionAsset.Variable_SetValue("msg", msg);
+                ActionTreeWorkflow.ActionAsset.Variable_SetValue("delay", delay);
             }
         }
     }

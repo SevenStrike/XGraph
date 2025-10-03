@@ -1352,6 +1352,8 @@ namespace SevenStrikeModules.XGraph
             actionData.content = args.content;
             actionData.nodeGraphSize = args.size;
 
+            actionData.SetRoot(this);
+
             // 为变量类型节点数据特化处理，需要初始化类型 Variable
             if (actionData is ActionNode_Variable avnode)
             {
@@ -1535,6 +1537,7 @@ namespace SevenStrikeModules.XGraph
                 var newNode = Instantiate(sourceNode);
                 newNode.name = sourceNode.name;
                 newNode.hideFlags = HideFlags.None;
+                newNode.SetRoot(this);
                 Actions.Add(newNode);
                 AssetDatabase.AddObjectToAsset(newNode, this);
                 dictionary[sourceNode] = newNode;
@@ -1574,8 +1577,6 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-
-
 #endif
         }
         /// <summary>
@@ -1921,6 +1922,9 @@ namespace SevenStrikeModules.XGraph
                 relay.childNodes.Add(child);
             }
             #endregion
+
+            // 设置父节点关系
+            child.SetParent(parent);
         }
         /// <summary>
         /// 从指定的父资源中移除子资源
@@ -1975,6 +1979,8 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
+            // 清理父节点关系
+            child.SetParent(null);
         }
         /// <summary>
         /// 寻找匹配guid的行为数据节点
@@ -2135,12 +2141,30 @@ namespace SevenStrikeModules.XGraph
             {
                 if (name == item.name)
                 {
-                    item.SetValue<T>(value);
+                    item.SetValue(value);
                 }
             }
 
             // 更新变量赋值数据
             Variables_Refresh();
+        }
+        /// <summary>
+        /// 获取变量值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public T Variable_GetValue<T>(string name)
+        {
+            foreach (var item in BlackboardVariable)
+            {
+                if (name == item.name)
+                {
+                    return item.GetValue<T>();
+                }
+            }
+
+            return default(T);
         }
         /// <summary>
         /// 根据VraiableCategory的变量列表源来更新在Actions列表 & Variables列表中所有用到这些变量的值

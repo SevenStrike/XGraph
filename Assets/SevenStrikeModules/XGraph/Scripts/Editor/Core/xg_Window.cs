@@ -1102,7 +1102,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"内部变量属性 - {n_vare_internal.title}");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}  /  {n_vare_internal.VariableData.VariableDatas.First().variable.name}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
+            xw_SetNodeInfo($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：标签

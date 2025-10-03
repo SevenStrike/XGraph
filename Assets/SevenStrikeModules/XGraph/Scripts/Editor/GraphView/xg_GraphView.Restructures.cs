@@ -30,6 +30,8 @@ namespace SevenStrikeModules.XGraph
             // 根据根节点的数据列表  -  重建 行为节点
             foreach (var data in ActionTreeAsset.Actions)
             {
+                data.SetRoot(actiontree);
+
                 if (data.actionNodeType == "Relay")
                 {
                     VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
