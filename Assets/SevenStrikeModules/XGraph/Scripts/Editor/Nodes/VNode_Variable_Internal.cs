@@ -76,13 +76,13 @@ namespace SevenStrikeModules.XGraph
             }
 
             // 动态获取变量类型
-            string asm = "Assembly-CSharp";
-            Type var_type = Type.GetType($"SevenStrikeModules.XGraph.Variable_{actionvar.variable.type}, {asm}");
+            //string asm = "Assembly-CSharp";
+            //Type var_type = Type.GetType($"SevenStrikeModules.XGraph.Variable_{actionvar.variable.type}, {asm}");
 
             #region 端口设置
             // 加入行为端口
-            Port_Inputs.Add(new xGraph_NodePort("In", var_type, Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("Out", var_type, Port.Capacity.Multi));
+            Port_Inputs.Add(new xGraph_NodePort("In", typeof(Variable), Port.Capacity.Single));
+            Port_Outputs.Add(new xGraph_NodePort("Out", typeof(Variable), Port.Capacity.Multi));
             #endregion
 
             // 当Graphview编辑器的主题色改变时

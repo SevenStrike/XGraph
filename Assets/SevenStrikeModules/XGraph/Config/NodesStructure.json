@@ -70,6 +70,20 @@
             ]
         },
         {
+            "catergory_title": "逻辑",
+            "catergory_icon": "category_logic",
+            "catergory_nodes": [
+                {
+                    "name": "分支",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Branch",
+                    "iconName": "branch",
+                    "visualNodeType": "VNode_Branch"
+                }
+            ]
+        },
+        {
             "catergory_title": "变量",
             "catergory_icon": "category_variable",
             "catergory_nodes": [

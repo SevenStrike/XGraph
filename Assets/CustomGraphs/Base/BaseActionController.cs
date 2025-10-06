@@ -25,13 +25,6 @@ namespace SevenStrikeModules.XGraph
                 ActionTreeWorkflow.Action_Pause();
             if (Input.GetKeyDown(KeyCode.R))
                 ActionTreeWorkflow.Action_Resume();
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                ActionTreeWorkflow.ActionAsset.FindActionNode("8b5f6576e6ba48b48ab3a44232d1e631").Variable_Set("内容", "9876543210");
-                ActionTreeWorkflow.ActionAsset.Variable_SetValue("msg", msg);
-                ActionTreeWorkflow.ActionAsset.Variable_SetValue("delay", delay);
-            }
         }
     }
 }

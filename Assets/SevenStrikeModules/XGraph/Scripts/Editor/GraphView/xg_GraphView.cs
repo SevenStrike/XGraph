@@ -691,8 +691,10 @@ namespace SevenStrikeModules.XGraph
                     continue;
 
                 if (startPort.portType != port.portType)
+                {
+                    //if (port.portType != typeof(Variable))
                     continue;
-
+                }
                 compatiblePorts.Add(port);
             }
 

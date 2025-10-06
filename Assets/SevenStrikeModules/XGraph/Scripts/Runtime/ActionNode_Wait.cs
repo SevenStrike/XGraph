@@ -15,7 +15,8 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-
+            Variable variable = Variable_Get("时间");
+            Time = variable.GetValue<float>();
         }
     }
 }

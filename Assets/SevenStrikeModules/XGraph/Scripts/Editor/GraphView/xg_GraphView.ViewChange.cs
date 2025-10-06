@@ -65,6 +65,15 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
+            #region 处理行为节点 / 行为节点 <---> 行为节点
+            VNode_Branch node_branch = n_parent as VNode_Branch;
+            if (node_branch != null && node_child != null)
+            {
+                // 将 "n_child" 放到 "n_parent" 的相对应True和False的child成员变量中
+                ActionTreeAsset.ChildNode_Add(node_branch.ActionData, node_child.ActionData, edge.output.portName);
+            }
+            #endregion
+
             #region 处理变量节点 / 黑板变量节点 <---> 行为节点
             VNode_Variable node_var = n_parent as VNode_Variable;
 
@@ -273,7 +282,7 @@ namespace SevenStrikeModules.XGraph
                     // 获取变量节点的变量类型
                     Type type = node_var.VariableData.variable.GetType();
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetVariablePort(type, portName);
+                    Port port = node_child.GetVariablePort(typeof(Variable), portName);
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
@@ -287,14 +296,22 @@ namespace SevenStrikeModules.XGraph
                 {
                     string portName = edge.input.portName;
                     // 获取变量节点的变量类型
-                    Type type = node_var_internal.VariableData.variable.GetType();
+                    //Type type = node_var_internal.VariableData.variable.GetType();
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetVariablePort(type, portName);
+                    Port port = node_child.GetVariablePort(typeof(Variable), portName);
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
                     // 从行为节点解绑 ”内部变量节点数据“
                     node_child.ActionData.InternalVariableData_Unbind(node_var_internal.VariableData.guid, portName);
+                }
+
+                // 移除：起点是“分支节点”  终点是 "行为节点" 的连线时
+                VNode_Branch node_branch = node_parent as VNode_Branch;
+                if (node_branch != null && node_child != null)
+                {
+                    // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
+                    ActionTreeAsset.ChildNode_Remove(node_parent.ActionData, node_child.ActionData, edge.output.portName);
                 }
             }
         }

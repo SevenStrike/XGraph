@@ -53,19 +53,48 @@ namespace SevenStrikeModules.XGraph
             // 根据行为树根节点的数据列表  -  重建 行为连线
             foreach (var data in ActionTreeAsset.Actions)
             {
-                // 获取的目标数据节点的子数据节点
-                var children = ActionTreeAsset.GetChildrenNodes(data);
-
-                // child 为每一个子数据节点
-                foreach (var child in children)
+                if (data is ActionNode_Branch branch_node)
                 {
-                    VNode_Base n_parent = FindNodeView(data.guid);
-                    VNode_Base n_child = FindNodeView(child.guid);
+                    VNode_Base n_branch = FindNodeView(branch_node.guid);
 
-                    foreach (var p in n_parent.Port_Outputs)
+                    foreach (var port in n_branch.Port_Outputs)
                     {
-                        Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
-                        AddElement(edge);
+                        if (port.Name == "开")
+                        {
+                            if (branch_node.childNode_true != null)
+                            {
+                                VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
+                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
+                                AddElement(edge);
+                            }
+                        }
+                        else if (port.Name == "关")
+                        {
+                            if (branch_node.childNode_false != null)
+                            {
+                                VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
+                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
+                                AddElement(edge);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // 获取的目标数据节点的子数据节点
+                    var children = ActionTreeAsset.GetChildrenNodes(data);
+
+                    // child 为每一个子数据节点
+                    foreach (var child in children)
+                    {
+                        VNode_Base n_parent = FindNodeView(data.guid);
+                        VNode_Base n_child = FindNodeView(child.guid);
+
+                        foreach (var p in n_parent.Port_Outputs)
+                        {
+                            Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
+                            AddElement(edge);
+                        }
                     }
                 }
             }
@@ -83,22 +112,16 @@ namespace SevenStrikeModules.XGraph
 
             // 根据行为树根节点里的  -便签-  列表数据来重建GraphView的视觉  -便签-  节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
-
             // 根据行为树根节点里的  -标签-  列表数据来重建GraphView的视觉  -标签-  节点
             Restructure_Labels(ActionTreeAsset.Labels);
-
             // 根据行为树根节点里的  -贴图-  列表数据来重建GraphView的视觉  -贴图-  节点
             Restructure_Decals(ActionTreeAsset.Decals);
-
             // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
             Restructure_Variable(ActionTreeAsset.Variables);
-
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
-
             // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
             Restructure_VariableConnector(ActionTreeAsset.Actions);
-
             // 根据行为节点里的  -内部变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
             Restructure_InternalVariableConnector(ActionTreeAsset.Actions);
 
@@ -288,20 +311,29 @@ namespace SevenStrikeModules.XGraph
                     // 父节点
                     VNode_Base n_parent = FindNodeView(action.guid);
 
-                    foreach (var item in action.VariableDatas)
+                    for (int i = 0; i < action.VariableDatas.Count; i++)
                     {
+                        var item = action.VariableDatas[i];
+
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
                         VNode_Variable n_var = FindNode(item.VariableNodeGuid) as VNode_Variable;
-                        // 获取变量节点的变量类型
-                        Type type = n_var.VariableData.variable.GetType();
-
-                        // 父节点存在的变量端口
-                        Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
-
-                        if (n_var != null && port_parent != null)
+                        if (n_var != null)
                         {
-                            Edge edge = n_var.OutputPort.Port.ConnectTo(port_parent);
-                            AddElement(edge);
+                            // 获取变量节点的变量类型
+                            Type type = n_var.VariableData.variable.GetType();
+
+                            // 父节点存在的变量端口
+                            Port port_parent = n_parent.GetVariablePort(typeof(Variable), item.TargetPortName);
+
+                            if (n_var != null && port_parent != null)
+                            {
+                                Edge edge = n_var.OutputPort.Port.ConnectTo(port_parent);
+                                AddElement(edge);
+                            }
+                        }
+                        else
+                        {
+                            action.VariableDatas.Remove(item);
                         }
                     }
                 }
@@ -321,105 +353,113 @@ namespace SevenStrikeModules.XGraph
                     // 父节点
                     VNode_Base n_parent = FindNodeView(action.guid);
 
-                    foreach (var item in action.InternalVariableDatas)
+                    for (int i = 0; i < action.InternalVariableDatas.Count; i++)
                     {
+                        var item = action.InternalVariableDatas[i];
+
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
                         VNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as VNode_Variable_Internal;
-
-                        n_var.VariableData.variable = item.variable.Clone(false);
-                        n_var.VariableData.variable.name = "";
-                        // 根据类型来修改内部变量节点的变量值
-                        switch (item.variable.type)
+                        if (n_var != null)
                         {
-                            case VariableType.String:
-                                string val_text = item.variable.GetValue<string>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<string>(val_text);
-                                // 修改控件值
-                                if (n_var.controller is TextField field_text)
-                                {
-                                    field_text.value = val_text;
-                                }
-                                break;
-                            case VariableType.Float:
-                                float val_float = item.variable.GetValue<float>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<float>(val_float);
-                                // 修改控件值
-                                if (n_var.controller is FloatField field_float)
-                                {
-                                    field_float.value = val_float;
-                                }
-                                break;
-                            case VariableType.Int:
-                                int val_int = item.variable.GetValue<int>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<int>(val_int);
-                                // 修改控件值
-                                if (n_var.controller is IntegerField field_int)
-                                {
-                                    field_int.value = val_int;
-                                }
-                                break;
-                            case VariableType.Bool:
-                                bool val_bool = item.variable.GetValue<bool>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<bool>(val_bool);
-                                // 修改控件值
-                                n_var.Toggle_Check(val_bool);
-                                break;
-                            case VariableType.Vector2:
-                                Vector2 val_vector2 = item.variable.GetValue<Vector2>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<Vector2>(val_vector2);
-                                // 修改控件值
-                                if (n_var.controller is Vector2Field field_v2)
-                                {
-                                    field_v2.value = val_vector2;
-                                }
-                                break;
-                            case VariableType.Vector3:
-                                Vector3 val_vector3 = item.variable.GetValue<Vector3>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<Vector3>(val_vector3);
-                                // 修改控件值
-                                if (n_var.controller is Vector3Field field_v3)
-                                {
-                                    field_v3.value = val_vector3;
-                                }
-                                break;
-                            case VariableType.Vector4:
-                                Vector4 val_vector4 = item.variable.GetValue<Vector4>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<Vector4>(val_vector4);
-                                // 修改控件值
-                                if (n_var.controller is Vector4Field field_v4)
-                                {
-                                    field_v4.value = val_vector4;
-                                }
-                                break;
-                            case VariableType.Color:
-                                Color val_color = item.variable.GetValue<Color>();
-                                // 修改变量值
-                                n_var.VariableData.variable.SetValue<Color>(val_color);
-                                // 修改控件值
-                                if (n_var.controller is ColorField field_color)
-                                {
-                                    field_color.value = val_color;
-                                }
-                                break;
+                            n_var.VariableData.variable = item.variable.Clone(false);
+                            n_var.VariableData.variable.name = "";
+                            // 根据类型来修改内部变量节点的变量值
+                            switch (item.variable.type)
+                            {
+                                case VariableType.String:
+                                    string val_text = item.variable.GetValue<string>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<string>(val_text);
+                                    // 修改控件值
+                                    if (n_var.controller is TextField field_text)
+                                    {
+                                        field_text.value = val_text;
+                                    }
+                                    break;
+                                case VariableType.Float:
+                                    float val_float = item.variable.GetValue<float>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<float>(val_float);
+                                    // 修改控件值
+                                    if (n_var.controller is FloatField field_float)
+                                    {
+                                        field_float.value = val_float;
+                                    }
+                                    break;
+                                case VariableType.Int:
+                                    int val_int = item.variable.GetValue<int>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<int>(val_int);
+                                    // 修改控件值
+                                    if (n_var.controller is IntegerField field_int)
+                                    {
+                                        field_int.value = val_int;
+                                    }
+                                    break;
+                                case VariableType.Bool:
+                                    bool val_bool = item.variable.GetValue<bool>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<bool>(val_bool);
+                                    // 修改控件值
+                                    n_var.Toggle_Check(val_bool);
+                                    break;
+                                case VariableType.Vector2:
+                                    Vector2 val_vector2 = item.variable.GetValue<Vector2>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<Vector2>(val_vector2);
+                                    // 修改控件值
+                                    if (n_var.controller is Vector2Field field_v2)
+                                    {
+                                        field_v2.value = val_vector2;
+                                    }
+                                    break;
+                                case VariableType.Vector3:
+                                    Vector3 val_vector3 = item.variable.GetValue<Vector3>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<Vector3>(val_vector3);
+                                    // 修改控件值
+                                    if (n_var.controller is Vector3Field field_v3)
+                                    {
+                                        field_v3.value = val_vector3;
+                                    }
+                                    break;
+                                case VariableType.Vector4:
+                                    Vector4 val_vector4 = item.variable.GetValue<Vector4>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<Vector4>(val_vector4);
+                                    // 修改控件值
+                                    if (n_var.controller is Vector4Field field_v4)
+                                    {
+                                        field_v4.value = val_vector4;
+                                    }
+                                    break;
+                                case VariableType.Color:
+                                    Color val_color = item.variable.GetValue<Color>();
+                                    // 修改变量值
+                                    n_var.VariableData.variable.SetValue<Color>(val_color);
+                                    // 修改控件值
+                                    if (n_var.controller is ColorField field_color)
+                                    {
+                                        field_color.value = val_color;
+                                    }
+                                    break;
+                            }
+
+                            // 获取变量节点的变量类型
+                            //Type type = n_var.VariableData.variable.GetType();
+
+                            // 父节点存在的变量端口
+                            Port port_parent = n_parent.GetVariablePort(typeof(Variable), item.TargetPortName);
+
+                            if (n_var != null && port_parent != null)
+                            {
+                                Edge edge = n_var.Port_Outputs.First().Port.ConnectTo(port_parent);
+                                AddElement(edge);
+                            }
                         }
-
-                        // 获取变量节点的变量类型
-                        Type type = n_var.VariableData.variable.GetType();
-
-                        // 父节点存在的变量端口
-                        Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
-
-                        if (n_var != null && port_parent != null)
+                        else
                         {
-                            Edge edge = n_var.Port_Outputs.First().Port.ConnectTo(port_parent);
-                            AddElement(edge);
+                            action.InternalVariableDatas.Remove(item);
                         }
                     }
                 }

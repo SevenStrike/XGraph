@@ -50,7 +50,7 @@ namespace SevenStrikeModules.XGraph
                 // 创建运行时克隆
                 if (!CreateRuntimeClone())
                 {
-                    LogError("无法创建运行时克隆，行为树启动失败");
+                    Log(MessageType.Error, $"无法创建克隆资源！", "");
                     return;
                 }
             }
@@ -70,13 +70,13 @@ namespace SevenStrikeModules.XGraph
         {
             if (!Action_Validate())
             {
-                LogError("行为树启动失败");
+                Log(MessageType.Error, $"行为流程启动失败！", "");
                 return;
             }
 
             if (isRunning)
             {
-                LogWarning("行为树已在运行中");
+                Log(MessageType.Error, $"行为流程已经在执行中！", "");
                 return;
             }
 
@@ -92,7 +92,7 @@ namespace SevenStrikeModules.XGraph
             isRunning = false;
             // 强制解除暂停
             isPaused = false;
-            Log("行为树已停止");
+            Log(MessageType.Info, $"流程停止！", "");
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning)
             {
                 isPaused = true;
-                Log("行为树已暂停");
+                Log(MessageType.Info, $"流程暂停！", "");
             }
         }
 
@@ -115,7 +115,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning && isPaused)
             {
                 isPaused = false;
-                Log("行为树已恢复");
+                Log(MessageType.Info, $"流程继续！", "");
             }
         }
 
@@ -125,13 +125,13 @@ namespace SevenStrikeModules.XGraph
         IEnumerator Action_Flow()
         {
             isRunning = true;
-            Log("----------------->> Actions Start");
+            Log(MessageType.Warning, $"开始执行流程：", ActionAsset.name);
 
             var startNode = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             yield return Action_Execute(startNode);
 
             isRunning = false;
-            Log("----------------->> Actions Finished");
+            Log(MessageType.Warning, $"流程执行完成：", ActionAsset.name);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace SevenStrikeModules.XGraph
             // 处理暂停状态（双重检查）
             while (isPaused && isRunning)
             {
-                LogWarning($"[暂停中] 节点: {action.identifyName}");
+                Log(MessageType.Warning, $"执行暂停中：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）");
 
                 // 每0.1秒检查一次，防止暂停时性能开销大
                 yield return new WaitForSeconds(0.1f);
@@ -158,22 +158,26 @@ namespace SevenStrikeModules.XGraph
                 yield break;
             }
 
-            Log($"执行节点: {action.identifyName}");
+            Log(MessageType.Info, $"---> ：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）");
             // 执行当前节点
             action.Execute();
 
             // 获取子节点
-            var children = Action_GetChildrenNodes(action);
-            if (children.Count == 0) yield break;
+            var childrens = Action_GetChildrenNodes(action);
+
+            if (childrens.Count == 0)
+                yield break;
+
+            bool v = action is ActionNode_Branch;
 
             // 根据模式执行子节点
-            if (action.isConcurrentExecution)
+            if (action.isConcurrentExecution && !v)
             {
-                yield return Action_Execute_Concurrent(children);
+                yield return Action_Execute_Concurrent(childrens);
             }
             else
             {
-                yield return Action_Execute_Sequential(children);
+                yield return Action_Execute_Sequential(childrens);
             }
         }
 
@@ -184,7 +188,7 @@ namespace SevenStrikeModules.XGraph
 
             // 执行等待前逻辑
             waitNode.Execute();
-            Log($"⏳ 开始等待: {waitNode.identifyName} ({waitNode.Time}s)");
+            Log(MessageType.Info, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.isConcurrentExecution ? "并发" : "顺序")}）");
 
             // 可中断的等待实现
             float elapsed = 0;
@@ -207,10 +211,7 @@ namespace SevenStrikeModules.XGraph
             var children = Action_GetChildrenNodes(waitNode);
             if (children.Count > 0)
             {
-                Log($"⌛ 等待完成，执行 {children.Count} 个子节点");
-                yield return waitNode.isConcurrentExecution ?
-                    Action_Execute_Concurrent(children) :
-                    Action_Execute_Sequential(children);
+                yield return waitNode.isConcurrentExecution ? Action_Execute_Concurrent(children) : Action_Execute_Sequential(children);
             }
         }
 
@@ -284,7 +285,17 @@ namespace SevenStrikeModules.XGraph
                 list.Add(debug.childNode);
             else if (current is ActionNode_Relay relay)
                 list.AddRange(relay.childNodes.FindAll(n => n != null));
-
+            else if (current is ActionNode_Branch branch)
+            {
+                if (branch.Predicated())
+                {
+                    list.Add(branch.childNode_true);
+                }
+                else
+                {
+                    list.Add(branch.childNode_false);
+                }
+            }
             return list;
         }
 
@@ -295,14 +306,14 @@ namespace SevenStrikeModules.XGraph
         {
             if (ActionAsset == null || ActionAsset.Actions.Count == 0)
             {
-                LogError("没有行为树资源！");
+                Log(MessageType.Error, $"行为资源列表是空的！", "");
                 return false;
             }
 
             var start = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             if (start == null)
             {
-                LogError("缺少 Start 节点！");
+                Log(MessageType.Warning, $"未能找到  Start  节点！", "");
                 return false;
             }
 
@@ -310,13 +321,26 @@ namespace SevenStrikeModules.XGraph
         }
 
         #region 日志工具
-        /// <summary>
-        /// 消息
-        /// </summary>
-        /// <param name="message"></param>
-        private void Log(string message)
+        private void Log(MessageType type, string title, string message)
         {
-            if (showLogs) Debug.Log($"[ActionTree] {message}");
+            string hexcolor = "";
+            string mark = "";
+            switch (type)
+            {
+                case MessageType.Info:
+                    hexcolor = "DFDFDF";
+                    mark = "■";
+                    break;
+                case MessageType.Warning:
+                    hexcolor = "FFC320";
+                    mark = "▲";
+                    break;
+                case MessageType.Error:
+                    hexcolor = "FF5050";
+                    mark = "●";
+                    break;
+            }
+            if (showLogs) Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
         }
 
         /// <summary>
@@ -326,21 +350,6 @@ namespace SevenStrikeModules.XGraph
         private void LogWarning(string message)
         {
             if (showLogs) Debug.LogWarning($"[ActionTree] {message}");
-        }
-
-        /// <summary>
-        /// 错误消息
-        /// </summary>
-        /// <param name="message"></param>
-        private void LogError(string message)
-        {
-            Debug.LogError($"[ActionTree] {message}");
-        }
-
-        private void LogWaitProgress(ActionNode_Wait node, float elapsed)
-        {
-            if (showLogs)
-                Debug.Log($"[等待中] {node.identifyName} ({elapsed:F1}/{node.Time:F1}s)");
         }
         #endregion
 
@@ -352,7 +361,7 @@ namespace SevenStrikeModules.XGraph
         {
             if (ActionAsset == null)
             {
-                LogError("ActionAsset 为空，无法创建克隆");
+                Log(MessageType.Error, $"无法创建克隆资源！", "");
                 return false;
             }
 
@@ -368,7 +377,7 @@ namespace SevenStrikeModules.XGraph
             if (ActionAssetClone != null)
             {
                 ActionAsset.Replace(ActionAssetClone);
-                Log("已恢复原始资源");
+                Log(MessageType.Warning, $"已恢复原始行为资源！", "");
                 ActionAssetClone = null;
             }
         }

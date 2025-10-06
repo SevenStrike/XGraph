@@ -182,7 +182,7 @@ namespace SevenStrikeModules.XGraph
             string asm = "Assembly-CSharp";
             Type var_type = Type.GetType($"SevenStrikeModules.XGraph.Variable_{VariableData.type}, {asm}");
 
-            OutputPort = new xGraph_NodePort("out", var_type, Port.Capacity.Multi);
+            OutputPort = new xGraph_NodePort("out", typeof(Variable), Port.Capacity.Multi);
             return this;
         }
 

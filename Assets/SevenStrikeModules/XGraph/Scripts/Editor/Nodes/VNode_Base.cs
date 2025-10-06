@@ -141,9 +141,6 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
             DuplicateAction_Add();
-
-            // 更新变量值
-            //RefreshVariableValue();
         }
 
         #region 订阅 Graphview 克隆动作

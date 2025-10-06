@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
@@ -499,8 +500,8 @@ namespace SevenStrikeModules.XGraph
     [Serializable]
     public class VarialbleGuidConnector
     {
-        [SerializeField] public string VariableNodeGuid;
         [SerializeField] public string TargetPortName;
+        [SerializeField] public string VariableNodeGuid;
         [SerializeReference] public Variable variable;
 
         public VarialbleGuidConnector() { }
@@ -516,30 +517,13 @@ namespace SevenStrikeModules.XGraph
     [Serializable]
     public class VarialbleInternalGuidConnector
     {
-        [SerializeField] public string VariableNodeGuid;
         [SerializeField] public string TargetPortName;
+        [SerializeField] public string VariableNodeGuid;
         [SerializeReference] public Variable variable;
 
         public VarialbleInternalGuidConnector() { }
 
         public VarialbleInternalGuidConnector(string guid, string name, Variable variable)
-        {
-            this.VariableNodeGuid = guid;
-            this.TargetPortName = name;
-            this.variable = variable.Clone(false);
-        }
-    }
-
-    [Serializable]
-    public class VarialbleInternalConnector
-    {
-        [SerializeField] public string VariableNodeGuid;
-        [SerializeField] public string TargetPortName;
-        [SerializeReference] public Variable variable;
-
-        public VarialbleInternalConnector() { }
-
-        public VarialbleInternalConnector(string guid, string name, Variable variable)
         {
             this.VariableNodeGuid = guid;
             this.TargetPortName = name;
@@ -1465,10 +1449,10 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 使用目标资源替换当前资源
         /// </summary>
-        /// <param name="root"></param>
-        public void Replace(ActionNode_Asset root)
+        /// <param name="targetAsset"></param>
+        public void Replace(ActionNode_Asset targetAsset)
         {
-            if (root == null) return;
+            if (targetAsset == null) return;
 
 #if UNITY_EDITOR
             // 清空当前原始资源的所有子节点
@@ -1479,60 +1463,60 @@ namespace SevenStrikeModules.XGraph
             AssetDatabase.SaveAssetIfDirty(this);
 
             // 更新所有使用到的变量值（目标资源 - 更新）
-            root.Variables_Refresh();
-            AssetDatabase.SaveAssetIfDirty(root);
+            targetAsset.Variables_Refresh();
+            AssetDatabase.SaveAssetIfDirty(targetAsset);
 
-            LastSaveDateTime = root.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            LastSaveDateTime = targetAsset.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
 
-            GraphviewGridBackgroundThemes = root.GraphviewGridBackgroundThemes.Clone();
+            GraphviewGridBackgroundThemes = targetAsset.GraphviewGridBackgroundThemes.Clone();
 
-            GraphviewRectangleSelectorThemes = root.GraphviewRectangleSelectorThemes.Clone();
+            GraphviewRectangleSelectorThemes = targetAsset.GraphviewRectangleSelectorThemes.Clone();
 
             // 覆盖原有的 Decals 数据列表
             Decals = new List<ActionDecalData>();
-            foreach (var decal in root.Decals)
+            foreach (var decal in targetAsset.Decals)
             {
                 Decals.Add(decal.Clone(false));
             }
 
             // 覆盖原有的 Sticks 数据列表
             Sticks = new List<ActionStickData>();
-            foreach (var stick in root.Sticks)
+            foreach (var stick in targetAsset.Sticks)
             {
                 Sticks.Add(stick.Clone(false));
             }
 
             // 覆盖原有的 Labels  数据列表
             Labels = new List<ActionLabelData>();
-            foreach (var label in root.Labels)
+            foreach (var label in targetAsset.Labels)
             {
                 Labels.Add(label.Clone(false));
             }
 
             // 覆盖原有的 Groups 数据列表
             Groups = new List<ActionGroupData>();
-            foreach (var group in root.Groups)
+            foreach (var group in targetAsset.Groups)
             {
                 Groups.Add(group.Clone(false));
             }
 
             // 覆盖原有的 Variables 数据列表
             Variables = new List<ActionVariableData>();
-            foreach (var vare in root.Variables)
+            foreach (var vare in targetAsset.Variables)
             {
                 Variables.Add(vare.Clone(false));
             }
 
             // 覆盖原有的 BlackboardVariable 数据列表
             BlackboardVariable = new List<Variable>();
-            foreach (var vare in root.BlackboardVariable)
+            foreach (var vare in targetAsset.BlackboardVariable)
             {
                 BlackboardVariable.Add(vare.Clone(false));
             }
 
             // 创建新节点副本并添加到原始资源中
             Dictionary<ActionNode_Base, ActionNode_Base> dictionary = new Dictionary<ActionNode_Base, ActionNode_Base>();
-            foreach (var sourceNode in root.Actions)
+            foreach (var sourceNode in targetAsset.Actions)
             {
                 var newNode = Instantiate(sourceNode);
                 newNode.name = sourceNode.name;
@@ -1542,24 +1526,23 @@ namespace SevenStrikeModules.XGraph
                 AssetDatabase.AddObjectToAsset(newNode, this);
                 dictionary[sourceNode] = newNode;
             }
-
             // 重建父子引用关系
-            foreach (var source in root.Actions)
+            foreach (var action in targetAsset.Actions)
             {
-                if (source is ActionNode_Start s && s.childNode != null)
+                if (action is ActionNode_Start s && s.childNode != null)
                 {
-                    (dictionary[source] as ActionNode_Start).childNode = dictionary[s.childNode];
+                    (dictionary[action] as ActionNode_Start).childNode = dictionary[s.childNode];
                 }
 
-                if (source is ActionNode_Debug d && d.childNode != null)
+                if (action is ActionNode_Debug d && d.childNode != null)
                 {
-                    (dictionary[source] as ActionNode_Debug).childNode = dictionary[d.childNode];
+                    (dictionary[action] as ActionNode_Debug).childNode = dictionary[d.childNode];
                 }
 
-                if (source is ActionNode_Wait w && w.childNodes != null)
+                if (action is ActionNode_Wait w && w.childNodes != null)
                 {
-                    //(dictionary[source] as ActionNode_Wait).childNode = dictionary[w.childNode];
-                    var newComposite = dictionary[source] as ActionNode_Wait;
+                    //(dictionary[action] as ActionNode_Wait).childNode = dictionary[w.childNode];
+                    var newComposite = dictionary[action] as ActionNode_Wait;
                     newComposite.childNodes.Clear();
                     foreach (var node in w.childNodes)
                     {
@@ -1567,14 +1550,26 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
 
-                if (source is ActionNode_Composite c && c.childNodes != null)
+                if (action is ActionNode_Composite c && c.childNodes != null)
                 {
-                    var newComposite = dictionary[source] as ActionNode_Composite;
+                    var newComposite = dictionary[action] as ActionNode_Composite;
                     newComposite.childNodes.Clear();
                     foreach (var node in c.childNodes)
                     {
                         newComposite.childNodes.Add(dictionary[node]);
                     }
+                }
+
+                if (action is ActionNode_Branch b)
+                {
+                    var newBranch = dictionary[action] as ActionNode_Branch;
+
+                    if (b.childNode_true != null)
+                        if (dictionary.TryGetValue(b.childNode_true, out var n_true))
+                            newBranch.childNode_true = n_true;
+                    if (b.childNode_false != null)
+                        if (dictionary.TryGetValue(b.childNode_false, out var n_false))
+                            newBranch.childNode_false = n_false;
                 }
             }
 #endif
@@ -1586,90 +1581,95 @@ namespace SevenStrikeModules.XGraph
         public ActionNode_Asset Clone(string clonepath = "", bool saveAsset = true)
         {
             // 创建新的 ActionNode_Asset
-            ActionNode_Asset newRoot = ScriptableObject.CreateInstance<ActionNode_Asset>();
+            ActionNode_Asset newActionAsset = ScriptableObject.CreateInstance<ActionNode_Asset>();
 
-            newRoot.LastSaveDateTime = LastSaveDateTime;
+            newActionAsset.LastSaveDateTime = LastSaveDateTime;
 
-            newRoot.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
+            newActionAsset.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
 
-            newRoot.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
+            newActionAsset.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
 
             // 实例化新的 Sticks 列表，并从原始资源复制项
-            newRoot.Sticks = new List<ActionStickData>();
+            newActionAsset.Sticks = new List<ActionStickData>();
             foreach (var item in Sticks)
             {
-                newRoot.Sticks.Add(item.Clone(false));
+                newActionAsset.Sticks.Add(item.Clone(false));
             }
 
             // 实例化新的 Labels 列表，并从原始资源复制项
-            newRoot.Labels = new List<ActionLabelData>();
+            newActionAsset.Labels = new List<ActionLabelData>();
             foreach (var item in Labels)
             {
-                newRoot.Labels.Add(item.Clone(false));
+                newActionAsset.Labels.Add(item.Clone(false));
             }
 
             // 实例化新的 Decals 列表，并从原始资源复制项
-            newRoot.Decals = new List<ActionDecalData>();
+            newActionAsset.Decals = new List<ActionDecalData>();
             foreach (var item in Decals)
             {
-                newRoot.Decals.Add(item.Clone(false));
+                newActionAsset.Decals.Add(item.Clone(false));
             }
 
             // 实例化新的 Variables 列表，并从原始资源复制项
-            newRoot.Variables = new List<ActionVariableData>();
+            newActionAsset.Variables = new List<ActionVariableData>();
             foreach (var item in Variables)
             {
-                newRoot.Variables.Add(item.Clone(false));
+                newActionAsset.Variables.Add(item.Clone(false));
             }
 
             // 实例化新的 Groups 列表，并从原始资源复制项
-            newRoot.Groups = new List<ActionGroupData>();
+            newActionAsset.Groups = new List<ActionGroupData>();
             foreach (var item in Groups)
             {
 #if UNITY_EDITOR
-                newRoot.Groups.Add(item.Clone(false));
+                newActionAsset.Groups.Add(item.Clone(false));
 #endif
             }
 
             // 实例化新的 BlackboardVariable 列表，并从原始资源复制项
-            newRoot.BlackboardVariable = new List<Variable>();
+            newActionAsset.BlackboardVariable = new List<Variable>();
             foreach (var bbv in BlackboardVariable)
             {
 #if UNITY_EDITOR
-                newRoot.BlackboardVariable.Add(bbv.Clone(false));
+                newActionAsset.BlackboardVariable.Add(bbv.Clone(false));
 #endif
             }
 
-            newRoot.name = this.name + "_CloneRoot";
-            newRoot.LastGraphWindowSize = this.LastGraphWindowSize;
-            newRoot.LastGraphViewPosition = this.LastGraphViewPosition;
-            newRoot.LastGraphViewZoom = this.LastGraphViewZoom;
+            newActionAsset.name = this.name + "_CloneRoot";
+            newActionAsset.LastGraphWindowSize = this.LastGraphWindowSize;
+            newActionAsset.LastGraphViewPosition = this.LastGraphViewPosition;
+            newActionAsset.LastGraphViewZoom = this.LastGraphViewZoom;
 
-            // 用于映射原始节点到新节点
+            // 用于映射原始节点到新节点（不包含分支逻辑类）
             Dictionary<ActionNode_Base, ActionNode_Base> originalRootDic = new Dictionary<ActionNode_Base, ActionNode_Base>();
 
-            // 第一步：复制所有节点（不处理父子关系）
+            // 复制所有节点（不包含分支逻辑类）
             foreach (var node in this.Actions)
             {
-                ActionNode_Base newTreeNode = Object.Instantiate(node);
-                newTreeNode.name = node.name;
-                newTreeNode.hideFlags = HideFlags.None;
+                ActionNode_Base actionNode = Object.Instantiate(node);
+                actionNode.name = node.name;
+                actionNode.hideFlags = HideFlags.None;
 
                 // 关键修复点：初始化时清空所有子引用
-                if (newTreeNode is ActionNode_Start newStart)
+                if (actionNode is ActionNode_Start newStart)
                     newStart.childNode = null;
-                else if (newTreeNode is ActionNode_Wait newWait)
+                else if (actionNode is ActionNode_Wait newWait)
                     newWait.childNodes.Clear();
-                else if (newTreeNode is ActionNode_Debug newDebug)
+                else if (actionNode is ActionNode_Debug newDebug)
                     newDebug.childNode = null;
-                else if (newTreeNode is ActionNode_Composite newComp)
+                else if (actionNode is ActionNode_Composite newComp)
                     newComp.childNodes.Clear();
+                else if (actionNode is ActionNode_Branch newBranch)
+                {
+                    newBranch.childNode_true = null;
+                    newBranch.childNode_false = null;
+                }
 
-                newRoot.Actions.Add(newTreeNode);
-                originalRootDic[node] = newTreeNode;
+                newActionAsset.Actions.Add(actionNode);
+                originalRootDic[node] = actionNode;
             }
 
-            // 第二步：重建父子关系
+            // 重建父子关系
             foreach (var node in this.Actions)
             {
                 ActionNode_Base newParentNode = originalRootDic[node];
@@ -1719,21 +1719,38 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
+
+                // 处理 ActionNode_Branch
+                else if (node is ActionNode_Branch originalBranch)
+                {
+                    var newBranch = newParentNode as ActionNode_Branch;
+
+                    if (originalBranch.childNode_true != null)
+                        if (originalRootDic.TryGetValue(originalBranch.childNode_true, out var new_true))
+                        {
+                            newBranch.childNode_true = new_true;
+                        }
+                    if (originalBranch.childNode_false != null)
+                        if (originalRootDic.TryGetValue(originalBranch.childNode_false, out var new_false))
+                        {
+                            newBranch.childNode_false = new_false;
+                        }
+                }
             }
 
             if (saveAsset)
             {
-                SaveNodeRootAsset(newRoot, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
+                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
 
                 // 更新变量赋值数据
-                newRoot.Variables_Refresh();
+                newActionAsset.Variables_Refresh();
 
 #if UNITY_EDITOR
-                AssetDatabase.SaveAssetIfDirty(newRoot);
+                AssetDatabase.SaveAssetIfDirty(newActionAsset);
 #endif
             }
 
-            return newRoot;
+            return newActionAsset;
         }
         /// <summary>
         /// 保存为Tree资源到目标路径下
@@ -1804,6 +1821,16 @@ namespace SevenStrikeModules.XGraph
             if (comp != null && comp.childNodes != null)
             {
                 nodes = comp.childNodes;
+            }
+
+            // 如果是 "ActionNode_Composite" 节点，那么就收集 "ActionNode_Composite" 节点下的 "childNodes"
+            ActionNode_Branch branch = parent as ActionNode_Branch;
+            if (branch != null)
+            {
+                if (branch.childNode_true != null)
+                    nodes.Add(branch.childNode_true);
+                if (branch.childNode_false != null)
+                    nodes.Add(branch.childNode_false);
             }
 
             // 返回的列表就是 "GraphView组件" 那边需要根据这子资源列表才能知道跟哪些子节点重建节点之间的连线
@@ -1877,7 +1904,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 debug.childNode = child;
             }
-            #endregion
+            #endregion           
 
             #region 特化处理 - Composite
             ActionNode_Composite comp = parent as ActionNode_Composite;
@@ -1920,6 +1947,58 @@ namespace SevenStrikeModules.XGraph
                     return;
                 }
                 relay.childNodes.Add(child);
+            }
+            #endregion
+
+            // 设置父节点关系
+            child.SetParent(parent);
+        }
+        /// <summary>
+        /// 为资源指定子资源
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="child"></param>
+        public void ChildNode_Add(ActionNode_Base parent, ActionNode_Base child, string childmode)
+        {
+            //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
+
+            #region 特化处理 - Branch
+            ActionNode_Branch branch = parent as ActionNode_Branch;
+            if (branch)
+            {
+#if UNITY_EDITOR
+                Undo.RecordObject(branch, "Connect_BranchNode");
+#endif
+                if (childmode == "开")
+                {
+                    if (branch.childNode_true != null)
+                    {
+                        if (child.guid == branch.childNode_true.guid)
+                        {
+                            Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        branch.childNode_true = child;
+                    }
+                }
+                else if (childmode == "关")
+                {
+                    if (branch.childNode_false != null)
+                    {
+                        if (child.guid == branch.childNode_false.guid)
+                        {
+                            Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        branch.childNode_false = child;
+                    }
+                }
             }
             #endregion
 
@@ -1976,6 +2055,32 @@ namespace SevenStrikeModules.XGraph
                 Undo.RecordObject(comp, "RemoveConnect_CompositeNode");
 #endif
                 comp.childNodes.Remove(child);
+            }
+            #endregion
+
+            // 清理父节点关系
+            child.SetParent(null);
+        }
+        /// <summary>
+        /// 从指定的父资源中移除子资源
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="child"></param>
+        public void ChildNode_Remove(ActionNode_Base parent, ActionNode_Base child, string childmode)
+        {
+            //Debug.Log($"{parent.identifyName}       |  断开链接  ×  |      {child.identifyName}");
+
+            #region 特化处理 - Branch
+            ActionNode_Branch branch = parent as ActionNode_Branch;
+            if (branch)
+            {
+#if UNITY_EDITOR
+                Undo.RecordObject(branch, "RemoveConnect_BranchNode");
+#endif
+                if (childmode == "开")
+                    branch.childNode_true = null;
+                else if (childmode == "关")
+                    branch.childNode_false = null;
             }
             #endregion
 
