@@ -28,8 +28,9 @@ namespace SevenStrikeModules.XGraph
         /// 编辑器内运行时保存参数的改动
         /// </summary>
         public bool SaveValueChangesInRuntime = true;
-
-        [Header("Debug Settings")]
+        /// <summary>
+        /// 显示调试信息
+        /// </summary>
         public bool showLogs = true;
 
         private void Start()
@@ -320,7 +321,12 @@ namespace SevenStrikeModules.XGraph
             return true;
         }
 
-        #region 日志工具
+        /// <summary>
+        /// 日志工具
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
         private void Log(MessageType type, string title, string message)
         {
             string hexcolor = "";
@@ -329,7 +335,7 @@ namespace SevenStrikeModules.XGraph
             {
                 case MessageType.Info:
                     hexcolor = "DFDFDF";
-                    mark = "■";
+                    mark = "   ┠─ ■";
                     break;
                 case MessageType.Warning:
                     hexcolor = "FFC320";
@@ -340,18 +346,9 @@ namespace SevenStrikeModules.XGraph
                     mark = "●";
                     break;
             }
-            if (showLogs) Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
+            if (showLogs)
+                Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
         }
-
-        /// <summary>
-        /// 警告消息
-        /// </summary>
-        /// <param name="message"></param>
-        private void LogWarning(string message)
-        {
-            if (showLogs) Debug.LogWarning($"[ActionTree] {message}");
-        }
-        #endregion
 
         #region 运行时克隆
         /// <summary>

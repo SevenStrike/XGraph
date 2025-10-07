@@ -1264,6 +1264,7 @@ namespace SevenStrikeModules.XGraph
         /// 节点编辑器的选择框主题参数
         /// </summary>
         [SerializeField] public GraphviewRectangleSelectorThemes GraphviewRectangleSelectorThemes;
+
         /// <summary>
         /// 数据节点列表
         /// </summary>
@@ -1572,6 +1573,9 @@ namespace SevenStrikeModules.XGraph
                             newBranch.childNode_false = n_false;
                 }
             }
+
+            AssetDatabase.Refresh();
+            AssetDatabase.SaveAssets();
 #endif
         }
         /// <summary>
@@ -1954,7 +1958,7 @@ namespace SevenStrikeModules.XGraph
             child.SetParent(parent);
         }
         /// <summary>
-        /// 为资源指定子资源
+        /// 为资源指定子资源（分支节点专用）
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="child"></param>
@@ -1969,7 +1973,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(branch, "Connect_BranchNode");
 #endif
-                if (childmode == "开")
+                if (childmode == "符合")
                 {
                     if (branch.childNode_true != null)
                     {
@@ -1984,7 +1988,7 @@ namespace SevenStrikeModules.XGraph
                         branch.childNode_true = child;
                     }
                 }
-                else if (childmode == "关")
+                else if (childmode == "不符合")
                 {
                     if (branch.childNode_false != null)
                     {
@@ -2077,9 +2081,9 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(branch, "RemoveConnect_BranchNode");
 #endif
-                if (childmode == "开")
+                if (childmode == "符合")
                     branch.childNode_true = null;
-                else if (childmode == "关")
+                else if (childmode == "不符合")
                     branch.childNode_false = null;
             }
             #endregion

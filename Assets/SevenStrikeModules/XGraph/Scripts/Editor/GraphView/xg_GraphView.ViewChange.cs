@@ -65,7 +65,7 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region 处理行为节点 / 行为节点 <---> 行为节点
+            #region 处理行为节点 / 分支节点 <---> 行为节点
             VNode_Branch node_branch = n_parent as VNode_Branch;
             if (node_branch != null && node_child != null)
             {
@@ -282,7 +282,7 @@ namespace SevenStrikeModules.XGraph
                     // 获取变量节点的变量类型
                     Type type = node_var.VariableData.variable.GetType();
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetVariablePort(typeof(Variable), portName);
+                    Port port = node_child.GetVariablePort(type, portName);
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
@@ -296,9 +296,9 @@ namespace SevenStrikeModules.XGraph
                 {
                     string portName = edge.input.portName;
                     // 获取变量节点的变量类型
-                    //Type type = node_var_internal.VariableData.variable.GetType();
+                    Type type = node_var_internal.VariableData.variable.GetType();
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetVariablePort(typeof(Variable), portName);
+                    Port port = node_child.GetVariablePort(type, portName);
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 

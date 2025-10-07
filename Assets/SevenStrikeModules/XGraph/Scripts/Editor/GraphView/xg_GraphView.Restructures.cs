@@ -27,6 +27,9 @@ namespace SevenStrikeModules.XGraph
 
             graphViewChanged += OnGraphViewChanged;
 
+            // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
+            Restructure_Variable(ActionTreeAsset.Variables);
+
             // 根据根节点的数据列表  -  重建 行为节点
             foreach (var data in ActionTreeAsset.Actions)
             {
@@ -59,7 +62,7 @@ namespace SevenStrikeModules.XGraph
 
                     foreach (var port in n_branch.Port_Outputs)
                     {
-                        if (port.Name == "开")
+                        if (port.Name == "符合")
                         {
                             if (branch_node.childNode_true != null)
                             {
@@ -68,7 +71,7 @@ namespace SevenStrikeModules.XGraph
                                 AddElement(edge);
                             }
                         }
-                        else if (port.Name == "关")
+                        else if (port.Name == "不符合")
                         {
                             if (branch_node.childNode_false != null)
                             {
@@ -116,8 +119,6 @@ namespace SevenStrikeModules.XGraph
             Restructure_Labels(ActionTreeAsset.Labels);
             // 根据行为树根节点里的  -贴图-  列表数据来重建GraphView的视觉  -贴图-  节点
             Restructure_Decals(ActionTreeAsset.Decals);
-            // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
-            Restructure_Variable(ActionTreeAsset.Variables);
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
             // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
@@ -183,6 +184,8 @@ namespace SevenStrikeModules.XGraph
             RectangleSelectorThemeUpdate(ActionTreeAsset.GraphviewRectangleSelectorThemes);
 
             #endregion
+
+            gv_GraphWindow.NodeEditorIsReady = true;
         }
 
         /// <summary>
@@ -323,7 +326,7 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetVariablePort(typeof(Variable), item.TargetPortName);
+                            Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
 
                             if (n_var != null && port_parent != null)
                             {
@@ -446,10 +449,10 @@ namespace SevenStrikeModules.XGraph
                             }
 
                             // 获取变量节点的变量类型
-                            //Type type = n_var.VariableData.variable.GetType();
+                            Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetVariablePort(typeof(Variable), item.TargetPortName);
+                            Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
 
                             if (n_var != null && port_parent != null)
                             {

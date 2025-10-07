@@ -297,9 +297,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Extension()
         {
-            Label label = new Label(nodeNote);
-            label.AddToClassList("Extension_Label");
-            AppendElement(GraphNodeContainerType.ExtensionContainer, label);
+         
         }
 
         /// <summary>
@@ -798,7 +796,7 @@ namespace SevenStrikeModules.XGraph
             Port port = null;
             foreach (var item in Port_Inputs)
             {
-                if (item.Type == type && item.Port.portName == portName)
+                if (item.Port.portName == portName)
                 {
                     port = item.Port;
                 }

@@ -316,7 +316,7 @@
         /// <summary>
         /// 节点编辑器窗口是否已经准备就绪
         /// </summary>
-        private bool NodeEditorIsReady = false;
+        public bool NodeEditorIsReady = false;
 
         /// <summary>
         /// 打开资源节点编辑器
@@ -407,9 +407,7 @@
                     wnd.xw_graphView.Restructure_Nodes(wnd.CloneTree);
                     //Debug.Log("打开 XGraphView 并加载节点信息！");
                 }
-                #endregion
-
-                wnd.NodeEditorIsReady = true;
+                #endregion               
                 return true;
             }
             return false;

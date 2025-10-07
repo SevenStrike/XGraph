@@ -690,11 +690,12 @@ namespace SevenStrikeModules.XGraph
                 if (startNode == port.node)
                     continue;
 
-                if (startPort.portType != port.portType)
+                // 检查类型是否兼容
+                if (!startPort.portType.IsAssignableFrom(port.portType) && !port.portType.IsAssignableFrom(startPort.portType))
                 {
-                    //if (port.portType != typeof(Variable))
                     continue;
                 }
+
                 compatiblePorts.Add(port);
             }
 

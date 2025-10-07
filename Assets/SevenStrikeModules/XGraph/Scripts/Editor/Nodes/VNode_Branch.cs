@@ -19,9 +19,9 @@ namespace SevenStrikeModules.XGraph
             #region 端口设置
             // 加入行为端口
             Port_Inputs.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
-            Port_Inputs.Add(new xGraph_NodePort("条件", typeof(Variable), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("开", typeof(ActionNode_Base), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("关", typeof(ActionNode_Base), Port.Capacity.Single));
+            Port_Inputs.Add(new xGraph_NodePort("条件", typeof(Variable_Bool), Port.Capacity.Single));
+            Port_Outputs.Add(new xGraph_NodePort("符合", typeof(ActionNode_Base), Port.Capacity.Single));
+            Port_Outputs.Add(new xGraph_NodePort("不符合", typeof(ActionNode_Base), Port.Capacity.Single));
             #endregion
         }
 

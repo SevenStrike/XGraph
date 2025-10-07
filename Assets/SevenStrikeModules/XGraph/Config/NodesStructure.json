@@ -80,6 +80,14 @@
                     "actionNodeType": "Branch",
                     "iconName": "branch",
                     "visualNodeType": "VNode_Branch"
+                },
+                {
+                    "name": "对比",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Comparison",
+                    "iconName": "comparison",
+                    "visualNodeType": "VNode_Comparison"
                 }
             ]
         },
