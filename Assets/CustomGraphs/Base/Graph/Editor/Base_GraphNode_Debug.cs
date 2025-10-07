@@ -20,7 +20,7 @@ namespace SevenStrikeModules.XGraph
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
             // 加入行为端口
-            port_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
+            port_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Multi));
             OutputPort_Set(port_out);
             #endregion
         }

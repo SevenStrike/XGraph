@@ -1535,9 +1535,15 @@ namespace SevenStrikeModules.XGraph
                     (dictionary[action] as ActionNode_Start).childNode = dictionary[s.childNode];
                 }
 
-                if (action is ActionNode_Debug d && d.childNode != null)
+                if (action is ActionNode_Debug d && d.childNodes != null)
                 {
-                    (dictionary[action] as ActionNode_Debug).childNode = dictionary[d.childNode];
+                    //(dictionary[action] as ActionNode_Debug).childNode = dictionary[d.childNode];
+                    var newDebug = dictionary[action] as ActionNode_Debug;
+                    newDebug.childNodes.Clear();
+                    foreach (var node in d.childNodes)
+                    {
+                        newDebug.childNodes.Add(dictionary[node]);
+                    }
                 }
 
                 if (action is ActionNode_Wait w && w.childNodes != null)
@@ -1660,7 +1666,7 @@ namespace SevenStrikeModules.XGraph
                 else if (actionNode is ActionNode_Wait newWait)
                     newWait.childNodes.Clear();
                 else if (actionNode is ActionNode_Debug newDebug)
-                    newDebug.childNode = null;
+                    newDebug.childNodes.Clear();
                 else if (actionNode is ActionNode_Composite newComp)
                     newComp.childNodes.Clear();
                 else if (actionNode is ActionNode_Branch newBranch)
@@ -1704,10 +1710,18 @@ namespace SevenStrikeModules.XGraph
                 // 处理 ActionNode_Debug
                 else if (node is ActionNode_Debug originalDebug)
                 {
+                    //var newDebug = newParentNode as ActionNode_Debug;
+                    //if (originalDebug.childNode != null && originalRootDic.TryGetValue(originalDebug.childNode, out var newNode))
+                    //{
+                    //    newDebug.childNode = newNode;
+                    //}
                     var newDebug = newParentNode as ActionNode_Debug;
-                    if (originalDebug.childNode != null && originalRootDic.TryGetValue(originalDebug.childNode, out var newNode))
+                    foreach (var originalChild in originalDebug.childNodes)
                     {
-                        newDebug.childNode = newNode;
+                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
+                        {
+                            newDebug.childNodes.Add(newChild);
+                        }
                     }
                 }
 
@@ -1815,9 +1829,9 @@ namespace SevenStrikeModules.XGraph
 
             // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "child"
             ActionNode_Debug debug = parent as ActionNode_Debug;
-            if (debug != null && debug.childNode != null)
+            if (debug != null && debug.childNodes != null)
             {
-                nodes.Add(debug.childNode);
+                nodes = debug.childNodes;
             }
 
             // 如果是 "ActionNode_Composite" 节点，那么就收集 "ActionNode_Composite" 节点下的 "childNodes"
@@ -1898,15 +1912,18 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(debug, "Connect_DebugNode");
 #endif
-                if (debug.childNode != null)
+                bool existChild = false;
+                foreach (var c in debug.childNodes)
                 {
-                    if (child.guid == debug.childNode.guid)
-                    {
-                        Debug.Log("debug节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
-                        return;
-                    }
+                    if (child.guid == c.guid)
+                        existChild = true;
                 }
-                debug.childNode = child;
+                if (existChild)
+                {
+                    Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
+                    return;
+                }
+                debug.childNodes.Add(child);
             }
             #endregion           
 
@@ -2047,7 +2064,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(debug, "RemoveConnect_DebugNode");
 #endif
-                debug.childNode = null;
+                debug.childNodes.Remove(child);
             }
             #endregion
 
