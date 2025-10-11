@@ -1241,6 +1241,14 @@ namespace SevenStrikeModules.XGraph
     public class ActionNode_Asset : ScriptableObject
     {
         /// <summary>
+        /// 黑板变量数值更新后的回调
+        /// </summary>
+        public Action On_VariablesValue_Changed;
+        /// <summary>
+        /// 黑板变量数值改变后的回调
+        /// </summary>
+        public Action<VariableType, string> On_BlackBoardVariable_ValueChanged;
+        /// <summary>
         /// 记录的节点编辑器最后一次的窗口尺寸
         /// </summary>
         [SerializeField] public Vector2Int LastGraphWindowSize;
@@ -1266,7 +1274,7 @@ namespace SevenStrikeModules.XGraph
         [SerializeField] public GraphviewRectangleSelectorThemes GraphviewRectangleSelectorThemes;
 
         /// <summary>
-        /// 数据节点列表
+        /// 行为节点列表
         /// </summary>
         [SerializeReference] public List<ActionNode_Base> Actions = new List<ActionNode_Base>();
         /// <summary>
@@ -1537,7 +1545,6 @@ namespace SevenStrikeModules.XGraph
 
                 if (action is ActionNode_Debug d && d.childNodes != null)
                 {
-                    //(dictionary[action] as ActionNode_Debug).childNode = dictionary[d.childNode];
                     var newDebug = dictionary[action] as ActionNode_Debug;
                     newDebug.childNodes.Clear();
                     foreach (var node in d.childNodes)
@@ -1710,11 +1717,6 @@ namespace SevenStrikeModules.XGraph
                 // 处理 ActionNode_Debug
                 else if (node is ActionNode_Debug originalDebug)
                 {
-                    //var newDebug = newParentNode as ActionNode_Debug;
-                    //if (originalDebug.childNode != null && originalRootDic.TryGetValue(originalDebug.childNode, out var newNode))
-                    //{
-                    //    newDebug.childNode = newNode;
-                    //}
                     var newDebug = newParentNode as ActionNode_Debug;
                     foreach (var originalChild in originalDebug.childNodes)
                     {
@@ -1990,7 +1992,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(branch, "Connect_BranchNode");
 #endif
-                if (childmode == "符合")
+                if (childmode == "开")
                 {
                     if (branch.childNode_true != null)
                     {
@@ -2005,7 +2007,7 @@ namespace SevenStrikeModules.XGraph
                         branch.childNode_true = child;
                     }
                 }
-                else if (childmode == "不符合")
+                else if (childmode == "关")
                 {
                     if (branch.childNode_false != null)
                     {
@@ -2098,9 +2100,9 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(branch, "RemoveConnect_BranchNode");
 #endif
-                if (childmode == "符合")
+                if (childmode == "开")
                     branch.childNode_true = null;
-                else if (childmode == "不符合")
+                else if (childmode == "关")
                     branch.childNode_false = null;
             }
             #endregion
@@ -2268,11 +2270,11 @@ namespace SevenStrikeModules.XGraph
                 if (name == item.name)
                 {
                     item.SetValue(value);
+
+                    // 更新变量赋值数据
+                    Variables_Refresh();
                 }
             }
-
-            // 更新变量赋值数据
-            Variables_Refresh();
         }
         /// <summary>
         /// 获取变量值
@@ -2300,39 +2302,39 @@ namespace SevenStrikeModules.XGraph
             // 更新 “黑板变量数据列表”的变量信息
             foreach (var vare in Variables)
             {
-                foreach (var variable in BlackboardVariable)
+                foreach (var bb_variable in BlackboardVariable)
                 {
                     // 匹配黑板变量
-                    if (vare.varguid == variable.guid)
+                    if (vare.varguid == bb_variable.guid)
                     {
-                        vare.variable.name = variable.name;
-                        vare.description = variable.description;
-                        vare.variable.description = variable.description;
+                        vare.variable.name = bb_variable.name;
+                        vare.description = bb_variable.description;
+                        vare.variable.description = bb_variable.description;
                         switch (vare.variable.type)
                         {
                             case VariableType.String:
-                                vare.variable.SetValue(variable.GetValue<string>());
+                                vare.variable.SetValue(bb_variable.GetValue<string>());
                                 break;
                             case VariableType.Float:
-                                vare.variable.SetValue(variable.GetValue<float>());
+                                vare.variable.SetValue(bb_variable.GetValue<float>());
                                 break;
                             case VariableType.Int:
-                                vare.variable.SetValue(variable.GetValue<int>());
+                                vare.variable.SetValue(bb_variable.GetValue<int>());
                                 break;
                             case VariableType.Bool:
-                                vare.variable.SetValue(variable.GetValue<bool>());
+                                vare.variable.SetValue(bb_variable.GetValue<bool>());
                                 break;
                             case VariableType.Vector2:
-                                vare.variable.SetValue(variable.GetValue<Vector2>());
+                                vare.variable.SetValue(bb_variable.GetValue<Vector2>());
                                 break;
                             case VariableType.Vector3:
-                                vare.variable.SetValue(variable.GetValue<Vector3>());
+                                vare.variable.SetValue(bb_variable.GetValue<Vector3>());
                                 break;
                             case VariableType.Vector4:
-                                vare.variable.SetValue(variable.GetValue<Vector4>());
+                                vare.variable.SetValue(bb_variable.GetValue<Vector4>());
                                 break;
                             case VariableType.Color:
-                                vare.variable.SetValue(variable.GetValue<Color>());
+                                vare.variable.SetValue(bb_variable.GetValue<Color>());
                                 break;
                         }
                     }
@@ -2429,6 +2431,10 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
+
+            // 数值更新后的回调
+            if (On_VariablesValue_Changed != null)
+                On_VariablesValue_Changed();
         }
         #endregion
 

@@ -17,15 +17,15 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当选中节点时的委托事件
         /// </summary>
-        public Action<VNode_Base> OnSelectedNode;
+        public Action<VNode_Base> On_SelectedNode;
         /// <summary>
         /// 当选中节点时的委托事件
         /// </summary>
-        public Action<VNode_Base> OnUnSelectedNode;
+        public Action<VNode_Base> On_UnSelectedNode;
         /// <summary>
         /// 当为节点设置Avatar时的委托事件
         /// </summary>
-        public Action<VNode_Base> OnNodeAvatar_Set;
+        public Action<VNode_Base> On_NodeAvatar_Set;
         /// <summary>
         /// 当节点清空Avatar时的委托事件
         /// </summary>
@@ -141,6 +141,9 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
             DuplicateAction_Add();
+
+            // 注册黑板变量数值变化回调
+            ActionData.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
         }
 
         #region 订阅 Graphview 克隆动作
@@ -297,7 +300,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Extension()
         {
-         
+
         }
 
         /// <summary>
@@ -483,9 +486,9 @@ namespace SevenStrikeModules.XGraph
             base.OnSelected();
 
             // 调用回调事件
-            if (OnSelectedNode != null)
+            if (On_SelectedNode != null)
             {
-                OnSelectedNode.Invoke(this);
+                On_SelectedNode.Invoke(this);
             }
 
             VisualElementDisplay(TitleLabel, true);
@@ -499,9 +502,9 @@ namespace SevenStrikeModules.XGraph
             base.OnUnselected();
 
             // 调用回调事件
-            if (OnUnSelectedNode != null)
+            if (On_UnSelectedNode != null)
             {
-                OnUnSelectedNode.Invoke(this);
+                On_UnSelectedNode.Invoke(this);
             }
 
             VisualElementDisplay(TitleLabel, true);
@@ -529,6 +532,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="list"></param>
         public virtual void OnDuplicatedNode(List<DuplicateNodeData> list)
+        {
+
+        }
+
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public virtual void On_VariablesValue_Changed()
         {
 
         }
@@ -615,8 +626,8 @@ namespace SevenStrikeModules.XGraph
             CheckAvatarChanged();
 
             // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的扩展）
-            if (OnNodeAvatar_Set != null)
-                OnNodeAvatar_Set(this);
+            if (On_NodeAvatar_Set != null)
+                On_NodeAvatar_Set(this);
         }
         /// <summary>
         /// 移除Avatar

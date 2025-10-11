@@ -280,7 +280,7 @@ namespace SevenStrikeModules.XGraph
 
             // 必须将自定义背景图的层级放在网格背景的下面的图层，这样贴图不会遮住网格背景
             CustomBackground.SendToBack();
-            #endregion
+            #endregion 
         }
         #endregion
 
@@ -315,7 +315,7 @@ namespace SevenStrikeModules.XGraph
 
             if (DisplayActionTreeInspector)
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                gv_GraphWindow.xw_InspectorView.UpdateSelection(ActionTreeAsset);
+                gv_GraphWindow.xw_InspectorView.InspectorViewer(ActionTreeAsset);
         }
         /// <summary>
         /// 刷新 GridBackground 背景主题

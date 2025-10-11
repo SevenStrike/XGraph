@@ -5,6 +5,10 @@ namespace SevenStrikeModules.XGraph
     public abstract class ActionNode_Debug : ActionNode_Base
     {
         /// <summary>
+        /// 调试信息
+        /// </summary>
+        public string Message;
+        /// <summary>
         /// 子节点列表
         /// </summary>
         public List<ActionNode_Base> childNodes = new List<ActionNode_Base>();

@@ -252,10 +252,8 @@ namespace SevenStrikeModules.XGraph
             args.transparentNode = false;
             args.variable = variable;
 
-            // 添加但不选中
+            // 添加可视化变量节点
             graphWindow.xw_graphView.CreateNode(args);
-            // 添加并选中
-            //graphWindow.xw_graphView.AddToSelection(graphWindow.xw_graphView.CreateNode(args));
             #endregion
 
             return index;
@@ -631,7 +629,7 @@ namespace SevenStrikeModules.XGraph
             if (ChceckVariableVisual())
             {
                 // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                graphWindow.xw_InspectorView.UpdateSelection(graphWindow.CloneTree);
+                graphWindow.xw_InspectorView.InspectorViewer(graphWindow.CloneTree);
             }
         }
         #endregion
@@ -745,15 +743,18 @@ namespace SevenStrikeModules.XGraph
                 foreach (var obj in enumerable)
                 {
                     Variable vare = obj as Variable;
-                    util_XGraphEditorUtility.Element_Label_ValueSet(graphWindow.xw_label_InspectorView_Container_Title, $"黑板变量 - {vare.name}");
-                    graphWindow.xw_InspectorView.UpdateSelection(vare);
+                    util_XGraphEditorUtility.Element_Label_ValueSet(graphWindow.xw_label_InspectorView_Container_Title, $"黑板变量");
+                    graphWindow.xw_InspectorView.InspectorViewer(vare);
+                    graphWindow.xw_isSelectedVariable = true;
+                    graphWindow.xw_graphView.ClearSelection();
                 }
             }
             // 当取消选择变量时让 InspectorView显示当前行为树根节点变量
             else
             {
                 graphWindow.InspectorViewAction_SetTitle($"{graphWindow.SourceTree.name} 行为根节点变量");
-                graphWindow.xw_InspectorView.UpdateSelection(graphWindow.CloneTree);
+                graphWindow.xw_InspectorView.InspectorViewer(graphWindow.CloneTree);
+                graphWindow.xw_isSelectedVariable = false;
             }
         }
 

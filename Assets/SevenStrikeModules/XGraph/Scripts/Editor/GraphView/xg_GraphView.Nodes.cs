@@ -527,8 +527,8 @@ namespace SevenStrikeModules.XGraph
             this.AddElement(node);
 
             // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
-            node.OnSelectedNode = OnSelectedNode;
-            node.OnUnSelectedNode = OnUnSelectedNode;
+            node.On_SelectedNode = OnSelectedNode;
+            node.On_UnSelectedNode = OnUnSelectedNode;
             // 刷新GraphView视图
             node.RefreshExpandedState();
             node.RefreshPorts();
@@ -713,8 +713,8 @@ namespace SevenStrikeModules.XGraph
             this.AddElement(relay);
 
             // 指定生成的节点点击事件委托，便于实现调用点击节点时调用
-            relay.OnSelectedNode = OnSelectedNode;
-            relay.OnUnSelectedNode = OnUnSelectedNode;
+            relay.On_SelectedNode = OnSelectedNode;
+            relay.On_UnSelectedNode = OnUnSelectedNode;
             #endregion
 
             // 刷新 BlackBoard 信息显示

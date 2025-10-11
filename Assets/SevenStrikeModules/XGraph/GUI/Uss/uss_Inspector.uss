@@ -1,0 +1,296 @@
+.container
+{
+     flex-direction: column;
+     width: 100%;
+     color: rgb(255, 255, 255);
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     font-size: 12px;
+     margin-top: 0px;
+     margin-right: 0px;
+     margin-bottom: 0px;
+     margin-left: 0px;
+     padding-top: 0px;
+     padding-right: 0px;
+     padding-bottom: 0px;
+     padding-left: 0px;
+     overflow: hidden;
+}
+
+.titlegroup
+{
+     flex-direction: row;
+     align-items: center;
+     width: 100%;
+     height: auto;
+     margin-top: 0px;
+     margin-right: 0px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     padding-top: 10px;
+     padding-right: 5px;
+     padding-bottom: 15px;
+     padding-left: 0px;
+     border-bottom-width: 1px;
+     border-bottom-color: rgba(255, 255, 255, 0.2);
+     /*background-color: rgba(0, 177, 255, 0.50);*/
+}
+
+.titlename
+{
+     color: rgba(255, 255, 255,0.85);
+     height: 10px;
+     width: 30px;
+     font-size: 15px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+     letter-spacing: 5px;
+     padding-left: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 0px;
+     margin-bottom: 0px;
+     margin-left: 10px;
+}
+
+.titlemark
+{
+     color: rgba(255, 255, 255,0.85);
+     height: 15px;
+     width: 2px;
+     letter-spacing: 5px;
+     padding-left: 0px;
+     padding-top: 0px;
+     margin-top: 0px;
+     margin-left: 0px;
+}
+
+.type
+{
+     position: absolute;
+     right: 0;
+     color: rgb(0, 0, 0);
+     height: 15px;
+     width: 65px;
+     font-size: 11px;
+     -unity-text-align: middle-center;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+     letter-spacing: 5px;
+     padding-left: 10px;
+     padding-right: 10px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 0px;
+     margin-bottom: 0px;
+     margin-left: 0px;
+     margin-right: 16px;
+     align-self: flex-start;
+     background-color: rgba(255, 255, 255,0.85);
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 6px;
+     border-bottom-left-radius: 6px;
+}
+
+.description
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.55);
+     height: 25px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: bold;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 5px;
+     padding-left: 0px;
+     padding-right: 10px;
+     padding-top: 5px;
+     padding-bottom: 0px;
+     margin-top: 0px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
+.labeltext
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.8);
+     height: 25px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 5px;
+     padding-left: 0px;
+     padding-right: 10px;
+     padding-top: 5px;
+     padding-bottom: 0px;
+     margin-top: 0px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
+.field_text
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.unity-base-field__label
+{
+     min-width: 10px;
+     font-size: 12.5px;
+     letter-spacing: 5px;
+     -unity-font-style: bold;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+}
+
+.field_vector2
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_vector3
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_vector4
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_color
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_float
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_bool
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}

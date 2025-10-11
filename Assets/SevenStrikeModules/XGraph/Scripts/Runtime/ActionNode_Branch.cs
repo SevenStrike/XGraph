@@ -2,6 +2,9 @@ namespace SevenStrikeModules.XGraph
 {
     public class ActionNode_Branch : ActionNode_Base
     {
+        /// <summary>
+        /// 条件状态
+        /// </summary>
         public bool PredicateState;
         /// <summary>
         /// 子节点 True
@@ -14,17 +17,7 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-            SetPredicateState(Variable_Get("条件").GetValue<bool>());
-        }
 
-        public void SetPredicateState(bool state)
-        {
-            PredicateState = state;
-        }
-
-        public bool Predicated()
-        {
-            return PredicateState;
         }
     }
 }

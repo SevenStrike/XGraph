@@ -1,12 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
-    using System.Linq;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.UIElements;
     using UnityEngine;
-    using UnityEngine.UIElements;
 
     public class VNode_Branch : VNode_Base
     {
@@ -14,15 +9,14 @@ namespace SevenStrikeModules.XGraph
         {
             base.Initialize(graphView, pos, data);
 
-            ActionNode_Branch actionvbranch = data as ActionNode_Branch;
 
             #region 端口设置
             // 加入行为端口
             Port_Inputs.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
             Port_Inputs.Add(new xGraph_NodePort("条件", typeof(Variable_Bool), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("符合", typeof(ActionNode_Base), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("不符合", typeof(ActionNode_Base), Port.Capacity.Single));
-            #endregion
+            Port_Outputs.Add(new xGraph_NodePort("开", typeof(ActionNode_Base), Port.Capacity.Single));
+            Port_Outputs.Add(new xGraph_NodePort("关", typeof(ActionNode_Base), Port.Capacity.Single));
+            #endregion          
         }
 
         #region 节点绘制
@@ -66,10 +60,32 @@ namespace SevenStrikeModules.XGraph
         {
             base.Draw_Title();
         }
-        #endregion     
+        #endregion
+
+        #region 回调
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+
+            SetPredicateState("条件");
+        }
+        #endregion
 
         #region 辅助
-
-        #endregion       
+        /// <summary>
+        /// 设置条件判断状态
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetPredicateState(string portName)
+        {
+            ActionNode_Branch actionvbranch = ActionData as ActionNode_Branch;
+            Variable variable = ActionData.Variable_Get(portName);
+            if (variable != null)
+                actionvbranch.PredicateState = variable.GetValue<bool>();
+        }
+        #endregion
     }
 }

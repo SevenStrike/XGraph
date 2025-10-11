@@ -79,8 +79,7 @@ namespace SevenStrikeModules.XGraph
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
-            // 更新变量值
-            //RefreshVariableValue();
+            this.name = VariableData.name;
         }
 
         /// <summary>
@@ -262,29 +261,6 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Title()
         {
 
-
-            //// 用于编辑节点名称
-            //TitleInputField = new TextField()
-            //{
-            //    multiline = false
-            //};
-            //TitleInputField.value = ActionData.identifyName;
-            //TitleInputField.AddToClassList("Title_TextField");
-            //TitleInputField.RegisterCallback<BlurEvent>(OnTitleInputFieldBlur);
-            //VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
-            //input.AddToClassList("Title_TextInput");
-            //TextElement textelement = input.Q<TextElement>();
-            //textelement.AddToClassList("Title_TextElement");
-
-            // 节点折叠 / 展开按钮
-            //VisualElement element = titleContainer.Q<VisualElement>("title-button-container");
-
-            // 清空容器后重新按顺序添加
-            //titleContainer.Clear();
-            //AppendElement(GraphNodeContainerType.TitleContainer, TitleIcon);
-            //AppendElement(GraphNodeContainerType.TitleContainer, TitleInputField);
-            //AppendElement(GraphNodeContainerType.TitleContainer, TitleLabel);
-            //AppendElement(GraphNodeContainerType.TitleContainer, element);
         }
 
         /// <summary>
@@ -440,45 +416,6 @@ namespace SevenStrikeModules.XGraph
         public void UnHighlight()
         {
             util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
-        }
-        /// <summary>
-        /// 根据VraiableCategory的变量列表源来更新在VariableData中的变量的值
-        /// </summary>
-        public void RefreshVariableValue()
-        {
-            foreach (var v in graphView.ActionTreeAsset.BlackboardVariable)
-            {
-                if (VariableData.variable.guid == v.guid)
-                {
-                    switch (VariableData.variable.type)
-                    {
-                        case VariableType.String:
-                            VariableData.variable.SetValue<string>(v.GetValue<string>());
-                            break;
-                        case VariableType.Float:
-                            VariableData.variable.SetValue<float>(v.GetValue<float>());
-                            break;
-                        case VariableType.Int:
-                            VariableData.variable.SetValue<int>(v.GetValue<int>());
-                            break;
-                        case VariableType.Bool:
-                            VariableData.variable.SetValue<bool>(v.GetValue<bool>());
-                            break;
-                        case VariableType.Vector2:
-                            VariableData.variable.SetValue<Vector2>(v.GetValue<Vector2>());
-                            break;
-                        case VariableType.Vector3:
-                            VariableData.variable.SetValue<Vector3>(v.GetValue<Vector3>());
-                            break;
-                        case VariableType.Vector4:
-                            VariableData.variable.SetValue<Vector4>(v.GetValue<Vector4>());
-                            break;
-                        case VariableType.Color:
-                            VariableData.variable.SetValue<Color>(v.GetValue<Color>());
-                            break;
-                    }
-                }
-            }
         }
         #endregion
     }

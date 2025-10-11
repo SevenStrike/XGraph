@@ -51,6 +51,29 @@ namespace SevenStrikeModules.XGraph
 
             return this;
         }
-        #endregion        
+        #endregion
+
+        #region 回调
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+
+            SetWaitTime("时间");
+        }
+        #endregion
+
+        #region 辅助
+        private void SetWaitTime(string portName)
+        {
+            ActionNode_Wait wait = ActionData as ActionNode_Wait;
+            Variable variable = ActionData.Variable_Get(portName);
+
+            if (variable != null)
+                wait.Time = variable.GetValue<float>();
+        }
+        #endregion
     }
 }

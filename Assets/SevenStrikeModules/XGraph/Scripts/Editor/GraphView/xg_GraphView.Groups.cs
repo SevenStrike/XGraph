@@ -390,7 +390,7 @@ namespace SevenStrikeModules.XGraph
                     guid = node.ActionData.guid;
 
                     // 注册委托 - 节点头像设置
-                    node.OnNodeAvatar_Set += ((n) =>
+                    node.On_NodeAvatar_Set += ((n) =>
                     {
                         // 检查编组内是否存在设置了头像的节点
                         CheckHasAvatarNode(groupData);
@@ -451,7 +451,7 @@ namespace SevenStrikeModules.XGraph
                     guid = node.ActionData.guid;
 
                     // 清空委托 - 节点头像设置
-                    node.OnNodeAvatar_Set = null;
+                    node.On_NodeAvatar_Set = null;
                     // 清空委托 - 节点头像移除
                     node.On_NodeAvatar_Clear = null;
                 }

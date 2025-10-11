@@ -15,12 +15,15 @@ namespace SevenStrikeModules.XGraph
         /// 根据数据行为树根节点容器里的子资源来重建GraphView的视觉节点
         /// </summary>
         /// <param name="actiontree"></param>
-        public void Restructure_Nodes(ActionNode_Asset actiontree)
+        public void Restructure_Graph(ActionNode_Asset actiontree)
         {
             // 获取到数据根节点
             ActionTreeAsset = actiontree;
 
             graphViewChanged -= OnGraphViewChanged;
+
+            // 清空数值更新回调
+            ActionTreeAsset.On_VariablesValue_Changed = null;
 
             // 清空所有 NodeView
             DeleteElements(graphElements);
@@ -29,90 +32,8 @@ namespace SevenStrikeModules.XGraph
 
             // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
             Restructure_Variable(ActionTreeAsset.Variables);
-
-            // 根据根节点的数据列表  -  重建 行为节点
-            foreach (var data in ActionTreeAsset.Actions)
-            {
-                data.SetRoot(actiontree);
-
-                if (data.actionNodeType == "Relay")
-                {
-                    VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
-                    vNode_Relay.Draw();
-                    vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.TransparentNode);
-                    vNode_Relay.RefreshExpandedState();
-                }
-                else
-                {
-                    VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
-                    vNode_Base.Draw();
-                    vNode_Base.RefreshExpandedState();
-
-                    // 检查头像设置情况
-                    vNode_Base.CheckAvatarChanged();
-                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
-                }
-            }
-            // 根据行为树根节点的数据列表  -  重建 行为连线
-            foreach (var data in ActionTreeAsset.Actions)
-            {
-                if (data is ActionNode_Branch branch_node)
-                {
-                    VNode_Base n_branch = FindNodeView(branch_node.guid);
-
-                    foreach (var port in n_branch.Port_Outputs)
-                    {
-                        if (port.Name == "符合")
-                        {
-                            if (branch_node.childNode_true != null)
-                            {
-                                VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
-                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
-                                AddElement(edge);
-                            }
-                        }
-                        else if (port.Name == "不符合")
-                        {
-                            if (branch_node.childNode_false != null)
-                            {
-                                VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
-                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
-                                AddElement(edge);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // 获取的目标数据节点的子数据节点
-                    var children = ActionTreeAsset.GetChildrenNodes(data);
-
-                    // child 为每一个子数据节点
-                    foreach (var child in children)
-                    {
-                        VNode_Base n_parent = FindNodeView(data.guid);
-                        VNode_Base n_child = FindNodeView(child.guid);
-
-                        foreach (var p in n_parent.Port_Outputs)
-                        {
-                            Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
-                            AddElement(edge);
-                        }
-                    }
-                }
-            }
-            // 根据行为树根节点的数据列表  -  检查并重建 行为延展
-            foreach (var data in ActionTreeAsset.Actions)
-            {
-                // 获取延展节点
-                VNode_Base n_parent = FindNodeView(data.guid);
-                // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
-                if (n_parent is VNode_Relay relay)
-                {
-                    relay.CheckConnected();
-                }
-            }
-
+            // 根据行为树根节点里的  -行为-  列表数据来重建GraphView的视觉  -行为-  节点
+            Restructure_Actions(ActionTreeAsset.Actions);
             // 根据行为树根节点里的  -便签-  列表数据来重建GraphView的视觉  -便签-  节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
             // 根据行为树根节点里的  -标签-  列表数据来重建GraphView的视觉  -标签-  节点
@@ -121,9 +42,9 @@ namespace SevenStrikeModules.XGraph
             Restructure_Decals(ActionTreeAsset.Decals);
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
-            // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
+            // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的连线  -“Variable类型端口”
             Restructure_VariableConnector(ActionTreeAsset.Actions);
-            // 根据行为节点里的  -内部变量数据列表-  来重建变量与行为节点指定的“Variable类型端口”的连线
+            // 根据行为节点里的  -内部变量数据列表-  来重建内部变量与行为节点指定的连线  -“Variable类型端口”
             Restructure_InternalVariableConnector(ActionTreeAsset.Actions);
 
             // 更新变量值数据
@@ -189,7 +110,117 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉便签节点
+        /// 根据行为树根节点里的行为列表数据来重建GraphView的视觉  -  行为节点
+        /// </summary>
+        /// <param name="actions"></param>
+        private void Restructure_Actions(List<ActionNode_Base> actions)
+        {
+            // 根据根节点的数据列表  -  重建  -  内部变量节点
+            // 内部变量节点优先重建 - 为了确保后续的行为节点能正常注册 On_InternalVariable_ValueChanged 回调
+            foreach (var data in actions)
+            {
+                if (data is ActionNode_Variable)
+                {
+                    data.SetRoot(ActionTreeAsset);
+
+                    VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                    vNode_Base.Draw();
+                    vNode_Base.RefreshExpandedState();
+
+                    // 检查头像设置情况
+                    vNode_Base.CheckAvatarChanged();
+                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
+                }
+            }
+            // 根据根节点的数据列表  -  重建  -  行为节点
+            foreach (var data in actions)
+            {
+                if (!(data is ActionNode_Variable))
+                {
+                    data.SetRoot(ActionTreeAsset);
+
+                    if (data.actionNodeType == "Relay")
+                    {
+                        VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
+                        vNode_Relay.Draw();
+                        vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.TransparentNode);
+                        vNode_Relay.RefreshExpandedState();
+                    }
+                    else
+                    {
+                        VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                        vNode_Base.Draw();
+                        vNode_Base.RefreshExpandedState();
+
+                        // 检查头像设置情况
+                        vNode_Base.CheckAvatarChanged();
+                        vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
+                    }
+                }
+            }
+            // 根据行为树根节点的数据列表  -  重建  -  行为连线
+            foreach (var data in actions)
+            {
+                if (data is ActionNode_Branch branch_node)
+                {
+                    VNode_Base n_branch = FindNodeView(branch_node.guid);
+
+                    foreach (var port in n_branch.Port_Outputs)
+                    {
+                        if (port.Name == "开")
+                        {
+                            if (branch_node.childNode_true != null)
+                            {
+                                VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
+                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
+                                AddElement(edge);
+                            }
+                        }
+                        else if (port.Name == "关")
+                        {
+                            if (branch_node.childNode_false != null)
+                            {
+                                VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
+                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
+                                AddElement(edge);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // 获取的目标数据节点的子数据节点
+                    var children = ActionTreeAsset.GetChildrenNodes(data);
+
+                    // child 为每一个子数据节点
+                    foreach (var child in children)
+                    {
+                        VNode_Base n_parent = FindNodeView(data.guid);
+                        VNode_Base n_child = FindNodeView(child.guid);
+
+                        foreach (var p in n_parent.Port_Outputs)
+                        {
+                            Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
+                            AddElement(edge);
+                        }
+                    }
+                }
+            }
+            // 根据行为树根节点的数据列表  -  检查并重建  -  行为延展
+            foreach (var data in actions)
+            {
+                // 获取延展节点
+                VNode_Base n_parent = FindNodeView(data.guid);
+                // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
+                if (n_parent is VNode_Relay relay)
+                {
+                    relay.CheckConnected();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉  -  便签节点
         /// </summary>
         /// <param name="datas_stick"></param>
         public void Restructure_Sticks(List<ActionStickData> datas_stick)
@@ -201,7 +232,7 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉标签节点
+        /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉  -  标签节点
         /// </summary>
         /// <param name="datas_label"></param>
         public void Restructure_Labels(List<ActionLabelData> datas_label)
@@ -213,7 +244,7 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉贴图节点
+        /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉  -  贴图节点
         /// </summary>
         /// <param name="ActionDecalData"></param>
         public void Restructure_Decals(List<ActionDecalData> datas_decal)
@@ -227,7 +258,7 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉变量节点
+        /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉  -  黑板变量节点
         /// </summary>
         /// <param name="datas_var"></param>
         public void Restructure_Variable(List<ActionVariableData> datas_var)
@@ -243,7 +274,7 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
-        /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉编组
+        /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉  -  编组
         /// </summary>
         /// <param name="datas_group"></param>
         public void Restructure_Groups(List<ActionGroupData> datas_group)
@@ -331,6 +362,7 @@ namespace SevenStrikeModules.XGraph
                             if (n_var != null && port_parent != null)
                             {
                                 Edge edge = n_var.OutputPort.Port.ConnectTo(port_parent);
+
                                 AddElement(edge);
                             }
                         }
@@ -351,102 +383,25 @@ namespace SevenStrikeModules.XGraph
         {
             foreach (var action in datas_action)
             {
+                // 首先确保内部变量列表不为空
                 if (action.InternalVariableDatas != null && action.InternalVariableDatas.Count > 0)
                 {
-                    // 父节点
+                    // 获得父节点
                     VNode_Base n_parent = FindNodeView(action.guid);
 
+                    // 循环遍历内部变量列表
                     for (int i = 0; i < action.InternalVariableDatas.Count; i++)
                     {
+                        // 获取列表其中一项
                         var item = action.InternalVariableDatas[i];
 
-                        // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
+                        // 在节点图内找到目标  -  内部变量节点  -  与  -  行为节点  -  的  -  匹配端口  -  连接
                         VNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as VNode_Variable_Internal;
                         if (n_var != null)
                         {
                             n_var.VariableData.variable = item.variable.Clone(false);
                             n_var.VariableData.variable.name = "";
-                            // 根据类型来修改内部变量节点的变量值
-                            switch (item.variable.type)
-                            {
-                                case VariableType.String:
-                                    string val_text = item.variable.GetValue<string>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<string>(val_text);
-                                    // 修改控件值
-                                    if (n_var.controller is TextField field_text)
-                                    {
-                                        field_text.value = val_text;
-                                    }
-                                    break;
-                                case VariableType.Float:
-                                    float val_float = item.variable.GetValue<float>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<float>(val_float);
-                                    // 修改控件值
-                                    if (n_var.controller is FloatField field_float)
-                                    {
-                                        field_float.value = val_float;
-                                    }
-                                    break;
-                                case VariableType.Int:
-                                    int val_int = item.variable.GetValue<int>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<int>(val_int);
-                                    // 修改控件值
-                                    if (n_var.controller is IntegerField field_int)
-                                    {
-                                        field_int.value = val_int;
-                                    }
-                                    break;
-                                case VariableType.Bool:
-                                    bool val_bool = item.variable.GetValue<bool>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<bool>(val_bool);
-                                    // 修改控件值
-                                    n_var.Toggle_Check(val_bool);
-                                    break;
-                                case VariableType.Vector2:
-                                    Vector2 val_vector2 = item.variable.GetValue<Vector2>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<Vector2>(val_vector2);
-                                    // 修改控件值
-                                    if (n_var.controller is Vector2Field field_v2)
-                                    {
-                                        field_v2.value = val_vector2;
-                                    }
-                                    break;
-                                case VariableType.Vector3:
-                                    Vector3 val_vector3 = item.variable.GetValue<Vector3>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<Vector3>(val_vector3);
-                                    // 修改控件值
-                                    if (n_var.controller is Vector3Field field_v3)
-                                    {
-                                        field_v3.value = val_vector3;
-                                    }
-                                    break;
-                                case VariableType.Vector4:
-                                    Vector4 val_vector4 = item.variable.GetValue<Vector4>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<Vector4>(val_vector4);
-                                    // 修改控件值
-                                    if (n_var.controller is Vector4Field field_v4)
-                                    {
-                                        field_v4.value = val_vector4;
-                                    }
-                                    break;
-                                case VariableType.Color:
-                                    Color val_color = item.variable.GetValue<Color>();
-                                    // 修改变量值
-                                    n_var.VariableData.variable.SetValue<Color>(val_color);
-                                    // 修改控件值
-                                    if (n_var.controller is ColorField field_color)
-                                    {
-                                        field_color.value = val_color;
-                                    }
-                                    break;
-                            }
+                            n_var.VariableNodeFieldValueUpdate();
 
                             // 获取变量节点的变量类型
                             Type type = n_var.VariableData.variable.GetType();

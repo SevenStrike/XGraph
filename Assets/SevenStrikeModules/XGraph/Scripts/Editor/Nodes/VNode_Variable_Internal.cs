@@ -35,7 +35,14 @@ namespace SevenStrikeModules.XGraph
         /// 开关点击器
         /// </summary>
         public VisualElement tog_clicker;
-        public VisualElement controller;
+        /// <summary>
+        /// 数据输入框
+        /// </summary>
+        public VisualElement VariableField;
+        /// <summary>
+        /// 当内部变量值改变时
+        /// </summary>
+        public Action On_InternalVariableValue_Changed;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -87,6 +94,9 @@ namespace SevenStrikeModules.XGraph
 
             // 当Graphview编辑器的主题色改变时
             graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
+
+            // 每次初始化时先清空，避免重复注册
+            On_InternalVariableValue_Changed = null;
         }
 
         /// <summary>
@@ -143,8 +153,8 @@ namespace SevenStrikeModules.XGraph
                 Resizer = this.Q<VisualElement>(className: "resizer");
                 Resizer.style.width = 30;
                 Resizer.style.height = 30;
-                Resizer.RegisterCallback<PointerEnterEvent>(Decal_DisplayResizer);
-                Resizer.RegisterCallback<PointerLeaveEvent>(Decal_HideResizer);
+                Resizer.RegisterCallback<PointerEnterEvent>(DisplayResizer);
+                Resizer.RegisterCallback<PointerLeaveEvent>(HideResizer);
             }
         }
 
@@ -153,10 +163,10 @@ namespace SevenStrikeModules.XGraph
             //base.Draw_Extension();
 
             // 创建控件
-            controller = CreateField();
+            VariableField = CreateField();
 
-            if (controller != null)
-                AppendElement(GraphNodeContainerType.ExtensionContainer, controller);
+            if (VariableField != null)
+                AppendElement(GraphNodeContainerType.ExtensionContainer, VariableField);
         }
 
         /// <summary>
@@ -345,7 +355,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData String Variable");
             VariableData.variable.SetValue<string>(field.text);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Float 类型的变量节点内容改变时
@@ -362,7 +379,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Float Variable");
             VariableData.variable.SetValue<float>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Int 类型的变量节点内容改变时
@@ -379,7 +403,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Int Variable");
             VariableData.variable.SetValue<int>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Vector2 类型的变量节点内容改变时
@@ -396,7 +427,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
             VariableData.variable.SetValue<Vector2>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Vector3 类型的变量节点内容改变时
@@ -413,7 +451,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
             VariableData.variable.SetValue<Vector3>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Vector4 类型的变量节点内容改变时
@@ -430,7 +475,14 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
             VariableData.variable.SetValue<Vector4>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         /// <summary>
         /// 当 Color 类型的变量节点内容改变时
@@ -447,17 +499,25 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(VariableData, "Change NodeData Color Variable");
             VariableData.variable.SetValue<Color>(field.value);
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
         }
         #endregion
 
         #region 辅助
         /// <summary>
-        /// 更新变量赋值数据
+        /// 更新节点信息内容显示
         /// </summary>
-        private void RefreshVariables()
+        private void VariableNodeInfoRefresh()
         {
-            graphView.ActionTreeAsset.Variables_Refresh();
+            // 显示当前选中的节点的类型信息
+            graphView.gv_GraphWindow.xw_SetNodeInfo($"{VariableData.variable.name}  /  {VariableData.variable.GetActiveType()}  /  {VariableData.variable.guid}", $"{VariableData.variable.description}  /  {VariableData.variable.GetValue()}");
         }
         #endregion
 
@@ -483,7 +543,7 @@ namespace SevenStrikeModules.XGraph
         /// 鼠标移出时隐藏角点拖拽显示
         /// </summary>
         /// <param name="evt"></param>
-        private void Decal_HideResizer(PointerLeaveEvent evt)
+        private void HideResizer(PointerLeaveEvent evt)
         {
             ResizerIcon.style.opacity = 0f;
         }
@@ -491,7 +551,7 @@ namespace SevenStrikeModules.XGraph
         /// 鼠标进入时显示角点拖拽显示
         /// </summary>
         /// <param name="evt"></param>
-        private void Decal_DisplayResizer(PointerEnterEvent evt)
+        private void DisplayResizer(PointerEnterEvent evt)
         {
             ResizerIcon.style.opacity = 1f;
         }
@@ -512,7 +572,86 @@ namespace SevenStrikeModules.XGraph
             Toggle_Check(sw);
 
             // 更新变量值数据
-            RefreshVariables();
+            graphView.ActionTreeAsset.Variables_Refresh();
+            // 通知注册了变量数值改变的回调
+            if (On_InternalVariableValue_Changed != null)
+            {
+                On_InternalVariableValue_Changed();
+            }
+            // 更新节点信息内容显示
+            VariableNodeInfoRefresh();
+        }
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+            VariableNodeFieldValueUpdate();
+        }
+        public void VariableNodeFieldValueUpdate()
+        {
+            VisualElement valuefield = extensionContainer.Q<VisualElement>(name: $"Field_{VariableData.variable.type}");
+
+            switch (VariableData.variable.type)
+            {
+                case VariableType.String:
+                    TextField value_String = valuefield as TextField;
+                    if (value_String != null)
+                    {
+                        value_String.value = VariableData.variable.GetValue<string>();
+                    }
+                    break;
+                case VariableType.Float:
+                    FloatField value_Float = valuefield as FloatField;
+                    if (value_Float != null)
+                    {
+                        value_Float.value = VariableData.variable.GetValue<float>();
+                    }
+                    break;
+                case VariableType.Int:
+                    IntegerField value_Int = valuefield as IntegerField;
+                    if (value_Int != null)
+                    {
+                        value_Int.value = VariableData.variable.GetValue<int>();
+                    }
+                    break;
+                case VariableType.Bool:
+                    Toggle value_Bool = valuefield as Toggle;
+                    if (value_Bool != null)
+                    {
+                        value_Bool.value = VariableData.variable.GetValue<bool>();
+                    }
+                    break;
+                case VariableType.Vector2:
+                    Vector2Field value_Vector2 = valuefield as Vector2Field;
+                    if (value_Vector2 != null)
+                    {
+                        value_Vector2.value = VariableData.variable.GetValue<Vector2>();
+                    }
+                    break;
+                case VariableType.Vector3:
+                    Vector3Field value_Vector3 = valuefield as Vector3Field;
+                    if (value_Vector3 != null)
+                    {
+                        value_Vector3.value = VariableData.variable.GetValue<Vector3>();
+                    }
+                    break;
+                case VariableType.Vector4:
+                    Vector4Field value_Vector4 = valuefield as Vector4Field;
+                    if (value_Vector4 != null)
+                    {
+                        value_Vector4.value = VariableData.variable.GetValue<Vector4>();
+                    }
+                    break;
+                case VariableType.Color:
+                    ColorField value_Color = valuefield as ColorField;
+                    if (value_Color != null)
+                    {
+                        value_Color.value = VariableData.variable.GetValue<Color>();
+                    }
+                    break;
+            }
         }
         #endregion
     }

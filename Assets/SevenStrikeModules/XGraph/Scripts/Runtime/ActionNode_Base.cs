@@ -92,6 +92,7 @@ namespace SevenStrikeModules.XGraph
         /// 行为根节点
         /// </summary>
         [SerializeField] public ActionNode_Asset RootAsset;
+
         // 新增：父节点引用
         [NonSerialized] private ActionNode_Base _parentNode;
         public ActionNode_Base ParentNode => _parentNode;
@@ -112,11 +113,13 @@ namespace SevenStrikeModules.XGraph
         {
             RootAsset = root;
         }
+
         /// <summary>
         /// 行为执行方法
         /// </summary>
         /// <returns></returns>
         public abstract void Execute();
+
         /// <summary>
         /// 获取行为的基础信息数据（行为类型 / 显示名称）
         /// </summary>
@@ -149,6 +152,7 @@ namespace SevenStrikeModules.XGraph
             }
             return val;
         }
+
         /// <summary>
         /// 获取变量值（根据预设的端口名称）
         /// </summary>
@@ -177,40 +181,6 @@ namespace SevenStrikeModules.XGraph
                     if (portName == item.TargetPortName)
                     {
                         vare = item.variable;
-                    }
-                }
-            }
-
-            return vare;
-        }
-        /// <summary>
-        /// 获取变量项（根据预设的端口名称）
-        /// </summary>
-        /// <param name="portName"></param>
-        /// <returns>如果返回为空请检查传入的节点端口名称 "portName" 是否存在，或者 "portName" 端口是否链接了变量节点数据</returns>
-        public string VariableNodeGuid_Get(string portName)
-        {
-            string vare = null;
-            bool exist = false;
-
-            // 先从绑定的黑板变量数据列表中找
-            foreach (var item in VariableDatas)
-            {
-                if (portName == item.TargetPortName)
-                {
-                    vare = item.VariableNodeGuid;
-                    exist = true;
-                }
-            }
-
-            // 再从绑定的内部变量数据列表中找
-            if (!exist)
-            {
-                foreach (var item in InternalVariableDatas)
-                {
-                    if (portName == item.TargetPortName)
-                    {
-                        vare = item.VariableNodeGuid;
                     }
                 }
             }
@@ -294,6 +264,40 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
+        }
+        /// <summary>
+        /// 获取变量项（根据预设的端口名称）
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns>如果返回为空请检查传入的节点端口名称 "portName" 是否存在，或者 "portName" 端口是否链接了变量节点数据</returns>
+        public string VariableNodeGuid_Get(string portName)
+        {
+            string vare = null;
+            bool exist = false;
+
+            // 先从绑定的黑板变量数据列表中找
+            foreach (var item in VariableDatas)
+            {
+                if (portName == item.TargetPortName)
+                {
+                    vare = item.VariableNodeGuid;
+                    exist = true;
+                }
+            }
+
+            // 再从绑定的内部变量数据列表中找
+            if (!exist)
+            {
+                foreach (var item in InternalVariableDatas)
+                {
+                    if (portName == item.TargetPortName)
+                    {
+                        vare = item.VariableNodeGuid;
+                    }
+                }
+            }
+
+            return vare;
         }
 
         #region 黑板变量 绑定/解绑

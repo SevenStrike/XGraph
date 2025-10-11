@@ -13,10 +13,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void Action_MouseMove(PointerMoveEvent evt)
         {
-            gv_GraphWindow.xw_GraphInfo_GraphMousePos_Set(GetGraphMousePosition_With_PointerEventMousePosition(evt.position));
-
             gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
             gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
+            gv_GraphWindow.xw_GraphInfo_GraphMousePos_Set(GetGraphMousePosition_With_PointerEventMousePosition(evt.position));
         }
         /// <summary>
         /// 鼠标点击事件的回调
@@ -29,6 +28,7 @@ namespace SevenStrikeModules.XGraph
 
             Vector2 graphMouse_pos = GetGraphMousePosition_With_PointerEventMousePosition(evt.position);
             gv_NodeCreatedPosition = graphMouse_pos;
+
 
             #region 双击两个节点之间的连线时
             if (evt.clickCount == 2 && evt.target is Edge edge)

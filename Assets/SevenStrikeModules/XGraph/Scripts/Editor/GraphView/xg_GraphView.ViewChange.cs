@@ -74,115 +74,46 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region 处理变量节点 / 黑板变量节点 <---> 行为节点
+            #region 黑板变量节点 <---> 内部变量节点
             VNode_Variable node_var = n_parent as VNode_Variable;
+            VNode_Variable_Internal node_internalvar = node_child as VNode_Variable_Internal;
 
-            if (node_var != null && node_child != null)
+            if (node_var != null && node_internalvar != null)
             {
                 Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
                 string portName = edge.input.portName;
+                // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
 
-                // 如果连线输入端的节点是内部变量节点（因为内部变量节点是基于基础行为节点的，所以要判断）
-                if (node_child is VNode_Variable_Internal internalvar)
+                // 两个变量类型一致时
+                if (node_internalvar.VariableData.variable.type == node_var.VariableData.type)
                 {
-                    // 两个变量类型一致时
-                    if (internalvar.VariableData.variable.type == node_var.VariableData.type)
-                    {
-                        // 根据类型来修改内部变量节点的变量值
-                        switch (internalvar.VariableData.variable.type)
-                        {
-                            case VariableType.String:
-                                string val_text = node_var.VariableData.variable.GetValue<string>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<string>(val_text);
-                                // 修改控件值
-                                if (internalvar.controller is TextField field_text)
-                                {
-                                    field_text.value = val_text;
-                                }
-                                break;
-                            case VariableType.Float:
-                                float val_float = node_var.VariableData.variable.GetValue<float>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<float>(val_float);
-                                // 修改控件值
-                                if (internalvar.controller is FloatField field_float)
-                                {
-                                    field_float.value = val_float;
-                                }
-                                break;
-                            case VariableType.Int:
-                                int val_int = node_var.VariableData.variable.GetValue<int>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<int>(val_int);
-                                // 修改控件值
-                                if (internalvar.controller is IntegerField field_int)
-                                {
-                                    field_int.value = val_int;
-                                }
-                                break;
-                            case VariableType.Bool:
-                                bool val_bool = node_var.VariableData.variable.GetValue<bool>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<bool>(val_bool);
-                                // 修改控件值
-                                internalvar.Toggle_Check(val_bool);
-                                break;
-                            case VariableType.Vector2:
-                                Vector2 val_vector2 = node_var.VariableData.variable.GetValue<Vector2>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<Vector2>(val_vector2);
-                                // 修改控件值
-                                if (internalvar.controller is Vector2Field field_v2)
-                                {
-                                    field_v2.value = val_vector2;
-                                }
-                                break;
-                            case VariableType.Vector3:
-                                Vector3 val_vector3 = node_var.VariableData.variable.GetValue<Vector3>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<Vector3>(val_vector3);
-                                // 修改控件值
-                                if (internalvar.controller is Vector3Field field_v3)
-                                {
-                                    field_v3.value = val_vector3;
-                                }
-                                break;
-                            case VariableType.Vector4:
-                                Vector4 val_vector4 = node_var.VariableData.variable.GetValue<Vector4>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<Vector4>(val_vector4);
-                                // 修改控件值
-                                if (internalvar.controller is Vector4Field field_v4)
-                                {
-                                    field_v4.value = val_vector4;
-                                }
-                                break;
-                            case VariableType.Color:
-                                Color val_color = node_var.VariableData.variable.GetValue<Color>();
-                                // 修改变量值
-                                internalvar.VariableData.variable.SetValue<Color>(val_color);
-                                // 修改控件值
-                                if (internalvar.controller is ColorField field_color)
-                                {
-                                    field_color.value = val_color;
-                                }
-                                break;
-                        }
-                    }
+                    node_internalvar.VariableNodeFieldValueUpdate();
                 }
             }
             #endregion
 
-            #region 处理内置变量节点 / 内部变量节点 <---> 行为节点
+            #region 内部变量节点 <---> 行为节点
             VNode_Variable_Internal node_varInternal = n_parent as VNode_Variable_Internal;
             if (node_varInternal != null && node_child != null)
             {
-                Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid");
+                Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid To InternalVariableAction");
                 string portName = edge.input.portName;
                 node_child.ActionData.InternalVariableData_Bind(node_varInternal.VariableData, portName);
             }
+            #endregion
+
+            #region 黑板变量节点 <---> 行为节点
+            VNode_Variable node_bb_var = n_parent as VNode_Variable;
+
+            if (node_bb_var != null && node_child != null)
+            {
+                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
+                string portName = edge.input.portName;
+                // 加入行为节点数据中的变量列表中
+                node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
+            }
+
             #endregion
 
             #region 特化处理延展节点
@@ -191,8 +122,7 @@ namespace SevenStrikeModules.XGraph
             {
                 node_relay.Connected();
             }
-            #endregion
-
+            #endregion            
         }
         #endregion
 

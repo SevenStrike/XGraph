@@ -502,7 +502,7 @@ namespace SevenStrikeModules.XGraph
                             node_v.TransparentDisplay_Set(false);
                         }
                     }
-                    gv_GraphWindow.xw_graphView.Restructure_Nodes(ActionTreeAsset);
+                    gv_GraphWindow.xw_graphView.Restructure_Graph(ActionTreeAsset);
                     evt.StopPropagation();
                 });
                 evt.menu.AppendSeparator();
