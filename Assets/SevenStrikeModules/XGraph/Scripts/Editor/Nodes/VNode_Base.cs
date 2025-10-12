@@ -491,6 +491,21 @@ namespace SevenStrikeModules.XGraph
                 On_SelectedNode.Invoke(this);
             }
 
+            Debug.Log($"{ActionData.name}  /  In：{Port_Inputs.Count}  /  Out：{Port_Outputs.Count}");
+            foreach (var port in Port_Inputs)
+            {
+                foreach (var con in port.Port.connections)
+                {
+                    Debug.Log($"Previous Node：{con.output.node.viewDataKey}");
+                }
+            }
+            foreach (var port in Port_Outputs)
+            {
+                foreach (var con in port.Port.connections)
+                {
+                    Debug.Log($"Next Node：{con.input.node.viewDataKey}");
+                }
+            }
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
         }
