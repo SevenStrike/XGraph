@@ -38,6 +38,12 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
 #endif
+            RegisterVariableChangeWithAction();
+        }
+
+        private void OnDisable()
+        {
+            UnregisterVariableChangeWithAction();
         }
 
 #if UNITY_EDITOR
@@ -51,7 +57,7 @@ namespace SevenStrikeModules.XGraph
                 // 创建运行时克隆
                 if (!CreateRuntimeClone())
                 {
-                    Log(MessageType.Error, $"无法创建克隆资源！", "");
+                    util_Dashboard.LogMsg(util_Dashboard.MsgType.错误, $"无法创建克隆资源！", "", showLogs);
                     return;
                 }
             }
@@ -71,13 +77,13 @@ namespace SevenStrikeModules.XGraph
         {
             if (!Action_Validate())
             {
-                Log(MessageType.Error, $"行为流程启动失败！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.错误, $"行为流程启动失败！", "", showLogs);
                 return;
             }
 
             if (isRunning)
             {
-                Log(MessageType.Error, $"行为流程已经在执行中！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.错误, $"行为流程已经在执行中！", "", showLogs);
                 return;
             }
 
@@ -93,7 +99,8 @@ namespace SevenStrikeModules.XGraph
             isRunning = false;
             // 强制解除暂停
             isPaused = false;
-            Log(MessageType.Info, $"流程停止！", "");
+
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"流程停止！", "", showLogs);
         }
 
         /// <summary>
@@ -104,7 +111,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning)
             {
                 isPaused = true;
-                Log(MessageType.Info, $"流程暂停！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"流程暂停！", "", showLogs);
             }
         }
 
@@ -116,7 +123,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning && isPaused)
             {
                 isPaused = false;
-                Log(MessageType.Info, $"流程继续！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"流程继续！", "", showLogs);
             }
         }
 
@@ -126,13 +133,13 @@ namespace SevenStrikeModules.XGraph
         IEnumerator Action_Flow()
         {
             isRunning = true;
-            Log(MessageType.Warning, $"开始执行流程：", ActionAsset.name);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"<b>开始执行流程：</b>", ActionAsset.name, showLogs);
 
             var startNode = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             yield return Action_Execute(startNode);
 
             isRunning = false;
-            Log(MessageType.Warning, $"流程执行完成：", ActionAsset.name);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"<b>流程执行完成：</b>", ActionAsset.name, showLogs);
         }
 
         /// <summary>
@@ -146,7 +153,7 @@ namespace SevenStrikeModules.XGraph
             // 处理暂停状态（双重检查）
             while (isPaused && isRunning)
             {
-                Log(MessageType.Warning, $"执行暂停中：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"执行暂停中：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）", showLogs);
 
                 // 每0.1秒检查一次，防止暂停时性能开销大
                 yield return new WaitForSeconds(0.1f);
@@ -159,7 +166,7 @@ namespace SevenStrikeModules.XGraph
                 yield break;
             }
 
-            Log(MessageType.Info, $"---> ：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）");
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"---> ：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）", showLogs);
             // 执行当前节点
             action.Execute();
 
@@ -189,7 +196,7 @@ namespace SevenStrikeModules.XGraph
 
             // 执行等待前逻辑
             waitNode.Execute();
-            Log(MessageType.Info, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.isConcurrentExecution ? "并发" : "顺序")}）");
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.isConcurrentExecution ? "并发" : "顺序")}）", showLogs);
 
             // 可中断的等待实现
             float elapsed = 0;
@@ -307,48 +314,37 @@ namespace SevenStrikeModules.XGraph
         {
             if (ActionAsset == null || ActionAsset.Actions.Count == 0)
             {
-                Log(MessageType.Error, $"行为资源列表是空的！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.错误, $"行为资源列表是空的！", "", showLogs);
                 return false;
             }
 
             var start = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             if (start == null)
             {
-                Log(MessageType.Warning, $"未能找到  Start  节点！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"未能找到  Start  节点！", "", showLogs);
                 return false;
             }
 
             return true;
         }
 
-        /// <summary>
-        /// 日志工具
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="title"></param>
-        /// <param name="message"></param>
-        private void Log(MessageType type, string title, string message)
+        #region 为每一个继承ActionBase的对象注册变量数值变化回调
+        public void RegisterVariableChangeWithAction()
         {
-            string hexcolor = "";
-            string mark = "";
-            switch (type)
+            foreach (var action in ActionAsset.Actions)
             {
-                case MessageType.Info:
-                    hexcolor = "DFDFDF";
-                    mark = "   ┠─ ■";
-                    break;
-                case MessageType.Warning:
-                    hexcolor = "FFC320";
-                    mark = "▲";
-                    break;
-                case MessageType.Error:
-                    hexcolor = "FF5050";
-                    mark = "●";
-                    break;
+                action.RegisterVariableValueChanged();
             }
-            if (showLogs)
-                Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
         }
+
+        public void UnregisterVariableChangeWithAction()
+        {
+            foreach (var action in ActionAsset.Actions)
+            {
+                action.UnregisterVariableValueChanged();
+            }
+        }
+        #endregion
 
         #region 运行时克隆
         /// <summary>
@@ -358,7 +354,7 @@ namespace SevenStrikeModules.XGraph
         {
             if (ActionAsset == null)
             {
-                Log(MessageType.Error, $"无法创建克隆资源！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.错误, $"无法创建克隆资源！", "", showLogs);
                 return false;
             }
 
@@ -374,7 +370,7 @@ namespace SevenStrikeModules.XGraph
             if (ActionAssetClone != null)
             {
                 ActionAsset.Replace(ActionAssetClone);
-                Log(MessageType.Warning, $"已恢复原始行为资源！", "");
+                util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"已恢复原始行为资源！", "", showLogs);
                 ActionAssetClone = null;
             }
         }

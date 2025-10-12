@@ -65,49 +65,10 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
-            SetMessage("对象");
-        }
-        #endregion
 
-        #region 辅助
-        public void SetMessage(string portName)
-        {
             ActionNode_Debug debug = ActionData as ActionNode_Debug;
-
-            Variable variable = debug.Variable_Get(portName);
-            if (variable != null)
-            {
-                string value = "";
-                switch (variable.GetActiveType())
-                {
-                    case VariableType.String:
-                        value = variable.GetValue<string>();
-                        break;
-                    case VariableType.Float:
-                        value = variable.GetValue<float>().ToString();
-                        break;
-                    case VariableType.Int:
-                        value = variable.GetValue<int>().ToString();
-                        break;
-                    case VariableType.Bool:
-                        value = variable.GetValue<bool>().ToString();
-                        break;
-                    case VariableType.Vector2:
-                        value = variable.GetValue<Vector2>().ToString();
-                        break;
-                    case VariableType.Vector3:
-                        value = variable.GetValue<Vector3>().ToString();
-                        break;
-                    case VariableType.Vector4:
-                        value = variable.GetValue<Vector4>().ToString();
-                        break;
-                    case VariableType.Color:
-                        value = variable.GetValue<Color>().ToString();
-                        break;
-                }
-                debug.Message = value;
-            }
+            debug.SetMessage("对象");
         }
-        #endregion
+        #endregion      
     }
 }

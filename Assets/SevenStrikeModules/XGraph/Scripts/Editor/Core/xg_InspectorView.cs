@@ -176,6 +176,13 @@ namespace SevenStrikeModules.XGraph
             // 标题
             Label varname = new Label($"{data.name}");
             varname.AddToClassList("titlename");
+            varname.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    GUIUtility.systemCopyBuffer = varname.text;
+                }
+            });
             titlegroup.Add(varname);
             // 类型
             Label vartype = new Label($"{data.variable.type}");
@@ -448,6 +455,13 @@ namespace SevenStrikeModules.XGraph
             // 标题
             Label varname = new Label($"{vare.name}");
             varname.AddToClassList("titlename");
+            varname.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    GUIUtility.systemCopyBuffer = varname.text;
+                }
+            });
             titlegroup.Add(varname);
             // 类型
             Label vartype = new Label($"{vare.type}");

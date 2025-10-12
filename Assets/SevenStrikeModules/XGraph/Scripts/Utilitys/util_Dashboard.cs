@@ -1,7 +1,16 @@
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEngine;
+
     public static class util_Dashboard
     {
+        public enum MsgType
+        {
+            信息 = 0,
+            警告 = 1,
+            错误 = 2
+        }
+
         #region 公共路径
         public static string path_Temp = "Assets/SevenStrikeModules/XGraph/Temp/";
         public static string path_Root = "Assets/SevenStrikeModules/XGraph/";
@@ -106,5 +115,36 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
         #endregion
+
+        /// <summary>
+        /// 日志工具
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        public static void LogMsg(MsgType type, string title, string message, bool showLogs)
+        {
+            if (!showLogs)
+                return;
+
+            string hexcolor = "";
+            string mark = "";
+            switch (type)
+            {
+                case MsgType.信息:
+                    hexcolor = "DFDFDF";
+                    mark = "   ┠─ ■";
+                    break;
+                case MsgType.警告:
+                    hexcolor = "FFC320";
+                    mark = "▲";
+                    break;
+                case MsgType.错误:
+                    hexcolor = "FF5050";
+                    mark = "●";
+                    break;
+            }
+            Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
+        }
     }
 }

@@ -121,6 +121,27 @@ namespace SevenStrikeModules.XGraph
         public abstract void Execute();
 
         /// <summary>
+        /// 注册运行时变量值改变回调
+        /// </summary>
+        public void RegisterVariableValueChanged()
+        {
+            RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
+        }
+
+        /// <summary>
+        /// 注销运行时变量值改变回调
+        /// </summary>
+        public void UnregisterVariableValueChanged()
+        {
+            RootAsset.On_VariablesValue_Changed -= On_VariablesValue_Changed;
+        }
+
+        public virtual void On_VariablesValue_Changed()
+        {
+
+        }
+
+        /// <summary>
         /// 获取行为的基础信息数据（行为类型 / 显示名称）
         /// </summary>
         /// <returns></returns>

@@ -70,22 +70,9 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            SetPredicateState("条件");
+            ActionNode_Branch branch = ActionData as ActionNode_Branch;
+            branch.SetPredicateState("条件");
         }
-        #endregion
-
-        #region 辅助
-        /// <summary>
-        /// 设置条件判断状态
-        /// </summary>
-        /// <param name="state"></param>
-        public void SetPredicateState(string portName)
-        {
-            ActionNode_Branch actionvbranch = ActionData as ActionNode_Branch;
-            Variable variable = ActionData.Variable_Get(portName);
-            if (variable != null)
-                actionvbranch.PredicateState = variable.GetValue<bool>();
-        }
-        #endregion
+        #endregion       
     }
 }

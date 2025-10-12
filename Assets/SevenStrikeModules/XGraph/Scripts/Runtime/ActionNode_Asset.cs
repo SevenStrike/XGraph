@@ -1245,10 +1245,6 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action On_VariablesValue_Changed;
         /// <summary>
-        /// 黑板变量数值改变后的回调
-        /// </summary>
-        public Action<VariableType, string> On_BlackBoardVariable_ValueChanged;
-        /// <summary>
         /// 记录的节点编辑器最后一次的窗口尺寸
         /// </summary>
         [SerializeField] public Vector2Int LastGraphWindowSize;

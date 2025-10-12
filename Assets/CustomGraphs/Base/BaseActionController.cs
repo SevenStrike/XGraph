@@ -7,6 +7,7 @@ namespace SevenStrikeModules.XGraph
         public ActionNode_Workflow ActionTreeWorkflow;
         public string msg;
         public float delay;
+        public bool branch;
 
         void Start()
         {
@@ -25,6 +26,13 @@ namespace SevenStrikeModules.XGraph
                 ActionTreeWorkflow.Action_Pause();
             if (Input.GetKeyDown(KeyCode.R))
                 ActionTreeWorkflow.Action_Resume();
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                ActionTreeWorkflow.ActionAsset.Variable_SetValue("消息内容", msg);
+                ActionTreeWorkflow.ActionAsset.Variable_SetValue("Float", delay);
+                ActionTreeWorkflow.ActionAsset.Variable_SetValue("Bool", branch);
+            }
         }
     }
 }
