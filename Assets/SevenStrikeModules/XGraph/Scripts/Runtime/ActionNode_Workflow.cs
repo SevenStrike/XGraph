@@ -38,11 +38,13 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
 #endif
+            // 为每一个行为注册运行时变量值改变回调
             RegisterVariableChangeWithAction();
         }
 
         private void OnDisable()
         {
+            // 注销每一个行为运行时变量值改变回调
             UnregisterVariableChangeWithAction();
         }
 
@@ -100,6 +102,9 @@ namespace SevenStrikeModules.XGraph
             // 强制解除暂停
             isPaused = false;
 
+            // 注销每一个行为运行时变量值改变回调
+            UnregisterVariableChangeWithAction();
+
             util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, $"流程停止！", "", showLogs);
         }
 
@@ -133,13 +138,13 @@ namespace SevenStrikeModules.XGraph
         IEnumerator Action_Flow()
         {
             isRunning = true;
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"<b>开始执行流程：</b>", ActionAsset.name, showLogs);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"开始执行流程：", ActionAsset.name, showLogs);
 
             var startNode = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             yield return Action_Execute(startNode);
 
             isRunning = false;
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"<b>流程执行完成：</b>", ActionAsset.name, showLogs);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"流程执行完成：", ActionAsset.name, showLogs);
         }
 
         /// <summary>
@@ -329,6 +334,9 @@ namespace SevenStrikeModules.XGraph
         }
 
         #region 为每一个继承ActionBase的对象注册变量数值变化回调
+        /// <summary>
+        /// 为每一个行为注册运行时变量值改变回调
+        /// </summary>
         public void RegisterVariableChangeWithAction()
         {
             foreach (var action in ActionAsset.Actions)
@@ -336,7 +344,9 @@ namespace SevenStrikeModules.XGraph
                 action.RegisterVariableValueChanged();
             }
         }
-
+        /// <summary>
+        /// 注销每一个行为运行时变量值改变回调
+        /// </summary>
         public void UnregisterVariableChangeWithAction()
         {
             foreach (var action in ActionAsset.Actions)

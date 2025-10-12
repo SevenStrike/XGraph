@@ -21,7 +21,7 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, "---> ：", $"调试内容： <color=#d5c2d3>{Message}</color>", isEnabled);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.信息, "---> ：", $"调试内容： <color=#37ffab>{Message}</color>", isEnabled);
         }
 
         #region 回调

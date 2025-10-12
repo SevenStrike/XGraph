@@ -1188,7 +1188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionAsset: {fileID: 11400000, guid: c7aa447df399d7047b9048594b472dbe, type: 2}
   ActionAssetClone: {fileID: 0}
-  SaveValueChangesInRuntime: 0
+  SaveValueChangesInRuntime: 1
   showLogs: 1
 --- !u!114 &1687983412
 MonoBehaviour:
@@ -1203,9 +1203,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActionTreeWorkflow: {fileID: 1687983411}
-  msg: message
-  delay: 0
-  branch: 1
+  msg: 2222222222222222222222
+  delay: 3.6
+  branch: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
