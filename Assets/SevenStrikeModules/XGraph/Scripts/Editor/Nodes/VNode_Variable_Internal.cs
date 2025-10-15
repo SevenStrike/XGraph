@@ -517,7 +517,7 @@ namespace SevenStrikeModules.XGraph
         private void VariableNodeInfoRefresh()
         {
             // 显示当前选中的节点的类型信息
-            graphView.gv_GraphWindow.xw_SetNodeInfo($"{VariableData.variable.name}  /  {VariableData.variable.GetActiveType()}  /  {VariableData.variable.guid}", $"{VariableData.variable.description}  /  {VariableData.variable.GetValue()}");
+            graphView.gv_GraphWindow.xw_SetNodeInfos($"{VariableData.variable.name}  /  {VariableData.variable.GetActiveType()}  /  {VariableData.variable.guid}", $"{VariableData.variable.description}  /  {VariableData.variable.GetValue()}");
         }
         #endregion
 
@@ -538,6 +538,9 @@ namespace SevenStrikeModules.XGraph
         private void SyncChangeVariableName(BlurEvent evt)
         {
             VariableData.variable.name = VariableData.identifyName;
+
+            // Inspector 面板显示属性
+            graphView.gv_GraphWindow.xw_InspectorView.InspectorViewer(this);
         }
         /// <summary>
         /// 鼠标移出时隐藏角点拖拽显示
@@ -562,8 +565,10 @@ namespace SevenStrikeModules.XGraph
         private void ToggleClicker(PointerDownEvent evt)
         {
             if (VariableData.VariableDatas.Count > 0)
+            {
+                Toggle_Check(VariableData.VariableDatas.First().variable.GetValue<bool>());
                 return;
-
+            }
             Undo.RecordObject(VariableData, "Changed Toggle State");
 
             bool sw = VariableData.variable.GetValue<bool>();

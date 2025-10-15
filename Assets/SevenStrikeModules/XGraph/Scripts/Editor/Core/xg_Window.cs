@@ -185,6 +185,10 @@
         /// </summary>
         internal Toggle xw_toggle_DisplayNodeColor;
         /// <summary>
+        /// 用于启用和禁用节点的数据流效果
+        /// </summary>
+        internal Toggle xw_toggle_DisplayNodeFlow;
+        /// <summary>
         /// 用于显示和隐藏选项面板
         /// </summary>
         internal Toggle xw_toggle_Options;
@@ -195,11 +199,11 @@
         /// <summary>
         ///  xw_graphView 控件 - 当前选择的节点的简介
         /// </summary>
-        private Label xw_label_graph_CurrentNodeName;
+        private Label xw_label_graph_nodeinfo_header;
         /// <summary>
         ///  xw_graphView 控件 - 当前选择的节点的路径
         /// </summary>
-        private Label xw_label_graph_CurrentNodePath;
+        private Label xw_label_graph_nodeinfo_footer;
         /// <summary>
         ///  xw_graphView 控件 - 水印文字
         /// </summary>
@@ -282,6 +286,10 @@
         private Texture2D xw_graph_icon = null;
         private Vector2 dragOffset_InspectorView;
         private Vector2 dragOffset_BlackBoard;
+        /// <summary>
+        /// 选中节点时是否显示数据流效果
+        /// </summary>
+        public bool DisplayNodeFlow = true;
         #endregion
 
         #region 委托
@@ -289,6 +297,10 @@
         /// 当节点颜色标记开关改变时的回调委托
         /// </summary>
         public Action<bool> OnNodeColorToggleChanged;
+        /// <summary>
+        /// 当节点数据流开关改变时的回调委托
+        /// </summary>
+        public Action<bool> OnNodeFlowToggleChanged;
         /// <summary>
         /// 当编辑器主题色变化时
         /// </summary>
@@ -386,10 +398,24 @@
                 bool nodeColorDisplayState = wnd.Element_State_Load("XGraph_DisplayNodeColor");
                 // 设置Node节点颜色标记按钮开关状态
                 wnd.xw_toggle_DisplayNodeColor.value = nodeColorDisplayState;
+                wnd.DisplayNodeFlow = nodeColorDisplayState;
                 EditorApplication.delayCall += () =>
                 {
                     if (wnd.OnNodeColorToggleChanged != null)
                         wnd.OnNodeColorToggleChanged(nodeColorDisplayState);
+                };
+                #endregion
+
+                #region Node节点数据流的状态恢复
+                // 获取最后一次的Node节点数据流状态
+                bool nodeFlowDisplayState = wnd.Element_State_Load("XGraph_DisplayNodeFlow");
+                // 设置Node节点数据流按钮开关状态
+                wnd.xw_toggle_DisplayNodeFlow.value = nodeFlowDisplayState;
+
+                EditorApplication.delayCall += () =>
+                {
+                    if (wnd.OnNodeFlowToggleChanged != null)
+                        wnd.OnNodeFlowToggleChanged(nodeFlowDisplayState);
                 };
                 #endregion
 
@@ -428,8 +454,7 @@
             visual_window.CloneTree(root);
 
             // 读取uss样式到 root 布局
-            var uss_window = util_XGraphEditorUtility.AssetLoad<StyleSheet>($"{util_Dashboard.GetPath_GUI_Uss()}uss_Window.uss");
-            root.styleSheets.Add(uss_window);
+            util_XGraphEditorUtility.ElementStyle_Add(root, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Window.uss");
 
             // 设置图标
             Texture2D icon = xw_Toolbar_IconSet(util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/main.png"));
@@ -663,9 +688,8 @@
 
             #region GraphIntros 组件
             xw_label_graphTitle = root.Q<Label>("graphintro_Title");
-            xw_label_graph_CurrentNodeName = root.Q<Label>("graphintro_currentNodeName");
-            xw_label_graph_CurrentNodeName.style.color = Color.white * 0.8f;
-            xw_label_graph_CurrentNodePath = root.Q<Label>("graphintro_currentNodePath");
+            xw_label_graph_nodeinfo_header = root.Q<Label>("graph_nodeinfo_header");
+            xw_label_graph_nodeinfo_footer = root.Q<Label>("graph_nodeinfo_footer");
             xw_label_graphMarkText = root.Q<Label>("graphintro_MarkText");
             #endregion
 
@@ -706,6 +730,10 @@
             // 节点颜色标记显示开关按钮
             xw_toggle_DisplayNodeColor = root.Q<Toggle>("toggle_DisplayNodeColor");
             xw_toggle_DisplayNodeColor.RegisterValueChangedCallback(xw_toggle_DisplayNodeColor_changed);
+
+            // 节点数据流启用开关按钮
+            xw_toggle_DisplayNodeFlow = root.Q<Toggle>("toggle_DisplayNodeFlow");
+            xw_toggle_DisplayNodeFlow.RegisterValueChangedCallback(xw_toggle_DisplayNodeFlow_changed);
 
             #region 选项面板
             // 选项面板开关按钮
@@ -1027,7 +1055,7 @@
 
                 // 加载 Inspector 面板标题文字
                 InspectorViewAction_SetTitle($"节点属性 - 多选状态");
-                xw_SetNodeInfo("-", "-");
+                xw_SetNodeInfos("-", "-");
             }
         }
 
@@ -1068,7 +1096,7 @@
                 xw_currentSelectedVisualNode = null;
 
                 // 节点的类型信息 - 清空
-                xw_SetNodeInfo(null, null);
+                xw_SetNodeInfos(null, null);
             }
         }
         #endregion
@@ -1083,7 +1111,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"黑板变量节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_vare.VariableData.variable.name}  /  {n_vare.VariableData.variable.GetActiveType()}  /  {n_vare.VariableData.variable.guid}", $"{n_vare.VariableData.variable.description}  /  {n_vare.VariableData.variable.GetValue()}");
+            xw_SetNodeInfos($"{n_vare.VariableData.variable.name}  /  {n_vare.VariableData.variable.GetActiveType()}  /  {n_vare.VariableData.variable.guid}", $"{n_vare.VariableData.variable.description}  /  {n_vare.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：行为
@@ -1094,7 +1122,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"行为节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}  \n  {n_base.ActionData.guid}");
+            xw_SetNodeInfos(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}  \n  {n_base.ActionData.guid}");
         }
         /// <summary>
         /// 选中节点：内部变量
@@ -1105,7 +1133,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"内部变量节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
+            xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：标签
@@ -1116,7 +1144,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"标签节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_label.LabelData.guid}  /  {n_label.LabelData.position.ToString()}  /  {n_label.LabelData.size.ToString()}", $"{n_label.LabelData.content}");
+            xw_SetNodeInfos($"{n_label.LabelData.guid}  /  {n_label.LabelData.position.ToString()}  /  {n_label.LabelData.size.ToString()}", $"{n_label.LabelData.content}");
         }
         /// <summary>
         /// 选中节点：便签
@@ -1127,7 +1155,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"便签节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_stick.StickData.guid}  /   {n_stick.StickData.position.ToString()}  /   {n_stick.StickData.size.ToString()}", $"{n_stick.StickData.content}");
+            xw_SetNodeInfos($"{n_stick.StickData.guid}  /   {n_stick.StickData.position.ToString()}  /   {n_stick.StickData.size.ToString()}", $"{n_stick.StickData.content}");
         }
         /// <summary>
         /// 选中节点：贴图
@@ -1138,7 +1166,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"贴图节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfo($"{n_decal.DecalData.guid}  /   {n_decal.DecalData.position.ToString()}  /   {n_decal.DecalData.size.ToString()}", $"{n_decal.DecalData.DecalTexture}");
+            xw_SetNodeInfos($"{n_decal.DecalData.guid}  /   {n_decal.DecalData.position.ToString()}  /   {n_decal.DecalData.size.ToString()}", $"{n_decal.DecalData.DecalTexture}");
         }
         #endregion
 
@@ -1193,8 +1221,8 @@
             xw_GraphInfo_GraphViewIcon_ColorSyncUpdate();
             xw_GraphInfo_LastSaveLag_ColorSyncUpdate();
             xw_GraphInfo_LastSaveLag_ColorSyncUpdate();
-            xw_label_graph_CurrentNodeName_ColorSyncUpdate();
-            xw_label_graph_CurrentNodePath_ColorSyncUpdate();
+            xw_label_graph_nodeinfo_header_ColorSyncUpdate();
+            xw_label_graph_nodeinfo_footer_ColorSyncUpdate();
 
             if (OnThemeColorChanged != null)
                 OnThemeColorChanged.Invoke(CloneTree.GraphviewGridBackgroundThemes.themecolor);
@@ -1610,6 +1638,22 @@
             // 记录 InspectorViewer 开关状态到行为树根节点变量
             Element_State_Save("XGraph_DisplayNodeColor", xw_toggle_DisplayNodeColor.value);
         }
+        /// <summary>
+        /// toggle_DisplayNodeFlow 开关改变状态时
+        /// </summary>
+        /// <param name="evt"></param>
+        private void xw_toggle_DisplayNodeFlow_changed(ChangeEvent<bool> evt)
+        {
+            bool state = evt.newValue;
+
+            DisplayNodeFlow = state;
+
+            if (OnNodeFlowToggleChanged != null)
+                OnNodeFlowToggleChanged(state);
+
+            // 记录 InspectorViewer 开关状态到行为树根节点变量
+            Element_State_Save("XGraph_DisplayNodeFlow", xw_toggle_DisplayNodeFlow.value);
+        }
         #endregion
 
         #region GraphInfo 信息设置
@@ -1687,30 +1731,44 @@
             util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_BlackBoardView_Container_Title, Title);
         }
         /// <summary>
-        /// 设置节点的路径、类型的简要信息组件的显示内容（窗口右上方和窗口右下方的两个文字组件）
+        /// 设置节点编辑器页眉页脚的标签组件的显示内容（页眉页脚节点信息）
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="path"></param>
-        public void xw_SetNodeInfo(string name, string path)
+        /// <param name="header"></param>
+        /// <param name="footer"></param>
+        public void xw_SetNodeInfos(string header, string footer)
         {
-            // 节点的类型信息
-            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodeName, name);
-            // 节点的挂载资源路径
-            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_CurrentNodePath, path);
+            xw_SetNodeInfo_Header(header);
+            xw_SetNodeInfo_Footer(footer);
+        }
+        /// <summary>
+        /// 设置窗口右上方的文字组件 (页眉组件) 的显示内容
+        /// </summary>
+        /// <param name="value"></param>
+        public void xw_SetNodeInfo_Header(string value)
+        {
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_nodeinfo_header, value);
+        }
+        /// <summary>
+        /// 设置窗口右下方的文字组件 (页脚组件) 的显示内容
+        /// </summary>
+        /// <param name="value"></param>
+        public void xw_SetNodeInfo_Footer(string value)
+        {
+            util_XGraphEditorUtility.Element_Label_ValueSet(xw_label_graph_nodeinfo_footer, value);
         }
         /// <summary>
         /// 当前选择的节点名称的文本标签同步到主题色
         /// </summary>
-        public void xw_label_graph_CurrentNodeName_ColorSyncUpdate()
+        public void xw_label_graph_nodeinfo_header_ColorSyncUpdate()
         {
-            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_CurrentNodeName, CloneTree.GraphviewGridBackgroundThemes.themecolor);
+            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_nodeinfo_header, CloneTree.GraphviewGridBackgroundThemes.themecolor);
         }
         /// <summary>
         /// 当前选择的节点的路径的文本标签同步到主题色
         /// </summary>
-        public void xw_label_graph_CurrentNodePath_ColorSyncUpdate()
+        public void xw_label_graph_nodeinfo_footer_ColorSyncUpdate()
         {
-            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_CurrentNodePath, CloneTree.GraphviewGridBackgroundThemes.themecolor);
+            util_XGraphEditorUtility.Element_Color_Set(xw_label_graph_nodeinfo_footer, CloneTree.GraphviewGridBackgroundThemes.themecolor);
         }
 
         #endregion

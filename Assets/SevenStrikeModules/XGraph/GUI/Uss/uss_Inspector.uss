@@ -65,6 +65,18 @@
      margin-left: 0px;
 }
 
+.titleicon
+{
+     color: rgba(255, 255, 255,0.85);
+     height: 18px;
+     width: 18px;
+     letter-spacing: 5px;
+     padding-left: 0px;
+     padding-top: 0px;
+     margin-top: 0px;
+     margin-left: 0px;
+}
+
 .type
 {
      position: absolute;
@@ -254,6 +266,27 @@
 }
 
 .field_float
+{
+     position: relative;
+     color: rgba(255, 255, 255,0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0px;
+     padding-right: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+.field_int
 {
      position: relative;
      color: rgba(255, 255, 255,0.35);

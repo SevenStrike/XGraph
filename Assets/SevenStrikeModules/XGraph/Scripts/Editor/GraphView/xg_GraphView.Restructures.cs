@@ -30,16 +30,16 @@ namespace SevenStrikeModules.XGraph
 
             graphViewChanged += OnGraphViewChanged;
 
-            // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
-            Restructure_Variable(ActionTreeAsset.Variables);
-            // 根据行为树根节点里的  -行为-  列表数据来重建GraphView的视觉  -行为-  节点
-            Restructure_Actions(ActionTreeAsset.Actions);
+            // 根据行为树根节点里的  -贴图-  列表数据来重建GraphView的视觉  -贴图-  节点
+            Restructure_Decals(ActionTreeAsset.Decals);
             // 根据行为树根节点里的  -便签-  列表数据来重建GraphView的视觉  -便签-  节点
             Restructure_Sticks(ActionTreeAsset.Sticks);
             // 根据行为树根节点里的  -标签-  列表数据来重建GraphView的视觉  -标签-  节点
             Restructure_Labels(ActionTreeAsset.Labels);
-            // 根据行为树根节点里的  -贴图-  列表数据来重建GraphView的视觉  -贴图-  节点
-            Restructure_Decals(ActionTreeAsset.Decals);
+            // 根据行为树根节点里的  -变量-  列表数据来重建GraphView的视觉  -变量-  节点
+            Restructure_Variable(ActionTreeAsset.Variables);
+            // 根据行为树根节点里的  -行为-  列表数据来重建GraphView的视觉  -行为-  节点
+            Restructure_Actions(ActionTreeAsset.Actions);
             // 重建编组
             Restructure_Groups(ActionTreeAsset.Groups);
             // 根据行为节点里的  -黑板变量数据列表-  来重建变量与行为节点指定的连线  -“Variable类型端口”
@@ -172,7 +172,8 @@ namespace SevenStrikeModules.XGraph
                             if (branch_node.childNode_true != null)
                             {
                                 VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
-                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
+                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
+                                //Edge edge = port.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
                                 AddElement(edge);
                             }
                         }
@@ -181,7 +182,8 @@ namespace SevenStrikeModules.XGraph
                             if (branch_node.childNode_false != null)
                             {
                                 VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
-                                Edge edge = port.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
+                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
+                                //Edge edge = port.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
                                 AddElement(edge);
                             }
                         }
@@ -200,7 +202,8 @@ namespace SevenStrikeModules.XGraph
 
                         foreach (var p in n_parent.Port_Outputs)
                         {
-                            Edge edge = p.Port.ConnectTo(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
+                            util_AnimatedEdge edge = p.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
+                            //Edge edge = p.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                             AddElement(edge);
                         }
                     }
@@ -361,7 +364,8 @@ namespace SevenStrikeModules.XGraph
 
                             if (n_var != null && port_parent != null)
                             {
-                                Edge edge = n_var.OutputPort.Port.ConnectTo(port_parent);
+                                util_AnimatedEdge edge = n_var.OutputPort.Port.ConnectTo<util_AnimatedEdge>(port_parent);
+                                //Edge edge = n_var.OutputPort.Port.ConnectTo<Edge>(port_parent);
 
                                 AddElement(edge);
                             }
@@ -411,7 +415,8 @@ namespace SevenStrikeModules.XGraph
 
                             if (n_var != null && port_parent != null)
                             {
-                                Edge edge = n_var.Port_Outputs.First().Port.ConnectTo(port_parent);
+                                util_AnimatedEdge edge = n_var.Port_Outputs.First().Port.ConnectTo<util_AnimatedEdge>(port_parent);
+                                //Edge edge = n_var.Port_Outputs.First().Port.ConnectTo<Edge>(port_parent);
                                 AddElement(edge);
                             }
                         }

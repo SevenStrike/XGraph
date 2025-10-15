@@ -259,7 +259,8 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public virtual Port Port_Create(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
         {
-            Port port = InstantiatePort(orientation, direction, capacity, type);
+            Port port = Port.Create<util_AnimatedEdge>(orientation, direction, capacity, type);
+            //Port port = InstantiatePort(orientation, direction, capacity, type);
             port.portName = name;
             port.portColor = nodeThemeColor;
             return port;
@@ -477,6 +478,64 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
+        #region 数据流效果控制
+        private void SetConnectedEdgesFlow(bool enable)
+        {
+            var edges = new HashSet<util_AnimatedEdge>();
+
+            // 收集所有连接的边缘
+            foreach (var port in Port_Inputs)
+            {
+                foreach (var con in port.Port.connections)
+                {
+                    if (con is util_AnimatedEdge edge)
+                    {
+                        edges.Add(edge);
+                    }
+                }
+            }
+            foreach (var port in Port_Outputs)
+            {
+                foreach (var con in port.Port.connections)
+                {
+                    if (con is util_AnimatedEdge edge)
+                    {
+                        if (con.output.node is VNode_Branch branch)
+                        {
+                            if (branch.ActionData is ActionNode_Branch bra)
+                            {
+                                if (bra.PredicateState)
+                                {
+                                    if (con.output.portName == "开")
+                                    {
+                                        edges.Add(edge);
+                                    }
+                                }
+                                else
+                                {
+                                    if (con.output.portName == "关")
+                                    {
+                                        edges.Add(edge);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            edges.Add(edge);
+                        }
+                    }
+                }
+            }
+
+            // 批量设置
+            foreach (var edge in edges)
+            {
+                edge.EnableFlow = enable;
+            }
+        }
+        #endregion
+
         #region 回调
         /// <summary>
         /// 当选择节点时
@@ -491,21 +550,10 @@ namespace SevenStrikeModules.XGraph
                 On_SelectedNode.Invoke(this);
             }
 
-            Debug.Log($"{ActionData.name}  /  In：{Port_Inputs.Count}  /  Out：{Port_Outputs.Count}");
-            foreach (var port in Port_Inputs)
-            {
-                foreach (var con in port.Port.connections)
-                {
-                    Debug.Log($"Previous Node：{con.output.node.viewDataKey}");
-                }
-            }
-            foreach (var port in Port_Outputs)
-            {
-                foreach (var con in port.Port.connections)
-                {
-                    Debug.Log($"Next Node：{con.input.node.viewDataKey}");
-                }
-            }
+            // 数据流效果  -  开启
+            if (graphView.gv_GraphWindow.DisplayNodeFlow)
+                SetConnectedEdgesFlow(true);
+
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
         }
@@ -521,6 +569,9 @@ namespace SevenStrikeModules.XGraph
             {
                 On_UnSelectedNode.Invoke(this);
             }
+
+            // 数据流效果  -  关闭
+            SetConnectedEdgesFlow(false);
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
@@ -550,7 +601,6 @@ namespace SevenStrikeModules.XGraph
         {
 
         }
-
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>

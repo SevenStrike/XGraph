@@ -372,11 +372,12 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="element">要添加样式的目标元素</param>
         /// <param name="path">样式资源路径（要包含.uss后缀）</param>
-        public static void ElementStyle_Add(VisualElement element, string path)
+        public static StyleSheet ElementStyle_Add(VisualElement element, string path)
         {
             // 读取uss样式
             var uss = util_XGraphEditorUtility.AssetLoad<StyleSheet>(path);
             element.styleSheets.Add(uss);
+            return uss;
         }
 
         /// <summary>

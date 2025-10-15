@@ -116,6 +116,27 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
+        #region 数据流效果控制
+        private void SetConnectedEdgesFlow(bool enable)
+        {
+            var edges = new HashSet<util_AnimatedEdge>();
+
+            foreach (var con in OutputPort.Port.connections)
+            {
+                if (con is util_AnimatedEdge aedge)
+                {
+                    edges.Add(aedge);
+                }
+            }
+
+            // 批量设置
+            foreach (var edge in edges)
+            {
+                edge.EnableFlow = enable;
+            }
+        }
+        #endregion
+
         #region 回调
         /// <summary>
         /// 当选择节点时
@@ -123,6 +144,10 @@ namespace SevenStrikeModules.XGraph
         public override void OnSelected()
         {
             base.OnSelected();
+
+            // 数据流效果  -  开启
+            if (graphView.gv_GraphWindow.DisplayNodeFlow)
+                SetConnectedEdgesFlow(true);
 
             // 调用回调事件
             if (OnSelectedNode != null)
@@ -136,6 +161,9 @@ namespace SevenStrikeModules.XGraph
         public override void OnUnselected()
         {
             base.OnUnselected();
+
+            // 数据流效果  -  关闭
+            SetConnectedEdgesFlow(false);
 
             // 调用回调事件
             if (OnUnSelectedNode != null)
@@ -197,6 +225,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public virtual Port Port_Create(string name = "新端口", Orientation orientation = Orientation.Horizontal, Direction direction = Direction.Output, Port.Capacity capacity = Port.Capacity.Single, Type type = null, Color nodeThemeColor = default)
         {
+            //Port port = Port.Create<util_AnimatedEdge>(orientation, direction, capacity, type);
             Port port = InstantiatePort(orientation, direction, capacity, type);
             port.portName = name;
             port.portColor = nodeThemeColor;

@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -24,10 +25,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void InitializeStyle()
         {
-            // 指定样式
-            util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Inspector.uss");
+            util_XGraphInspectorGUI.InitializeStyle(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Inspector.uss");
         }
-
         /// <summary>
         /// 清空面板内容
         /// </summary>
@@ -52,7 +51,12 @@ namespace SevenStrikeModules.XGraph
             // 如果选中的节点是 VNode_Base
             if (nodeview is VNode_Base n_base)
             {
-                GUI_ActionNode(n_base);
+                // 如果选中的节点类型是：VNode_Base 同时也是：VNode_Variable_Internal 
+                if (nodeview is VNode_Variable_Internal n_internalvar)
+                    GUI_InternalVariableNode(n_internalvar);
+                // 如果选中的节点类型是：VNode_Base 但并不是：VNode_Variable_Internal 
+                else
+                    GUI_ActionNode(n_base);
             }
 
             // 如果选中的节点是 VNode_Variable
@@ -79,7 +83,6 @@ namespace SevenStrikeModules.XGraph
 
             GUI_ActionAsset(nodesasset);
         }
-
         /// <summary>
         /// 绘制黑板变量项的属性界面
         /// </summary>
@@ -138,249 +141,6 @@ namespace SevenStrikeModules.XGraph
                 Add(container);
             }
         }
-
-        /// <summary>
-        /// 创建黑板变量节点的属性面板
-        /// </summary>
-        /// <param name="target"></param>
-        private void GUI_VariableNode(VNode_Variable n_variable)
-        {
-            var data = n_variable.VariableData;
-
-            if (data == null)
-                return;
-
-            VisualElement container = new VisualElement();
-            container.name = $"Inspector_{data.name}";
-            container.AddToClassList("container");
-            this.Add(container);
-
-            #region 标题
-            // 标题组
-            VisualElement titlegroup = new VisualElement();
-            titlegroup.name = "titlegroup";
-            titlegroup.AddToClassList("titlegroup");
-            container.Add(titlegroup);
-            // 标记
-            VisualElement titlemark = new VisualElement();
-            titlemark.name = "titlemark";
-            titlemark.AddToClassList("titlemark");
-            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
-            {
-                if (theme.type == data.type.ToString())
-                {
-                    titlemark.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
-                }
-            }
-            titlegroup.Add(titlemark);
-            // 标题
-            Label varname = new Label($"{data.name}");
-            varname.AddToClassList("titlename");
-            varname.RegisterCallback<PointerDownEvent>((evt) =>
-            {
-                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
-                {
-                    GUIUtility.systemCopyBuffer = varname.text;
-                }
-            });
-            titlegroup.Add(varname);
-            // 类型
-            Label vartype = new Label($"{data.variable.type}");
-            vartype.AddToClassList("type");
-            titlegroup.Add(vartype);
-            #endregion
-
-            #region 参数
-            // 解释
-            Label vardescription = new Label($"{data.description}");
-            vardescription.AddToClassList("description");
-            container.Add(vardescription);
-
-            // var_guid
-            Label varguid = new Label();
-            varguid.text = $"<b>GUID-V： </b><color=#b1b1b1>{data.varguid}</color>";
-            varguid.AddToClassList("labeltext");
-            container.Add(varguid);
-
-            // node_guid
-            Label nodeguid = new Label();
-            nodeguid.text = $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>";
-            nodeguid.AddToClassList("labeltext");
-            container.Add(nodeguid);
-
-            // 尺寸
-            Label size = new Label();
-            size.text = $"<b>尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>";
-            size.AddToClassList("labeltext");
-            container.Add(size);
-
-            // 位置
-            Label pos = new Label("位置：");
-            pos.text = $"<b>位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>";
-            pos.AddToClassList("labeltext");
-            container.Add(pos);
-            #endregion
-
-            #region 值
-            switch (data.type)
-            {
-                case VariableType.String:
-                    // node_guid
-                    TextField value_string = new TextField("变量值：");
-                    value_string.value = data.variable.GetValue<string>();
-                    value_string.AddToClassList("field_text");
-                    container.Add(value_string);
-                    value_string.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_string.value);
-                        SetBlackBoardVariableValue(value_string.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_string.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_string.value);
-                        SetBlackBoardVariableValue(value_string.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Float:
-                    FloatField value_float = new FloatField("变量值：");
-                    value_float.value = data.variable.GetValue<float>();
-                    value_float.AddToClassList("field_float");
-                    container.Add(value_float);
-                    value_float.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_float.value);
-                        SetBlackBoardVariableValue(value_float.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_float.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_float.value);
-                        SetBlackBoardVariableValue(value_float.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Int:
-                    IntegerField value_int = new IntegerField("变量值：");
-                    value_int.value = data.variable.GetValue<int>();
-                    value_int.AddToClassList("field_float");
-                    container.Add(value_int);
-                    value_int.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_int.value);
-                        SetBlackBoardVariableValue(value_int.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_int.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_int.value);
-                        SetBlackBoardVariableValue(value_int.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Bool:
-                    Toggle value_bool = new Toggle("变量值：");
-                    value_bool.value = data.variable.GetValue<bool>();
-                    value_bool.AddToClassList("field_bool");
-                    container.Add(value_bool);
-                    value_bool.RegisterValueChangedCallback((value) =>
-                    {
-                        data.variable.SetValue(value_bool.value);
-                        SetBlackBoardVariableValue(value_bool.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_bool.value);
-                        SetBlackBoardVariableValue(value_bool.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Vector2:
-                    Vector2Field value_v2 = new Vector2Field("变量值：");
-                    value_v2.value = data.variable.GetValue<Vector2>();
-                    value_v2.AddToClassList("field_vector2");
-                    container.Add(value_v2);
-                    value_v2.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_v2.value);
-                        SetBlackBoardVariableValue(value_v2.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v2.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_v2.value);
-                        SetBlackBoardVariableValue(value_v2.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Vector3:
-                    Vector3Field value_v3 = new Vector3Field("变量值：");
-                    value_v3.value = data.variable.GetValue<Vector3>();
-                    value_v3.AddToClassList("field_vector3");
-                    container.Add(value_v3);
-                    value_v3.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_v3.value);
-                        SetBlackBoardVariableValue(value_v3.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v3.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_v3.value);
-                        SetBlackBoardVariableValue(value_v3.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Vector4:
-                    Vector4Field value_v4 = new Vector4Field("变量值：");
-                    value_v4.value = data.variable.GetValue<Vector4>();
-                    value_v4.AddToClassList("field_vector4");
-                    container.Add(value_v4);
-                    value_v4.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_v4.value);
-                        SetBlackBoardVariableValue(value_v4.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v4.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_v4.value);
-                        SetBlackBoardVariableValue(value_v4.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-                case VariableType.Color:
-                    ColorField value_color = new ColorField("变量值：");
-                    value_color.value = data.variable.GetValue<Color>();
-                    value_color.AddToClassList("field_color");
-                    container.Add(value_color);
-                    value_color.RegisterCallback<BlurEvent>((value) =>
-                    {
-                        data.variable.SetValue(value_color.value);
-                        SetBlackBoardVariableValue(value_color.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    // 注册元素从面板分离时的事件（相当于销毁）
-                    value_color.RegisterCallback<DetachFromPanelEvent>(evt =>
-                    {
-                        data.variable.SetValue(value_color.value);
-                        SetBlackBoardVariableValue(value_color.value, data.varguid);
-                        graphwindow.CloneTree.Variables_Refresh();
-                    });
-                    break;
-            }
-            #endregion
-        }
-
         /// <summary>
         /// 创建行为根资源的属性面板
         /// </summary>
@@ -419,7 +179,545 @@ namespace SevenStrikeModules.XGraph
                 Add(container);
             }
         }
+        /// <summary>
+        /// 创建内部变量节点的属性面板
+        /// </summary>
+        /// <param name="n_var_internal"></param>
+        private void GUI_InternalVariableNode(VNode_Variable_Internal n_var_internal)
+        {
+            var data = n_var_internal.VariableData;
 
+            if (data == null)
+                return;
+
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+
+            // 标题
+            string[] styles_group = new string[1] { "titlegroup" };
+            string[] styles_icon = new string[1] { "titleicon" };
+            string[] styles_title = new string[1] { "titlename" };
+            string[] styles_sub = new string[1] { "type" };
+            util_XGraphInspectorGUI.GUI_IconTitle(container, n_var_internal.ActionData, data.name, data.variable.type.ToString(), styles_group, styles_icon, styles_title, styles_sub);
+
+            // node_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[1] { "labeltext" });
+
+            // node_pos
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
+
+            // node_size
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
+
+            #region 值
+            switch (data.variable.type)
+            {
+                case VariableType.String:
+                    TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", data.variable.GetValue<string>(), new string[1] { "field_text" });
+                    field_string.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_string.value = data.variable.GetValue<string>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_string.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
+                    });
+                    field_string.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_string.value = data.variable.GetValue<string>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_string.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_string.value = data.variable.GetValue<string>();
+                    });
+                    break;
+                case VariableType.Float:
+                    FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", data.variable.GetValue<float>(), new string[1] { "field_float" });
+                    field_float.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_float.value = data.variable.GetValue<float>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_float.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
+                    });
+                    field_float.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_float.value = data.variable.GetValue<float>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_float.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_float.value = data.variable.GetValue<float>();
+                    });
+                    break;
+                case VariableType.Int:
+                    IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", data.variable.GetValue<int>(), new string[1] { "field_int" });
+                    field_int.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_int.value = data.variable.GetValue<int>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_int.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
+                    });
+                    field_int.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_int.value = data.variable.GetValue<int>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_int.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_int.value = data.variable.GetValue<int>();
+                    });
+                    break;
+                case VariableType.Bool:
+                    Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", data.variable.GetValue<bool>(), new string[1] { "field_bool" });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_bool.value = data.variable.GetValue<bool>();
+                    });
+                    field_bool.RegisterValueChangedCallback((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_bool.value = data.variable.GetValue<bool>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_bool.value);
+
+                            if (n_var_internal != null)
+                            {
+                                n_var_internal.Toggle_Check(field_bool.value);
+                            }
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
+                    });
+                    field_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_bool.value = data.variable.GetValue<bool>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_bool.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
+                    });
+                    break;
+                case VariableType.Vector2:
+                    Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", data.variable.GetValue<Vector2>(), new string[1] { "field_vector2" });
+                    field_vector2.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector2.value = data.variable.GetValue<Vector2>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector2.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
+                    });
+                    field_vector2.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector2.value = data.variable.GetValue<Vector2>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector2.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_vector2.value = data.variable.GetValue<Vector2>();
+                    });
+                    break;
+                case VariableType.Vector3:
+                    Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", data.variable.GetValue<Vector3>(), new string[1] { "field_vecto3" });
+                    field_vector3.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector3.value = data.variable.GetValue<Vector3>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector3.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
+                    });
+                    field_vector3.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector3.value = data.variable.GetValue<Vector3>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector3.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_vector3.value = data.variable.GetValue<Vector3>();
+                    });
+                    break;
+                case VariableType.Vector4:
+                    Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", data.variable.GetValue<Vector4>(), new string[1] { "field_vector4" });
+                    field_vector4.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector4.value = data.variable.GetValue<Vector4>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector4.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
+                    });
+                    field_vector4.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_vector4.value = data.variable.GetValue<Vector4>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_vector4.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_vector4.value = data.variable.GetValue<Vector4>();
+                    });
+                    break;
+                case VariableType.Color:
+                    ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", data.variable.GetValue<Color>(), new string[1] { "field_color" });
+                    field_color.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_color.value = data.variable.GetValue<Color>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_color.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
+                    });
+                    field_color.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
+                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        {
+                            field_color.value = data.variable.GetValue<Color>();
+                        }
+                        else
+                        {
+                            data.variable.SetValue(field_color.value);
+                        }
+                        #endregion
+
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
+                    });
+                    n_var_internal.On_InternalVariableValue_Changed += (() =>
+                    {
+                        field_color.value = data.variable.GetValue<Color>();
+                    });
+                    break;
+            }
+            #endregion
+        }
+        /// <summary>
+        /// 创建黑板变量节点的属性面板
+        /// </summary>
+        /// <param name="n_variable"></param>
+        private void GUI_VariableNode(VNode_Variable n_variable)
+        {
+            var data = n_variable.VariableData;
+
+            if (data == null)
+                return;
+
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+
+            // 标题
+            Color themeColor = Color.clear;
+            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+            {
+                if (theme.type == data.type.ToString())
+                {
+                    themeColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                }
+            }
+            string[] styles_group = new string[1] { "titlegroup" };
+            string[] styles_mark = new string[1] { "titlemark" };
+            string[] styles_title = new string[1] { "titlename" };
+            string[] styles_sub = new string[1] { "type" };
+            util_XGraphInspectorGUI.GUI_Title(container, themeColor, data.name, data.variable.type.ToString(), styles_group, styles_mark, styles_title, styles_sub);
+
+            // 解释
+            util_XGraphInspectorGUI.GUI_Label(container, data.description, new string[1] { "description" });
+
+            // var_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#b1b1b1>{data.varguid}</color>", new string[1] { "labeltext" });
+
+            // node_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[1] { "labeltext" });
+
+            // node_pos
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
+
+            // node_size
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[1] { "labeltext" });
+
+            #region 值
+            switch (data.type)
+            {
+                case VariableType.String:
+                    TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", data.variable.GetValue<string>(), new string[1] { "field_text" });
+                    field_string.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_string.value);
+                        SetBlackBoardVariableValue(field_string.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
+                    });
+                    field_string.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_string.value);
+                        SetBlackBoardVariableValue(field_string.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
+                    });
+                    break;
+                case VariableType.Float:
+                    FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", data.variable.GetValue<float>(), new string[1] { "field_float" });
+                    field_float.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_float.value);
+                        SetBlackBoardVariableValue(field_float.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
+                    });
+                    field_float.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_float.value);
+                        SetBlackBoardVariableValue(field_float.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
+                    });
+                    break;
+                case VariableType.Int:
+                    IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", data.variable.GetValue<int>(), new string[1] { "field_int" });
+                    field_int.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_int.value);
+                        SetBlackBoardVariableValue(field_int.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
+                    });
+                    field_int.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_int.value);
+                        SetBlackBoardVariableValue(field_int.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
+                    });
+                    break;
+                case VariableType.Bool:
+                    Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", data.variable.GetValue<bool>(), new string[1] { "field_bool" });
+                    field_bool.RegisterValueChangedCallback((value) =>
+                    {
+                        data.variable.SetValue(field_bool.value);
+                        SetBlackBoardVariableValue(field_bool.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
+                    });
+                    field_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_bool.value);
+                        SetBlackBoardVariableValue(field_bool.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
+                    });
+                    break;
+                case VariableType.Vector2:
+                    Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", data.variable.GetValue<Vector2>(), new string[1] { "field_vector2" });
+                    field_vector2.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_vector2.value);
+                        SetBlackBoardVariableValue(field_vector2.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
+                    });
+                    field_vector2.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_vector2.value);
+                        SetBlackBoardVariableValue(field_vector2.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
+                    });
+                    break;
+                case VariableType.Vector3:
+                    Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", data.variable.GetValue<Vector3>(), new string[1] { "field_vecto3" });
+                    field_vector3.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_vector3.value);
+                        SetBlackBoardVariableValue(field_vector3.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
+                    });
+                    field_vector3.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_vector3.value);
+                        SetBlackBoardVariableValue(field_vector3.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
+                    });
+                    break;
+                case VariableType.Vector4:
+                    Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", data.variable.GetValue<Vector4>(), new string[1] { "field_vector4" });
+                    field_vector4.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_vector4.value);
+                        SetBlackBoardVariableValue(field_vector4.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
+                    });
+                    field_vector4.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_vector4.value);
+                        SetBlackBoardVariableValue(field_vector4.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
+                    });
+                    break;
+                case VariableType.Color:
+                    ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", data.variable.GetValue<Color>(), new string[1] { "field_color" });
+                    field_color.RegisterCallback<BlurEvent>((value) =>
+                    {
+                        data.variable.SetValue(field_color.value);
+                        SetBlackBoardVariableValue(field_color.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
+                    });
+                    field_color.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    {
+                        data.variable.SetValue(field_color.value);
+                        SetBlackBoardVariableValue(field_color.value, data.varguid);
+                        graphwindow.CloneTree.Variables_Refresh();
+                        graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
+                    });
+                    break;
+            }
+            #endregion
+        }
         /// <summary>
         /// 创建黑板变量项的属性面板
         /// </summary>
@@ -429,203 +727,152 @@ namespace SevenStrikeModules.XGraph
             if (vare == null)
                 return;
 
-            VisualElement container = new VisualElement();
-            container.name = $"Inspector_{vare.name}";
-            container.AddToClassList("container");
-            this.Add(container);
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
-            #region 标题
-            // 标题组
-            VisualElement titlegroup = new VisualElement();
-            titlegroup.name = "titlegroup";
-            titlegroup.AddToClassList("titlegroup");
-            container.Add(titlegroup);
-            // 标记
-            VisualElement titlemark = new VisualElement();
-            titlemark.name = "titlemark";
-            titlemark.AddToClassList("titlemark");
+            Color themeColor = Color.clear;
             foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
             {
                 if (theme.type == vare.type.ToString())
                 {
-                    titlemark.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                    themeColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
             }
-            titlegroup.Add(titlemark);
+
             // 标题
-            Label varname = new Label($"{vare.name}");
-            varname.AddToClassList("titlename");
-            varname.RegisterCallback<PointerDownEvent>((evt) =>
-            {
-                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
-                {
-                    GUIUtility.systemCopyBuffer = varname.text;
-                }
-            });
-            titlegroup.Add(varname);
-            // 类型
-            Label vartype = new Label($"{vare.type}");
-            vartype.AddToClassList("type");
-            titlegroup.Add(vartype);
-            #endregion
+            string[] styles_group = new string[1] { "titlegroup" };
+            string[] styles_mark = new string[1] { "titlemark" };
+            string[] styles_title = new string[1] { "titlename" };
+            string[] styles_sub = new string[1] { "type" };
+            util_XGraphInspectorGUI.GUI_Title(container, themeColor, vare.name, vare.type.ToString(), styles_group, styles_mark, styles_title, styles_sub);
 
-            #region 参数
             // 解释
-            Label vardescription = new Label($"{vare.description}");
-            vardescription.AddToClassList("description");
-            container.Add(vardescription);
+            util_XGraphInspectorGUI.GUI_Label(container, vare.description, new string[1] { "description" });
 
-            // var_guid
-            Label varguid = new Label();
-            varguid.text = $"<b>GUID-V： </b> <color=#b1b1b1>{vare.guid}</color>";
-            varguid.AddToClassList("labeltext");
-            container.Add(varguid);
-            #endregion
+            // GUID-V
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b> <color=#b1b1b1>{vare.guid}</color>", new string[1] { "labeltext" });
 
             #region 值
             switch (vare.type)
             {
                 case VariableType.String:
-                    // node_guid
-                    TextField value_string = new TextField("变量值：");
-                    value_string.value = vare.GetValue<string>();
-                    value_string.AddToClassList("field_text");
-                    container.Add(value_string);
-                    value_string.RegisterCallback<BlurEvent>((value) =>
+                    TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", vare.GetValue<string>(), new string[1] { "field_text" });
+                    field_string.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_string.value);
+                        vare.SetValue(field_string.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_string.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_string.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_string.value);
+                        vare.SetValue(field_string.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Float:
-                    FloatField value_float = new FloatField("变量值：");
-                    value_float.value = vare.GetValue<float>();
-                    value_float.AddToClassList("field_float");
-                    container.Add(value_float);
-                    value_float.RegisterCallback<BlurEvent>((value) =>
+                    FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", vare.GetValue<float>(), new string[1] { "field_float" });
+                    field_float.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_float.value);
+                        vare.SetValue(field_float.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_float.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_float.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_float.value);
+                        vare.SetValue(field_float.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Int:
-                    IntegerField value_int = new IntegerField("变量值：");
-                    value_int.value = vare.GetValue<int>();
-                    value_int.AddToClassList("field_float");
-                    container.Add(value_int);
-                    value_int.RegisterCallback<BlurEvent>((value) =>
+                    IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", vare.GetValue<int>(), new string[1] { "field_int" });
+                    field_int.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_int.value);
+                        vare.SetValue(field_int.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_int.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_int.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_int.value);
+                        vare.SetValue(field_int.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Bool:
-                    Toggle value_bool = new Toggle("变量值：");
-                    value_bool.value = vare.GetValue<bool>();
-                    value_bool.AddToClassList("field_bool");
-                    container.Add(value_bool);
-                    value_bool.RegisterValueChangedCallback((value) =>
+                    Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", vare.GetValue<bool>(), new string[1] { "field_bool" });
+                    field_bool.RegisterValueChangedCallback((value) =>
                     {
-                        vare.SetValue(value_bool.value);
+                        vare.SetValue(field_bool.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_bool.value);
+                        vare.SetValue(field_bool.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Vector2:
-                    Vector2Field value_v2 = new Vector2Field("变量值：");
-                    value_v2.value = vare.GetValue<Vector2>();
-                    value_v2.AddToClassList("field_vector2");
-                    container.Add(value_v2);
-                    value_v2.RegisterCallback<BlurEvent>((value) =>
+                    Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", vare.GetValue<Vector2>(), new string[1] { "field_vector2" });
+                    field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_v2.value);
+                        vare.SetValue(field_vector2.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v2.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_vector2.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_v2.value);
+                        vare.SetValue(field_vector2.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Vector3:
-                    Vector3Field value_v3 = new Vector3Field("变量值：");
-                    value_v3.value = vare.GetValue<Vector3>();
-                    value_v3.AddToClassList("field_vector3");
-                    container.Add(value_v3);
-                    value_v3.RegisterCallback<BlurEvent>((value) =>
+                    Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", vare.GetValue<Vector3>(), new string[1] { "field_vecto3" });
+                    field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_v3.value);
+                        vare.SetValue(field_vector3.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v3.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_vector3.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_v3.value);
+                        vare.SetValue(field_vector3.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Vector4:
-                    Vector4Field value_v4 = new Vector4Field("变量值：");
-                    value_v4.value = vare.GetValue<Vector4>();
-                    value_v4.AddToClassList("field_vector4");
-                    container.Add(value_v4);
-                    value_v4.RegisterCallback<BlurEvent>((value) =>
+                    Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", vare.GetValue<Vector4>(), new string[1] { "field_vector4" });
+                    field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_v4.value);
+                        vare.SetValue(field_vector4.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_v4.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_vector4.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_v4.value);
+                        vare.SetValue(field_vector4.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
                 case VariableType.Color:
-                    ColorField value_color = new ColorField("变量值：");
-                    value_color.value = vare.GetValue<Color>();
-                    value_color.AddToClassList("field_color");
-                    container.Add(value_color);
-                    value_color.RegisterCallback<BlurEvent>((value) =>
+                    ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", vare.GetValue<Color>(), new string[1] { "field_color" });
+                    field_color.RegisterCallback<BlurEvent>((value) =>
                     {
-                        vare.SetValue(value_color.value);
+                        vare.SetValue(field_color.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     // 注册元素从面板分离时的事件（相当于销毁）
-                    value_color.RegisterCallback<DetachFromPanelEvent>(evt =>
+                    field_color.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
-                        vare.SetValue(value_color.value);
+                        vare.SetValue(field_color.value);
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
             }
             #endregion
         }
+        #endregion
 
+        #region 辅助
         /// <summary>
         /// 设置黑板变量值
         /// </summary>
