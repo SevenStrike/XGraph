@@ -55,11 +55,50 @@ namespace SevenStrikeModules.XGraph
         /// <param name="edge"></param>
         private void CreateEdge(Node n_parent, Node n_child, Edge edge)
         {
+            // 移除原有的连线
+            if (edge != null)
+            {
+                RemoveElement(edge);
+            }
+
+            // 创建新的动画连线
+            util_AnimatedEdge animatedEdge = null;
+
             #region 处理行为节点 / 行为节点 <---> 行为节点
             VNode_Base node_parent = n_parent as VNode_Base;
             VNode_Base node_child = n_child as VNode_Base;
             if (node_parent != null && node_child != null)
             {
+                // 找到对应的端口
+                Port outputPort = null;
+                Port inputPort = null;
+
+                // 查找输出端口
+                foreach (var port in node_parent.Port_Outputs)
+                {
+                    if (port.Port == edge?.output)
+                    {
+                        outputPort = port.Port;
+                        break;
+                    }
+                }
+
+                // 查找输入端口
+                foreach (var port in node_child.Port_Inputs)
+                {
+                    if (port.Port == edge?.input)
+                    {
+                        inputPort = port.Port;
+                        break;
+                    }
+                }
+
+                if (outputPort != null && inputPort != null)
+                {
+                    animatedEdge = outputPort.ConnectTo<util_AnimatedEdge>(inputPort);
+                    AddElement(animatedEdge);
+                }
+
                 // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
                 ActionTreeAsset.ChildNode_Add(node_parent.ActionData, node_child.ActionData);
             }
@@ -69,8 +108,38 @@ namespace SevenStrikeModules.XGraph
             VNode_Branch node_branch = n_parent as VNode_Branch;
             if (node_branch != null && node_child != null)
             {
+                // 找到对应的端口
+                Port outputPort = null;
+                Port inputPort = null;
+
+                // 查找输出端口
+                foreach (var port in node_branch.Port_Outputs)
+                {
+                    if (port.Port == edge?.output && port.Name == edge?.output.portName)
+                    {
+                        outputPort = port.Port;
+                        break;
+                    }
+                }
+
+                // 查找输入端口
+                foreach (var port in node_child.Port_Inputs)
+                {
+                    if (port.Port == edge?.input)
+                    {
+                        inputPort = port.Port;
+                        break;
+                    }
+                }
+
+                if (outputPort != null && inputPort != null)
+                {
+                    animatedEdge = outputPort.ConnectTo<util_AnimatedEdge>(inputPort);
+                    AddElement(animatedEdge);
+                }
+
                 // 将 "n_child" 放到 "n_parent" 的相对应True和False的child成员变量中
-                ActionTreeAsset.ChildNode_Add(node_branch.ActionData, node_child.ActionData, edge.output.portName);
+                ActionTreeAsset.ChildNode_Add(node_branch.ActionData, node_child.ActionData, edge?.output.portName);
             }
             #endregion
 
@@ -80,8 +149,27 @@ namespace SevenStrikeModules.XGraph
 
             if (node_var != null && node_internalvar != null)
             {
+                Port outputPort = node_var.OutputPort?.Port;
+                Port inputPort = null;
+
+                // 查找输入端口
+                foreach (var port in node_internalvar.Port_Inputs)
+                {
+                    if (port.Port == edge?.input && port.Name == edge?.input.portName)
+                    {
+                        inputPort = port.Port;
+                        break;
+                    }
+                }
+
+                if (outputPort != null && inputPort != null)
+                {
+                    animatedEdge = outputPort.ConnectTo<util_AnimatedEdge>(inputPort);
+                    AddElement(animatedEdge);
+                }
+
                 Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
-                string portName = edge.input.portName;
+                string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
 
@@ -97,32 +185,68 @@ namespace SevenStrikeModules.XGraph
             VNode_Variable_Internal node_varInternal = n_parent as VNode_Variable_Internal;
             if (node_varInternal != null && node_child != null)
             {
+                Port outputPort = node_varInternal.Port_Outputs.FirstOrDefault()?.Port;
+                Port inputPort = null;
+
+                // 查找输入端口
+                foreach (var port in node_child.Port_Inputs)
+                {
+                    if (port.Port == edge?.input && port.Name == edge?.input.portName)
+                    {
+                        inputPort = port.Port;
+                        break;
+                    }
+                }
+
+                if (outputPort != null && inputPort != null)
+                {
+                    animatedEdge = outputPort.ConnectTo<util_AnimatedEdge>(inputPort);
+                    AddElement(animatedEdge);
+                }
+
                 Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid To InternalVariableAction");
-                string portName = edge.input.portName;
+                string portName = edge?.input.portName;
                 node_child.ActionData.InternalVariableData_Bind(node_varInternal.VariableData, portName);
             }
             #endregion
 
             #region 黑板变量节点 <---> 行为节点
             VNode_Variable node_bb_var = n_parent as VNode_Variable;
-
             if (node_bb_var != null && node_child != null)
             {
-                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
-                string portName = edge.input.portName;
-                // 加入行为节点数据中的变量列表中
-                node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
-            }
+                Port outputPort = node_bb_var.OutputPort?.Port;
+                Port inputPort = null;
 
-            #endregion
+                // 查找输入端口
+                foreach (var port in node_child.Port_Inputs)
+                {
+                    if (port.Port == edge?.input && port.Name == edge?.input.portName)
+                    {
+                        inputPort = port.Port;
+                        break;
+                    }
+                }
+
+                if (outputPort != null && inputPort != null)
+                {
+                    animatedEdge = outputPort.ConnectTo<util_AnimatedEdge>(inputPort);
+                    AddElement(animatedEdge);
+                }
+
+                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
+                string portName = edge?.input.portName;
+                // 加入行为节点数据中的变量列表中
+                node_child.ActionData.VariableData_Bind(node_bb_var.VariableData, portName);
+            }
+            #endregion    
 
             #region 特化处理延展节点
-            VNode_Relay node_relay = edge.input.node as VNode_Relay;
+            VNode_Relay node_relay = edge?.input.node as VNode_Relay;
             if (node_relay != null)
             {
                 node_relay.Connected();
             }
-            #endregion            
+            #endregion
         }
         #endregion
 
