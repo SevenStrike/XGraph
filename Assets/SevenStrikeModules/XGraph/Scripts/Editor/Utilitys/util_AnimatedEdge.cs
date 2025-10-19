@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -8,7 +9,6 @@ namespace SevenStrikeModules.XGraph
     public class util_AnimatedEdge : Edge
     {
         #region 字段和属性
-
         /// <summary>
         /// 是否启用流动效果
         /// </summary>
@@ -99,8 +99,16 @@ namespace SevenStrikeModules.XGraph
         /// 流动速度
         /// </summary>
         public float FlowSpeed { get; set; } = 100f;
-
         #endregion
+
+        /// <summary>
+        /// 当选中连线时的委托事件
+        /// </summary>
+        public Action OnSelectedEdge;
+        /// <summary>
+        /// 当选中连线时的委托事件
+        /// </summary>
+        public Action OnUnSelectedEdge;
 
         #region 构造函数
 
@@ -362,5 +370,21 @@ namespace SevenStrikeModules.XGraph
             InitializeFlowParameters();
         }
         #endregion
+
+        public override void OnSelected()
+        {
+            base.OnSelected();
+
+            if (OnSelectedEdge != null)
+                OnSelectedEdge();
+        }
+
+        public override void OnUnselected()
+        {
+            base.OnUnselected();
+
+            if (OnUnSelectedEdge != null)
+                OnUnSelectedEdge();
+        }
     }
 }

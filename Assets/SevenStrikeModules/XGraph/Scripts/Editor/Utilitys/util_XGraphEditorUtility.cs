@@ -501,24 +501,6 @@ namespace SevenStrikeModules.XGraph
             label.style.fontSize = fontSize;
         }
         /// <summary>
-        /// 标签字体粗细设置
-        /// </summary>
-        /// <param name="label"></param>
-        /// <param name="bold"></param>
-        public static void Element_Label_BoldSet(Label label, bool bold)
-        {
-            if (bold)
-            {
-                label.style.unityFont = AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf");
-                label.style.unityFontDefinition = new StyleFontDefinition(AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Heavy.ttf"));
-            }
-            else
-            {
-                label.style.unityFont = AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Regular.ttf");
-                label.style.unityFontDefinition = new StyleFontDefinition(AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Regular.ttf"));
-            }
-        }
-        /// <summary>
         /// 标签字体斜体设置
         /// </summary>
         /// <param name="label"></param>
@@ -528,7 +510,65 @@ namespace SevenStrikeModules.XGraph
             if (state)
                 label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Italic);
             else
-                label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Normal);
+            {
+                if (label.style.unityFontStyleAndWeight.value == FontStyle.Bold)
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Bold);
+                }
+                else
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Normal);
+                }
+            }
+        }
+        /// <summary>
+        /// 标签字体粗细设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="bold"></param>
+        public static void Element_Label_BoldSet(Label label, bool bold)
+        {
+            if (bold)
+            {
+                if (label.style.unityFontStyleAndWeight.value == FontStyle.Italic)
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.BoldAndItalic);
+                }
+                else
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Italic);
+                }
+            }
+            else
+            {
+                if (label.style.unityFontStyleAndWeight.value == FontStyle.Italic)
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.BoldAndItalic);
+                }
+                else
+                {
+                    label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Italic);
+                }
+            }
+        }
+        /// <summary>
+        /// 标签字体样式设置
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="style"></param>
+        public static void Element_Label_StyleSet(Label label, FontStyle style)
+        {
+            label.style.unityFontStyleAndWeight = new StyleEnum<FontStyle>(style);
+        }
+        /// <summary>
+        /// 字体设置
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="font"></param>
+        public static void Element_Label_FontSet(Label element, Font font)
+        {
+            element.style.unityFont = new StyleFont(font);
+            element.style.unityFontDefinition = new StyleFontDefinition(font);
         }
         /// <summary>
         /// 控制元素 - 可见性

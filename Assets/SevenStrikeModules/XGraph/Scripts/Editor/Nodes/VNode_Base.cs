@@ -170,7 +170,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(this.ActionData, "SetPosition VisualNode");
+            Undo.RecordObject(ActionData, "SetPosition VisualNode");
             base.SetPosition(newPos);
             if (ActionData != null)
             {
@@ -582,15 +582,24 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnSizeChanged(GeometryChangedEvent evt)
         {
-            Undo.RecordObject(graphView.ActionTreeAsset, "Change Stick Size");
-
             Vector2 newSize = new Vector2(evt.newRect.width, evt.newRect.height);
 
             if (Vector2.Distance(m_LastSize, newSize) > 1f) // 1像素阈值
             {
                 m_LastSize = newSize;
 
-                ActionData.nodeGraphSize = newSize;
+                // 修复：正确的撤销目标应该是 ActionData
+                if (ActionData != null)
+                {
+                    Undo.RecordObject(ActionData, "Change Node Size");
+                    ActionData.nodeGraphSize = newSize;
+
+                    // 如果需要，也可以标记资产为脏
+                    if (graphView?.ActionTreeAsset != null)
+                    {
+                        EditorUtility.SetDirty(graphView.ActionTreeAsset);
+                    }
+                }
             }
         }
         /// <summary>

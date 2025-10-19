@@ -1,9 +1,11 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
+    using UnityEngine.SocialPlatforms;
     using UnityEngine.UIElements;
 
     public class VNode_Decal : Node
@@ -24,6 +26,30 @@ namespace SevenStrikeModules.XGraph
         /// 视觉节点贴图组件
         /// </summary>
         public VisualElement DecalTextureElement;
+        /// <summary>
+        /// 按钮 - 贴图覆盖颜色
+        /// </summary>
+        public Button btn_decal_tintcolor;
+        /// <summary>
+        /// 按钮 - 贴图清空
+        /// </summary>
+        public Button btn_decal_clear;
+        /// <summary>
+        /// 按钮 - 贴图替换
+        /// </summary>
+        public Button btn_decal_replace;
+        /// <summary>
+        /// 按钮 - 贴图翻转 - 水平
+        /// </summary>
+        public Button btn_decal_flip_h;
+        /// <summary>
+        /// 按钮 - 贴图翻转 - 垂直
+        /// </summary>
+        public Button btn_decal_flip_v;
+        /// <summary>
+        /// 字体尺寸调整按钮容器
+        /// </summary>
+        public VisualElement DecalControlContainer;
         /// <summary>
         /// 贴图节点的最后一次尺寸
         /// </summary>
@@ -128,6 +154,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void SetNativeSize()
         {
+            Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Position");
             DecalData.size = new Vector2(DecalData.DecalTexture.width, DecalData.DecalTexture.height);
             style.width = DecalData.size.x;
             style.height = DecalData.size.y;
@@ -166,6 +193,8 @@ namespace SevenStrikeModules.XGraph
         {
             base.OnSelected();
 
+            DecalControlPanelDisplayer(true);
+
             // 调用回调事件
             if (OnSelectedNode != null)
             {
@@ -179,11 +208,48 @@ namespace SevenStrikeModules.XGraph
         {
             base.OnUnselected();
 
+            DecalControlPanelDisplayer(false);
+
             // 调用回调事件
             if (OnUnSelectedNode != null)
             {
                 OnUnSelectedNode.Invoke(this);
             }
+        }
+        /// <summary>
+        /// 修改贴图的覆盖颜色
+        /// </summary>
+        private void Btn_decal_tintcolor_clicked()
+        {
+            #region 打开颜色选择器
+            var t = typeof(EditorWindow).Assembly.GetTypes().FirstOrDefault(ty => ty.Name == "ColorPicker");
+            var m = t?.GetMethod("Show", new[] { typeof(Action<Color>), typeof(Color), typeof(bool), typeof(bool) });
+            if (m == null)
+            {
+                Debug.LogWarning("Could not invoke Color Picker for XGraph.");
+                return;
+            }
+
+            var defaultColor = Color.gray;
+            defaultColor = DecalData.color;
+            defaultColor.a = 1.0f;
+            #endregion
+
+            void ApplyColor(Color pickedColor)
+            {
+                foreach (var selectable in graphView.selection)
+                {
+                    if (selectable is VNode_Decal node)
+                    {
+                        Undo.RecordObject(graphView.ActionTreeAsset, "Change DecalTintColor");
+
+                        node.DecalData.color = pickedColor;
+                        util_XGraphEditorUtility.Element_BackgroundColorTint_Set(DecalTextureElement, pickedColor);
+                    }
+                }
+            }
+
+            m.Invoke(null, new object[] { (Action<Color>)ApplyColor, defaultColor, true, false });
         }
         #endregion
 
@@ -233,6 +299,59 @@ namespace SevenStrikeModules.XGraph
             mainContainer.Remove(mainContainer.Q<VisualElement>("contents"));
             mainContainer.Remove(mainContainer.Q<VisualElement>("title"));
 
+            #region 按钮 - 贴图覆盖颜色
+            btn_decal_tintcolor = new Button();
+            btn_decal_tintcolor.AddToClassList("button");
+            btn_decal_tintcolor.text = "";
+            btn_decal_tintcolor.clicked += Btn_decal_tintcolor_clicked;
+            btn_decal_tintcolor.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/decal_tintcolor.png");
+            #endregion
+
+            #region 按钮 - 贴图清空
+            btn_decal_clear = new Button();
+            btn_decal_clear.AddToClassList("button");
+            btn_decal_clear.text = "";
+            btn_decal_clear.clicked += Btn_decal_clear_clicked;
+            btn_decal_clear.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/decal_clear.png");
+            #endregion
+
+            #region 按钮 - 贴图实际尺寸
+            btn_decal_replace = new Button();
+            btn_decal_replace.AddToClassList("button");
+            btn_decal_replace.text = "";
+            btn_decal_replace.clicked += Btn_decal_nativesize_clicked;
+            btn_decal_replace.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/decal_replace.png");
+            #endregion
+
+            #region 按钮 - 贴图翻转 - 水平
+            btn_decal_flip_h = new Button();
+            btn_decal_flip_h.AddToClassList("button");
+            btn_decal_flip_h.text = "";
+            btn_decal_flip_h.clicked += Btn_decal_flip_h_clicked;
+            btn_decal_flip_h.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/decal_flip_h.png");
+            #endregion
+
+            #region 按钮 - 贴图翻转 - 垂直
+            btn_decal_flip_v = new Button();
+            btn_decal_flip_v.AddToClassList("button");
+            btn_decal_flip_v.text = "";
+            btn_decal_flip_v.clicked += Btn_decal_flip_v_clicked;
+            btn_decal_flip_v.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/decal_flip_v.png");
+            #endregion
+
+            #region 贴图控件容器
+            DecalControlContainer = new VisualElement();
+            DecalControlContainer.name = "DecalControlContainer";
+            DecalControlContainer.Add(btn_decal_tintcolor);
+            DecalControlContainer.Add(btn_decal_clear);
+            DecalControlContainer.Add(btn_decal_replace);
+            DecalControlContainer.Add(btn_decal_flip_h);
+            DecalControlContainer.Add(btn_decal_flip_v);
+
+            DecalControlPanelDisplayer(false);
+            Add(DecalControlContainer);
+            #endregion
+
             // 拖拽尺寸控件图标
             ResizerIcon = this.Q<VisualElement>(className: "resizer-icon");
             ResizerIcon.pickingMode = PickingMode.Ignore;
@@ -250,6 +369,7 @@ namespace SevenStrikeModules.XGraph
             DecalTextureElement.name = "DecalTexture";
             DecalTextureElement.style.opacity = DecalData.opacity;
             DecalTextureElement.style.scale = new StyleScale(DecalData.scale);
+            DecalTextureElement.style.unityBackgroundImageTintColor = DecalData.color;
             DecalTextureElement.pickingMode = PickingMode.Position;
             if (DecalData.DecalTexture != null)
                 DecalTextureElement.style.backgroundImage = DecalData.DecalTexture;
@@ -269,6 +389,25 @@ namespace SevenStrikeModules.XGraph
             RegisterDecalTextureClicked();
         }
 
+        private void Btn_decal_flip_h_clicked()
+        {
+            NodeDecalTexture_Flip_H();
+        }
+
+        private void Btn_decal_flip_v_clicked()
+        {
+            NodeDecalTexture_Flip_V();
+        }
+
+        private void Btn_decal_nativesize_clicked()
+        {
+            SetNativeSize();
+        }
+
+        private void Btn_decal_clear_clicked()
+        {
+            NodeDecalTexture_Remove();
+        }
         #endregion
 
         #region Shift调整透明度
@@ -511,6 +650,25 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 标签文字控件显示 & 隐藏
+        /// </summary>
+        /// <param name="state"></param>
+        private void DecalControlPanelDisplayer(bool state)
+        {
+            if (state)
+            {
+                DecalControlContainer.style.opacity = 1;
+                DecalControlContainer.style.top = -30;
+                DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
+            }
+            else
+            {
+                DecalControlContainer.style.opacity = 0;
+                DecalControlContainer.style.top = -10;
+                DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
+            }
+        }
         /// <summary>
         /// 鼠标移出时隐藏角点拖拽显示
         /// </summary>

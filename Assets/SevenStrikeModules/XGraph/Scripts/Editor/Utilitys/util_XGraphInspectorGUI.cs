@@ -14,6 +14,7 @@ namespace SevenStrikeModules.XGraph
             // 指定样式
             return util_XGraphEditorUtility.ElementStyle_Add(element, path);
         }
+
         /// <summary>
         /// 创建容器
         /// </summary>
@@ -32,6 +33,8 @@ namespace SevenStrikeModules.XGraph
 
             return container;
         }
+
+        #region 标题
         /// <summary>
         /// 创建标题
         /// </summary>
@@ -44,7 +47,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="styles_title"></param>
         /// <param name="styles_sub"></param>
         /// <returns></returns>
-        public static VisualElement GUI_Title(this VisualElement root, Color theme, string title, string sub, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null, string[] styles_sub = null)
+        public static VisualElement GUI_Title(this VisualElement root, Color theme, string title, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null)
         {
             // 标题组
             VisualElement vm_group = new VisualElement();
@@ -81,15 +84,6 @@ namespace SevenStrikeModules.XGraph
             });
             vm_group.Add(lab_title);
 
-            // 类型
-            Label lab_sub = new Label(sub);
-            lab_sub.name = "sub";
-            for (int i = 0; i < styles_sub.Length; i++)
-            {
-                lab_sub.AddToClassList(styles_sub[i]);
-            }
-            vm_group.Add(lab_sub);
-
             return vm_group;
         }
         /// <summary>
@@ -104,7 +98,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="styles_title"></param>
         /// <param name="styles_sub"></param>
         /// <returns></returns>
-        public static VisualElement GUI_IconTitle(this VisualElement root, ActionNode_Base nodedata, string title, string sub, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null, string[] styles_sub = null)
+        public static VisualElement GUI_Title(this VisualElement root, ActionNode_Base nodedata, string title, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null)
         {
             // 标题组
             VisualElement vm_group = new VisualElement();
@@ -144,17 +138,129 @@ namespace SevenStrikeModules.XGraph
             });
             vm_group.Add(lab_title);
 
-            // 类型
-            Label lab_sub = new Label(sub);
-            lab_sub.name = "sub";
-            for (int i = 0; i < styles_sub.Length; i++)
+            return vm_group;
+        }
+        /// <summary>
+        /// 创建标题
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="icon"></param>
+        /// <param name="title"></param>
+        /// <param name="styles_group"></param>
+        /// <param name="styles_mark"></param>
+        /// <param name="styles_title"></param>
+        /// <returns></returns>
+        public static VisualElement GUI_Title(this VisualElement root, Texture2D icon, string title, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null)
+        {
+            // 标题组
+            VisualElement vm_group = new VisualElement();
+            vm_group.name = "group";
+            for (int i = 0; i < styles_group.Length; i++)
             {
-                lab_sub.AddToClassList(styles_sub[i]);
+                vm_group.AddToClassList(styles_group[i]);
             }
-            vm_group.Add(lab_sub);
+            root.Add(vm_group);
+
+            // 标记
+            VisualElement vm_mark = new VisualElement();
+            vm_mark.name = "icon";
+            for (int i = 0; i < styles_mark.Length; i++)
+            {
+                vm_mark.AddToClassList(styles_mark[i]);
+            }
+            vm_mark.style.backgroundImage = icon;
+            vm_group.Add(vm_mark);
+
+            // 标题
+            Label lab_title = new Label(title);
+            lab_title.name = "title";
+            for (int i = 0; i < styles_title.Length; i++)
+            {
+                lab_title.AddToClassList(styles_title[i]);
+            }
+            lab_title.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    GUIUtility.systemCopyBuffer = lab_title.text;
+                }
+            });
+            vm_group.Add(lab_title);
 
             return vm_group;
         }
+        #endregion
+
+        #region 按钮
+        /// <summary>
+        /// 创建按钮
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="text"></param>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        public static Button GUI_Button(this VisualElement root, string text, string[] styles = null)
+        {
+            Button btn = new Button();
+            btn.text = text;
+            for (int i = 0; i < styles.Length; i++)
+            {
+                btn.AddToClassList(styles[i]);
+            }
+            root.Add(btn);
+
+            return btn;
+        }
+        #endregion
+
+        #region 物体
+        /// <summary>
+        /// 创建物体框
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="label"></param>
+        /// <param name="obj"></param>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        public static ObjectField GUI_Object<T>(this VisualElement root, string label, Object obj, string[] styles = null)
+        {
+            ObjectField objfield = new ObjectField(label);
+            objfield.value = obj;
+            objfield.objectType = typeof(T);
+            for (int i = 0; i < styles.Length; i++)
+            {
+                objfield.AddToClassList(styles[i]);
+            }
+            root.Add(objfield);
+
+            return objfield;
+        }
+        #endregion
+
+        #region 颜色
+        /// <summary>
+        /// 创建颜色框
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="label"></param>
+        /// <param name="value"></param>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        public static ColorField GUI_Color(this VisualElement root, string label, Color value, string[] styles = null)
+        {
+            ColorField colfield = new ColorField(label);
+            colfield.value = value;
+            for (int i = 0; i < styles.Length; i++)
+            {
+                colfield.AddToClassList(styles[i]);
+            }
+            root.Add(colfield);
+
+            return colfield;
+        }
+        #endregion
+
+        #region 标签
         /// <summary>
         /// 创建标签
         /// </summary>
@@ -173,6 +279,9 @@ namespace SevenStrikeModules.XGraph
 
             return label;
         }
+        #endregion
+
+        #region 输入框
         /// <summary>
         /// 创建属性框 - 字符串
         /// </summary>
@@ -325,5 +434,28 @@ namespace SevenStrikeModules.XGraph
             root.Add(field);
             return field;
         }
+        #endregion
+
+        #region 贴图
+        /// <summary>
+        /// 创建贴图
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="tex"></param>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        public static VisualElement GUI_Texture(this VisualElement root, Texture2D tex, string[] styles = null)
+        {
+            VisualElement ele = new VisualElement();
+            ele.style.backgroundImage = tex;
+            for (int i = 0; i < styles.Length; i++)
+            {
+                ele.AddToClassList(styles[i]);
+            }
+            root.Add(ele);
+
+            return ele;
+        }
+        #endregion
     }
 }

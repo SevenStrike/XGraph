@@ -33,6 +33,19 @@
      -unity-slice-bottom: 0;
 }
 
+#DecalControlContainer
+{
+     position: absolute;
+     width: auto;
+     height: auto;
+     flex-direction: row-reverse;
+     align-self: flex-end;
+     transition-property: opacity,top;
+     transition-duration: 0.3s,0.3s;
+     transition-timing-function: ease-out-cubic,ease-out-cubic;
+     transition-delay: 0.1s,0s;
+}
+
 .DecalTexture
 {
      top: 0;
@@ -46,4 +59,23 @@
      border-top-color: rgba(200, 200, 200,0.2);
      border-bottom-color: rgba(200, 200, 200,0.2);
      border-radius: 8px 8px 8px 8px;
+}
+
+.button
+{
+     width: 20px;
+     height: 20px;
+     background-color: transparent;
+     border-color: transparent;
+     overflow: visible;
+}
+
+.button:hover
+{
+     -unity-background-image-tint-color: rgb(128, 128, 128);
+}
+
+.button:active
+{
+     -unity-background-image-tint-color: white;
 }

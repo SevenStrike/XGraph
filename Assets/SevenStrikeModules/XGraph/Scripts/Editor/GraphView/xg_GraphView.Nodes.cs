@@ -136,6 +136,8 @@ namespace SevenStrikeModules.XGraph
                     args.italic = data.italic;
                     args.bold = data.bold;
                     args.opacity = data.opacity;
+                    args.color = data.color;
+                    args.font = data.font;
                     args.fontSize = data.fontSize;
                     args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
                     args.size = data.size;
@@ -152,6 +154,7 @@ namespace SevenStrikeModules.XGraph
                     args.size = data.size;
                     args.opacity = data.opacity;
                     args.hasTexture = data.HasTexture;
+                    args.color = data.color;
                     args.decalTexture = data.DecalTexture;
                     args.scale = data.scale;
                     Node decalNode = CreateNode(args);
@@ -775,7 +778,7 @@ namespace SevenStrikeModules.XGraph
             // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
             Undo.RecordObject(ActionTreeAsset, "Create LabelNode");
             // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
-            ActionLabelData labeldata = new ActionLabelData(args.content, GUID.Generate().ToString(), args.position, args.size, args.opacity, args.fontSize, args.bold, args.italic);
+            ActionLabelData labeldata = new ActionLabelData(args.content, GUID.Generate().ToString(), args.position, args.size, args.color, args.font, args.opacity, args.fontSize, args.bold, args.italic);
             ActionTreeAsset.Label_Add(labeldata);
 
             // 创建新的节点并指定资源数据项
@@ -798,7 +801,7 @@ namespace SevenStrikeModules.XGraph
             // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Decals 变量中
             Undo.RecordObject(ActionTreeAsset, "Create DecalNode");
             // 新建行为树贴图内容加入到行为树根资源的 Decals 变量中
-            ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, args.scale, args.opacity, args.hasTexture, args.decalTexture);
+            ActionDecalData decaldata = new ActionDecalData(GUID.Generate().ToString(), args.position, args.size, args.scale, args.color, args.opacity, args.hasTexture, args.decalTexture);
             ActionTreeAsset.Decal_Add(decaldata);
 
             // 创建新的节点并指定资源数据项

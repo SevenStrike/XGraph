@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
-    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -59,13 +58,41 @@ namespace SevenStrikeModules.XGraph
                     GUI_ActionNode(n_base);
             }
 
+            // 如果选中的节点是 VNode_Decal
+            if (nodeview is VNode_Decal n_decal)
+            {
+                GUI_DecalNode(n_decal);
+            }
+
+            // 如果选中的节点是 VNode_Label
+            if (nodeview is VNode_Label n_label)
+            {
+                GUI_LabelNode(n_label);
+            }
+
             // 如果选中的节点是 VNode_Variable
             if (nodeview is VNode_Variable n_variable)
             {
                 GUI_VariableNode(n_variable);
             }
         }
+        /// <summary>
+        /// 绘制连线的属性界面
+        /// </summary>
+        /// <param root_title="nodesasset"></param>
+        internal void InspectorViewer(util_AnimatedEdge edge)
+        {
+            #region 清空面板内容
+            Clear();
+            UnityEngine.Object.DestroyImmediate(editor);
+            #endregion
 
+            // 如果选中的节点是 VNode_Base
+            if (edge is util_AnimatedEdge n_edge)
+            {
+                GUI_Edge(n_edge);
+            }
+        }
         /// <summary>
         /// 绘制行为根资源的属性界面
         /// </summary>
@@ -194,20 +221,26 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            string[] styles_group = new string[1] { "titlegroup" };
-            string[] styles_icon = new string[1] { "titleicon" };
-            string[] styles_title = new string[1] { "titlename" };
-            string[] styles_sub = new string[1] { "type" };
-            util_XGraphInspectorGUI.GUI_IconTitle(container, n_var_internal.ActionData, data.name, data.variable.type.ToString(), styles_group, styles_icon, styles_title, styles_sub);
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+
+            // 标题附加 - 变量类型标签
+            string[] styles_sub = new string[] { "type" };
+            Label lab_sub = new Label(data.variable.type.ToString());
+            lab_sub.name = "sub";
+            for (int i = 0; i < styles_sub.Length; i++)
+            {
+                lab_sub.AddToClassList(styles_sub[i]);
+            }
+            titlegroup.Add(lab_sub);
 
             // node_guid
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[1] { "labeltext" });
 
             // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
 
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
 
             #region 值
             switch (data.variable.type)
@@ -555,26 +588,34 @@ namespace SevenStrikeModules.XGraph
                     themeColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
             }
-            string[] styles_group = new string[1] { "titlegroup" };
-            string[] styles_mark = new string[1] { "titlemark" };
-            string[] styles_title = new string[1] { "titlename" };
-            string[] styles_sub = new string[1] { "type" };
-            util_XGraphInspectorGUI.GUI_Title(container, themeColor, data.name, data.variable.type.ToString(), styles_group, styles_mark, styles_title, styles_sub);
+            // 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/blackboardvariable.png"), data.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            titlegroup.Q<VisualElement>(name: "icon").style.unityBackgroundImageTintColor = themeColor;
+
+            // 标题附加 - 变量类型标签
+            string[] styles_sub = new string[] { "type" };
+            Label lab_sub = new Label(data.variable.type.ToString());
+            lab_sub.name = "sub";
+            for (int i = 0; i < styles_sub.Length; i++)
+            {
+                lab_sub.AddToClassList(styles_sub[i]);
+            }
+            titlegroup.Add(lab_sub);
 
             // 解释
             util_XGraphInspectorGUI.GUI_Label(container, data.description, new string[1] { "description" });
 
-            // var_guid
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#b1b1b1>{data.varguid}</color>", new string[1] { "labeltext" });
-
             // node_guid
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[1] { "labeltext" });
 
+            // var_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#b1b1b1>{data.varguid}</color>", new string[1] { "labeltext" });
+
             // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
 
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[1] { "labeltext" });
 
             #region 值
             switch (data.type)
@@ -719,6 +760,185 @@ namespace SevenStrikeModules.XGraph
             #endregion
         }
         /// <summary>
+        /// 创建贴图节点的属性面板
+        /// </summary>
+        /// <param name="n_decal"></param>
+        private void GUI_DecalNode(VNode_Decal n_decal)
+        {
+            var data = n_decal.DecalData;
+
+            if (data == null)
+                return;
+
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+
+            // 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png"), data.DecalTexture.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+
+            // 标题附加 - 贴图链接
+            Button btn_decaltex_ping = util_XGraphInspectorGUI.GUI_Button(titlegroup, null, new string[] { "iconbutton" });
+            btn_decaltex_ping.clicked += (() =>
+            {
+                EditorGUIUtility.PingObject(data.DecalTexture);
+            });
+
+            // node_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[] { "labeltext" });
+
+            // node_size
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+
+            // node_pos
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+
+            // node_scale
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>缩放： </b> <color=#b1b1b1>X：{data.scale.x.ToString()}    Y：{data.scale.y.ToString()}</color>", new string[] { "labeltext" });
+
+            // node_realsize
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#b1b1b1>X：{data.DecalTexture.width.ToString()}    Y：{data.DecalTexture.height.ToString()}</color>", new string[] { "labeltext" });
+
+            // texture_bg
+            VisualElement tex_bg = util_XGraphInspectorGUI.GUI_Texture(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal_bg.png"), new string[] { "texture_bg" });
+
+            // texture
+            VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.DecalTexture, new string[] { "texture" });
+
+            EditorApplication.delayCall += () =>
+            {
+                tex.AddToClassList("texture_display");
+            };
+            tex.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                EditorGUIUtility.PingObject(data.DecalTexture);
+            });
+            tex_bg.Add(tex);
+        }
+        /// <summary>
+        /// 创建标签节点的属性面板
+        /// </summary>
+        /// <param name="n_label"></param>
+        private void GUI_LabelNode(VNode_Label n_label)
+        {
+            var data = n_label.LabelData;
+
+            if (data == null)
+                return;
+
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
+
+            // 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/label.png"), "标签", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+
+            // 标题附加 - 字体颜色
+            ColorField colField = util_XGraphInspectorGUI.GUI_Color(titlegroup, $"<b>颜色： </b>", data.color, new string[] { "labelnode_field_color" });
+            colField.RegisterValueChangedCallback((v) =>
+            {
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelColor");
+                data.color = v.newValue;
+                util_XGraphEditorUtility.Element_Color_Set(n_label.labelContentlabel, v.newValue);
+            });
+            n_label.On_FontColorValueChanged += (value) =>
+            {
+                colField.value = value;
+            };
+
+            // node_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[] { "labeltext" });
+
+            // node_size
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+
+            // node_pos
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+
+            // Bold
+            Toggle field_bold = util_XGraphInspectorGUI.GUI_Field_Bool(container, "粗体：", data.bold, new string[] { "field_bool" });
+            field_bold.RegisterValueChangedCallback((value) =>
+            {
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelBold");
+                data.bold = value.newValue;
+                n_label.LabelFontStyleSet();
+            });
+            n_label.On_BoldValueChanged += (value) =>
+            {
+                field_bold.value = value;
+            };
+
+
+            // Italic
+            Toggle field_italic = util_XGraphInspectorGUI.GUI_Field_Bool(container, "斜体：", data.italic, new string[] { "field_bool" });
+            field_italic.RegisterValueChangedCallback((value) =>
+            {
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelItalic");
+                data.italic = value.newValue;
+                n_label.LabelFontStyleSet();
+            });
+            n_label.On_ItalicValueChanged += (value) =>
+            {
+                field_italic.value = value;
+            };
+
+            // font
+            ObjectField objectField = util_XGraphInspectorGUI.GUI_Object<Font>(container, $"<b>字体： </b>", data.font, new string[] { "field_object" });
+            objectField.RegisterValueChangedCallback(value =>
+            {
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelFont");
+                Font font = value.newValue as Font;
+                data.font = font;
+                util_XGraphEditorUtility.Element_Label_FontSet(n_label.labelContentlabel, font);
+            });
+
+            // size
+            IntegerField fontsizefield = util_XGraphInspectorGUI.GUI_Field_Int(container, "字体尺寸：", data.fontSize, new string[] { "field_int" });
+            fontsizefield.RegisterValueChangedCallback<int>(value =>
+            {
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelFontSize");
+                data.fontSize = value.newValue;
+                util_XGraphEditorUtility.Element_IntegerField_ValueSet(n_label.FontSizeInput, value.newValue);
+            });
+            fontsizefield.RegisterCallback<BlurEvent>((evt) =>
+            {
+                IntegerField tf = evt.target as IntegerField;
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelFontSize");
+                data.fontSize = tf.value;
+                util_XGraphEditorUtility.Element_IntegerField_ValueSet(n_label.FontSizeInput, tf.value);
+            });
+            fontsizefield.RegisterCallback<DetachFromPanelEvent>(evt =>
+            {
+                IntegerField tf = evt.target as IntegerField;
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelFontSize");
+                data.fontSize = tf.value;
+                util_XGraphEditorUtility.Element_IntegerField_ValueSet(n_label.FontSizeInput, tf.value);
+            });
+            n_label.On_FontSizeValueChanged += (value) =>
+            {
+                fontsizefield.value = value;
+            };
+
+            // 值
+            TextField textfield = util_XGraphInspectorGUI.GUI_Field_String(container, "内容：", data.content, new string[] { "field_text" });
+            textfield.RegisterCallback<BlurEvent>((evt) =>
+            {
+                TextField tf = evt.target as TextField;
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelValue");
+                data.content = tf.value;
+                util_XGraphEditorUtility.Element_Label_ValueSet(n_label.labelContentlabel, tf.value);
+            });
+            textfield.RegisterCallback<DetachFromPanelEvent>(evt =>
+            {
+                TextField tf = evt.target as TextField;
+                Undo.RecordObject(graphwindow.CloneTree, "Change LabelValue");
+                data.content = tf.value;
+                util_XGraphEditorUtility.Element_Label_ValueSet(n_label.labelContentlabel, tf.value);
+            });
+            n_label.On_ContentValueChanged += (value) =>
+            {
+                textfield.value = value;
+            };
+        }
+        /// <summary>
         /// 创建黑板变量项的属性面板
         /// </summary>
         /// <param name="vare"></param>
@@ -728,8 +948,9 @@ namespace SevenStrikeModules.XGraph
                 return;
 
             // 创建布局容器
-            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
 
+            // 标题
             Color themeColor = Color.clear;
             foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
             {
@@ -738,25 +959,31 @@ namespace SevenStrikeModules.XGraph
                     themeColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
                 }
             }
-
             // 标题
-            string[] styles_group = new string[1] { "titlegroup" };
-            string[] styles_mark = new string[1] { "titlemark" };
-            string[] styles_title = new string[1] { "titlename" };
-            string[] styles_sub = new string[1] { "type" };
-            util_XGraphInspectorGUI.GUI_Title(container, themeColor, vare.name, vare.type.ToString(), styles_group, styles_mark, styles_title, styles_sub);
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/blackboardvariable.png"), vare.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            titlegroup.Q<VisualElement>(name: "icon").style.unityBackgroundImageTintColor = themeColor;
+
+            // 标题附加 - 变量类型标签
+            string[] styles_sub = new string[] { "type" };
+            Label lab_sub = new Label(vare.type.ToString());
+            lab_sub.name = "sub";
+            for (int i = 0; i < styles_sub.Length; i++)
+            {
+                lab_sub.AddToClassList(styles_sub[i]);
+            }
+            titlegroup.Add(lab_sub);
 
             // 解释
-            util_XGraphInspectorGUI.GUI_Label(container, vare.description, new string[1] { "description" });
+            util_XGraphInspectorGUI.GUI_Label(container, vare.description, new string[] { "description" });
 
             // GUID-V
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b> <color=#b1b1b1>{vare.guid}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b> <color=#b1b1b1>{vare.guid}</color>", new string[] { "labeltext" });
 
             #region 值
             switch (vare.type)
             {
                 case VariableType.String:
-                    TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", vare.GetValue<string>(), new string[1] { "field_text" });
+                    TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", vare.GetValue<string>(), new string[] { "field_text" });
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_string.value);
@@ -770,7 +997,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Float:
-                    FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", vare.GetValue<float>(), new string[1] { "field_float" });
+                    FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", vare.GetValue<float>(), new string[] { "field_float" });
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_float.value);
@@ -784,7 +1011,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Int:
-                    IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", vare.GetValue<int>(), new string[1] { "field_int" });
+                    IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", vare.GetValue<int>(), new string[] { "field_int" });
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_int.value);
@@ -798,7 +1025,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Bool:
-                    Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", vare.GetValue<bool>(), new string[1] { "field_bool" });
+                    Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", vare.GetValue<bool>(), new string[] { "field_bool" });
                     field_bool.RegisterValueChangedCallback((value) =>
                     {
                         vare.SetValue(field_bool.value);
@@ -812,7 +1039,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Vector2:
-                    Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", vare.GetValue<Vector2>(), new string[1] { "field_vector2" });
+                    Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", vare.GetValue<Vector2>(), new string[] { "field_vector2" });
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_vector2.value);
@@ -826,7 +1053,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Vector3:
-                    Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", vare.GetValue<Vector3>(), new string[1] { "field_vecto3" });
+                    Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", vare.GetValue<Vector3>(), new string[] { "field_vecto3" });
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_vector3.value);
@@ -840,7 +1067,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Vector4:
-                    Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", vare.GetValue<Vector4>(), new string[1] { "field_vector4" });
+                    Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", vare.GetValue<Vector4>(), new string[] { "field_vector4" });
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_vector4.value);
@@ -854,7 +1081,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
                 case VariableType.Color:
-                    ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", vare.GetValue<Color>(), new string[1] { "field_color" });
+                    ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", vare.GetValue<Color>(), new string[] { "field_color" });
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
                         vare.SetValue(field_color.value);
@@ -868,6 +1095,69 @@ namespace SevenStrikeModules.XGraph
                     });
                     break;
             }
+            #endregion
+        }
+        /// <summary>
+        /// 创建连线的属性面板
+        /// </summary>
+        /// <param name="n_edge"></param>
+        private void GUI_Edge(util_AnimatedEdge n_edge)
+        {
+            if (n_edge == null)
+                return;
+
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+
+            // 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/Edge.png"), "连线信息", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+
+            // node_guid
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-Edge： </b><color=#b1b1b1>{n_edge.viewDataKey}</color>", new string[] { "labeltext" });
+
+            // 创建布局容器
+            VisualElement connector_group = util_XGraphInspectorGUI.GUI_Container(container, new string[] { "connector_group" });
+
+
+            Node n_out = n_edge.output.node;
+            Node n_in = n_edge.input.node;
+
+            Color themeColor = Color.white;
+            if (n_out is VNode_Variable n_var)
+            {
+                foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+                {
+                    if (theme.type == n_var.VariableData.type.ToString())
+                    {
+                        themeColor = util_XGraphEditorUtility.Color_From_HexString(theme.color);
+                    }
+                }
+            }
+
+            #region 输出节点
+            VisualElement label_out = util_XGraphInspectorGUI.GUI_Container(connector_group, new string[] { "connector_node" });
+            // 类型图标
+            util_XGraphInspectorGUI.GUI_Texture(label_out, GetNodeIcon(n_out), new string[] { "connector_node_icon" }).style.unityBackgroundImageTintColor = themeColor;
+            // 类型文字
+            util_XGraphInspectorGUI.GUI_Label(label_out, GetNodeName(n_out), new string[] { "connector_node_name" });
+            // 类型文字
+            util_XGraphInspectorGUI.GUI_Label(label_out, GetNodeType(n_out), new string[] { "connector_node_type" });
+            // 配色标记
+            util_XGraphInspectorGUI.GUI_Container(label_out, new string[] { "connector_col_dot" }).style.backgroundColor = GetNodeThemeColor(n_out);
+            #endregion
+
+            util_XGraphInspectorGUI.GUI_Texture(connector_group, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/Edge.png"), new string[] { "connector_icon" });
+
+            #region 输入节点
+            VisualElement label_in = util_XGraphInspectorGUI.GUI_Container(connector_group, new string[] { "connector_node" });
+            // 类型图标
+            util_XGraphInspectorGUI.GUI_Texture(label_in, GetNodeIcon(n_in), new string[] { "connector_node_icon" });
+            // 类型文字
+            util_XGraphInspectorGUI.GUI_Label(label_in, GetNodeName(n_in), new string[] { "connector_node_name" });
+            // 类型文字
+            util_XGraphInspectorGUI.GUI_Label(label_in, GetNodeType(n_in), new string[] { "connector_node_type" });
+            // 配色标记
+            util_XGraphInspectorGUI.GUI_Container(label_in, new string[] { "connector_col_dot" }).style.backgroundColor = GetNodeThemeColor(n_in);
             #endregion
         }
         #endregion
@@ -889,6 +1179,78 @@ namespace SevenStrikeModules.XGraph
                     v.SetValue(value);
                 }
             }
+        }
+        /// <summary>
+        /// 根据节点类型获取特殊名称
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private string GetNodeType(Node node)
+        {
+            string text = string.Empty;
+            if (node is VNode_Base out_base)
+            {
+                text = "行为节点";
+            }
+            if (node is VNode_Variable out_var)
+            {
+                text = "黑板变量";
+            }
+            if (node is VNode_Variable_Internal out_internalvar)
+            {
+                text = "内部变量";
+            }
+
+            return text;
+        }
+        private string GetNodeName(Node node)
+        {
+            string text = string.Empty;
+            if (node is VNode_Base out_base)
+            {
+                text = out_base.ActionData.identifyName;
+            }
+            if (node is VNode_Variable out_var)
+            {
+                text = out_var.VariableData.name;
+            }
+            return text;
+        }
+        /// <summary>
+        /// 获取节点配色
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private Color GetNodeThemeColor(Node node)
+        {
+            Color col = Color.white;
+            if (node is VNode_Base out_base)
+            {
+                col = out_base.ActionData.themeColor;
+            }
+            return col;
+        }
+        /// <summary>
+        /// 根据节点类型获取特殊图标
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private Texture2D GetNodeIcon(Node node)
+        {
+            Texture2D tex = null;
+            if (node is VNode_Base out_base)
+            {
+                if (out_base.ActionData.NodeIcon == null)
+                    tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{out_base.ActionData.icon}.png");
+                else
+                    tex = out_base.ActionData.NodeIcon;
+            }
+            if (node is VNode_Variable out_var)
+            {
+                tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/blackboardvariable.png");
+            }
+
+            return tex;
         }
         #endregion
     }

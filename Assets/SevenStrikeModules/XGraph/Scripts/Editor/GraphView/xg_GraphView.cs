@@ -143,6 +143,18 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<List<Node>> OnSelectionNodes;
         /// <summary>
+        /// 当Edge被选中时的回调委托
+        /// </summary>
+        public Action<List<util_AnimatedEdge>> OnSelectionEdges;
+        /// <summary>
+        /// 当Edge被取消选中时的回调委托
+        /// </summary>
+        public Action<List<util_AnimatedEdge>> OnRemoveSelectionEdges;
+        /// <summary>
+        /// 当连线被取消选中时的回调委托
+        /// </summary>
+        public Action OnUnSelectedEdge;
+        /// <summary>
         /// 当节点被移除选中时的回调委托
         /// </summary>
         public Action<List<Node>> OnRemoveSelectionNodes;
@@ -170,6 +182,10 @@ namespace SevenStrikeModules.XGraph
         /// GroupTitle 颜色集
         /// </summary>
         public ThemesList ThemesList = new ThemesList();
+        /// <summary>
+        /// 当前选中的所有Edge
+        /// </summary>
+        private List<util_AnimatedEdge> CurrentSelected_Edge = new List<util_AnimatedEdge>();
         /// <summary>
         /// 当前选中的所有节点 - 基础
         /// </summary>
@@ -518,6 +534,7 @@ namespace SevenStrikeModules.XGraph
         public override void AddToSelection(ISelectable selectable)
         {
             base.AddToSelection(selectable);
+            List<util_AnimatedEdge> g_node_edges = new List<util_AnimatedEdge>();
             List<Node> g_node_actions = new List<Node>();
             List<Node> g_node_variables = new List<Node>();
             List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
@@ -527,6 +544,10 @@ namespace SevenStrikeModules.XGraph
 
             foreach (var n in selection)
             {
+                if (n is util_AnimatedEdge edge)
+                {
+                    g_node_edges.Add(edge);
+                }
                 if (n is VNode_Base node)
                 {
                     if (node.ActionData.actionNodeType != "Stick")
@@ -554,6 +575,7 @@ namespace SevenStrikeModules.XGraph
                 }
             }
 
+            CurrentSelected_Edge = g_node_edges;
             CurrentSelectedNodes_Base = g_node_actions;
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
@@ -576,6 +598,11 @@ namespace SevenStrikeModules.XGraph
 
                 OnSelectionNodes(selectionNodes);
             }
+
+            if (OnSelectionEdges != null)
+            {
+                OnSelectionEdges(g_node_edges);
+            }
         }
         /// <summary>
         /// 从节点选择集中移除
@@ -584,6 +611,7 @@ namespace SevenStrikeModules.XGraph
         public override void RemoveFromSelection(ISelectable selectable)
         {
             base.RemoveFromSelection(selectable);
+            List<util_AnimatedEdge> g_node_edges = new List<util_AnimatedEdge>();
             List<Node> g_node_actions = new List<Node>();
             List<Node> g_node_variables = new List<Node>();
             List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
@@ -593,6 +621,10 @@ namespace SevenStrikeModules.XGraph
 
             foreach (var n in selection)
             {
+                if (n is util_AnimatedEdge edge)
+                {
+                    g_node_edges.Add(edge);
+                }
                 if (n is VNode_Base node)
                 {
                     g_node_actions.Add(node);
@@ -619,6 +651,7 @@ namespace SevenStrikeModules.XGraph
                 }
             }
 
+            CurrentSelected_Edge = g_node_edges;
             CurrentSelectedNodes_Base = g_node_actions;
             CurrentSelectedNodes_Variable = g_node_variables;
             CurrentSelectedNodes_Decal = g_node_decals;
@@ -640,6 +673,11 @@ namespace SevenStrikeModules.XGraph
                 selectionNodes.AddRange(g_node_labels);
                 OnRemoveSelectionNodes(selectionNodes);
             }
+
+            if (OnRemoveSelectionEdges != null)
+            {
+                OnRemoveSelectionEdges(g_node_edges);
+            }
         }
         /// <summary>
         /// 重写删除方法，为了确保编组删除时保留内部节点
@@ -659,7 +697,7 @@ namespace SevenStrikeModules.XGraph
             // 3. 处理其他元素的删除
             return base.DeleteSelection(); // 调用原始逻辑删除非Group元素
         }
-        #endregion
+        #endregion        
 
         #region 连线规则
         /// <summary>

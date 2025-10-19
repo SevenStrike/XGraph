@@ -1,7 +1,7 @@
 .rootcontainer
 {
-     min-width: 180px;
-     min-height: 120px;
+     min-width: 166px;
+     min-height: 100px;
 }
 
 #contents
@@ -12,6 +12,37 @@
 #top
 {
      height: 30px;
+}
+
+#title
+{
+     height: 20px;
+}
+
+.unity-text-element.variable_type
+{
+     top: -4px;
+     right: 9px;
+     height: 18px;
+     margin-top: 10px;
+     margin-bottom: 5px;
+     font-size: 11px;
+     -unity-text-align: middle-right;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+     white-space: normal;
+     letter-spacing: 2px;
+     text-overflow: clip;
+     overflow: hidden;
+     flex-shrink: 0;
+     color: black;
+     background-color: rgba(255,255,255,0.95);
+     border-bottom-left-radius: 6px;
+     border-bottom-right-radius: 6px;
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     padding-left: 8px;
+     padding-right: 8px;
 }
 
 .unity-text-element.Title_Label
@@ -65,7 +96,7 @@
 {
      flex-shrink: 1;
      padding-top: 8px;
-     padding-bottom: 8px;
+     padding-bottom: 5px;
      padding-left: 3px;
      padding-right: 3px;
      height: 100%;

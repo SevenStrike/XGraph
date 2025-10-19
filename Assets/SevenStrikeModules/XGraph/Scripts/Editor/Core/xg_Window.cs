@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEditor.Experimental.GraphView;
@@ -477,6 +476,12 @@
             xw_graphView.OnSelectionNodes = OnSelectionNodesView;
             // 监听 GraphView 的 selection 移除节点变化
             xw_graphView.OnRemoveSelectionNodes = OnRemovedSelectionNodesView;
+            // 选择连线时注册的（点击节点时）的回调
+            xw_graphView.OnSelectionEdges = OnSelectEdges;
+            // 取消选择连线时注册的（点击节点时）的回调
+            xw_graphView.OnRemoveSelectionEdges = OnRemoveSelectionEdges;
+            // 创建节点时注册的（取消点击节点时）的回调，用于将Inspector面板清空
+            xw_graphView.OnUnSelectedEdge = OnUnSelectedEdge;
             #endregion
 
             #region BlackBoardView ---------- 初始化
@@ -687,7 +692,7 @@
             };
 
             #region GraphIntros 组件
-            xw_label_graphTitle = root.Q<Label>("graphintro_Title");
+            xw_label_graphTitle = root.Q<Label>("graphTitle");
             xw_label_graph_nodeinfo_header = root.Q<Label>("graph_nodeinfo_header");
             xw_label_graph_nodeinfo_footer = root.Q<Label>("graph_nodeinfo_footer");
             xw_label_graphMarkText = root.Q<Label>("graphintro_MarkText");
@@ -930,6 +935,7 @@
         #endregion
 
         #region 视觉节点回调
+        #region 节点类
         /// <summary>
         /// 当选中视觉节点时执行
         /// </summary>
@@ -1058,7 +1064,6 @@
                 xw_SetNodeInfos("-", "-");
             }
         }
-
         /// <summary>
         /// 当从选中的所有视觉节点中移除某一个选择时执行
         /// </summary>
@@ -1101,7 +1106,91 @@
         }
         #endregion
 
-        #region 选中节点时
+        #region 连线类
+        /// <summary>
+        /// 当选中连线时执行
+        /// </summary>
+        /// <param name="edges"></param>
+        private void OnSelectEdges(List<util_AnimatedEdge> edges)
+        {
+            if (edges.Count == 1)
+            {
+                if (xw_InspectorView == null)
+                    return;
+
+                util_AnimatedEdge selectedEdge = edges[0];
+
+                // 清空 Inspector 视图
+                xw_InspectorView.ClearInspector();
+
+                // 加载 Inspector 面板标题文字
+                InspectorViewAction_SetTitle($"连线状态");
+
+                // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
+                xw_InspectorView.InspectorViewer(selectedEdge);
+            }
+            else if (edges.Count > 1)
+            {
+                if (xw_InspectorView == null)
+                    return;
+                xw_currentSelectedVisualNode = null;
+
+                // 清空 Inspector 视图
+                xw_InspectorView.ClearInspector();
+
+                // 加载 Inspector 面板标题文字
+                InspectorViewAction_SetTitle($"连线属性 - 多选状态");
+                xw_SetNodeInfos("-", "-");
+            }
+        }
+        /// <summary>
+        /// 当选中连线时执行
+        /// </summary>
+        /// <param name="edges"></param>
+        private void OnSelectEdge(util_AnimatedEdge edge)
+        {
+            // 清空 Inspector 视图
+            xw_InspectorView.ClearInspector();
+
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"连线状态");
+
+            // 当点击任意一个节点时调用 移动式 Inspector 面板显示对应的资源节点的属性
+            xw_InspectorView.InspectorViewer(edge);
+        }
+        /// <summary>
+        /// 当取消选中连线时执行
+        /// </summary>
+        /// <param name="edges"></param>
+        private void OnRemoveSelectionEdges(List<util_AnimatedEdge> edges)
+        {
+            if (edges == null) return;
+            if (edges.Count > 1 || edges.Count == 0)
+                OnSelectEdges(edges);
+            else
+                OnSelectEdge(edges[0]);
+        }
+        /// <summary>
+        /// 取消选中连线节点时执行
+        /// </summary>
+        /// <param name="nodeview"></param>
+        private void OnUnSelectedEdge()
+        {
+            // 清空 Inspector 视图
+            xw_InspectorView.ClearInspector();
+
+            // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
+            xw_InspectorView.InspectorViewer(CloneTree);
+
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
+            // 节点的类型信息 - 清空
+            xw_SetNodeInfos(null, null);
+        }
+        #endregion
+        #endregion
+
+        #region 选中节点时简要信息展示
         /// <summary>
         /// 选中节点：变量
         /// </summary>
@@ -2092,6 +2181,7 @@
         }
         #endregion
 
+        #region 撤销&重做逻辑
         /// <summary>
         /// 撤销&重做逻辑
         /// </summary>
@@ -2099,6 +2189,7 @@
         {
             RestructureGraphViews();
         }
+        #endregion
 
         #region 辅助方法
         /// <summary>

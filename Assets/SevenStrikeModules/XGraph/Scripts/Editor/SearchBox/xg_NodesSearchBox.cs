@@ -212,8 +212,10 @@ namespace SevenStrikeModules.XGraph
                 args.size = new Vector2(210, 60);
                 args.opacity = 1;
                 args.fontSize = 13;
+                args.color = Color.white;
                 args.italic = false;
                 args.bold = false;
+                args.font = util_XGraphEditorUtility.AssetLoad<Font>($"{util_Dashboard.GetPath_Fonts()}x_Regular.ttf");
                 graphView.CreateNode(args);
             }
             else if (types.action_nodeType == "Decal")
@@ -225,6 +227,7 @@ namespace SevenStrikeModules.XGraph
                 args.hasTexture = false;
                 args.decalTexture = null;
                 args.scale = Vector3.one;
+                args.color = Color.white;
                 graphView.CreateNode(args);
             }
             else

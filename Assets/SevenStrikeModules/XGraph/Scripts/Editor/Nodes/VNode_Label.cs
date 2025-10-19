@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -37,6 +38,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Button btn_font_italic;
         /// <summary>
+        /// 字体颜色按钮
+        /// </summary>
+        public Button btn_font_color;
+        /// <summary>
         /// 字体斜体指示器
         /// </summary>
         public VisualElement font_italic_mark;
@@ -72,6 +77,26 @@ namespace SevenStrikeModules.XGraph
         /// 当选中节点时的委托事件
         /// </summary>
         public Action<VNode_Label> OnUnSelectedNode;
+        /// <summary>
+        /// 当粗体值改变时
+        /// </summary>
+        public Action<bool> On_BoldValueChanged;
+        /// <summary>
+        /// 当斜体值改变时
+        /// </summary>
+        public Action<bool> On_ItalicValueChanged;
+        /// <summary>
+        /// 当字体尺寸值改变时
+        /// </summary>
+        public Action<int> On_FontSizeValueChanged;
+        /// <summary>
+        /// 当字体颜色值改变时
+        /// </summary>
+        public Action<Color> On_FontColorValueChanged;
+        /// <summary>
+        /// 当内容值改变时
+        /// </summary>
+        public Action<string> On_ContentValueChanged;
         #region 节点信息
         /// <summary>
         /// 节点标题
@@ -236,11 +261,15 @@ namespace SevenStrikeModules.XGraph
             labelContentlabel = new Label(LabelData.content);
             labelContentlabel.enableRichText = true;
 
+            // 文字颜色
+            labelContentlabel.style.color = LabelData.color;
+
             // 读取数据中的文字特性
             util_XGraphEditorUtility.Element_Opacity_Set(labelContentlabel, LabelData.opacity);
             util_XGraphEditorUtility.Element_Label_SizeSet(labelContentlabel, LabelData.fontSize);
-            util_XGraphEditorUtility.Element_Label_ItalicSet(labelContentlabel, LabelData.italic);
-            util_XGraphEditorUtility.Element_Label_BoldSet(labelContentlabel, LabelData.bold);
+            LabelFontStyleSet();
+
+            util_XGraphEditorUtility.Element_Label_FontSet(labelContentlabel, LabelData.font);
 
             if (LabelData.italic)
                 util_XGraphEditorUtility.Element_Opacity_Set(font_italic_mark, 1);
@@ -288,7 +317,7 @@ namespace SevenStrikeModules.XGraph
             labelContentInput.multiline = true;
             labelContentInput.AddToClassList("Content_TextField");
             labelContentInput.Q<VisualElement>(className: "unity-base-text-field__multiline-container").AddToClassList("sizefieldTextmultilinecontainer");
-            labelContentInput.RegisterCallback<BlurEvent>(OnStickContentInputBlur);
+            labelContentInput.RegisterCallback<BlurEvent>(OnLabelContentInputBlur);
 
             AppendElement(GraphNodeContainerType.TopContainer, labelContentlabel);
             AppendElement(GraphNodeContainerType.TopContainer, labelContentInput);
@@ -340,6 +369,14 @@ namespace SevenStrikeModules.XGraph
             btn_font_italic.Add(font_italic_mark);
             #endregion
 
+            #region 按钮 - 字体颜色
+            btn_font_color = new Button();
+            btn_font_color.AddToClassList("button");
+            btn_font_color.text = "";
+            btn_font_color.clicked += Btn_font_color_clicked;
+            btn_font_color.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/fontcolor.png");
+            #endregion
+
             #region 内容尺寸大小输入框
             FontSizeInput = new IntegerField();
             FontSizeInput.AddToClassList("sizefield");
@@ -357,7 +394,7 @@ namespace SevenStrikeModules.XGraph
             fontsizerContainer.Add(FontSizeInput);
             fontsizerContainer.Add(btn_font_bold);
             fontsizerContainer.Add(btn_font_italic);
-
+            fontsizerContainer.Add(btn_font_color);
             FontControlPanelDisplayer(false);
 
             Add(fontsizerContainer);
@@ -492,6 +529,9 @@ namespace SevenStrikeModules.XGraph
             util_XGraphEditorUtility.Element_Label_SizeSet(labelContentlabel, evt.newValue);
             Undo.RecordObject(graphView.ActionTreeAsset, "Label FontSize Set");
             LabelData.fontSize = evt.newValue;
+
+            if (On_FontSizeValueChanged != null)
+                On_FontSizeValueChanged(LabelData.fontSize);
         }
         /// <summary>
         /// 切换斜体时
@@ -500,12 +540,11 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Label Font Italic");
             LabelData.italic = !LabelData.italic;
-            util_XGraphEditorUtility.Element_Label_ItalicSet(labelContentlabel, LabelData.italic);
 
-            if (LabelData.italic)
-                util_XGraphEditorUtility.Element_Opacity_Set(font_italic_mark, 1);
-            else
-                util_XGraphEditorUtility.Element_Opacity_Set(font_italic_mark, 0);
+            LabelFontStyleSet();
+
+            if (On_ItalicValueChanged != null)
+                On_ItalicValueChanged(LabelData.italic);
         }
         /// <summary>
         /// 切换粗细时
@@ -514,12 +553,49 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Label Font Bold");
             LabelData.bold = !LabelData.bold;
-            util_XGraphEditorUtility.Element_Label_BoldSet(labelContentlabel, LabelData.bold);
 
-            if (LabelData.bold)
-                util_XGraphEditorUtility.Element_Opacity_Set(font_bold_mark, 1);
-            else
-                util_XGraphEditorUtility.Element_Opacity_Set(font_bold_mark, 0);
+            LabelFontStyleSet();
+
+            if (On_BoldValueChanged != null)
+                On_BoldValueChanged(LabelData.bold);
+        }
+        /// <summary>
+        /// 字体颜色更改
+        /// </summary>
+        private void Btn_font_color_clicked()
+        {
+            #region 打开颜色选择器
+            var t = typeof(EditorWindow).Assembly.GetTypes().FirstOrDefault(ty => ty.Name == "ColorPicker");
+            var m = t?.GetMethod("Show", new[] { typeof(Action<Color>), typeof(Color), typeof(bool), typeof(bool) });
+            if (m == null)
+            {
+                Debug.LogWarning("Could not invoke Color Picker for XGraph.");
+                return;
+            }
+
+            var defaultColor = Color.gray;
+            defaultColor = LabelData.color;
+            defaultColor.a = 1.0f;
+            #endregion
+
+            void ApplyColor(Color pickedColor)
+            {
+                foreach (var selectable in graphView.selection)
+                {
+                    if (selectable is VNode_Label node)
+                    {
+                        Undo.RecordObject(graphView.ActionTreeAsset, "Change LabelColor");
+
+                        node.LabelData.color = pickedColor;
+                        util_XGraphEditorUtility.Element_Color_Set(labelContentlabel, pickedColor);
+
+                        if (On_FontColorValueChanged != null)
+                            On_FontColorValueChanged(pickedColor);
+                    }
+                }
+            }
+
+            m.Invoke(null, new object[] { (Action<Color>)ApplyColor, defaultColor, true, false });
         }
         /// <summary>
         /// 当Graphview编辑器的主题色改变时
@@ -534,6 +610,38 @@ namespace SevenStrikeModules.XGraph
 
         #region 辅助
         /// <summary>
+        /// 标签文字样式设置
+        /// </summary>
+        public void LabelFontStyleSet()
+        {
+            if (LabelData.italic && LabelData.bold)
+            {
+                util_XGraphEditorUtility.Element_Label_StyleSet(labelContentlabel, FontStyle.BoldAndItalic);
+            }
+            if (!LabelData.italic && !LabelData.bold)
+            {
+                util_XGraphEditorUtility.Element_Label_StyleSet(labelContentlabel, FontStyle.Normal);
+            }
+            if (LabelData.italic && !LabelData.bold)
+            {
+                util_XGraphEditorUtility.Element_Label_StyleSet(labelContentlabel, FontStyle.Italic);
+            }
+            if (!LabelData.italic && LabelData.bold)
+            {
+                util_XGraphEditorUtility.Element_Label_StyleSet(labelContentlabel, FontStyle.Bold);
+            }
+
+            if (LabelData.italic)
+                util_XGraphEditorUtility.Element_Opacity_Set(font_italic_mark, 1);
+            else
+                util_XGraphEditorUtility.Element_Opacity_Set(font_italic_mark, 0);
+
+            if (LabelData.bold)
+                util_XGraphEditorUtility.Element_Opacity_Set(font_bold_mark, 1);
+            else
+                util_XGraphEditorUtility.Element_Opacity_Set(font_bold_mark, 0);
+        }
+        /// <summary>
         /// 标签文字控件显示 & 隐藏
         /// </summary>
         /// <param name="state"></param>
@@ -541,10 +649,14 @@ namespace SevenStrikeModules.XGraph
         {
             if (state)
             {
+                fontsizerContainer.style.opacity = 1;
+                fontsizerContainer.style.top = -30;
                 fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
             }
             else
             {
+                fontsizerContainer.style.opacity = 0;
+                fontsizerContainer.style.top = -10;
                 fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
             }
         }
@@ -552,12 +664,15 @@ namespace SevenStrikeModules.XGraph
         /// 当内容框输入完成时
         /// </summary>
         /// <param name="evt"></param>
-        private void OnStickContentInputBlur(BlurEvent evt)
+        private void OnLabelContentInputBlur(BlurEvent evt)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change StickNode Content");
             LabelData.content = labelContentlabel.text = labelContentInput.value;
             VisualElementDisplay(labelContentlabel, true);
             VisualElementDisplay(labelContentInput, false);
+
+            if (On_ContentValueChanged != null)
+                On_ContentValueChanged(labelContentInput.value);
         }
         /// <summary>
         /// 元素的视觉布局样式

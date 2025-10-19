@@ -4,6 +4,7 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.Hardware;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -69,6 +70,11 @@ namespace SevenStrikeModules.XGraph
                 Toggle_Check(VariableData.variable.GetValue<bool>());
 
                 tog_clicker.RegisterCallback<PointerDownEvent>(ToggleClicker);
+
+                ActionData.RootAsset.On_VariablesValue_Changed += () =>
+                {
+                    Toggle_Check(VariableData.variable.GetValue<bool>());
+                };
             }
 
             if (VariableData.variable.type == VariableType.String)
@@ -88,8 +94,8 @@ namespace SevenStrikeModules.XGraph
 
             #region 端口设置
             // 加入行为端口
-            Port_Inputs.Add(new xGraph_NodePort("In", var_type, Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("Out", var_type, Port.Capacity.Multi));
+            Port_Inputs.Add(new xGraph_NodePort("", var_type, Port.Capacity.Single));
+            Port_Outputs.Add(new xGraph_NodePort("", var_type, Port.Capacity.Multi));
             #endregion
 
             // 当Graphview编辑器的主题色改变时
@@ -299,6 +305,13 @@ namespace SevenStrikeModules.XGraph
             base.Draw_Title();
 
             TitleInputField.RegisterCallback<BlurEvent>(SyncChangeVariableName);
+
+            // 类型
+            Label lab_sub = new Label(VariableData.variable.type.ToString().ToLower());
+            lab_sub.name = "var_type";
+            //lab_sub.style.color = ActionData.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+            lab_sub.AddToClassList("variable_type");
+            titleContainer.Add(lab_sub);
         }
         #endregion
 

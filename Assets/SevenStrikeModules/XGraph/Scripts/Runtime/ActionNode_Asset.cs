@@ -9,6 +9,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
+    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
 
@@ -58,6 +59,8 @@ namespace SevenStrikeModules.XGraph
         public string content;
         public Vector2 position;
         public Vector2 size;
+        public Color color;
+        public Font font;
         public float opacity;
         public int fontSize;
         public bool bold;
@@ -72,6 +75,7 @@ namespace SevenStrikeModules.XGraph
     {
         public Vector2 position;
         public Vector2 size;
+        public Color color;
         public float opacity;
         public bool hasTexture;
         public Texture2D decalTexture;
@@ -115,6 +119,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Vector2 size;
         /// <summary>
+        /// 贴图着色颜色
+        /// </summary>
+        public Color color = Color.white;
+        /// <summary>
         /// 节点贴图透明度
         /// </summary>
         public float opacity = 1;
@@ -136,12 +144,13 @@ namespace SevenStrikeModules.XGraph
         /// <param name="guid"></param>
         /// <param name="pos"></param>
         /// <param name="size"></param>
-        public ActionDecalData(string guid, Vector2 pos, Vector2 size, Vector3 scale, float opacity, bool hastex, Texture2D tex)
+        public ActionDecalData(string guid, Vector2 pos, Vector2 size, Vector3 scale, Color color, float opacity, bool hastex, Texture2D tex)
         {
             this.guid = guid;
             this.position = pos;
             this.scale = scale;
             this.size = size;
+            this.color = color;
             this.opacity = opacity;
             this.HasTexture = hastex;
             this.DecalTexture = tex;
@@ -159,6 +168,7 @@ namespace SevenStrikeModules.XGraph
 #endif
             clone.position = position;
             clone.size = size;
+            clone.color = color;
             clone.HasTexture = HasTexture;
             clone.DecalTexture = DecalTexture;
             clone.scale = scale;
@@ -255,6 +265,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Vector2 size;
         /// <summary>
+        /// 标签颜色
+        /// </summary>
+        public Color color = Color.white;
+        /// <summary>
+        /// 字体
+        /// </summary>
+        public Font font;
+        /// <summary>
         /// 标签透明度
         /// </summary>
         public float opacity;
@@ -283,12 +301,14 @@ namespace SevenStrikeModules.XGraph
         /// <param name="pos"></param>
         /// <param name="size"></param>
         /// <param name="opacity"></param>
-        public ActionLabelData(string content, string guid, Vector2 pos, Vector2 size, float opacity, int fontSize, bool bold, bool italic)
+        public ActionLabelData(string content, string guid, Vector2 pos, Vector2 size, Color color, Font font, float opacity, int fontSize, bool bold, bool italic)
         {
             this.guid = guid;
             this.content = content;
             this.position = pos;
             this.size = size;
+            this.color = color;
+            this.font = font;
             this.opacity = opacity;
             this.fontSize = fontSize;
             this.bold = bold;
@@ -308,6 +328,8 @@ namespace SevenStrikeModules.XGraph
 #endif
             clone.position = position;
             clone.size = size;
+            clone.color = color;
+            clone.font = font;
             clone.opacity = opacity;
             clone.fontSize = fontSize;
             clone.bold = bold;

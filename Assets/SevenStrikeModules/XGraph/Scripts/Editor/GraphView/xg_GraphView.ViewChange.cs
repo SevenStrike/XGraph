@@ -247,6 +247,9 @@ namespace SevenStrikeModules.XGraph
                 node_relay.Connected();
             }
             #endregion
+
+            if (animatedEdge != null)
+                animatedEdge.OnUnSelectedEdge += OnUnSelectedEdge;
         }
         #endregion
 

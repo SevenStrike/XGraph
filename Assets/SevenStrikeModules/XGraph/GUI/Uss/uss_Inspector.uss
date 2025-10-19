@@ -5,15 +5,15 @@
      color: rgb(255, 255, 255);
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      font-size: 12px;
-     margin-top: 0px;
-     margin-right: 0px;
-     margin-bottom: 0px;
-     margin-left: 0px;
-     padding-top: 0px;
-     padding-right: 0px;
-     padding-bottom: 0px;
-     padding-left: 0px;
-     overflow: hidden;
+     margin-top: 0;
+     margin-right: 0;
+     margin-bottom: 0;
+     margin-left: 0;
+     padding-top: 0;
+     padding-right: 0;
+     padding-bottom: 0;
+     padding-left: 0;
+     overflow: visible;
 }
 
 .titlegroup
@@ -22,22 +22,21 @@
      align-items: center;
      width: 100%;
      height: auto;
-     margin-top: 0px;
-     margin-right: 0px;
+     margin-top: 0;
+     margin-right: 0;
      margin-bottom: 5px;
-     margin-left: 0px;
+     margin-left: 0;
      padding-top: 10px;
      padding-right: 5px;
      padding-bottom: 15px;
-     padding-left: 0px;
+     padding-left: 0;
      border-bottom-width: 1px;
      border-bottom-color: rgba(255, 255, 255, 0.2);
-     /*background-color: rgba(0, 177, 255, 0.50);*/
 }
 
 .titlename
 {
-     color: rgba(255, 255, 255,0.85);
+     color: rgba(255, 255, 255, 0.85);
      height: 10px;
      width: 30px;
      font-size: 15px;
@@ -45,42 +44,45 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
      letter-spacing: 5px;
-     padding-left: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
-     margin-top: 0px;
-     margin-bottom: 0px;
+     padding-left: 0;
+     padding-top: 0;
+     padding-bottom: 0;
+     margin-top: 0;
+     margin-bottom: 0;
      margin-left: 10px;
 }
 
 .titlemark
 {
-     color: rgba(255, 255, 255,0.85);
-     height: 15px;
-     width: 2px;
+     color: rgba(255, 255, 255, 0.85);
+     height: 18px;
+     width: 4px;
+     left: 1px;
      letter-spacing: 5px;
-     padding-left: 0px;
-     padding-top: 0px;
-     margin-top: 0px;
-     margin-left: 0px;
+     padding-left: 0;
+     padding-top: 0;
+     margin-top: 0;
+     margin-left: 0;
+     margin-right: 10px;
 }
 
 .titleicon
 {
-     color: rgba(255, 255, 255,0.85);
+     color: rgba(255, 255, 255, 0.85);
      height: 18px;
      width: 18px;
      letter-spacing: 5px;
-     padding-left: 0px;
-     padding-top: 0px;
-     margin-top: 0px;
-     margin-left: 0px;
+     padding-left: 0;
+     padding-top: 0;
+     margin-top: 0;
+     margin-left: 0;
 }
 
 .type
 {
      position: absolute;
      right: 0;
+     top: 12px;
      color: rgb(0, 0, 0);
      height: 15px;
      width: 65px;
@@ -91,14 +93,14 @@
      letter-spacing: 5px;
      padding-left: 10px;
      padding-right: 10px;
-     padding-top: 0px;
-     padding-bottom: 0px;
-     margin-top: 0px;
-     margin-bottom: 0px;
-     margin-left: 0px;
-     margin-right: 16px;
+     padding-top: 0;
+     padding-bottom: 0;
+     /*margin-top: 0;*/
+     margin-bottom: 0;
+     margin-left: 0;
+     margin-right: 6px;
      align-self: flex-start;
-     background-color: rgba(255, 255, 255,0.85);
+     background-color: rgba(255, 255, 255, 0.85);
      border-top-left-radius: 6px;
      border-top-right-radius: 6px;
      border-bottom-right-radius: 6px;
@@ -108,7 +110,7 @@
 .description
 {
      position: relative;
-     color: rgba(255, 255, 255,0.55);
+     color: rgba(255, 255, 255, 0.55);
      height: 25px;
      width: auto;
      font-size: 12px;
@@ -116,14 +118,14 @@
      -unity-font-style: bold;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 5px;
-     padding-left: 0px;
+     padding-left: 0;
      padding-right: 10px;
      padding-top: 5px;
-     padding-bottom: 0px;
-     margin-top: 0px;
+     padding-bottom: 0;
+     margin-top: 0;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
      overflow: hidden;
      text-overflow: ellipsis;
 }
@@ -131,7 +133,7 @@
 .labeltext
 {
      position: relative;
-     color: rgba(255, 255, 255,0.8);
+     color: rgba(255, 255, 255, 0.8);
      height: 25px;
      width: auto;
      font-size: 12px;
@@ -139,22 +141,22 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 5px;
-     padding-left: 0px;
+     padding-left: 0;
      padding-right: 10px;
      padding-top: 5px;
-     padding-bottom: 0px;
-     margin-top: 0px;
+     padding-bottom: 0;
+     margin-top: 0;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
      overflow: hidden;
      text-overflow: ellipsis;
 }
 
-.field_text
+.field_object
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -162,14 +164,35 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
+}
+
+.field_text
+{
+     position: relative;
+     color: rgba(255, 255, 255, 0.35);
+     height: 20px;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 2px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .unity-base-field__label
@@ -184,7 +207,7 @@
 .field_vector2
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -192,20 +215,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_vector3
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -213,20 +236,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_vector4
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -234,20 +257,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_color
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -255,20 +278,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_float
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -276,20 +299,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_int
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -297,20 +320,20 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
 }
 
 .field_bool
 {
      position: relative;
-     color: rgba(255, 255, 255,0.35);
+     color: rgba(255, 255, 255, 0.35);
      height: 20px;
      width: auto;
      font-size: 12px;
@@ -318,12 +341,187 @@
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 2px;
-     padding-left: 0px;
-     padding-right: 0px;
-     padding-top: 0px;
-     padding-bottom: 0px;
+     padding-left: 0;
+     padding-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
      margin-top: 5px;
      margin-bottom: 5px;
-     margin-left: 0px;
-     margin-right: 0px;
+     margin-left: 0;
+     margin-right: 0;
+}
+
+.labelnode_field_color
+{
+     position: absolute;
+     top: 10px;
+     right: 0;
+     height: 15px;
+     width: 105px;
+}
+
+.texture_bg
+{
+     margin-top: 15px;
+     align-self: center;
+     width: 95%;
+     height: 200px;
+     background-size: contain;
+     padding-left: 10px;
+     padding-right: 10px;
+     padding-top: 10px;
+     padding-bottom: 10px;
+     background-repeat: repeat;
+     background-size: 20px 20px;
+     background-position-x: 8.5px;
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);
+     border-radius: 10px 10px 10px 10px;
+}
+
+.texture
+{
+     top: 15px;
+     opacity: 0;
+     align-self: center;
+     width: 100%;
+     height: 100%;
+     background-size: contain;
+     transition-property: top,opacity;
+     transition-duration: 0.4s,0.4s;
+     transition-timing-function: ease-out-cubic,ease-out-cubic;
+     transition-delay: 0s,0.05s;
+}
+
+.texture_display
+{
+     top: 0;
+     opacity: 1;
+}
+
+.iconbutton
+{
+     position: absolute;
+     right: 0;
+     top: 9px;
+     width: 18px;
+     height: 18px;
+     background-image: url("project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/path.png?fileID=2800000&guid=7dac6f433e8529f43934b89de7a1d1c1&type=3#path");
+     background-color: rgba(255, 255, 255, 0);
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);
+     border-left-color: rgba(255, 255, 255, 0);
+     border-right-color: rgba(255, 255, 255, 0);
+     border-top-color: rgba(255, 255, 255, 0);
+     border-bottom-color: rgba(255, 255, 255, 0);
+     transition-property: -unity-background-image-tint-color;
+     transition-duration: 0.2s;
+     transition-timing-function: ease-out-cubic;
+}
+
+.iconbutton:hover
+{
+     -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.iconbutton:active
+{
+     -unity-background-image-tint-color: rgba(255, 255, 255, 0.5);
+}
+
+.connector_group
+{
+     width: 100%;
+     height: auto;
+     flex-direction: row;
+     margin-top: 15px;
+}
+
+.connector_icon
+{
+     align-self: center;
+     width: 30px;
+     height: 30px;
+     margin-left: 5px;
+     margin-right: 5px;
+}
+
+.connector_node
+{
+     align-self: center;
+     width: 30px;
+     height: auto;
+     flex-grow: 1;
+     -unity-text-align: middle-center;
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 6px;
+     border-bottom-left-radius: 6px;
+     border-left-color: rgba(255, 255, 255, 0.2);
+     border-right-color: rgba(255, 255, 255, 0.2);
+     border-top-color: rgba(255, 255, 255, 0.2);
+     border-bottom-color: rgba(255, 255, 255, 0.2);
+     border-left-width: 1px;
+     border-right-width: 1px;
+     border-top-width: 1px;
+     border-bottom-width: 1px;
+}
+
+.connector_node_type
+{
+     position: relative;
+     right: 5px;
+     bottom: 0px;
+     align-self: flex-end;
+     color: rgba(255, 255, 255, 1);
+     height: 15px;
+     width: 90px;
+     font-size: 12px;
+     -unity-text-align: middle-center;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     letter-spacing: 15px;
+     padding-left: 25px;
+     padding-right: 25px;
+     padding-top: 10px;
+     padding-bottom: 10px;
+     margin-bottom: 5px;
+     margin-top: 10px;
+     background-color: rgba(0, 0, 0, 0.25);
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 6px;
+     border-bottom-left-radius: 6px;
+}
+
+.connector_node_icon
+{
+     width: 25px;
+     height: 25px;
+     top: 8px;
+     left: 8px;
+     margin-bottom: 15px;
+}
+
+.connector_col_dot
+{
+     position: absolute;
+     width: 4px;
+     height: 4px;
+     top: 10px;
+     right: 10px;
+}
+
+.connector_node_name
+{
+     position: absolute;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     width: 70%;
+     height: 25px;
+     top: 8px;
+     left: 45px;
+     padding-right: 30px;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
