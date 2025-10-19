@@ -803,11 +803,12 @@ namespace SevenStrikeModules.XGraph
 
             // texture
             VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.DecalTexture, new string[] { "texture" });
-
+            // 延迟播放动画
             EditorApplication.delayCall += () =>
             {
-                tex.AddToClassList("texture_display");
+                tex.AddToClassList("texture_floated");
             };
+
             tex.RegisterCallback<MouseDownEvent>((evt) =>
             {
                 EditorGUIUtility.PingObject(data.DecalTexture);
