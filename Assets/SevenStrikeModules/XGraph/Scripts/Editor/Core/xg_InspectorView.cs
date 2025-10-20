@@ -236,11 +236,19 @@ namespace SevenStrikeModules.XGraph
             // node_guid
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[1] { "labeltext" });
 
-            // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
-
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
+            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
+            n_var_internal.On_Node_SizeChanged += (size) =>
+            {
+                label_size.text = $"<b>节点尺寸： </b> <color=#b1b1b1>X：{size.x}    Y：{size.y}</color>";
+            };
+
+            // node_pos
+            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
+            n_var_internal.On_Node_Moved += (pos) =>
+            {
+                label_pos.text = $"<b>节点位置： </b> <color=#b1b1b1>X：{pos.x}    Y：{pos.y}</color>";
+            };
 
             #region 值
             switch (data.variable.type)
@@ -612,10 +620,18 @@ namespace SevenStrikeModules.XGraph
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#b1b1b1>{data.varguid}</color>", new string[1] { "labeltext" });
 
             // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
+            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
+            n_variable.On_Node_SizeChanged += (size) =>
+            {
+                label_size.text = $"<b>节点尺寸： </b> <color=#b1b1b1>X：{size.x}    Y：{size.y}</color>";
+            };
 
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[1] { "labeltext" });
+            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[1] { "labeltext" });
+            n_variable.On_Node_Moved += (pos) =>
+            {
+                label_pos.text = $"<b>节点位置： </b> <color=#b1b1b1>X：{pos.x}    Y：{pos.y}</color>";
+            };
 
             #region 值
             switch (data.type)
@@ -787,13 +803,25 @@ namespace SevenStrikeModules.XGraph
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[] { "labeltext" });
 
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+            n_decal.On_Node_SizeChanged += (size) =>
+            {
+                label_size.text = $"<b>节点尺寸： </b> <color=#b1b1b1>X：{size.x}    Y：{size.y}</color>";
+            };
 
             // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+            n_decal.On_Node_Moved += (pos) =>
+            {
+                label_pos.text = $"<b>节点位置： </b> <color=#b1b1b1>X：{pos.x}    Y：{pos.y}</color>";
+            };
 
             // node_scale
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>缩放： </b> <color=#b1b1b1>X：{data.scale.x.ToString()}    Y：{data.scale.y.ToString()}</color>", new string[] { "labeltext" });
+            Label label_scale = util_XGraphInspectorGUI.GUI_Label(container, $"<b>缩放： </b> <color=#b1b1b1>X：{data.scale.x.ToString()}    Y：{data.scale.y.ToString()}</color>", new string[] { "labeltext" });
+            n_decal.On_Node_DecalTexScaleChanged += (scale) =>
+            {
+                label_scale.text = $"<b>缩放： </b> <color=#b1b1b1>X：{scale.x}    Y：{scale.y}</color>";
+            };
 
             // node_realsize
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#b1b1b1>X：{data.DecalTexture.width.ToString()}    Y：{data.DecalTexture.height.ToString()}</color>", new string[] { "labeltext" });
@@ -849,10 +877,18 @@ namespace SevenStrikeModules.XGraph
             util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#b1b1b1>{data.guid}</color>", new string[] { "labeltext" });
 
             // node_size
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[] { "labeltext" });
+            n_label.On_Node_SizeChanged += (size) =>
+            {
+                label_size.text = $"<b>节点尺寸： </b> <color=#b1b1b1>X：{size.x}    Y：{size.y}</color>";
+            };
 
             // node_pos
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.position.x.ToString()}    Y：{data.position.y.ToString()}</color>", new string[] { "labeltext" });
+            n_label.On_Node_Moved += (pos) =>
+            {
+                label_pos.text = $"<b>节点位置： </b> <color=#b1b1b1>X：{pos.x}    Y：{pos.y}</color>";
+            };
 
             // Bold
             Toggle field_bold = util_XGraphInspectorGUI.GUI_Field_Bool(container, "粗体：", data.bold, new string[] { "field_bool" });

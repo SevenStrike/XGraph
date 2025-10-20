@@ -22,6 +22,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<VNode_Variable> OnUnSelectedNode;
         /// <summary>
+        /// 当移动节点位置时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_Moved;
+        /// <summary>
+        /// 当改变节点尺寸时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_SizeChanged;
+        /// <summary>
         /// 变量节点的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
@@ -95,6 +103,9 @@ namespace SevenStrikeModules.XGraph
             {
                 VariableData.position.x = newPos.xMin;
                 VariableData.position.y = newPos.yMin;
+
+                if (On_Node_Moved != null)
+                    On_Node_Moved(VariableData.position);
             }
         }
 
@@ -170,6 +181,10 @@ namespace SevenStrikeModules.XGraph
             {
                 OnUnSelectedNode.Invoke(this);
             }
+
+            On_Node_Moved = null;
+            On_Node_SizeChanged = null;
+
         }
         /// <summary>
         /// 当节点尺寸发生改变时
@@ -186,6 +201,9 @@ namespace SevenStrikeModules.XGraph
                 m_LastSize = newSize;
 
                 VariableData.size = newSize;
+
+                if (On_Node_SizeChanged != null)
+                    On_Node_SizeChanged(VariableData.size);
             }
         }
         /// <summary>

@@ -97,6 +97,14 @@ namespace SevenStrikeModules.XGraph
         /// 当内容值改变时
         /// </summary>
         public Action<string> On_ContentValueChanged;
+        /// <summary>
+        /// 当移动节点位置时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_Moved;
+        /// <summary>
+        /// 当改变节点尺寸时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_SizeChanged;
         #region 节点信息
         /// <summary>
         /// 节点标题
@@ -168,6 +176,9 @@ namespace SevenStrikeModules.XGraph
                 m_LastSize = newSize;
 
                 LabelData.size = newSize;
+
+                if (On_Node_SizeChanged != null)
+                    On_Node_SizeChanged(newSize);
             }
         }
 
@@ -184,6 +195,9 @@ namespace SevenStrikeModules.XGraph
             {
                 LabelData.position.x = newPos.xMin;
                 LabelData.position.y = newPos.yMin;
+
+                if (On_Node_Moved != null)
+                    On_Node_Moved(LabelData.position);
             }
         }
 
@@ -217,6 +231,10 @@ namespace SevenStrikeModules.XGraph
             {
                 OnUnSelectedNode.Invoke(this);
             }
+
+            On_Node_SizeChanged = null;
+            On_Node_Moved = null;
+
         }
         #endregion
 

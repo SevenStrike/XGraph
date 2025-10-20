@@ -5,7 +5,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
-    using UnityEngine.SocialPlatforms;
     using UnityEngine.UIElements;
 
     public class VNode_Decal : Node
@@ -62,6 +61,18 @@ namespace SevenStrikeModules.XGraph
         /// 当选中节点时的委托事件
         /// </summary>
         public Action<VNode_Decal> OnUnSelectedNode;
+        /// <summary>
+        /// 当移动节点位置时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_Moved;
+        /// <summary>
+        /// 当改变节点尺寸时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_SizeChanged;
+        /// <summary>
+        /// 当改变节点图片缩放值时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_DecalTexScaleChanged;
         /// <summary>
         /// 指示物体选择器是否已经打开
         /// </summary>
@@ -146,6 +157,9 @@ namespace SevenStrikeModules.XGraph
                 m_LastSize = newSize;
 
                 DecalData.size = newSize;
+
+                if (On_Node_SizeChanged != null)
+                    On_Node_SizeChanged(newSize);
             }
         }
 
@@ -158,6 +172,9 @@ namespace SevenStrikeModules.XGraph
             DecalData.size = new Vector2(DecalData.DecalTexture.width, DecalData.DecalTexture.height);
             style.width = DecalData.size.x;
             style.height = DecalData.size.y;
+
+            if (On_Node_SizeChanged != null)
+                On_Node_SizeChanged(DecalData.size);
         }
 
         /// <summary>
@@ -173,6 +190,9 @@ namespace SevenStrikeModules.XGraph
             {
                 DecalData.position.x = newPos.xMin;
                 DecalData.position.y = newPos.yMin;
+
+                if (On_Node_Moved != null)
+                    On_Node_Moved(DecalData.position);
             }
         }
 
@@ -215,6 +235,10 @@ namespace SevenStrikeModules.XGraph
             {
                 OnUnSelectedNode.Invoke(this);
             }
+
+            On_Node_SizeChanged = null;
+            On_Node_Moved = null;
+            On_Node_DecalTexScaleChanged = null;
         }
         /// <summary>
         /// 修改贴图的覆盖颜色
@@ -709,6 +733,9 @@ namespace SevenStrikeModules.XGraph
 
             element.style.scale = new StyleScale(flipedValue);
             DecalData.scale = flipedValue;
+
+            if (On_Node_DecalTexScaleChanged != null)
+                On_Node_DecalTexScaleChanged(new Vector2(DecalData.scale.x, DecalData.scale.y));
         }
         /// <summary>
         /// 将节点置顶显示（最上层显示级别）

@@ -31,6 +31,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<VNode_Base> On_NodeAvatar_Clear;
         /// <summary>
+        /// 当移动节点位置时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_Moved;
+        /// <summary>
+        /// 当改变节点尺寸时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_SizeChanged;
+        /// <summary>
         /// 视觉节点标题图标
         /// </summary>
         public Label NodeTitleIconLabel;
@@ -176,10 +184,14 @@ namespace SevenStrikeModules.XGraph
             {
                 ActionData.nodeGraphPosition.x = newPos.xMin;
                 ActionData.nodeGraphPosition.y = newPos.yMin;
+
+                if (On_Node_Moved != null)
+                    On_Node_Moved(ActionData.nodeGraphPosition);
             }
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
+
         }
 
         #region 拖拽素材到节点
@@ -575,6 +587,10 @@ namespace SevenStrikeModules.XGraph
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
+
+            On_Node_Moved = null;
+            On_Node_SizeChanged = null;
+
         }
         /// <summary>
         /// 当节点尺寸发生改变时
@@ -599,6 +615,9 @@ namespace SevenStrikeModules.XGraph
                     {
                         EditorUtility.SetDirty(graphView.ActionTreeAsset);
                     }
+
+                    if (On_Node_SizeChanged != null)
+                        On_Node_SizeChanged(ActionData.nodeGraphSize);
                 }
             }
         }
