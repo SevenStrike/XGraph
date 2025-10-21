@@ -161,6 +161,13 @@ namespace SevenStrikeModules.XGraph
             // 如果编辑器对象不为空则显示并绘制属性面板
             if (editor != null)
             {
+                // 创建布局容器
+                VisualElement vs_container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+
+                // 标题
+                VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(vs_container, n_base.ActionData, target.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+                titlegroup.style.marginBottom = 8;
+
                 IMGUIContainer container = new IMGUIContainer(() =>
                 {
                     editor.OnInspectorGUI();

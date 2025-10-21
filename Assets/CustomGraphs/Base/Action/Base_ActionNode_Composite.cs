@@ -4,7 +4,7 @@ namespace SevenStrikeModules.XGraph
     {
         public override void Execute()
         {
-
+            base.Execute();
         }
     }
 }
