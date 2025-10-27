@@ -46,6 +46,12 @@ namespace SevenStrikeModules.XGraph
             return this;
         }
 
+        public override void Draw_Output()
+        {
+            outputContainer.AddToClassList("branchOutputOffset");
+            base.Draw_Output();
+        }
+
         public override void Draw_Main()
         {
             base.Draw_Main();

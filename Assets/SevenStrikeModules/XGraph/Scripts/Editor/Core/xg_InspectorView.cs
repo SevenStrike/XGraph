@@ -146,34 +146,35 @@ namespace SevenStrikeModules.XGraph
             var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
             #endregion
 
-            // 存在Editor解释文件，使用自定义界面样式
-            if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
-            {
-                editor = Editor.CreateEditor(target, editorType);
-            }
-            // 不存在Editor解释文件，使用内置界面样式
-            else
-            {
-                // 回退到默认编辑器
-                editor = Editor.CreateEditor(target);
-            }
+            #region 布局容器
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+            Add(container);
 
-            // 如果编辑器对象不为空则显示并绘制属性面板
-            if (editor != null)
+            #endregion
+
+            #region 行为节点自定义属性面板
+            bool isCustomEditor = (editorType != null && typeof(Editor).IsAssignableFrom(editorType)) ? true : false;
+            switch (isCustomEditor)
             {
-                // 创建布局容器
-                VisualElement vs_container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
-
-                // 标题
-                VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(vs_container, n_base.ActionData, target.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
-                titlegroup.style.marginBottom = 8;
-
-                IMGUIContainer container = new IMGUIContainer(() =>
-                {
-                    editor.OnInspectorGUI();
-                });
-                Add(container);
+                // 存在Editor解释文件，使用自定义界面样式
+                case true:
+                    editor = Editor.CreateEditor(target, editorType);
+                    if (editor is Editor_ActionNode_Base actionEditor)
+                        container.Add(actionEditor.CreateGraphviewInespector());
+                    break;
+                // 不存在Editor解释文件，使用内置界面样式
+                case false:
+                    // 回退到默认编辑器
+                    editor = Editor.CreateEditor(target);
+                    IMGUIContainer imguiContainer = new IMGUIContainer(() =>
+                    {
+                        editor.OnInspectorGUI();
+                    });
+                    container.Add(imguiContainer);
+                    break;
             }
+            #endregion
         }
         /// <summary>
         /// 创建行为根资源的属性面板
@@ -245,14 +246,14 @@ namespace SevenStrikeModules.XGraph
 
             // node_size
             Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#b1b1b1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
-            n_var_internal.On_Node_SizeChanged += (size) =>
+            n_var_internal.ActionData.On_Node_SizeChanged += (size) =>
             {
                 label_size.text = $"<b>节点尺寸： </b> <color=#b1b1b1>X：{size.x}    Y：{size.y}</color>";
             };
 
             // node_pos
             Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#b1b1b1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
-            n_var_internal.On_Node_Moved += (pos) =>
+            n_var_internal.ActionData.On_Node_Moved += (pos) =>
             {
                 label_pos.text = $"<b>节点位置： </b> <color=#b1b1b1>X：{pos.x}    Y：{pos.y}</color>";
             };
@@ -797,7 +798,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png"), data.DecalTexture.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png"), data.DecalTexture ? data.DecalTexture.name : "Unset", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 贴图链接
             Button btn_decaltex_ping = util_XGraphInspectorGUI.GUI_Button(titlegroup, null, new string[] { "iconbutton" });
@@ -831,13 +832,13 @@ namespace SevenStrikeModules.XGraph
             };
 
             // node_realsize
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#b1b1b1>X：{data.DecalTexture.width.ToString()}    Y：{data.DecalTexture.height.ToString()}</color>", new string[] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#b1b1b1>X：{(data.DecalTexture ? data.DecalTexture.width.ToString() : " - ")}    Y：{(data.DecalTexture ? data.DecalTexture.height.ToString() : "-")}</color>", new string[] { "labeltext" });
 
             // texture_bg
             VisualElement tex_bg = util_XGraphInspectorGUI.GUI_Texture(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal_bg.png"), new string[] { "texture_bg" });
 
             // texture
-            VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.DecalTexture, new string[] { "texture" });
+            VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.DecalTexture ? data.DecalTexture : null, new string[] { "texture" });
             // 延迟播放动画
             EditorApplication.delayCall += () =>
             {
@@ -846,7 +847,7 @@ namespace SevenStrikeModules.XGraph
 
             tex.RegisterCallback<MouseDownEvent>((evt) =>
             {
-                EditorGUIUtility.PingObject(data.DecalTexture);
+                EditorGUIUtility.PingObject(data.DecalTexture ? data.DecalTexture : null);
             });
             tex_bg.Add(tex);
         }
@@ -868,7 +869,8 @@ namespace SevenStrikeModules.XGraph
             VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/label.png"), "标签", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 字体颜色
-            ColorField colField = util_XGraphInspectorGUI.GUI_Color(titlegroup, $"<b>颜色： </b>", data.color, new string[] { "labelnode_field_color" });
+            ColorField colField = util_XGraphInspectorGUI.GUI_Field_Color(titlegroup, $"<b>颜色： </b>", data.color, new string[] { "labelnode_field_color" });
+            colField.Q<Label>(className: "unity-base-field__label").AddToClassList("labelnode_field_color_labelinterval");
             colField.RegisterValueChangedCallback((v) =>
             {
                 Undo.RecordObject(graphwindow.CloneTree, "Change LabelColor");

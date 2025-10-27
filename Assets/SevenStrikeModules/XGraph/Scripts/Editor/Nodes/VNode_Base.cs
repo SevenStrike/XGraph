@@ -2,6 +2,7 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
@@ -30,14 +31,7 @@ namespace SevenStrikeModules.XGraph
         /// 当节点清空Avatar时的委托事件
         /// </summary>
         public Action<VNode_Base> On_NodeAvatar_Clear;
-        /// <summary>
-        /// 当移动节点位置时的委托事件
-        /// </summary>
-        public Action<Vector2> On_Node_Moved;
-        /// <summary>
-        /// 当改变节点尺寸时的委托事件
-        /// </summary>
-        public Action<Vector2> On_Node_SizeChanged;
+
         /// <summary>
         /// 视觉节点标题图标
         /// </summary>
@@ -47,9 +41,13 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement AvatarIcon;
         /// <summary>
+        /// 视觉节点标记组件
+        /// </summary>
+        public VisualElement nodeMark;
+        /// <summary>
         /// 视觉节点图标
         /// </summary>
-        public Label SeperateIconLabel;
+        public Label ExecutionIcon;
         /// <summary>
         /// 视觉节点标题
         /// </summary>
@@ -154,6 +152,55 @@ namespace SevenStrikeModules.XGraph
             ActionData.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
         }
 
+        /// <summary>
+        /// 刷新节点标记主题颜色
+        /// </summary>
+        public void UpdateNodeThemeColor()
+        {
+            // 改变分割图标颜色
+            ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.themeColor;
+
+            // 更新节点标记颜色
+            UpdateMarkColor(ActionData.themeColor);
+
+            // 改变输入端连线颜色
+            if (Port_Inputs != null)
+            {
+                foreach (var x in Port_Inputs)
+                {
+                    x.Port.portColor = ActionData.themeColor;
+                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.themeColor);
+                    var edges = x.Port.connections.ToList();
+                    // 遍历所有连线
+                    foreach (var edge in edges)
+                    {
+                        edge.edgeControl.inputColor = ActionData.themeColor;
+                    }
+                }
+            }
+
+            // 改变输出端连线颜色
+            if (Port_Outputs != null)
+            {
+                foreach (var x in Port_Outputs)
+                {
+                    x.Port.portColor = ActionData.themeColor;
+                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.themeColor);
+
+                    var edges = x.Port.connections.ToList();
+                    // 遍历所有连线
+                    foreach (var edge in edges)
+                    {
+                        edge.edgeControl.outputColor = ActionData.themeColor;
+                    }
+                }
+            }
+
+            // 如果节点标记开关被打开那个就显示标记
+            if (graphView.gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
+                MarkColor_Dislay();
+        }
+
         #region 订阅 Graphview 克隆动作
         /// <summary>
         /// 注册Graphview的克隆动作
@@ -185,8 +232,8 @@ namespace SevenStrikeModules.XGraph
                 ActionData.nodeGraphPosition.x = newPos.xMin;
                 ActionData.nodeGraphPosition.y = newPos.yMin;
 
-                if (On_Node_Moved != null)
-                    On_Node_Moved(ActionData.nodeGraphPosition);
+                if (ActionData.On_Node_Moved != null)
+                    ActionData.On_Node_Moved(ActionData.nodeGraphPosition);
             }
 
             VisualElementDisplay(TitleLabel, true);
@@ -366,18 +413,20 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void Draw_Title()
         {
-            // 节点标题图标
+            #region 节点标题图标
             NodeTitleIconLabel = new Label("");
             NodeTitleIconLabel.AddToClassList("Title_Icon");
+            #endregion
 
-            // 如果指定了图标就不用根据名称指定的图标了
+            #region 如果指定了图标就不用根据名称指定的图标了
             if (ActionData.NodeIcon != null)
                 NodeTitleIcon_Set(ActionData.NodeIcon);
             else
                 NodeTitleIcon_Restore();
             NodeTitleIconLabel.RegisterCallback<PointerDownEvent>(ChangeTitleIcon);
+            #endregion
 
-            // 用于显示节点名称
+            #region 用于显示节点名称
             TitleLabel = new Label(ActionData.identifyName);
             TitleLabel.AddToClassList("Title_Label");
             TitleLabel.RegisterCallback<PointerDownEvent>((evt) =>
@@ -393,8 +442,9 @@ namespace SevenStrikeModules.XGraph
                     evt.StopPropagation();
                 }
             });
+            #endregion
 
-            // 用于编辑节点名称
+            #region 用于编辑节点名称
             TitleInputField = new TextField()
             {
                 multiline = false
@@ -406,13 +456,19 @@ namespace SevenStrikeModules.XGraph
             input.AddToClassList("Title_TextInput");
             TextElement textelement = input.Q<TextElement>();
             textelement.AddToClassList("Title_TextElement");
+            #endregion
 
-            // 节点折叠 / 展开按钮
+            #region 节点折叠 / 展开按钮
             VisualElement titlebuttoncontainer = titleContainer.Q<VisualElement>("title-button-container");
+            #endregion
+
+            #region 节点标记
+            CreateNodeMark();
+            #endregion
 
             titlebuttoncontainer.style.borderRightWidth = 0;
-            SeperateIconLabel = new Label("");
-            SeperateIconLabel.AddToClassList("Seperate_Icon");
+            ExecutionIcon = new Label("");
+            ExecutionIcon.AddToClassList("ExecutionIcon");
             CheckExecutionModel();
 
             #region 应用配置文件的颜色到节点的标识颜色
@@ -420,12 +476,12 @@ namespace SevenStrikeModules.XGraph
             {
                 if (colorData.solution == ActionData.themeSolution)
                 {
-                    SeperateIconLabel.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
+                    ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
                 }
             }
             #endregion
 
-            titlebuttoncontainer.Add(SeperateIconLabel);
+            titlebuttoncontainer.Add(ExecutionIcon);
 
             // 清空容器后重新按顺序添加
             titleContainer.Clear();
@@ -433,6 +489,13 @@ namespace SevenStrikeModules.XGraph
             AppendElement(GraphNodeContainerType.TitleContainer, TitleInputField);
             AppendElement(GraphNodeContainerType.TitleContainer, TitleLabel);
             AppendElement(GraphNodeContainerType.TitleContainer, titlebuttoncontainer);
+            AppendElement(GraphNodeContainerType.TitleContainer, nodeMark);
+        }
+
+        private void CreateNodeMark()
+        {
+            nodeMark = new VisualElement();
+            nodeMark.AddToClassList("nodeMark");
         }
 
         /// <summary>
@@ -487,6 +550,9 @@ namespace SevenStrikeModules.XGraph
 
             // 更新变量赋值数据
             graphView.ActionTreeAsset.Variables_Refresh();
+
+            if (ActionData.On_Node_TitleChanged != null)
+                ActionData.On_Node_TitleChanged(TitleLabel.text);
         }
         #endregion
 
@@ -568,7 +634,15 @@ namespace SevenStrikeModules.XGraph
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
+
+            // 注册节点主题颜色变化回调
+            ActionData.On_Node_ThemeColorChanged += On_Node_ThemeColorChanged;
+            ActionData.On_Node_AvatarChanged += On_Node_AvatarChanged;
+            ActionData.On_Node_IconChanged += On_Node_IconChanged;
+            ActionData.On_Node_ConcurrentChanged += On_Node_ConcurrentChanged;
         }
+
+
         /// <summary>
         /// 取消选择时
         /// </summary>
@@ -588,9 +662,16 @@ namespace SevenStrikeModules.XGraph
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
 
-            On_Node_Moved = null;
-            On_Node_SizeChanged = null;
-
+            // 清空所有回调
+            On_NodeAvatar_Set = null;
+            On_NodeAvatar_Clear = null;
+            ActionData.On_Node_Moved = null;
+            ActionData.On_Node_SizeChanged = null;
+            ActionData.On_Node_IconChanged = null;
+            ActionData.On_Node_AvatarChanged = null;
+            ActionData.On_Node_TitleChanged = null;
+            ActionData.On_Node_ThemeColorChanged = null;
+            ActionData.On_Node_ConcurrentChanged = null;
         }
         /// <summary>
         /// 当节点尺寸发生改变时
@@ -616,8 +697,8 @@ namespace SevenStrikeModules.XGraph
                         EditorUtility.SetDirty(graphView.ActionTreeAsset);
                     }
 
-                    if (On_Node_SizeChanged != null)
-                        On_Node_SizeChanged(ActionData.nodeGraphSize);
+                    if (ActionData.On_Node_SizeChanged != null)
+                        ActionData.On_Node_SizeChanged(ActionData.nodeGraphSize);
                 }
             }
         }
@@ -635,6 +716,37 @@ namespace SevenStrikeModules.XGraph
         public virtual void On_VariablesValue_Changed()
         {
 
+        }
+        /// <summary>
+        /// 当节点主题色改变时
+        /// </summary>
+        public virtual void On_Node_ThemeColorChanged()
+        {
+            UpdateNodeThemeColor();
+        }
+        /// <summary>
+        /// 改变头像时
+        /// </summary>
+        /// <param name="tex"></param>
+        private void On_Node_AvatarChanged(Texture2D tex)
+        {
+            CheckAvatarChanged();
+        }
+        /// <summary>
+        /// 改变图标时
+        /// </summary>
+        /// <param name="tex"></param>
+        private void On_Node_IconChanged(Texture2D tex)
+        {
+            NodeTitileICon_Check();
+        }
+        /// <summary>
+        /// 改变执行模式
+        /// </summary>
+        /// <param name="obj"></param>
+        private void On_Node_ConcurrentChanged(bool obj)
+        {
+            CheckExecutionModel();
         }
         #endregion
 
@@ -721,6 +833,9 @@ namespace SevenStrikeModules.XGraph
             // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的扩展）
             if (On_NodeAvatar_Set != null)
                 On_NodeAvatar_Set(this);
+
+            if (ActionData.On_Node_AvatarChanged != null)
+                ActionData.On_Node_AvatarChanged(tex);
         }
         /// <summary>
         /// 移除Avatar
@@ -739,6 +854,9 @@ namespace SevenStrikeModules.XGraph
             // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的缩进）
             if (On_NodeAvatar_Clear != null)
                 On_NodeAvatar_Clear(this);
+
+            if (ActionData.On_Node_AvatarChanged != null)
+                ActionData.On_Node_AvatarChanged(null);
         }
         #endregion
 
@@ -773,6 +891,16 @@ namespace SevenStrikeModules.XGraph
 
         #region 标题Icon设置
         /// <summary>
+        /// 标题图标检查
+        /// </summary>
+        public void NodeTitileICon_Check()
+        {
+            if (ActionData.NodeIcon != null)
+                NodeTitleIcon_Set(ActionData.NodeIcon);
+            else
+                NodeTitleIcon_Restore();
+        }
+        /// <summary>
         /// 设置 标题Icon
         /// </summary>
         /// <param name="tex"></param>
@@ -805,24 +933,29 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 设置节点配色
         /// </summary>
-        public void UpdateMarkColor()
+        public void UpdateMarkColor(Color color)
         {
-            titleContainer.style.borderBottomColor = ActionData.themeColor;
+            nodeMark.style.backgroundColor = color;
         }
         /// <summary>
         /// 节点配色 - 隐藏
         /// </summary>
         public void MarkColor_Hidden()
         {
-            titleContainer.style.borderBottomWidth = 0;
+            if (nodeMark == null)
+                return;
+            nodeMark.style.opacity = 0;
         }
         /// <summary>
         /// 节点配色 - 显示
         /// </summary>
         public void MarkColor_Dislay()
         {
-            titleContainer.style.borderBottomColor = ActionData.themeColor;
-            titleContainer.style.borderBottomWidth = 1;
+            if (nodeMark == null)
+                return;
+            nodeMark.style.backgroundColor = ActionData.themeColor;
+
+            nodeMark.style.opacity = 1;
         }
         /// <summary>
         /// 添加元素到指定类型的容器中
@@ -872,14 +1005,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void SetConcurrent()
         {
-            SeperateIconLabel.style.backgroundImage = tex_logo_dir_concurrent;
+            ExecutionIcon.style.backgroundImage = tex_logo_dir_concurrent;
         }
         /// <summary>
         /// 设置为顺序模式
         /// </summary>
         public void SetSequential()
         {
-            SeperateIconLabel.style.backgroundImage = tex_logo_dir_sequential;
+            ExecutionIcon.style.backgroundImage = tex_logo_dir_sequential;
         }
         /// <summary>
         /// 设置端口样式 - In

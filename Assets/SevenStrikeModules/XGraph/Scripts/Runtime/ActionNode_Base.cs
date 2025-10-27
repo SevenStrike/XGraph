@@ -93,6 +93,43 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeField] public ActionNode_Asset RootAsset;
 
+        /// <summary>
+        /// 当移动节点位置时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_Moved;
+        /// <summary>
+        /// 当改变节点尺寸时的委托事件
+        /// </summary>
+        public Action<Vector2> On_Node_SizeChanged;
+        /// <summary>
+        /// 当改变节点图标时的委托事件
+        /// </summary>
+        public Action<Texture2D> On_Node_IconChanged;
+        /// <summary>
+        /// 当改变节点头像时的委托事件
+        /// </summary>
+        public Action<Texture2D> On_Node_AvatarChanged;
+        /// <summary>
+        /// 当改变节点主题色时的委托事件
+        /// </summary>
+        public Action On_Node_ThemeColorChanged;
+        /// <summary>
+        /// 当改变节点标题名称时的委托事件
+        /// </summary>
+        public Action<string> On_Node_TitleChanged;
+        /// <summary>
+        /// 当改变节点执行模式的委托事件
+        /// </summary>
+        public Action<bool> On_Node_ConcurrentChanged;
+        /// <summary>
+        /// 当节点绑定变量的时候的委托事件
+        /// </summary>
+        public Action<Variable> On_Node_VariableBinded;
+        /// <summary>
+        /// 当节点解除绑定变量的时候的委托事件
+        /// </summary>
+        public Action On_Node_VariableUnBinded;
+
         // 新增：父节点引用
         [NonSerialized] private ActionNode_Base _parentNode;
         public ActionNode_Base ParentNode => _parentNode;
@@ -120,6 +157,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public abstract void Execute();
 
+        #region 回调
         /// <summary>
         /// 注册运行时变量值改变回调
         /// </summary>
@@ -127,7 +165,6 @@ namespace SevenStrikeModules.XGraph
         {
             RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
         }
-
         /// <summary>
         /// 注销运行时变量值改变回调
         /// </summary>
@@ -135,12 +172,16 @@ namespace SevenStrikeModules.XGraph
         {
             RootAsset.On_VariablesValue_Changed -= On_VariablesValue_Changed;
         }
-
+        /// <summary>
+        /// 行为节点的变量值（如果存在）改变时
+        /// </summary>
         public virtual void On_VariablesValue_Changed()
         {
 
         }
+        #endregion
 
+        #region 节点信息获取
         /// <summary>
         /// 获取行为的基础信息数据（行为类型 / 显示名称）
         /// </summary>
@@ -173,7 +214,9 @@ namespace SevenStrikeModules.XGraph
             }
             return val;
         }
+        #endregion
 
+        #region 值操作
         /// <summary>
         /// 获取变量值（根据预设的端口名称）
         /// </summary>
@@ -320,6 +363,7 @@ namespace SevenStrikeModules.XGraph
 
             return vare;
         }
+        #endregion
 
         #region 黑板变量 绑定/解绑
         /// <summary>
@@ -350,6 +394,9 @@ namespace SevenStrikeModules.XGraph
                 VariableDatas.Add(new VarialbleGuidConnector(data.guid, portName, data.variable));
 #endif
             }
+
+            if (On_Node_VariableBinded != null)
+                On_Node_VariableBinded(data.variable);
         }
         /// <summary>
         /// 从行为节点的 ”黑板变量数据列表中“中解绑指定的guid和端口名称的变量数据的绑定
@@ -363,6 +410,8 @@ namespace SevenStrikeModules.XGraph
 
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+            if (On_Node_VariableUnBinded != null)
+                On_Node_VariableUnBinded();
 #endif
         }
         #endregion
@@ -398,6 +447,9 @@ namespace SevenStrikeModules.XGraph
                 InternalVariableDatas.Add(con);
 #endif
             }
+
+            if (On_Node_VariableBinded != null)
+                On_Node_VariableBinded(data.variable);
         }
         /// <summary>
         /// 从行为节点的 ”内部变量数据列表中“中解绑指定的guid和端口名称的变量数据的绑定
@@ -411,6 +463,9 @@ namespace SevenStrikeModules.XGraph
 
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+
+            if (On_Node_VariableUnBinded != null)
+                On_Node_VariableUnBinded();
 #endif
         }
         #endregion

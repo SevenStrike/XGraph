@@ -4,9 +4,6 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.UIElements;
-    using UnityEngine;
-    using UnityEngine.UIElements;
 
     public partial class xg_GraphView
     {
@@ -34,19 +31,24 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当有连线被创建时
         /// </summary>
-        /// <param assetName="graphViewChange"></param>
+        /// <param name="graphViewChange"></param>
         private void On_CreateEdge(GraphViewChange graphViewChange)
         {
             // 当有连线被创建时
-            if (graphViewChange.edgesToCreate != null)
+            if (graphViewChange.edgesToCreate != null && graphViewChange.edgesToCreate.Count > 0)
             {
+                // 清空系统自动创建的连线列表，完全由我们自己处理
+                var edgesToCreate = graphViewChange.edgesToCreate.ToList();
+                graphViewChange.edgesToCreate.Clear();
+
                 // 如果创建了连线，edge 为连线
-                foreach (var edge in graphViewChange.edgesToCreate)
+                foreach (var edge in edgesToCreate)
                 {
                     CreateEdge(edge.output.node, edge.input.node, edge);
                 }
             }
         }
+
         /// <summary>
         /// 创建连线时
         /// </summary>
@@ -310,7 +312,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="element"></param>
         private void Removed_Edge(GraphElement element)
         {
-            Edge edge = element as Edge;
+            util_AnimatedEdge edge = element as util_AnimatedEdge;
             if (edge != null)
             {
                 VNode_Base node_parent = edge.output.node as VNode_Base;

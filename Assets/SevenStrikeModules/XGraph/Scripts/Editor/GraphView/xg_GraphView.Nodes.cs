@@ -522,8 +522,6 @@ namespace SevenStrikeModules.XGraph
             // 初始化节点并将data数据容器赋值过来便于后面使用
             node.Initialize(this, pos, data);
 
-            // 刷新节点主题配色
-            RefreshTheme_GraphNode(node);
 
             #region GraphView 视图操作
             // 添加进当前主GraphView视图中
@@ -539,6 +537,11 @@ namespace SevenStrikeModules.XGraph
 
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            node.Draw();
+
+            // 刷新节点主题配色
+            RefreshTheme_GraphNode(node);
 
             return node;
         }
@@ -737,7 +740,6 @@ namespace SevenStrikeModules.XGraph
             VNode_Base visualNode = Node_MakeAction(args.position, ActionTreeAsset.Create(args));
 
             // 刷新节点
-            visualNode.Draw();
             visualNode.RefreshExpandedState();
             visualNode.RefreshPorts();
             visualNode.CheckTransparentDisplay(args.transparentNode);

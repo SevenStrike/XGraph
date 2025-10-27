@@ -929,6 +929,13 @@
                     // 设置节点颜色标记可见性按钮开关状态
                     xw_toggle_DisplayNodeColor.value = nodeColor_toggle;
                     #endregion
+
+                    #region Node节点数据流连线的状态恢复
+                    // 获取最后一次的节点数据流连线开关状态
+                    bool nodeanimateEdge_toggle = Element_State_Load("XGraph_DisplayNodeFlow");
+                    // 设置节点数据流连线可见性按钮开关状态
+                    xw_toggle_DisplayNodeFlow.value = nodeanimateEdge_toggle;
+                    #endregion
                 };
             };
         }
@@ -1200,7 +1207,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"黑板变量节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos($"{n_vare.VariableData.variable.name}  /  {n_vare.VariableData.variable.GetActiveType()}  /  {n_vare.VariableData.variable.guid}", $"{n_vare.VariableData.variable.description}  /  {n_vare.VariableData.variable.GetValue()}");
+            xw_SetNodeInfos($"{n_vare.VariableData.variable.name}  /  {n_vare.VariableData.variable.GetActiveType()}  /  {n_vare.VariableData.variable.guid}", $"值：{n_vare.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：行为
@@ -1211,7 +1218,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"行为节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}  \n  {n_base.ActionData.guid}");
+            xw_SetNodeInfos(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}");
         }
         /// <summary>
         /// 选中节点：内部变量
@@ -1222,7 +1229,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"内部变量节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"{n_vare_internal.VariableData.variable.description}  /  {n_vare_internal.VariableData.variable.GetValue()}");
+            xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"值：{n_vare_internal.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：标签

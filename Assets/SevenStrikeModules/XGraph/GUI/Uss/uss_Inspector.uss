@@ -138,15 +138,15 @@
      width: auto;
      font-size: 12px;
      -unity-text-align: middle-left;
-     -unity-font-style: normal;
+     -unity-font-style: bold;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 5px;
      padding-left: 0;
      padding-right: 10px;
      padding-top: 5px;
      padding-bottom: 0;
-     margin-top: 0;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
      overflow: hidden;
@@ -168,8 +168,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -189,17 +189,17 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
 
 .unity-base-field__label
 {
-     min-width: 10px;
-     font-size: 12.5px;
-     letter-spacing: 5px;
+     min-width: 80px;
+     font-size: 11px;
+     letter-spacing: 8px;
      -unity-font-style: bold;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
@@ -219,8 +219,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -240,8 +240,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -261,10 +261,15 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
+}
+
+.unity-composite-field__field-spacer
+{
+     display: none;
 }
 
 .field_color
@@ -282,8 +287,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -303,8 +308,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -324,8 +329,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -345,8 +350,8 @@
      padding-right: 0;
      padding-top: 0;
      padding-bottom: 0;
-     margin-top: 5px;
-     margin-bottom: 5px;
+     margin-top: 2px;
+     margin-bottom: 2px;
      margin-left: 0;
      margin-right: 0;
 }
@@ -358,6 +363,11 @@
      right: 0;
      height: 15px;
      width: 105px;
+}
+
+.labelnode_field_color_labelinterval
+{
+     min-width: 40px;
 }
 
 .texture_bg
@@ -524,4 +534,151 @@
      -unity-text-align: middle-left;
      -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+}
+
+.actionNodeAvatar
+{
+     position: absolute;
+     width: 200px;
+     height: 200px;
+     right: 0;
+     bottom: 0;
+}
+
+.foldout
+{
+     position: relative;
+     color: rgba(255, 255, 255, 0.8);
+     height: auto;
+     width: auto;
+     font-size: 12px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+     letter-spacing: 2px;
+     left: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     margin-left: -5px;
+     margin-right: 0;
+}
+
+.VariableConnector_container
+{
+     width: auto;
+     height: auto;
+     background-color: rgba(30,30,30,0.4);
+     margin-top: 2px;
+     border-top-left-radius: 8px;
+     border-top-right-radius: 8px;
+     border-bottom-right-radius: 8px;
+     border-bottom-left-radius: 8px;
+     overflow: hidden;
+     padding-bottom: 8px;
+}
+
+.VariableConnector_container_title
+{
+     flex-direction: row;
+     width: auto;
+     height: 28px;
+     background-color: rgba(30, 30, 30, 1);
+     padding-left: 10px;
+     padding-right: 10px;
+     border-top-left-radius: 8px;
+     border-top-right-radius: 8px;
+     align-items: center;
+     margin-bottom: 5px;
+}
+
+.VariableConnector_Icon
+{
+     width: 14px;
+     height: 14px;
+     top: 0px;
+     margin-right: 10px;
+}
+
+.VariableConnector_VareName
+{
+     width: auto;
+     height: 15px;
+     font-size: 12px;
+     -unity-text-align: middle-center;
+     -unity-font-style: normal;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+}
+
+.VariableConnector_Label
+{
+     width: auto;
+     height: 15px;
+     padding-top: 0px;
+     padding-left: 11px;
+     padding-right: 11px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     font-size: 11px;
+     -unity-text-align: middle-left;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     overflow: hidden;
+     text-overflow: ellipsis;
+     letter-spacing: 5px;
+     /*     color: #d9d9d9;*/
+}
+
+.VariableConnector_Type
+{
+     position: absolute;
+     right: 0;
+     top: 6.5px;
+     color: rgb(0, 0, 0);
+     height: 15px;
+     width: 65px;
+     font-size: 10px;
+     -unity-text-align: middle-center;
+     -unity-font-style: normal;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&guid=72f2755737ddb2545a774f68d54027aa&type=3#x_Heavy");
+     letter-spacing: 5px;
+     padding-left: 10px;
+     padding-right: 10px;
+     padding-top: 0;
+     padding-bottom: 0;
+     /*margin-top: 0;*/
+     margin-bottom: 0;
+     margin-left: 0;
+     margin-right: 6px;
+     align-self: flex-start;
+     background-color: rgba(255, 255, 255, 0.75);
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     border-bottom-right-radius: 6px;
+     border-bottom-left-radius: 6px;
+}
+
+.VariableConnector_Value
+{
+     position: absolute;
+     right: 12px;
+     top: 32px;
+     width: 100%;
+     /*     background-color: black;*/
+     flex-shrink: 1;
+     padding-left: 55%;
+     height: 15px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+     margin-top: 5px;
+     margin-bottom: 5px;
+     font-size: 11px;
+     -unity-text-align: middle-right;
+     -unity-font-style: bold;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     overflow: hidden;
+     text-overflow: ellipsis;
+     color: #b5b5b5;
 }

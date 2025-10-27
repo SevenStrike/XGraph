@@ -1,8 +1,12 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+    using UnityEditor;
+    using UnityEditor.Rendering;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
+    using Object = UnityEngine.Object;
 
     public static class util_XGraphInspectorGUI
     {
@@ -237,29 +241,6 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 颜色
-        /// <summary>
-        /// 创建颜色框
-        /// </summary>
-        /// <param name="root"></param>
-        /// <param name="label"></param>
-        /// <param name="value"></param>
-        /// <param name="styles"></param>
-        /// <returns></returns>
-        public static ColorField GUI_Color(this VisualElement root, string label, Color value, string[] styles = null)
-        {
-            ColorField colfield = new ColorField(label);
-            colfield.value = value;
-            for (int i = 0; i < styles.Length; i++)
-            {
-                colfield.AddToClassList(styles[i]);
-            }
-            root.Add(colfield);
-
-            return colfield;
-        }
-        #endregion
-
         #region 标签
         /// <summary>
         /// 创建标签
@@ -369,7 +350,10 @@ namespace SevenStrikeModules.XGraph
         public static Vector2Field GUI_Field_Vector2(this VisualElement root, string name, Vector2 value, string[] styles = null)
         {
             Vector2Field field = new Vector2Field(name);
+            field.Q<FloatField>(name: "unity-x-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-y-input").Q<Label>().style.minWidth = 20;
             field.value = value;
+
             for (int i = 0; i < styles.Length; i++)
             {
                 field.AddToClassList(styles[i]);
@@ -388,6 +372,9 @@ namespace SevenStrikeModules.XGraph
         public static Vector3Field GUI_Field_Vector3(this VisualElement root, string name, Vector3 value, string[] styles = null)
         {
             Vector3Field field = new Vector3Field(name);
+            field.Q<FloatField>(name: "unity-x-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-y-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-z-input").Q<Label>().style.minWidth = 20;
             field.value = value;
             for (int i = 0; i < styles.Length; i++)
             {
@@ -407,6 +394,10 @@ namespace SevenStrikeModules.XGraph
         public static Vector4Field GUI_Field_Vector4(this VisualElement root, string name, Vector4 value, string[] styles = null)
         {
             Vector4Field field = new Vector4Field(name);
+            field.Q<FloatField>(name: "unity-x-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-y-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-z-input").Q<Label>().style.minWidth = 20;
+            field.Q<FloatField>(name: "unity-w-input").Q<Label>().style.minWidth = 20;
             field.value = value;
             for (int i = 0; i < styles.Length; i++)
             {
@@ -433,6 +424,33 @@ namespace SevenStrikeModules.XGraph
             }
             root.Add(field);
             return field;
+        }
+        #endregion
+
+        #region 折叠
+        /// <summary>
+        /// 创建折叠器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="name"></param>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        public static Foldout GUI_Foldout(this VisualElement root, string name, bool state, string prefsmark, string[] styles = null)
+        {
+            Foldout foldout = new Foldout();
+            foldout.text = name;
+            foldout.value = EditorPrefs.GetBool($"XGraph->InspectorPropertiesFolder-{prefsmark}", false);
+            for (int i = 0; i < styles.Length; i++)
+            {
+                foldout.AddToClassList(styles[i]);
+            }
+            root.Add(foldout);
+
+            foldout.RegisterValueChangedCallback((state) =>
+            {
+                EditorPrefs.SetBool($"XGraph->InspectorPropertiesFolder-{prefsmark}", foldout.value);
+            });
+            return foldout;
         }
         #endregion
 

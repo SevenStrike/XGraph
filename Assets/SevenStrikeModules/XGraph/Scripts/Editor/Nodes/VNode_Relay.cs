@@ -58,7 +58,7 @@ namespace SevenStrikeModules.XGraph
 
         public virtual void Disconnected()
         {
-            SeperateIconLabel.style.backgroundImage = tex_logo_disconnected;
+            ExecutionIcon.style.backgroundImage = tex_logo_disconnected;
         }
 
         #region 节点绘制
@@ -91,11 +91,11 @@ namespace SevenStrikeModules.XGraph
         public override void Draw_Top()
         {
             VisualElement divider = topContainer.Q<VisualElement>("divider");
-            SeperateIconLabel = new Label("");
-            SeperateIconLabel.AddToClassList("Title_Icon");
-            SeperateIconLabel.style.backgroundImage = tex_logo_dir_sequential;
+            ExecutionIcon = new Label("");
+            ExecutionIcon.AddToClassList("Title_Icon");
+            ExecutionIcon.style.backgroundImage = tex_logo_dir_sequential;
 
-            divider.Add(SeperateIconLabel);
+            divider.Add(ExecutionIcon);
         }
 
         public override void Draw_Main()

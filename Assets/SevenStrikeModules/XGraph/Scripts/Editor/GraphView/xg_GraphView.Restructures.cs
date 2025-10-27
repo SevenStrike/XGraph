@@ -124,7 +124,6 @@ namespace SevenStrikeModules.XGraph
                     data.SetRoot(ActionTreeAsset);
 
                     VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
-                    vNode_Base.Draw();
                     vNode_Base.RefreshExpandedState();
 
                     // 检查头像设置情况
@@ -149,7 +148,6 @@ namespace SevenStrikeModules.XGraph
                     else
                     {
                         VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
-                        vNode_Base.Draw();
                         vNode_Base.RefreshExpandedState();
 
                         // 检查头像设置情况
@@ -174,7 +172,6 @@ namespace SevenStrikeModules.XGraph
                                 VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                                //Edge edge = port.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
                                 AddElement(edge);
                             }
                         }
@@ -185,7 +182,6 @@ namespace SevenStrikeModules.XGraph
                                 VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                                //Edge edge = port.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
                                 AddElement(edge);
                             }
                         }
@@ -206,7 +202,6 @@ namespace SevenStrikeModules.XGraph
                         {
                             util_AnimatedEdge edge = p.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                             edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                            //Edge edge = p.Port.ConnectTo<Edge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
                             AddElement(edge);
                         }
                     }
@@ -369,7 +364,6 @@ namespace SevenStrikeModules.XGraph
                             {
                                 util_AnimatedEdge edge = n_var.OutputPort.Port.ConnectTo<util_AnimatedEdge>(port_parent);
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                                //Edge edge = n_var.OutputPort.Port.ConnectTo<Edge>(port_parent);
 
                                 AddElement(edge);
                             }
@@ -421,7 +415,6 @@ namespace SevenStrikeModules.XGraph
                             {
                                 util_AnimatedEdge edge = n_var.Port_Outputs.First().Port.ConnectTo<util_AnimatedEdge>(port_parent);
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                                //Edge edge = n_var.Port_Outputs.First().Port.ConnectTo<Edge>(port_parent);
                                 AddElement(edge);
                             }
                         }

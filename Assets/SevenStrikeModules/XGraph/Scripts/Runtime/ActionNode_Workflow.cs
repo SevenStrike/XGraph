@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using UnityEditor;
     using UnityEngine;
 
@@ -288,8 +289,8 @@ namespace SevenStrikeModules.XGraph
         {
             var list = new List<ActionNode_Base>();
 
-            if (current is ActionNode_Start start && start.childNode != null)
-                list.Add(start.childNode);
+            if (current is ActionNode_Start start && start.childNodes != null)
+                list.AddRange(start.childNodes.FindAll(n => n != null));
             else if (current is ActionNode_Wait wait)
                 list.AddRange(wait.childNodes.FindAll(n => n != null));
             else if (current is ActionNode_Composite composite)

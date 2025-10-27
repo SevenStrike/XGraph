@@ -90,7 +90,7 @@
      -unity-text-align: middle-left;
 }
 
-.Seperate_Icon
+.ExecutionIcon
 {
      right: 10px;
      top: 8px;
@@ -166,7 +166,12 @@
 #title
 {
      background-color: rgba(0, 0, 0, 0);
-     height: 20px;
+     height: 14px;
+}
+
+#contents > #top > #output.branchOutputOffset
+{
+     padding-top: 25px;
 }
 
 #divider.horizontal
@@ -196,4 +201,17 @@
 #collapse-button
 {
      display: none;
+}
+
+.nodeMark
+{
+     position: absolute;
+     width: 100%;
+     height: 1px;
+     /*background-color: chartreuse;*/
+     top: 35px;
+     transition-property: opacity;
+     transition-duration: 0.2s;
+     transition-timing-function: ease-out-cubic;
+     transition-delay: 0s;
 }

@@ -1556,9 +1556,14 @@ namespace SevenStrikeModules.XGraph
             // 重建父子引用关系
             foreach (var action in targetAsset.Actions)
             {
-                if (action is ActionNode_Start s && s.childNode != null)
+                if (action is ActionNode_Start s && s.childNodes != null)
                 {
-                    (dictionary[action] as ActionNode_Start).childNode = dictionary[s.childNode];
+                    var newDebug = dictionary[action] as ActionNode_Start;
+                    newDebug.childNodes.Clear();
+                    foreach (var node in s.childNodes)
+                    {
+                        newDebug.childNodes.Add(dictionary[node]);
+                    }
                 }
 
                 if (action is ActionNode_Debug d && d.childNodes != null)
@@ -1687,7 +1692,7 @@ namespace SevenStrikeModules.XGraph
 
                 // 关键修复点：初始化时清空所有子引用
                 if (actionNode is ActionNode_Start newStart)
-                    newStart.childNode = null;
+                    newStart.childNodes.Clear();
                 else if (actionNode is ActionNode_Wait newWait)
                     newWait.childNodes.Clear();
                 else if (actionNode is ActionNode_Debug newDebug)
@@ -1713,9 +1718,12 @@ namespace SevenStrikeModules.XGraph
                 if (node is ActionNode_Start originalStart)
                 {
                     var newStart = newParentNode as ActionNode_Start;
-                    if (originalStart.childNode != null && originalRootDic.TryGetValue(originalStart.childNode, out var newNode))
+                    foreach (var originalChild in originalStart.childNodes)
                     {
-                        newStart.childNode = newNode;
+                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
+                        {
+                            newStart.childNodes.Add(newChild);
+                        }
                     }
                 }
 
@@ -1833,21 +1841,21 @@ namespace SevenStrikeModules.XGraph
         {
             List<ActionNode_Base> nodes = new List<ActionNode_Base>();
 
-            // 如果是 "ActionNode_Start" 节点，那么就收集 "ActionNode_Start" 节点下的 "child"
+            // 如果是 "ActionNode_Start" 节点，那么就收集 "ActionNode_Start" 节点下的 "childNodes"
             ActionNode_Start start = parent as ActionNode_Start;
-            if (start != null && start.childNode != null)
+            if (start != null && start.childNodes != null)
             {
-                nodes.Add(start.childNode);
+                nodes = start.childNodes;
             }
 
-            // 如果是 "ActionNode_Wait" 节点，那么就收集 "ActionNode_Wait" 节点下的 "child"
+            // 如果是 "ActionNode_Wait" 节点，那么就收集 "ActionNode_Wait" 节点下的 "childNodes"
             ActionNode_Wait wait = parent as ActionNode_Wait;
             if (wait != null && wait.childNodes != null)
             {
                 nodes = wait.childNodes;
             }
 
-            // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "child"
+            // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "childNodes"
             ActionNode_Debug debug = parent as ActionNode_Debug;
             if (debug != null && debug.childNodes != null)
             {
@@ -1890,15 +1898,18 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(start, "Connect_StartNode");
 #endif
-                if (start.childNode != null)
+                bool existChild = false;
+                foreach (var c in start.childNodes)
                 {
-                    if (child.guid == start.childNode.guid)
-                    {
-                        Debug.Log("start节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
-                        return;
-                    }
+                    if (child.guid == c.guid)
+                        existChild = true;
                 }
-                start.childNode = child;
+                if (existChild)
+                {
+                    Debug.Log("start 节点已经存在添加的指定资源！忽略它！");
+                    return;
+                }
+                start.childNodes.Add(child);
             }
             #endregion
 
@@ -2062,7 +2073,7 @@ namespace SevenStrikeModules.XGraph
 #if UNITY_EDITOR
                 Undo.RecordObject(start, "RemoveConnect_StartNode");
 #endif
-                start.childNode = null;
+                start.childNodes.Remove(child);
             }
             #endregion
 

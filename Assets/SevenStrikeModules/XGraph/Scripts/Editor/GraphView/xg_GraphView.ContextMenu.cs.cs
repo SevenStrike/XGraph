@@ -70,51 +70,17 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (selectable is VNode_Base node)
                             {
-                                Undo.RecordObject(node.ActionData, "Change NodeColor");
+                                Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
+
+                                // 将主题方案名称赋值
                                 node.ActionData.themeSolution = "自定义";
+
+                                // 将主题方案名称赋值
                                 node.ActionData.themeColor = pickedColor;
 
-                                // 改变分割图标颜色
-                                node.SeperateIconLabel.style.unityBackgroundImageTintColor = pickedColor;
-
-                                //if(node is VNode_Variable_Internal vnode_var_internal)
-                                //{
-
-                                //}
-
-                                // 改变连线颜色
-                                if (node.Port_Inputs != null)
-                                {
-                                    foreach (var x in node.Port_Inputs)
-                                    {
-                                        x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
-                                        var edges = x.Port.connections.ToList();
-                                        // 遍历所有连线
-                                        foreach (var edge in edges)
-                                        {
-                                            edge.edgeControl.inputColor = node.ActionData.themeColor;
-                                        }
-                                    }
-                                }
-                                if (node.Port_Outputs != null)
-                                {
-                                    foreach (var x in node.Port_Outputs)
-                                    {
-                                        x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
-
-                                        var edges = x.Port.connections.ToList();
-                                        // 遍历所有连线
-                                        foreach (var edge in edges)
-                                        {
-                                            edge.edgeControl.outputColor = pickedColor;
-                                        }
-                                    }
-                                }
-                                node.UpdateMarkColor();
-                                if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
-                                    node.MarkColor_Dislay();
+                                // 调用节点主题色改变回调
+                                if (node.ActionData.On_Node_ThemeColorChanged != null)
+                                    node.ActionData.On_Node_ThemeColorChanged();
                             }
                         }
                     }
@@ -133,48 +99,17 @@ namespace SevenStrikeModules.XGraph
                             {
                                 VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
 
-                                Undo.RecordObject(node.ActionData, "Change NodeColor");
+                                Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
+
+                                // 将主题方案名称赋值
                                 node.ActionData.themeSolution = dat.solution;
+
+                                // 根据主题方案名称的对应颜色Hex转换为Color赋值给主题色变量
                                 node.ActionData.themeColor = util_XGraphEditorUtility.Color_From_HexString(dat.nodecolor);
 
-                                // 改变分割图标颜色
-                                node.SeperateIconLabel.style.unityBackgroundImageTintColor = node.ActionData.themeColor;
-
-                                // 改变连线颜色
-                                if (node.Port_Inputs != null)
-                                {
-                                    foreach (var x in node.Port_Inputs)
-                                    {
-                                        x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
-
-                                        var edges = x.Port.connections.ToList();
-                                        // 遍历所有连线
-                                        foreach (var edge in edges)
-                                        {
-                                            edge.edgeControl.inputColor = node.ActionData.themeColor;
-
-                                        }
-                                    }
-                                }
-                                if (node.Port_Outputs != null)
-                                {
-                                    foreach (var x in node.Port_Outputs)
-                                    {
-                                        x.Port.portColor = node.ActionData.themeColor;
-                                        util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, node.ActionData.themeColor);
-
-                                        var edges = x.Port.connections.ToList();
-                                        // 遍历所有连线
-                                        foreach (var edge in edges)
-                                        {
-                                            edge.edgeControl.outputColor = node.ActionData.themeColor;
-                                        }
-                                    }
-                                }
-                                node.UpdateMarkColor();
-                                if (gv_GraphWindow.xw_toggle_DisplayNodeColor.value)
-                                    node.MarkColor_Dislay();
+                                // 调用节点主题色改变回调
+                                if (node.ActionData.On_Node_ThemeColorChanged != null)
+                                    node.ActionData.On_Node_ThemeColorChanged();
                             }
                         }
                     });
@@ -191,7 +126,9 @@ namespace SevenStrikeModules.XGraph
                         {
                             VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
                             node.ActionData.isConcurrentExecution = false;
-                            node.CheckExecutionModel();
+
+                            if (node.ActionData.On_Node_ConcurrentChanged != null)
+                                node.ActionData.On_Node_ConcurrentChanged(false);
                         }
                     }
                     evt.StopPropagation();
@@ -204,7 +141,9 @@ namespace SevenStrikeModules.XGraph
                         {
                             VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
                             node.ActionData.isConcurrentExecution = true;
-                            node.CheckExecutionModel();
+
+                            if (node.ActionData.On_Node_ConcurrentChanged != null)
+                                node.ActionData.On_Node_ConcurrentChanged(true);
                         }
                     }
                     evt.StopPropagation();
@@ -254,7 +193,9 @@ namespace SevenStrikeModules.XGraph
                                 VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
                                 Undo.RecordObject(node.ActionData, "Restore ActionNodeTitleIcon");
                                 node.ActionData.NodeIcon = null;
-                                node.NodeTitleIcon_Restore();
+
+                                if (node.ActionData.On_Node_IconChanged != null)
+                                    node.ActionData.On_Node_IconChanged(null);
                             }
                         }
                         evt.StopPropagation();
@@ -596,7 +537,8 @@ namespace SevenStrikeModules.XGraph
                                 }
                                 else if (SetTextureMode == "TitleIconSet")
                                 {
-                                    n_base.NodeTitleIcon_Set(selectedTexture);
+                                    if (n_base.ActionData.On_Node_IconChanged != null)
+                                        n_base.ActionData.On_Node_IconChanged(selectedTexture);
                                 }
                             }
                         }
