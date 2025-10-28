@@ -190,8 +190,13 @@ namespace SevenStrikeModules.XGraph
             };
             #endregion
 
+            #region 子节点折叠器
+            Foldout fo_childs = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "子行为", false, "childs", new string[] { "foldout" });
+            ChildActionFolder_ItemDisplay(fo_childs);
+            #endregion
+
             #region Variables 折叠器
-            Foldout fo_var = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "调用关系 - 黑板变量", false, "basetype-var", new string[] { "foldout" });
+            Foldout fo_var = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "黑板变量", false, "basetype-var", new string[] { "foldout" });
             BlackBoardVariableConnectorsFolder_ItemDisplay(fo_var);
             baseScript.On_Node_VariableBinded += (value) =>
             {
@@ -201,7 +206,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region InternalVariables 折叠器
-            Foldout fo_intvar = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "调用关系 - 内部变量", false, "basetype-intvar", new string[] { "foldout" });
+            Foldout fo_intvar = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "内部变量", false, "basetype-intvar", new string[] { "foldout" });
             InternalVariableConnectorsFolder_ItemDisplay(fo_intvar);
             baseScript.On_Node_VariableBinded += (value) =>
             {
@@ -213,6 +218,7 @@ namespace SevenStrikeModules.XGraph
             Foldout fo_custom = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "扩展", false, "extension", new string[] { "foldout" });
             ExtensionFolder_ItemDisplay(fo_custom);
             #endregion
+
             return rootElement;
         }
         /// <summary>
@@ -352,6 +358,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="fold"></param>
         public virtual void ExtensionFolder_ItemDisplay(Foldout fold)
+        {
+            fold.Clear();
+        }
+        /// <summary>
+        /// 显示子行为到折叠
+        /// </summary>
+        /// <param name="fold"></param>
+        public virtual void ChildActionFolder_ItemDisplay(Foldout fold)
         {
             fold.Clear();
         }

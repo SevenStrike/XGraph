@@ -139,13 +139,13 @@ namespace SevenStrikeModules.XGraph
         IEnumerator Action_Flow()
         {
             isRunning = true;
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"开始执行流程：", ActionAsset.name, showLogs);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"开始执行流程：", ActionAsset.name, "00ff9d", showLogs);
 
             var startNode = ActionAsset.Actions.Find(n => n.actionNodeType == "Start");
             yield return Action_Execute(startNode);
 
             isRunning = false;
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"流程执行完成：", ActionAsset.name, showLogs);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"流程执行完成：", ActionAsset.name, "ff7171", showLogs);
         }
 
         /// <summary>

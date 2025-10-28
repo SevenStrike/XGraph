@@ -146,5 +146,33 @@ namespace SevenStrikeModules.XGraph
             }
             Debug.Log($"<color=#{hexcolor}>{mark}  {title}</color> {message}");
         }
+
+        /// <summary>
+        /// 日志工具
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        /// <param name="color"></param>
+        public static void LogMsg(MsgType type, string title, string message, string color, bool showLogs)
+        {
+            if (!showLogs)
+                return;
+
+            string mark = "";
+            switch (type)
+            {
+                case MsgType.信息:
+                    mark = "   ┠─ ■";
+                    break;
+                case MsgType.警告:
+                    mark = "▲";
+                    break;
+                case MsgType.错误:
+                    mark = "●";
+                    break;
+            }
+            Debug.Log($"<color=#{color}>{mark}  {title}</color> {message}");
+        }
     }
 }
