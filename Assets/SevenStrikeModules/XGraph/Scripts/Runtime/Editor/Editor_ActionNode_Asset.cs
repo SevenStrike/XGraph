@@ -100,7 +100,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 便签节点折叠器
-            Foldout fo_sticks = util_XGraphInspectorGUI.GUI_Foldout(rootElement, $"便签（{baseScript.Variables.Count}）", "actionasset-sticks", new string[] { "foldout" });
+            Foldout fo_sticks = util_XGraphInspectorGUI.GUI_Foldout(rootElement, $"便签（{baseScript.Sticks.Count}）", "actionasset-sticks", new string[] { "foldout" });
             ListDisplay_Sticks(fo_sticks);
             #endregion
 
@@ -338,7 +338,7 @@ namespace SevenStrikeModules.XGraph
                 container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png");
                 container_title.Add(container_icon);
 
-                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{(decal.DecalTexture == null ? "null" : decal.DecalTexture.name)} ", new string[] { "labeltext", "list_item_title" });
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{(decal.DecalTexture == null ? "暂未指定" : decal.DecalTexture.name)} ", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>

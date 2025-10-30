@@ -48,9 +48,9 @@ namespace SevenStrikeModules.XGraph
         {
             base.ChildActionFolder_ItemDisplay(fold);
 
-            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{actionScript.childNode_true.identifyName}：", actionScript.childNode_true, new string[] { "field_object" });
+            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{(actionScript.childNode_true == null ? "暂无" : actionScript.childNode_true.identifyName)}：", (actionScript.childNode_true == null ? null : actionScript.childNode_true), new string[] { "field_object" });
 
-            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{actionScript.childNode_false.identifyName}：", actionScript.childNode_false, new string[] { "field_object" });
+            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{(actionScript.childNode_false == null ? "暂无" : actionScript.childNode_false.identifyName)}：", (actionScript.childNode_false == null ? null : actionScript.childNode_false), new string[] { "field_object" });
 
         }
     }
