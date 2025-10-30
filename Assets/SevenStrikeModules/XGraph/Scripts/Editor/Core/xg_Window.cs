@@ -1,5 +1,6 @@
 ﻿namespace SevenStrikeModules.XGraph
 {
+    using Codice.CM.Common.Tree;
     using System;
     using System.Collections.Generic;
     using UnityEditor;
@@ -1773,6 +1774,9 @@
         {
             xw_GraphInfo_LastSaveDateTime.text = $"{lasttime}";
             xw_GraphInfo_LastSaveLag.text = $"{util_XGraphEditorUtility.GetTimeSinceLastSavePrecise(lasttime)}";
+
+            if (CloneTree.On_GraphviewLastSave_Changed != null)
+                CloneTree.On_GraphviewLastSave_Changed(CloneTree.LastSaveDateTime);
         }
         /// <summary>
         /// 相差上一次保存时间的文本标签同步到主题色
@@ -1963,6 +1967,9 @@
 
                 // 刷新 BlackBoard 显示
                 xw_BlackBoard_UpdateTitleInfo();
+
+                if (CloneTree.On_GraphviewSize_Changed != null)
+                    CloneTree.On_GraphviewSize_Changed(position.size);
             }
             else if (isWindowResizing)
             {

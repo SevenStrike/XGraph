@@ -435,7 +435,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="name"></param>
         /// <param name="styles"></param>
         /// <returns></returns>
-        public static Foldout GUI_Foldout(this VisualElement root, string name, bool state, string prefsmark, string[] styles = null)
+        public static Foldout GUI_Foldout(this VisualElement root, string name, string prefsmark, string[] styles = null)
         {
             Foldout foldout = new Foldout();
             foldout.text = name;

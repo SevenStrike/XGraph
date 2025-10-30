@@ -39,5 +39,19 @@ namespace SevenStrikeModules.XGraph
         {
             base.ExtensionFolder_ItemDisplay(fold);
         }
+
+        /// <summary>
+        /// 子行为列表
+        /// </summary>
+        /// <param name="fold"></param>
+        public override void ChildActionFolder_ItemDisplay(Foldout fold)
+        {
+            base.ChildActionFolder_ItemDisplay(fold);
+
+            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{actionScript.childNode_true.identifyName}：", actionScript.childNode_true, new string[] { "field_object" });
+
+            util_XGraphInspectorGUI.GUI_Object<ActionNode_Base>(fold, $"{actionScript.childNode_false.identifyName}：", actionScript.childNode_false, new string[] { "field_object" });
+
+        }
     }
 }

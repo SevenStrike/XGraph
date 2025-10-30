@@ -97,6 +97,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="fold"></param>
         public override void ChildActionFolder_ItemDisplay(Foldout fold)
         {
+            fold.text = $"{fold.text}（{actionScript.childNodes.Count}）";
             base.ChildActionFolder_ItemDisplay(fold);
 
             for (int i = 0; i < actionScript.childNodes.Count; i++)

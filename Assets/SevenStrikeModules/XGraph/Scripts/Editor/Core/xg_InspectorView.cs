@@ -148,7 +148,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 布局容器
             // 创建布局容器
-            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
             Add(container);
 
             #endregion
@@ -187,32 +187,40 @@ namespace SevenStrikeModules.XGraph
             if (target == null)
                 return;
 
-            #region 尝试查找是否有自定义 Editor
+            #region  尝试查找是否有自定义 Editor
             string asm = "Assembly-CSharp-Editor";
             var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
             #endregion
 
-            // 如果是自带自定义编辑器类
-            if (editorType != null && typeof(Editor).IsAssignableFrom(editorType))
-            {
-                // 如果定义了自定义Inspector界面
-                editor = Editor.CreateEditor(target, editorType);
-            }
-            // 原生编辑器类
-            else
-            {
-                // 回退到默认编辑器
-                editor = Editor.CreateEditor(target);
-            }
+            #region 布局容器
+            // 创建布局容器
+            VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
+            Add(container);
 
-            if (editor != null)
+            #endregion
+
+            #region 行为节点自定义属性面板
+            bool isCustomEditor = (editorType != null && typeof(Editor).IsAssignableFrom(editorType)) ? true : false;
+            switch (isCustomEditor)
             {
-                IMGUIContainer container = new IMGUIContainer(() =>
-                {
-                    editor.OnInspectorGUI();
-                });
-                Add(container);
+                // 存在Editor解释文件，使用自定义界面样式
+                case true:
+                    editor = Editor.CreateEditor(target, editorType);
+                    if (editor is Editor_ActionNode_Asset actionEditor)
+                        container.Add(actionEditor.CreateGraphviewInespector());
+                    break;
+                // 不存在Editor解释文件，使用内置界面样式
+                case false:
+                    // 回退到默认编辑器
+                    editor = Editor.CreateEditor(target);
+                    IMGUIContainer imguiContainer = new IMGUIContainer(() =>
+                    {
+                        editor.OnInspectorGUI();
+                    });
+                    container.Add(imguiContainer);
+                    break;
             }
+            #endregion
         }
         /// <summary>
         /// 创建内部变量节点的属性面板

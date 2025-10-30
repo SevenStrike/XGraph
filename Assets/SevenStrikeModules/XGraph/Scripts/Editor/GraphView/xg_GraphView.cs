@@ -503,7 +503,12 @@ namespace SevenStrikeModules.XGraph
             float panX = matrix.m03;
             float panY = matrix.m13;
 
-            return new Vector2(panX, panY);
+            Vector2 pos = new Vector2(panX, panY);
+
+            if (ActionTreeAsset != null && ActionTreeAsset.On_GraphviewPos_Changed != null)
+                ActionTreeAsset.On_GraphviewPos_Changed(pos);
+
+            return pos;
         }
         /// <summary>
         /// 获取当前视口的缩放
@@ -511,6 +516,8 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public float GetCurrentZoomLevel()
         {
+            if (ActionTreeAsset != null && ActionTreeAsset.On_GraphviewZoom_Changed != null)
+                ActionTreeAsset.On_GraphviewZoom_Changed(viewTransform.matrix.m00);
             return viewTransform.matrix.m00;
         }
         /// <summary>

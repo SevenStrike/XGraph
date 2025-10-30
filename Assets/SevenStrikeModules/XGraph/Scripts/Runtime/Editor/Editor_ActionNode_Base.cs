@@ -86,8 +86,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点基础属性折叠器
-            string basetype = baseScript.GetType().BaseType.ToString();
-            Foldout fo_node = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "节点基础属性", false, "basetype-base", new string[] { "foldout" });
+            Foldout fo_node = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "节点基础属性", "basetype-base", new string[] { "foldout" });
             #endregion
 
             #region 节点GUID
@@ -191,12 +190,12 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 子节点折叠器
-            Foldout fo_childs = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "子行为", false, "childs", new string[] { "foldout" });
+            Foldout fo_childs = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "子行为", "childs", new string[] { "foldout" });
             ChildActionFolder_ItemDisplay(fo_childs);
             #endregion
 
             #region Variables 折叠器
-            Foldout fo_var = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "黑板变量", false, "basetype-var", new string[] { "foldout" });
+            Foldout fo_var = util_XGraphInspectorGUI.GUI_Foldout(rootElement, $"黑板变量（{baseScript.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
             BlackBoardVariableConnectorsFolder_ItemDisplay(fo_var);
             baseScript.On_Node_VariableBinded += (value) =>
             {
@@ -206,7 +205,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region InternalVariables 折叠器
-            Foldout fo_intvar = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "内部变量", false, "basetype-intvar", new string[] { "foldout" });
+            Foldout fo_intvar = util_XGraphInspectorGUI.GUI_Foldout(rootElement, $"内部变量（{baseScript.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
             InternalVariableConnectorsFolder_ItemDisplay(fo_intvar);
             baseScript.On_Node_VariableBinded += (value) =>
             {
@@ -215,7 +214,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 自定义扩展 折叠器
-            Foldout fo_custom = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "扩展", false, "extension", new string[] { "foldout" });
+            Foldout fo_custom = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "扩展", "extension", new string[] { "foldout" });
             ExtensionFolder_ItemDisplay(fo_custom);
             #endregion
 
@@ -237,20 +236,20 @@ namespace SevenStrikeModules.XGraph
                 string var_value = "";
 
                 VisualElement container = new VisualElement();
-                container.AddToClassList("VariableConnector_container");
+                container.AddToClassList("list_container");
                 fold.Add(container);
 
                 VisualElement container_title = new VisualElement();
-                container_title.AddToClassList("VariableConnector_container_title");
+                container_title.AddToClassList("list_titlebg");
                 container.Add(container_title);
 
                 VisualElement container_icon = new VisualElement();
-                container_icon.AddToClassList("VariableConnector_Icon");
+                container_icon.AddToClassList("list_item_icon");
                 container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/variable.png");
                 container_title.Add(container_icon);
 
-                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "VariableConnector_VareName" });
-                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "VariableConnector_Type" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "list_item_marktext" });
                 switch (vare.type)
                 {
                     case VariableType.String:
@@ -278,12 +277,12 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "VariableConnector_Value" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#b9b9b9>{con.TargetPortName}</color>", new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#b9b9b9>{vare.description}</color>".ToString(), new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#b9b9b9>{con.VariableNodeGuid}</color>", new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#b9b9b9>{vare.guid}</color>", new string[] { "VariableConnector_Label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#b9b9b9>{con.TargetPortName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#b9b9b9>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#b9b9b9>{con.VariableNodeGuid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#b9b9b9>{vare.guid}</color>", new string[] { "list_item_label" });
 
             }
         }
@@ -304,20 +303,20 @@ namespace SevenStrikeModules.XGraph
 
 
                 VisualElement container = new VisualElement();
-                container.AddToClassList("VariableConnector_container");
+                container.AddToClassList("list_container");
                 fold.Add(container);
 
                 VisualElement container_title = new VisualElement();
-                container_title.AddToClassList("VariableConnector_container_title");
+                container_title.AddToClassList("list_titlebg");
                 container.Add(container_title);
 
                 VisualElement container_icon = new VisualElement();
-                container_icon.AddToClassList("VariableConnector_Icon");
+                container_icon.AddToClassList("list_item_icon");
                 container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/variable.png");
                 container_title.Add(container_icon);
 
-                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "VariableConnector_VareName" });
-                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "VariableConnector_Type" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "list_item_marktext" });
                 switch (vare.type)
                 {
                     case VariableType.String:
@@ -345,12 +344,12 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "VariableConnector_Value" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#b9b9b9>{con.TargetPortName}</color>", new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#b9b9b9>{vare.description}</color>".ToString(), new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#b9b9b9>{con.VariableNodeGuid}</color>", new string[] { "VariableConnector_Label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#b9b9b9>{vare.guid}</color>", new string[] { "VariableConnector_Label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#b9b9b9>{con.TargetPortName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#b9b9b9>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#b9b9b9>{con.VariableNodeGuid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#b9b9b9>{vare.guid}</color>", new string[] { "list_item_label" });
             }
         }
         /// <summary>

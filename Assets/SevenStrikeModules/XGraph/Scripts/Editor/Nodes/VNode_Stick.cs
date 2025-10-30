@@ -41,6 +41,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement Resizer;
         /// <summary>
+        /// 高亮面
+        /// </summary>
+        private VisualElement Highlighter;
+        /// <summary>
         /// 便签的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
@@ -308,6 +312,17 @@ namespace SevenStrikeModules.XGraph
             Resizer = this.Q<VisualElement>(className: "resizer");
             Resizer.style.width = 30;
             Resizer.style.height = 30;
+
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, Color.white);
+            UnHighlight();
+            AppendElement(GraphNodeContainerType.MainContainer, Highlighter);
+            Highlighter.BringToFront();
+            #endregion
         }
         #endregion
 
@@ -392,6 +407,23 @@ namespace SevenStrikeModules.XGraph
                     RefreshExpandedState();
                     break;
             }
+        }
+        #endregion
+
+        #region 高亮
+        /// <summary>
+        /// 高亮显示节点
+        /// </summary>        
+        public void Highlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.65f);
+        }
+        /// <summary>
+        /// 取消高亮显示节点
+        /// </summary>
+        public void UnHighlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
         }
         #endregion
     }

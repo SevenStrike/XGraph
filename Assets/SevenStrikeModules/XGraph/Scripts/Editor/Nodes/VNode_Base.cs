@@ -45,6 +45,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement nodeMark;
         /// <summary>
+        /// 高亮面
+        /// </summary>
+        private VisualElement Highlighter;
+        /// <summary>
         /// 视觉节点图标
         /// </summary>
         public Label ExecutionIcon;
@@ -352,6 +356,7 @@ namespace SevenStrikeModules.XGraph
 
             // 绘制扩展容器
             Draw_Extension();
+
             return this;
         }
 
@@ -504,6 +509,18 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Main()
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
+
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
+            UnHighlight();
+            AppendElement(GraphNodeContainerType.MainContainer, Highlighter);
+            Highlighter.BringToFront();
+            #endregion
+
             #region 头像组件
             if (ActionData.HasAvatar)
             {
@@ -1040,6 +1057,23 @@ namespace SevenStrikeModules.XGraph
             }
 
             return port;
+        }
+        #endregion
+
+        #region 高亮
+        /// <summary>
+        /// 高亮显示节点
+        /// </summary>        
+        public void Highlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.5f);
+        }
+        /// <summary>
+        /// 取消高亮显示节点
+        /// </summary>
+        public void UnHighlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
         }
         #endregion
 

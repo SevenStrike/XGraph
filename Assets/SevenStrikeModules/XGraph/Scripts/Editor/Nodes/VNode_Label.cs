@@ -66,6 +66,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement Resizer;
         /// <summary>
+        /// 高亮面
+        /// </summary>
+        private VisualElement Highlighter;
+        /// <summary>
         /// 标签的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
@@ -261,6 +265,17 @@ namespace SevenStrikeModules.XGraph
 
             // 绘制顶部容器
             Draw_Top();
+
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, LabelData.color);
+            UnHighlight();
+            Add(Highlighter);
+            Highlighter.BringToFront();
+            #endregion
 
             return this;
         }
@@ -766,6 +781,23 @@ namespace SevenStrikeModules.XGraph
         private void Label_DisplayResizer(PointerEnterEvent evt)
         {
             ResizerIcon.style.opacity = 1f;
+        }
+        #endregion
+
+        #region 高亮
+        /// <summary>
+        /// 高亮显示节点
+        /// </summary>        
+        public void Highlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.5f);
+        }
+        /// <summary>
+        /// 取消高亮显示节点
+        /// </summary>
+        public void UnHighlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
         }
         #endregion
     }

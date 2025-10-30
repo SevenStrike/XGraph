@@ -50,6 +50,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public VisualElement DecalControlContainer;
         /// <summary>
+        /// 高亮面
+        /// </summary>
+        private VisualElement Highlighter;
+        /// <summary>
         /// 贴图节点的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
@@ -294,6 +298,17 @@ namespace SevenStrikeModules.XGraph
 
             // 检查贴图设置
             CheckDecalTextureChanged();
+
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, DecalData.color);
+            UnHighlight();
+            Add(Highlighter);
+            Highlighter.BringToFront();
+            #endregion
             return this;
         }
 
@@ -882,6 +897,23 @@ namespace SevenStrikeModules.XGraph
         private void ApplySelectedTexture(Texture2D selectedTexture)
         {
             NodeDecalTexture_Set(selectedTexture);
+        }
+        #endregion
+
+        #region 高亮
+        /// <summary>
+        /// 高亮显示节点
+        /// </summary>        
+        public void Highlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.5f);
+        }
+        /// <summary>
+        /// 取消高亮显示节点
+        /// </summary>
+        public void UnHighlight()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
         }
         #endregion
     }

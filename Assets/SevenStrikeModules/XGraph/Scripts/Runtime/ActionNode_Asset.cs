@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
 #if UNITY_EDITOR
@@ -9,7 +8,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
-    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
 
@@ -1267,6 +1265,22 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action On_VariablesValue_Changed;
         /// <summary>
+        /// Graphview窗口尺寸变化的回调
+        /// </summary>
+        public Action<Vector2> On_GraphviewSize_Changed;
+        /// <summary>
+        /// Graphview视口位置化的回调
+        /// </summary>
+        public Action<Vector2> On_GraphviewPos_Changed;
+        /// <summary>
+        /// Graphview视口缩放化的回调
+        /// </summary>
+        public Action<float> On_GraphviewZoom_Changed;
+        /// <summary>
+        /// Graphview最后一次保存的回调
+        /// </summary>
+        public Action<string> On_GraphviewLastSave_Changed;
+        /// <summary>
         /// 记录的节点编辑器最后一次的窗口尺寸
         /// </summary>
         [SerializeField] public Vector2Int LastGraphWindowSize;
@@ -1786,7 +1800,7 @@ namespace SevenStrikeModules.XGraph
 
             if (saveAsset)
             {
-                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/CloneTree.asset" : clonepath);
+                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/{newActionAsset.name}.asset" : clonepath);
 
                 // 更新变量赋值数据
                 newActionAsset.Variables_Refresh();
