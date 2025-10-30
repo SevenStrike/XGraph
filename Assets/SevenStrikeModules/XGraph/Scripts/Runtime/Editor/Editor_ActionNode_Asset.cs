@@ -120,7 +120,6 @@ namespace SevenStrikeModules.XGraph
             #endregion
             return rootElement;
         }
-
         /// <summary>
         /// 列表 - 行为节点
         /// </summary>
@@ -171,7 +170,6 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
-
         /// <summary>
         /// 列表 - 变量节点
         /// </summary>
@@ -221,7 +219,6 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
-
         /// <summary>
         /// 列表 - 便签节点
         /// </summary>
@@ -266,7 +263,6 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
-
         /// <summary>
         /// 列表 - 标签节点
         /// </summary>
@@ -311,7 +307,6 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
-
         /// <summary>
         /// 列表 - 贴图节点
         /// </summary>
@@ -356,7 +351,6 @@ namespace SevenStrikeModules.XGraph
                 });
             }
         }
-
         /// <summary>
         /// 列表 - 编组节点
         /// </summary>
@@ -409,7 +403,10 @@ namespace SevenStrikeModules.XGraph
             sp_LastSaveDateTime = serializedObject.FindProperty("LastSaveDateTime");
             #endregion
         }
-
+        /// <summary>
+        /// 获取XGraph的主窗口
+        /// </summary>
+        /// <returns></returns>
         public xg_Window GetGraphviewWindow()
         {
             return EditorWindow.GetWindow<xg_Window>();

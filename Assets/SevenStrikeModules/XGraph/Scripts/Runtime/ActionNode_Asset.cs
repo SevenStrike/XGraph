@@ -1131,6 +1131,67 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
+    [System.Serializable]
+    /// <summary>
+    /// 面板的布局位置记录类
+    /// </summary>
+    public class ElementPanelTransformData
+    {
+        /// <summary>
+        /// 上边距
+        /// </summary>
+        public float top = 10;
+        /// <summary>
+        /// 下边距
+        /// </summary>
+        public float bottom;
+        /// <summary>
+        /// 左边距
+        /// </summary>
+        public float left = 15;
+        /// <summary>
+        /// 右边距
+        /// </summary>
+        public float right;
+        /// <summary>
+        /// 上边距是否为Auto状态
+        /// </summary>
+        public bool anc_Top;
+        /// <summary>
+        /// 下边距是否为Auto状态
+        /// </summary>
+        public bool anc_Bottom;
+        /// <summary>
+        /// 左边距是否为Auto状态
+        /// </summary>
+        public bool anc_Left;
+        /// <summary>
+        /// 右边距是否为Auto状态
+        /// </summary>
+        public bool anc_Right;
+
+        /// <summary>
+        /// 尺寸
+        /// </summary>
+        public Vector2 size;
+
+        internal ElementPanelTransformData Clone()
+        {
+            ElementPanelTransformData value = new ElementPanelTransformData();
+            value.top = this.top;
+            value.bottom = this.bottom;
+            value.left = this.left;
+            value.right = this.right;
+            value.anc_Top = this.anc_Top;
+            value.anc_Bottom = this.anc_Bottom;
+            value.anc_Left = this.anc_Left;
+            value.anc_Right = this.anc_Right;
+            value.size = this.size;
+
+            return value;
+        }
+    }
+
     #region Graphview 主题类
     [Serializable]
     /// <summary>
@@ -1304,6 +1365,32 @@ namespace SevenStrikeModules.XGraph
         /// 节点编辑器的选择框主题参数
         /// </summary>
         [SerializeField] public GraphviewRectangleSelectorThemes GraphviewRectangleSelectorThemes;
+
+        /// <summary>
+        /// 记录的节点编辑器最后一次的黑板变量面板变换数据
+        /// </summary>
+        [SerializeField] public ElementPanelTransformData Last_GraphView_BlackboardPanel_TransformData;
+        /// <summary>
+        /// 记录的节点编辑器最后一次的属性面板变换数据
+        /// </summary>
+        [SerializeField] public ElementPanelTransformData Last_GraphView_InspectorPanel_TransformData;
+
+        /// <summary>
+        /// 记录的节点编辑器 Inspector 视图开关
+        /// </summary>
+        [SerializeField] public bool XGraph_InspectorViewDisplay;
+        /// <summary>
+        /// 记录的节点编辑器 BlackBoard 视图开关
+        /// </summary>
+        [SerializeField] public bool XGraph_BlackBoardViewDisplay;
+        /// <summary>
+        /// 记录的节点编辑器 节点颜色标记开关
+        /// </summary>
+        [SerializeField] public bool XGraph_DisplayNodeColor;
+        /// <summary>
+        /// 记录的节点编辑器 节点连线数据流效果开关
+        /// </summary>
+        [SerializeField] public bool XGraph_DisplayNodeFlow;
 
         /// <summary>
         /// 行为节点列表
@@ -1511,6 +1598,14 @@ namespace SevenStrikeModules.XGraph
 
             GraphviewGridBackgroundThemes = targetAsset.GraphviewGridBackgroundThemes.Clone();
 
+            XGraph_BlackBoardViewDisplay = targetAsset.XGraph_BlackBoardViewDisplay;
+            XGraph_InspectorViewDisplay = targetAsset.XGraph_InspectorViewDisplay;
+            XGraph_DisplayNodeColor = targetAsset.XGraph_DisplayNodeColor;
+            XGraph_DisplayNodeFlow = targetAsset.XGraph_DisplayNodeFlow;
+
+            Last_GraphView_BlackboardPanel_TransformData = targetAsset.Last_GraphView_BlackboardPanel_TransformData.Clone();
+            Last_GraphView_InspectorPanel_TransformData = targetAsset.Last_GraphView_InspectorPanel_TransformData.Clone();
+
             GraphviewRectangleSelectorThemes = targetAsset.GraphviewRectangleSelectorThemes.Clone();
 
             // 覆盖原有的 Decals 数据列表
@@ -1638,6 +1733,14 @@ namespace SevenStrikeModules.XGraph
             ActionNode_Asset newActionAsset = ScriptableObject.CreateInstance<ActionNode_Asset>();
 
             newActionAsset.LastSaveDateTime = LastSaveDateTime;
+
+            newActionAsset.XGraph_BlackBoardViewDisplay = XGraph_BlackBoardViewDisplay;
+            newActionAsset.XGraph_InspectorViewDisplay = XGraph_InspectorViewDisplay;
+            newActionAsset.XGraph_DisplayNodeColor = XGraph_DisplayNodeColor;
+            newActionAsset.XGraph_DisplayNodeFlow = XGraph_DisplayNodeFlow;
+
+            newActionAsset.Last_GraphView_BlackboardPanel_TransformData = Last_GraphView_BlackboardPanel_TransformData.Clone();
+            newActionAsset.Last_GraphView_InspectorPanel_TransformData = Last_GraphView_InspectorPanel_TransformData.Clone();
 
             newActionAsset.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
 
