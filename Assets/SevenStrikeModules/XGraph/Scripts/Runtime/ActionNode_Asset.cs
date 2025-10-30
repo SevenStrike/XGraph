@@ -1140,7 +1140,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 上边距
         /// </summary>
-        public float top = 10;
+        public float top;
         /// <summary>
         /// 下边距
         /// </summary>
@@ -1148,7 +1148,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 左边距
         /// </summary>
-        public float left = 15;
+        public float left;
         /// <summary>
         /// 右边距
         /// </summary>
@@ -1369,11 +1369,35 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 记录的节点编辑器最后一次的黑板变量面板变换数据
         /// </summary>
-        [SerializeField] public ElementPanelTransformData Last_GraphView_BlackboardPanel_TransformData;
+        [SerializeField]
+        public ElementPanelTransformData Last_GraphView_BlackboardPanel_TransformData = new ElementPanelTransformData()
+        {
+            top = 10,
+            bottom = 0,
+            left = 13,
+            right = 0,
+            anc_Top = true,
+            anc_Bottom = false,
+            anc_Left = true,
+            anc_Right = false,
+            size = new Vector2(250, 400)
+        };
         /// <summary>
         /// 记录的节点编辑器最后一次的属性面板变换数据
         /// </summary>
-        [SerializeField] public ElementPanelTransformData Last_GraphView_InspectorPanel_TransformData;
+        [SerializeField]
+        public ElementPanelTransformData Last_GraphView_InspectorPanel_TransformData = new ElementPanelTransformData()
+        {
+            top = 10,
+            bottom = 0,
+            left = 0,
+            right = 13,
+            anc_Top = true,
+            anc_Bottom = false,
+            anc_Left = false,
+            anc_Right = true,
+            size = new Vector2(250, 400)
+        };
 
         /// <summary>
         /// 记录的节点编辑器 Inspector 视图开关
@@ -2073,7 +2097,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 debug.childNodes.Add(child);
             }
-            #endregion           
+            #endregion
 
             #region 特化处理 - Composite
             ActionNode_Composite comp = parent as ActionNode_Composite;

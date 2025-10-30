@@ -2154,6 +2154,16 @@
                 SourceTree.Last_GraphView_InspectorPanel_TransformData = Element_Transform_Save(xw_InspectorView_Container);
             }
 
+            // 记录 InspectorViewer 开关状态到行为树根节点变量
+            SourceTree.XGraph_InspectorViewDisplay = xw_toggle_InspectorViewDisplay.value;
+            // 记录 BlackBoardView 开关状态到行为树根节点变量
+            SourceTree.XGraph_BlackBoardViewDisplay = xw_toggle_BlackBoardViewDisplay.value;
+            // 记录 InspectorViewer 开关状态到行为树根节点变量
+            SourceTree.XGraph_DisplayNodeColor = xw_toggle_DisplayNodeColor.value;
+            // 记录 InspectorViewer 开关状态到行为树根节点变量
+            SourceTree.XGraph_DisplayNodeFlow = xw_toggle_DisplayNodeFlow.value;
+
+
             xw_DeleteCloneTreeAsset();
         }
         /// <summary>
