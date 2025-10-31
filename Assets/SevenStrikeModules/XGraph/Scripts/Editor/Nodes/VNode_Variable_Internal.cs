@@ -39,10 +39,6 @@ namespace SevenStrikeModules.XGraph
         /// 数据输入框
         /// </summary>
         public VisualElement VariableField;
-        /// <summary>
-        /// 当内部变量值改变时
-        /// </summary>
-        public Action On_InternalVariableValue_Changed;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -595,6 +591,7 @@ namespace SevenStrikeModules.XGraph
             {
                 On_InternalVariableValue_Changed();
             }
+
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
         }

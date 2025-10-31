@@ -31,6 +31,10 @@ namespace SevenStrikeModules.XGraph
         /// 当节点清空Avatar时的委托事件
         /// </summary>
         public Action<VNode_Base> On_NodeAvatar_Clear;
+        /// <summary>
+        /// 当内部变量值改变时
+        /// </summary>
+        public Action On_InternalVariableValue_Changed;
 
         /// <summary>
         /// 视觉节点标题图标
@@ -574,7 +578,7 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 数据流效果控制
-        private void SetConnectedEdgesFlow(bool enable)
+        public void SetConnectedEdgesFlow(bool enable)
         {
             var edges = new HashSet<util_AnimatedEdge>();
 
@@ -599,20 +603,27 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch.ActionData is ActionNode_Branch bra)
                             {
-                                if (bra.PredicateState)
-                                {
-                                    if (con.output.portName == "开")
+                                //if (!enable)
+                                //{
+                                //     edges.Add(edge);
+                                //}
+                                //else
+                                //{
+                                    if (bra.PredicateState)
                                     {
-                                        edges.Add(edge);
+                                        if (con.output.portName == "开")
+                                        {
+                                            edges.Add(edge);
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    if (con.output.portName == "关")
+                                    else
                                     {
-                                        edges.Add(edge);
+                                        if (con.output.portName == "关")
+                                        {
+                                            edges.Add(edge);
+                                        }
                                     }
-                                }
+                                //}
                             }
                         }
                         else
@@ -658,7 +669,6 @@ namespace SevenStrikeModules.XGraph
             ActionData.On_Node_IconChanged += On_Node_IconChanged;
             ActionData.On_Node_ConcurrentChanged += On_Node_ConcurrentChanged;
         }
-
 
         /// <summary>
         /// 取消选择时
