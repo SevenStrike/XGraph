@@ -21,8 +21,8 @@
      border-bottom-right-radius: 10px;
      border-top-left-radius: 10px;
      border-top-right-radius: 10px;
-     height: 5px;
-     width: 5px;
+     height: 4px;
+     width: 4px;
      margin-right: 0;
 }
 

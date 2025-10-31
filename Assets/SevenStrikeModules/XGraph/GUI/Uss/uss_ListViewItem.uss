@@ -1,159 +1,148 @@
-.item_container
-{
-     background-size: 100% 100%;
-     background-color: rgba(0, 0, 0, 0);
-     width: auto;
-     height: 32px;
-     justify-content: flex-start;
-     padding-right: 10px;
-     flex-grow: 0;
-     flex-shrink: 0;
-     flex-direction: row;
-     padding-bottom: 0;
-     margin-bottom: 0;
-     overflow: hidden;
-     text-overflow: ellipsis;
+.item_container {
+    background-size: 100% 100%;
+    background-color: rgba(0, 0, 0, 0);
+    width: auto;
+    height: 32px;
+    justify-content: flex-start;
+    padding-right: 10px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-direction: row;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.item_container:hover .item_container_pill
-{
-     border-top-color: rgba(68, 192, 255, 0.5);
-     border-bottom-color: rgba(68, 192, 255, 0.5);
-     border-left-color: rgba(68, 192, 255, 0.5);
-     border-right-color: rgba(68, 192, 255, 0.5);
+.item_container:hover .item_container_pill {
+    border-top-color: rgba(68, 192, 255, 0.5);
+    border-bottom-color: rgba(68, 192, 255, 0.5);
+    border-left-color: rgba(68, 192, 255, 0.5);
+    border-right-color: rgba(68, 192, 255, 0.5);
 }
 
-.item_container:checked .item_container_pill
-{
-     border-top-color: rgb(68, 192, 255);
-     border-bottom-color: rgb(68, 192, 255);
-     border-left-color: rgb(68, 192, 255);
-     border-right-color: rgb(68, 192, 255);
+.item_container:checked .item_container_pill {
+    border-top-color: rgb(68, 192, 255);
+    border-bottom-color: rgb(68, 192, 255);
+    border-left-color: rgb(68, 192, 255);
+    border-right-color: rgb(68, 192, 255);
 }
 
-.item_container_pill
-{
-     border-top-left-radius: 12px;
-     border-top-right-radius: 12px;
-     border-bottom-right-radius: 12px;
-     border-bottom-left-radius: 12px;
-     border-top-width: 1px;
-     border-right-width: 1px;
-     border-bottom-width: 1px;
-     border-left-width: 1px;
-     border-left-color: rgb(20, 20, 20);
-     border-right-color: rgb(20, 20, 20);
-     border-top-color: rgb(20, 20, 20);
-     border-bottom-color: rgb(20, 20, 20);
-     flex-direction: row;
-     flex-shrink: 0;
-     align-items: center;
-     background-color: rgb(35, 35, 35);
-     height: 26px;
+.item_container_pill {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(20, 20, 20);
+    border-right-color: rgb(20, 20, 20);
+    border-top-color: rgb(20, 20, 20);
+    border-bottom-color: rgb(20, 20, 20);
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    background-color: rgb(35, 35, 35);
+    height: 26px;
 }
 
-.item_container_des
-{
-     flex-direction: column;
-     height: 30px;
-     justify-content: center;
+.item_container_des {
+    flex-direction: column;
+    height: 30px;
+    justify-content: center;
 }
 
-.item_icon
-{
-     width: 5px;
-     height: 5px;
-     position: relative;
-     align-self: auto;
-     flex-shrink: 0;
-     flex-grow: 0;
-     border-top-left-radius: 6px;
-     border-top-right-radius: 6px;
-     border-bottom-right-radius: 6px;
-     border-bottom-left-radius: 6px;
-     top: auto;
-     left: auto;
-     justify-content: center;
-     margin-left: 10px;
-     border-left-color: rgb(0, 0, 0);
-     border-right-color: rgb(0, 0, 0);
-     border-top-color: rgb(0, 0, 0);
-     border-bottom-color: rgb(0, 0, 0);
-     flex-direction: column;
-     align-items: flex-start;
-     margin-top: 0;
-     margin-right: 0;
-     margin-bottom: 0;
+.item_icon {
+    width: 4px;
+    height: 4px;
+    position: relative;
+    align-self: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    top: auto;
+    left: auto;
+    justify-content: center;
+    margin-left: 10px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
 }
 
-.item_label_title
-{
-     position: relative;
-     color: rgb(255, 255, 255);
-     align-self: auto;
-     flex-grow: 1;
-     -unity-text-align: middle-right;
-     margin-right: 10px;
-     margin-top: 0;
-     padding-right: 0;
-     height: 20px;
-     top: auto;
-     margin-left: 10px;
-     margin-bottom: 0;
-     padding-top: 0;
-     padding-bottom: 0;
-     padding-left: 0;
-     -unity-font-style: normal;
-     font-size: 13px;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-     display: flex;
+.item_label_title {
+    position: relative;
+    color: rgb(255, 255, 255);
+    align-self: auto;
+    flex-grow: 1;
+    -unity-text-align: middle-right;
+    margin-right: 10px;
+    margin-top: 0;
+    padding-right: 0;
+    height: 20px;
+    top: auto;
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-style: normal;
+    font-size: 13px;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    display: flex;
 }
 
-.item_label_des
-{
-     -unity-text-align: middle-right;
-     color: rgba(146, 146, 146, 0.68);
-     font-size: 12.5px;
-     text-overflow: ellipsis;
-     overflow: hidden;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-     flex-grow: 1;
-     display: flex;
+.item_label_des {
+    -unity-text-align: middle-right;
+    color: rgba(146, 146, 146, 0.68);
+    font-size: 12.5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    flex-grow: 1;
+    display: flex;
 }
 
-.item_textfield
-{
-     height: 25px;
-     font-size: 13px;
-     visibility: visible;
-     display: none;
-     margin-left: 10px;
-     color: rgb(255, 255, 255);
-     margin-right: 10px;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+.item_textfield {
+    height: 25px;
+    font-size: 13px;
+    visibility: visible;
+    display: none;
+    margin-left: 10px;
+    color: rgb(255, 255, 255);
+    margin-right: 10px;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
-.description_textfield
-{
-     height: 25px;
-     font-size: 13px;
-     visibility: visible;
-     display: none;
-     margin-left: 10px;
-     color: rgb(255, 255, 255);
-     margin-right: 10px;
-     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+.description_textfield {
+    height: 25px;
+    font-size: 13px;
+    visibility: visible;
+    display: none;
+    margin-left: 10px;
+    color: rgb(255, 255, 255);
+    margin-right: 10px;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
 }
 
-.PureTextfieldinput
-{
-     background-color: rgba(0, 0, 0, 0);
-     border-top-width: 0px;
-     border-right-width: 0px;
-     border-bottom-width: 0px;
-     border-left-width: 0px;
-     border-left-color: rgb(0, 0, 0);
-     border-right-color: rgb(0, 0, 0);
-     border-top-color: rgb(0, 0, 0);
-     border-bottom-color: rgb(0, 0, 0);
+.PureTextfieldinput {
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
 }
