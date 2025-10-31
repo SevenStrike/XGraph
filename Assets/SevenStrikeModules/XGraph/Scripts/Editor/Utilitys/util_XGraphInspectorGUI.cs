@@ -1,8 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using UnityEditor;
-    using UnityEditor.Rendering;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;

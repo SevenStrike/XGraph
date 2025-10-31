@@ -18,6 +18,8 @@ namespace SevenStrikeModules.XGraph
             #endregion
         }
 
+        public Base_GraphNode_Start() { }
+
         #region 节点绘制
         public override VNode_Base Draw()
         {
