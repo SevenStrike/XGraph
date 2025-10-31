@@ -1134,6 +1134,7 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
+    #region 面板变换信息数据
     [System.Serializable]
     /// <summary>
     /// 面板的布局位置记录类
@@ -1194,6 +1195,7 @@ namespace SevenStrikeModules.XGraph
             return value;
         }
     }
+    #endregion
 
     #region Graphview 主题类
     [Serializable]
@@ -1311,6 +1313,7 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
+    #region 克隆节点参数传递类
     [Serializable]
     /// <summary>
     /// 克隆节点时的参数引用传递类
@@ -1320,6 +1323,7 @@ namespace SevenStrikeModules.XGraph
         public string SourceNodeGuid;
         public object DuplicatedNode;
     }
+    #endregion
 
     [CreateAssetMenu(fileName = "NewXGraph", menuName = "XGraphAsset")]
     public class ActionNode_Asset : ScriptableObject
@@ -1447,8 +1451,6 @@ namespace SevenStrikeModules.XGraph
         /// 黑板变量列表
         /// </summary>
         [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
-
-        [SerializeField] public ActionNode_Asset TestAsset;
 
         /// <summary>
         /// 刷新
