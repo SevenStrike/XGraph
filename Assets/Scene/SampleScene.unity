@@ -1183,10 +1183,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1687983408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c93156ce8f7a1f4fb187738cfc8ecce, type: 3}
+  m_Script: {fileID: 11500000, guid: 602bdf3665d4b3f498b1ff845c6d0343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionAsset: {fileID: 11400000, guid: c7aa447df399d7047b9048594b472dbe, type: 2}
+  ActionAsset: {fileID: 11400000, guid: 32a8af2d13c9bc94a92421c9bacc45e1, type: 2}
   ActionAssetClone: {fileID: 0}
   SaveValueChangesInRuntime: 1
   showLogs: 1
@@ -1202,9 +1202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b241983b3a6bb4d97a2b12c35917d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionTreeWorkflow: {fileID: 1687983411}
-  msg: 2222222222222222222222
-  delay: 3.6
+  Workflow: {fileID: 1687983411}
+  msg: 
+  delay: 0
   branch: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

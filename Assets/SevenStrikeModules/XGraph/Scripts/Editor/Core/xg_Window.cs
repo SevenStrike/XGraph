@@ -743,8 +743,9 @@
             // 鼠标位置
             xw_label_GraphMousePos_x = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_x");
             xw_label_GraphMousePos_y = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_y");
-            #endregion
+            #endregion          
         }
+
         /// <summary>
         /// 编辑器界面绘制逻辑
         /// </summary>

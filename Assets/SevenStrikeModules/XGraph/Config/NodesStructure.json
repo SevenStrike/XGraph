@@ -8,64 +8,50 @@
                 {
                     "name": "开始",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "Start",
                     "iconName": "start",
-                    "visualNodeType": "Base_GraphNode_Start"
+                    "visualNodeType": "Sample_Graph_Start"
                 },
                 {
                     "name": "结束",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "End",
                     "iconName": "end",
-                    "visualNodeType": "Base_GraphNode_End"
+                    "visualNodeType": "Sample_Graph_End"
                 },
                 {
                     "name": "合成",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "Composite",
                     "iconName": "composite",
-                    "visualNodeType": "Base_GraphNode_Composite"
+                    "visualNodeType": "Sample_Graph_Composite"
                 },
                 {
                     "name": "等待",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "Wait",
                     "iconName": "wait",
-                    "visualNodeType": "Base_GraphNode_Wait"
+                    "visualNodeType": "Sample_Graph_Wait"
                 },
                 {
                     "name": "调试",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "Debug",
                     "iconName": "debug",
-                    "visualNodeType": "Base_GraphNode_Debug"
+                    "visualNodeType": "BSample_Graph_Debug"
                 },
                 {
                     "name": "延展",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Base_ActionNode_",
+                    "prefixClass": "Sample_Action_",
                     "actionNodeType": "Relay",
                     "iconName": "relay",
-                    "visualNodeType": "Base_GraphNode_Relay"
-                }
-            ]
-        },
-        {
-            "catergory_title": "导图",
-            "catergory_icon": "category_mind",
-            "catergory_nodes": [
-                {
-                    "name": "开始",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Mind_ActionNode_",
-                    "actionNodeType": "Start",
-                    "iconName": "start",
-                    "visualNodeType": "Mind_GraphNode_Start"
+                    "visualNodeType": "Sample_Graph_Relay"
                 }
             ]
         },

@@ -9,6 +9,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
+    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
 
@@ -108,29 +109,30 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 贴纸识别ID码
         /// </summary>
-        public string guid;
+        [SerializeField] public string guid;
         /// <summary>
         /// 节点位置
         /// </summary>
-        public Vector2 position;
+        [SerializeField] public Vector2 position;
         /// <summary>
         /// 节点尺寸
         /// </summary>
-        public Vector2 size;
+        [SerializeField] public Vector2 size;
         /// <summary>
         /// 贴图着色颜色
         /// </summary>
-        public Color color = Color.white;
+        [SerializeField] public Color color = Color.white;
         /// <summary>
         /// 节点贴图透明度
         /// </summary>
-        public float opacity = 1;
-        public bool HasTexture;
-        public Texture2D DecalTexture;
+        [SerializeField] public float opacity = 1;
+        [SerializeField] public bool HasTexture;
+        [SerializeField] public Texture2D DecalTexture;
         /// <summary>
         /// 贴图缩放
         /// </summary>
-        public Vector3 scale = Vector3.one;
+        [SerializeField] public Vector3 scale = Vector3.one;
+
         /// <summary>
         /// 贴纸构造器
         /// </summary>
@@ -185,23 +187,23 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 便签标题
         /// </summary>
-        public string name;
+        [SerializeField] public string name;
         /// <summary>
         /// 便签内容
         /// </summary>
-        public string content;
+        [SerializeField] public string content;
         /// <summary>
         /// 便签识别ID码
         /// </summary>
-        public string guid;
+        [SerializeField] public string guid;
         /// <summary>
         /// 节点位置
         /// </summary>
-        public Vector2 position;
+        [SerializeField] public Vector2 position;
         /// <summary>
         /// 节点尺寸
         /// </summary>
-        public Vector2 size;
+        [SerializeField] public Vector2 size;
         /// <summary>
         /// 便签构造器
         /// </summary>
@@ -250,43 +252,43 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 标签识别ID码
         /// </summary>
-        public string guid;
+        [SerializeField] public string guid;
         /// <summary>
         /// 标签内容
         /// </summary>
-        public string content;
+        [SerializeField] public string content;
         /// <summary>
         /// 节点位置
         /// </summary>
-        public Vector2 position;
+        [SerializeField] public Vector2 position;
         /// <summary>
         /// 节点尺寸
         /// </summary>
-        public Vector2 size;
+        [SerializeField] public Vector2 size;
         /// <summary>
         /// 标签颜色
         /// </summary>
-        public Color color = Color.white;
+        [SerializeField] public Color color = Color.white;
         /// <summary>
         /// 字体
         /// </summary>
-        public Font font;
+        [SerializeField] public Font font;
         /// <summary>
         /// 标签透明度
         /// </summary>
-        public float opacity;
+        [SerializeField] public float opacity;
         /// <summary>
         /// 文字内容尺寸
         /// </summary>
-        public int fontSize;
+        [SerializeField] public int fontSize;
         /// <summary>
         /// 文字是否粗体
         /// </summary>
-        public bool bold;
+        [SerializeField] public bool bold;
         /// <summary>
         /// 文字是否斜体
         /// </summary>
-        public bool italic;
+        [SerializeField] public bool italic;
 
         /// <summary>
         /// 标签构造器
@@ -347,19 +349,19 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 编组的标题
         /// </summary>
-        public string name;
+        [SerializeField] public string name;
         /// <summary>
         /// 编组的识别ID码
         /// </summary>
-        public string guid;
+        [SerializeField] public string guid;
         /// <summary>
         /// 编组的位置
         /// </summary>
-        public Vector2 pos;
+        [SerializeField] public Vector2 pos;
         /// <summary>
         /// 编组的颜色识别
         /// </summary>
-        public string solution = "M 默认";
+        [SerializeField] public string solution = "M 默认";
         /// <summary>
         /// 编组组件
         /// </summary>
@@ -371,11 +373,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 编组内的所有节点的识别ID码
         /// </summary>
-        public List<string> guids = new List<string>();
+        [SerializeField] public List<string> guids = new List<string>();
         /// <summary>
         /// 编组中是否包含节点
         /// </summary>
-        public bool hasAvatarNodes;
+        [SerializeField] public bool hasAvatarNodes;
 
         /// <summary>
         /// 编组克隆
@@ -1446,6 +1448,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
 
+        [SerializeField] public ActionNode_Asset TestAsset;
+
         /// <summary>
         /// 刷新
         /// </summary>
@@ -1824,11 +1828,6 @@ namespace SevenStrikeModules.XGraph
 
             // 用于映射原始节点到新节点（不包含分支逻辑类）
             Dictionary<ActionNode_Base, ActionNode_Base> originalRootDic = new Dictionary<ActionNode_Base, ActionNode_Base>();
-
-            //------------------------------------------
-
-
-            //------------------------------------------
 
             // 复制所有节点（不包含分支逻辑类）
             foreach (var node in this.Actions)

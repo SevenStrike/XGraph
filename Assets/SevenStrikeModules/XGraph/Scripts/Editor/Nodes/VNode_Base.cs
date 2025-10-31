@@ -603,12 +603,12 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch.ActionData is ActionNode_Branch bra)
                             {
-                                //if (!enable)
-                                //{
-                                //     edges.Add(edge);
-                                //}
-                                //else
-                                //{
+                                if (!enable)
+                                {
+                                    edges.Add(edge);
+                                }
+                                else
+                                {
                                     if (bra.PredicateState)
                                     {
                                         if (con.output.portName == "开")
@@ -623,7 +623,7 @@ namespace SevenStrikeModules.XGraph
                                             edges.Add(edge);
                                         }
                                     }
-                                //}
+                                }
                             }
                         }
                         else
