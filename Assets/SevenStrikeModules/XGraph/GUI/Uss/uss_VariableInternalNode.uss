@@ -102,6 +102,11 @@
      height: 100%;
 }
 
+.value_field_string_text-element
+{
+     width: 100%;
+}
+
 #unity-text-input.value_field_string_input
 {
      -unity-text-align: upper-left;

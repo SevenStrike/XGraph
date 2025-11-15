@@ -136,9 +136,9 @@
      color: rgba(255, 255, 255, 0.8);
      height: 25px;
      width: auto;
-     font-size: 12px;
+     font-size: 11px;
      -unity-text-align: middle-left;
-     -unity-font-style: bold;
+     -unity-font-style: normal;
      -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
      letter-spacing: 5px;
      padding-left: 0;
@@ -575,6 +575,25 @@
      border-bottom-left-radius: 8px;
      overflow: hidden;
      padding-bottom: 8px;
+     border-top-width: 1px;
+     border-bottom-width: 1px;
+     border-left-width: 1px;
+     border-right-width: 1px;
+     border-left-color: rgba(255,255,255,0);
+     border-right-color: rgba(255,255,255,0);
+     border-top-color: rgba(255,255,255,0);
+     border-bottom-color: rgba(255,255,255,0);
+     transition-property: border-color;
+     transition-duration: 0.2s;
+     transition-timing-function: ease-out-cubic;
+}
+
+.list_container:hover
+{
+     border-left-color: rgba(255,255,255,0.6);
+     border-right-color: rgba(255,255,255,0.6);
+     border-top-color: rgba(255,255,255,0.6);
+     border-bottom-color: rgba(255,255,255,0.6);
 }
 
 .list_titlebg

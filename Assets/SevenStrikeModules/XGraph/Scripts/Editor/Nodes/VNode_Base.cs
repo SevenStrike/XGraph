@@ -11,31 +11,14 @@ namespace SevenStrikeModules.XGraph
 
     public class VNode_Base : Node
     {
+        #region 组件
         /// <summary>
         /// GraphView组件
         /// </summary>
         public xg_GraphView graphView;
-        /// <summary>
-        /// 当选中节点时的委托事件
-        /// </summary>
-        public Action<VNode_Base> On_SelectedNode;
-        /// <summary>
-        /// 当选中节点时的委托事件
-        /// </summary>
-        public Action<VNode_Base> On_UnSelectedNode;
-        /// <summary>
-        /// 当为节点设置Avatar时的委托事件
-        /// </summary>
-        public Action<VNode_Base> On_NodeAvatar_Set;
-        /// <summary>
-        /// 当节点清空Avatar时的委托事件
-        /// </summary>
-        public Action<VNode_Base> On_NodeAvatar_Clear;
-        /// <summary>
-        /// 当内部变量值改变时
-        /// </summary>
-        public Action On_InternalVariableValue_Changed;
+        #endregion
 
+        #region 控件
         /// <summary>
         /// 视觉节点标题图标
         /// </summary>
@@ -65,6 +48,13 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public TextField TitleInputField;
         /// <summary>
+        /// IMGUI容器
+        /// </summary>
+        private IMGUIContainer m_ObjectPickerIMGUI;
+        #endregion
+
+        #region 参数
+        /// <summary>
         /// 指定节点图标
         /// </summary>
         public string icon;
@@ -72,24 +62,41 @@ namespace SevenStrikeModules.XGraph
         /// 指示物体选择器是否已经打开
         /// </summary>
         private bool monitoringObjectPicker = false;
-        private IMGUIContainer m_ObjectPickerIMGUI;
         /// <summary>
         /// 用于打开贴图选择器后选择贴图应用的模式
         /// </summary>
         public string SetTextureMode;
-
         /// <summary>
         /// 导图节点的最后一次尺寸
         /// </summary>
         private Vector2 m_LastSize;
-
+        /// <summary>
+        /// 顺序执行标记图标
+        /// </summary>
         public Texture2D tex_logo_dir_sequential;
+        /// <summary>
+        /// 并发执行标记图标
+        /// </summary>
         public Texture2D tex_logo_dir_concurrent;
+        #endregion
 
+        #region 回调
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Base> On_SelectedNode;
+        /// <summary>
+        /// 当选中节点时的委托事件
+        /// </summary>
+        public Action<VNode_Base> On_UnSelectedNode;
+        #endregion
+
+        #region 节点数据
         /// <summary>
         /// 节点携带的数据
         /// </summary>
         public ActionNode_Base ActionData { get; set; }
+        #endregion
 
         #region 端口
         /// <summary>
@@ -154,10 +161,20 @@ namespace SevenStrikeModules.XGraph
             // 监听尺寸变化事件
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
-            DuplicateAction_Add();
-
             // 注册黑板变量数值变化回调
             ActionData.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
+
+            // 注册节点重建的回调
+            ActionData.On_Node_Restructure = null;
+            ActionData.On_Node_Restructure += On_Node_Restructure;
+
+            // 注册节点创建连线的回调
+            ActionData.On_Node_CreateEdge = null;
+            ActionData.On_Node_CreateEdge += On_Node_CreateEdge;
+
+            // 注册节点创建连线的回调
+            ActionData.On_Node_RemovedEdge = null;
+            ActionData.On_Node_RemovedEdge += On_Node_RemovedEdge;
         }
 
         /// <summary>
@@ -215,7 +232,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void DuplicateAction_Add()
         {
-            graphView.OnDuplicateNodes += OnDuplicatedNode;
+            graphView.OnDuplicateNodes += On_Nodes_Duplicated;
         }
 
         /// <summary>
@@ -223,7 +240,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void DuplicateAction_Remove()
         {
-            graphView.OnDuplicateNodes -= OnDuplicatedNode;
+            graphView.OnDuplicateNodes -= On_Nodes_Duplicated;
         }
         #endregion
 
@@ -481,7 +498,7 @@ namespace SevenStrikeModules.XGraph
             CheckExecutionModel();
 
             #region 应用配置文件的颜色到节点的标识颜色
-            foreach (var colorData in graphView.ThemesList.Node)
+            foreach (var colorData in graphView.NodeThemesList.Node)
             {
                 if (colorData.solution == ActionData.themeSolution)
                 {
@@ -514,22 +531,27 @@ namespace SevenStrikeModules.XGraph
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
 
-            #region 高亮面
-            Highlighter = new VisualElement();
-            Highlighter.pickingMode = PickingMode.Ignore;
-            Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("highlighter");
-            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
-            UnHighlight();
-            AppendElement(GraphNodeContainerType.MainContainer, Highlighter);
-            Highlighter.BringToFront();
-            #endregion
+            CreateHighlighter();
 
             #region 头像组件
             if (ActionData.HasAvatar)
             {
                 RegisterAvatarClicked();
             }
+            #endregion
+        }
+
+        internal void CreateHighlighter()
+        {
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("node_highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
+            UnHighlight();
+            AppendElement(GraphNodeContainerType.MainContainer, Highlighter);
+            Highlighter.BringToFront();
             #endregion
         }
         #endregion
@@ -656,6 +678,8 @@ namespace SevenStrikeModules.XGraph
                 On_SelectedNode.Invoke(this);
             }
 
+            DuplicateAction_Add();
+
             // 数据流效果  -  开启
             if (graphView.gv_GraphWindow.DisplayNodeFlow)
                 SetConnectedEdgesFlow(true);
@@ -668,8 +692,8 @@ namespace SevenStrikeModules.XGraph
             ActionData.On_Node_AvatarChanged += On_Node_AvatarChanged;
             ActionData.On_Node_IconChanged += On_Node_IconChanged;
             ActionData.On_Node_ConcurrentChanged += On_Node_ConcurrentChanged;
+            ActionData.On_Node_TransparentChanged += On_Node_TransparentChanged;
         }
-
         /// <summary>
         /// 取消选择时
         /// </summary>
@@ -689,9 +713,7 @@ namespace SevenStrikeModules.XGraph
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
 
-            // 清空所有回调
-            On_NodeAvatar_Set = null;
-            On_NodeAvatar_Clear = null;
+            // 清空回调
             ActionData.On_Node_Moved = null;
             ActionData.On_Node_SizeChanged = null;
             ActionData.On_Node_IconChanged = null;
@@ -699,12 +721,15 @@ namespace SevenStrikeModules.XGraph
             ActionData.On_Node_TitleChanged = null;
             ActionData.On_Node_ThemeColorChanged = null;
             ActionData.On_Node_ConcurrentChanged = null;
+            ActionData.On_Node_TransparentChanged = null;
+
+            DuplicateAction_Remove();
         }
         /// <summary>
         /// 当节点尺寸发生改变时
         /// </summary>
         /// <param name="evt"></param>
-        private void OnSizeChanged(GeometryChangedEvent evt)
+        public virtual void OnSizeChanged(GeometryChangedEvent evt)
         {
             Vector2 newSize = new Vector2(evt.newRect.width, evt.newRect.height);
 
@@ -733,9 +758,18 @@ namespace SevenStrikeModules.XGraph
         /// 当Graphview克隆节点时调用
         /// </summary>
         /// <param name="list"></param>
-        public virtual void OnDuplicatedNode(List<DuplicateNodeData> list)
+        public virtual void On_Nodes_Duplicated(List<DuplicateNodeData> list)
         {
+            foreach (var node in list)
+            {
+                VNode_Base n_base = node.DuplicatedNode as VNode_Base;
+                // 找到克隆的父物体行为节点
+                VNode_Base source = graphView.FindNodeView(node.SourceNodeGuid);
 
+                // 调用行为数据脚本中的 On_Node_Duplicated 事件以便于行为数据Editor界面下的控件获取克隆父物体的特定变量数据
+                if (n_base.ActionData.On_Node_Duplicated != null)
+                    n_base.ActionData.On_Node_Duplicated(n_base.ActionData, source.ActionData);
+            }
         }
         /// <summary>
         /// 黑板变量数值变化时的回调
@@ -743,6 +777,37 @@ namespace SevenStrikeModules.XGraph
         public virtual void On_VariablesValue_Changed()
         {
 
+        }
+        /// <summary>
+        /// 当该节点被重建时的回调
+        /// </summary>
+        public virtual void On_Node_Restructure()
+        {
+
+        }
+        /// <summary>
+        /// 当该节点创建连线时
+        /// </summary>
+        /// <param name="edge"></param>
+        public virtual void On_Node_CreateEdge(Edge edge)
+        {
+
+        }
+        /// <summary>
+        /// 当该节点移除连线时
+        /// </summary>
+        /// <param name="edge"></param>
+        public virtual void On_Node_RemovedEdge(Edge edge)
+        {
+
+        }
+        /// <summary>
+        /// 当改变节点通透样式时
+        /// </summary>
+        /// <param name="state"></param>
+        public virtual void On_Node_TransparentChanged(bool state)
+        {
+            TransparentDisplay_Set(state);
         }
         /// <summary>
         /// 当节点主题色改变时
@@ -755,7 +820,7 @@ namespace SevenStrikeModules.XGraph
         /// 改变头像时
         /// </summary>
         /// <param name="tex"></param>
-        private void On_Node_AvatarChanged(Texture2D tex)
+        public virtual void On_Node_AvatarChanged(Texture2D tex)
         {
             CheckAvatarChanged();
         }
@@ -763,7 +828,7 @@ namespace SevenStrikeModules.XGraph
         /// 改变图标时
         /// </summary>
         /// <param name="tex"></param>
-        private void On_Node_IconChanged(Texture2D tex)
+        public virtual void On_Node_IconChanged(Texture2D tex)
         {
             NodeTitileICon_Check();
         }
@@ -771,7 +836,7 @@ namespace SevenStrikeModules.XGraph
         /// 改变执行模式
         /// </summary>
         /// <param name="obj"></param>
-        private void On_Node_ConcurrentChanged(bool obj)
+        public virtual void On_Node_ConcurrentChanged(bool obj)
         {
             CheckExecutionModel();
         }
@@ -785,12 +850,7 @@ namespace SevenStrikeModules.XGraph
         {
             if (AvatarIcon == null)
             {
-                AvatarIcon = new VisualElement();
-                AvatarIcon.name = "AvatarIcon";
-                AvatarIcon.pickingMode = PickingMode.Position;
-                AvatarIcon.style.backgroundImage = ActionData.Avatar;
-                AvatarIcon.AddToClassList("Avatar_Icon");
-                AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
+                CreateAvatarElement();
             }
             // 修改头像点击回调
             AvatarIcon.RegisterCallback<PointerDownEvent>((evt) =>
@@ -803,6 +863,22 @@ namespace SevenStrikeModules.XGraph
                 }
             });
         }
+
+        /// <summary>
+        /// 创建头像组件
+        /// </summary>
+        public void CreateAvatarElement()
+        {
+            if (AvatarIcon != null)
+                return;
+            AvatarIcon = new VisualElement();
+            AvatarIcon.name = "AvatarIcon";
+            AvatarIcon.pickingMode = PickingMode.Position;
+            AvatarIcon.style.backgroundImage = ActionData.Avatar;
+            AvatarIcon.AddToClassList("Avatar_Icon");
+            AppendElement(GraphNodeContainerType.MainContainer, AvatarIcon);
+        }
+
         /// <summary>
         /// 注销头像双击委托
         /// </summary>
@@ -857,10 +933,6 @@ namespace SevenStrikeModules.XGraph
 
             CheckAvatarChanged();
 
-            // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的扩展）
-            if (On_NodeAvatar_Set != null)
-                On_NodeAvatar_Set(this);
-
             if (ActionData.On_Node_AvatarChanged != null)
                 ActionData.On_Node_AvatarChanged(tex);
         }
@@ -877,10 +949,6 @@ namespace SevenStrikeModules.XGraph
             ActionData.Avatar = null;
 
             CheckAvatarChanged();
-
-            // 调用视觉节点自身的移除头像的委托（可导致所在编组的内边距的缩进）
-            if (On_NodeAvatar_Clear != null)
-                On_NodeAvatar_Clear(this);
 
             if (ActionData.On_Node_AvatarChanged != null)
                 ActionData.On_Node_AvatarChanged(null);
@@ -1051,22 +1119,94 @@ namespace SevenStrikeModules.XGraph
             nodeport.Port.Q<Label>().AddToClassList(type == PortStyleType.In ? "PortText_In" : "PortText_Out");
         }
         /// <summary>
-        /// 从输入端口获取特定的类型
+        /// 根据特定的类型和指定的端口名称获取输入或是输出端口
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="portName"></param>
+        /// <param name="portType"></param>
         /// <returns></returns>
-        public Port GetVariablePort(Type type, string portName)
+        public Port GetPort(Type type, string portName, PortStyleType portType)
         {
-            Port port = null;
-            foreach (var item in Port_Inputs)
+            Port x_port = null;
+
+            switch (portType)
             {
-                if (item.Port.portName == portName)
-                {
-                    port = item.Port;
-                }
+                case PortStyleType.In:
+                    foreach (var port in Port_Inputs)
+                    {
+                        if (port.Port.portName == portName && port.Type == type)
+                        {
+                            x_port = port.Port;
+                        }
+                    }
+                    break;
+                case PortStyleType.Out:
+                    foreach (var port in Port_Outputs)
+                    {
+                        if (port.Port.portName == portName && port.Type == type)
+                        {
+                            x_port = port.Port;
+                        }
+                    }
+                    break;
             }
 
-            return port;
+            return x_port;
+        }
+        /// <summary>
+        /// 根据指定的端口名称获取输入或是输出端口
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <param name="portType"></param>
+        /// <returns></returns>
+        public Port GetPort(string portName, PortStyleType portType)
+        {
+            Port x_port = null;
+
+            switch (portType)
+            {
+                case PortStyleType.In:
+                    foreach (var port in Port_Inputs)
+                    {
+                        if (port.Port.portName == portName)
+                        {
+                            x_port = port.Port;
+                        }
+                    }
+                    break;
+                case PortStyleType.Out:
+                    foreach (var port in Port_Outputs)
+                    {
+                        if (port.Port.portName == portName)
+                        {
+                            x_port = port.Port;
+                        }
+                    }
+                    break;
+            }
+
+            return x_port;
+        }
+        /// <summary>
+        /// 获取第一个输入或是输出端口
+        /// </summary>
+        /// <param name="portType"></param>
+        /// <returns></returns>
+        public Port GetFirstPort(PortStyleType portType)
+        {
+            Port x_port = null;
+
+            switch (portType)
+            {
+                case PortStyleType.In:
+                    x_port = Port_Inputs.First().Port;
+                    break;
+                case PortStyleType.Out:
+                    x_port = Port_Outputs.First().Port;
+                    break;
+            }
+
+            return x_port;
         }
         #endregion
 
@@ -1076,6 +1216,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>        
         public void Highlight()
         {
+            if (ActionData is ActionNode_Relay relay)
+            {
+                Highlighter.style.borderBottomLeftRadius = 13;
+                Highlighter.style.borderBottomRightRadius = 13;
+                Highlighter.style.borderTopLeftRadius = 13;
+                Highlighter.style.borderTopRightRadius = 13;
+            }
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
             util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.5f);
         }
         /// <summary>

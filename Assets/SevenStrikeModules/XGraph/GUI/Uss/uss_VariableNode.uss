@@ -98,7 +98,7 @@
      border-bottom-left-radius: 18px;
 }
 
-.Highlighter
+.Variable_highlighter
 {
      position: absolute;
      width: 100%;

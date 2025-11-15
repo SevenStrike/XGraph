@@ -320,7 +320,7 @@ namespace SevenStrikeModules.XGraph
             Highlighter = new VisualElement();
             Highlighter.pickingMode = PickingMode.Ignore;
             Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("Highlighter");
+            Highlighter.AddToClassList("Variable_highlighter");
             util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, graphView.gv_GraphWindow.xw_BlackBoardView.GetVariableThemeColor(VariableData.type));
             UnHighlight();
             AppendElement(GraphNodeContainerType.MainContainer, Highlighter);

@@ -1,0 +1,173 @@
+{
+    "root_title": "节点列表",
+    "root_types": [
+        {
+            "catergory_title": "基础",
+            "catergory_icon": "category_base",
+            "catergory_nodes": [
+                {
+                    "name": "模组初始化",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_Sample_",
+                    "actionNodeType": "ModuleInitialize",
+                    "iconName": "start",
+                    "visualNodeType": "Graph_Sample_ModuleInitialize"
+                },
+                {
+                    "name": "模组激活",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_Sample_",
+                    "actionNodeType": "ModuleActivate",
+                    "iconName": "composite",
+                    "visualNodeType": "Graph_Sample_ModuleActivate"
+                },
+                {
+                    "name": "结束",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_Sample_",
+                    "actionNodeType": "End",
+                    "iconName": "end",
+                    "visualNodeType": "Graph_Sample_End"
+                },
+                {
+                    "name": "合成",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_Sample_",
+                    "actionNodeType": "Composite",
+                    "iconName": "composite",
+                    "visualNodeType": "Graph_Sample_Composite"
+                },
+                {
+                    "name": "等待",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_Sample_",
+                    "actionNodeType": "Wait",
+                    "iconName": "wait",
+                    "visualNodeType": "Graph_Sample_Wait"
+                }
+            ]
+        },
+        {
+            "catergory_title": "逻辑",
+            "catergory_icon": "category_logic",
+            "catergory_nodes": [
+                {
+                    "name": "分支",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Branch",
+                    "iconName": "branch",
+                    "visualNodeType": "VNode_Branch"
+                },
+                {
+                    "name": "延展",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Relay",
+                    "iconName": "relay",
+                    "visualNodeType": "VNode_Relay"
+                }
+            ]
+        },
+        {
+            "catergory_title": "变量",
+            "catergory_icon": "category_variable",
+            "catergory_nodes": [
+                {
+                    "name": "String",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Float",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Int",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Bool",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector2",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector3",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector4",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                },
+                {
+                    "name": "Color",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "ActionNode_",
+                    "actionNodeType": "Variable",
+                    "iconName": "variable",
+                    "visualNodeType": "VNode_Variable_Internal"
+                }
+            ]
+        },
+        {
+            "catergory_title": "零件",
+            "catergory_icon": "category_utilitys",
+            "catergory_nodes": [
+                {
+                    "name": "便签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Stick",
+                    "iconName": "stick",
+                    "visualNodeType": "VNode_Stick"
+                },
+                {
+                    "name": "标签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Label",
+                    "iconName": "label",
+                    "visualNodeType": "VNode_Label"
+                },
+                {
+                    "name": "贴图",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Decal",
+                    "iconName": "decal",
+                    "visualNodeType": "VNode_Decal"
+                }
+            ]
+        }
+    ]
+}

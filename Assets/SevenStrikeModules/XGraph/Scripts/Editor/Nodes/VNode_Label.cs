@@ -270,7 +270,7 @@ namespace SevenStrikeModules.XGraph
             Highlighter = new VisualElement();
             Highlighter.pickingMode = PickingMode.Ignore;
             Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("highlighter");
+            Highlighter.AddToClassList("Label_highlighter");
             util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, LabelData.color);
             UnHighlight();
             Add(Highlighter);
@@ -682,15 +682,17 @@ namespace SevenStrikeModules.XGraph
         {
             if (state)
             {
+                fontsizerContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
                 fontsizerContainer.style.opacity = 1;
                 fontsizerContainer.style.top = -30;
-                fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
+                //fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
             }
             else
             {
                 fontsizerContainer.style.opacity = 0;
                 fontsizerContainer.style.top = -10;
-                fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
+                //fontsizerContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
+                fontsizerContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             }
         }
         /// <summary>

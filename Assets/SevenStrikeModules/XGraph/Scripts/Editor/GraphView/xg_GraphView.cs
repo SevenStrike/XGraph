@@ -86,34 +86,23 @@ namespace SevenStrikeModules.XGraph
     }
 
     /// <summary>
-    /// PortStyle 类型
-    /// </summary>
-    public enum PortStyleType
-    {
-        /// <summary>
-        /// 输入
-        /// </summary>
-        In = 0,
-        /// <summary>
-        /// 输出
-        /// </summary>
-        Out = 1,
-    }
-
-    /// <summary>
     /// XGraph的GraphView基础件，[UxmlElement]用于在UIBuilder中出现GraphView的控件
     /// </summary>
     [UxmlElement]
     public partial class xg_GraphView : GraphView
     {
+        #region 组件
         /// <summary>
         /// XGraph 主窗口
         /// </summary>
         public xg_Window gv_GraphWindow;
         /// <summary>
-        /// 节点搜索框
+        /// 序列化解析到菜单结构列表类
         /// </summary>
-        private xg_NodesSearchBox gv_NodesSearchBox;
+        public searchBox_NodesRoot SearchStructures;
+        #endregion
+
+        #region 参数
         /// <summary>
         /// xw_graphView 内容缩放 - 最小
         /// </summary>
@@ -127,9 +116,95 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Vector2 gv_NodeCreatedPosition;
         /// <summary>
+        /// 节点颜色标记开关
+        /// </summary>
+        private bool NodeColorDisplay = false;
+        /// <summary>
+        /// 用于打开贴图选择器后选择贴图应用的模式
+        /// </summary>
+        public string SetTextureMode;
+        /// <summary>
         /// 用于存储复制的节点数据
         /// </summary>
         private List<object> gv_CopiedNodeList = new List<object>();
+        /// <summary>
+        /// 编组收集容器
+        /// </summary>
+        private Dictionary<Group, HashSet<object>> CurrentCreatedGroups = new Dictionary<Group, HashSet<object>>();
+        #endregion
+
+        #region 控件
+        /// <summary>
+        /// 节点搜索框
+        /// </summary>
+        private xg_NodesSearchBox gv_NodesSearchBox;
+        /// <summary>
+        /// 读取菜单结构列表内容
+        /// </summary>
+        public TextAsset SearchStructures_Json = null;
+        /// <summary>
+        /// IMGUI容器
+        /// </summary>
+        private IMGUIContainer m_ObjectPickerIMGUI;
+        #endregion
+
+        #region 编组与节点配色主题
+        /// <summary>
+        /// GroupTitle 颜色集
+        /// </summary>
+        public ThemesList NodeThemesList = new ThemesList();
+        #endregion
+
+        #region 背景网格 & 选择框样式
+        /// <summary>
+        /// 自定义网格背景
+        /// </summary>
+        public xg_GraphViewGridBackground GraphviewGridBackground;
+        /// <summary>
+        /// 自定义选择框
+        /// </summary>
+        private xg_GraphViewRectangleSelector GraphviewCustomRectangleSelector;
+        #endregion
+
+        #region 选择集
+        /// <summary>
+        /// 当前选中的所有Edge
+        /// </summary>
+        private List<util_AnimatedEdge> CurrentSelected_Edge = new List<util_AnimatedEdge>();
+        /// <summary>
+        /// 当前选中的所有节点 - 基础
+        /// </summary>
+        private List<Node> CurrentSelectedNodes_Base = new List<Node>();
+        /// <summary>
+        /// 当前选中的所有节点 - 贴图
+        /// </summary>
+        private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
+        /// <summary>
+        /// 当前选中的所有节点 - 变量
+        /// </summary>
+        private List<Node> CurrentSelectedNodes_Variable = new List<Node>();
+        /// <summary>
+        /// 当前选中的所有节点 - 便签
+        /// </summary>
+        private List<VNode_Stick> CurrentSelectedNodes_Stick = new List<VNode_Stick>();
+        /// <summary>
+        /// 当前选中的所有节点 - 标签
+        /// </summary>
+        private List<VNode_Label> CurrentSelectedNodes_Label = new List<VNode_Label>();
+        /// <summary>
+        /// 当前选中的所有编组
+        /// </summary>
+        private List<Group> CurrentSelectedGroups = new List<Group>();
+        #endregion
+
+        #region 背景控件
+        /// <summary>
+        /// 编辑器自定义背景贴图组件
+        /// </summary>
+        public VisualElement CustomBackground;
+        #endregion
+
+        #region 回调
         /// <summary>
         /// 当节点被选中时的回调委托
         /// </summary>
@@ -162,75 +237,14 @@ namespace SevenStrikeModules.XGraph
         /// 当节点被移除选中时的回调委托
         /// </summary>
         public Action<List<DuplicateNodeData>> OnDuplicateNodes;
+        #endregion
+
+        #region 行为资源
         /// <summary>
         /// 当前正在编辑的资源
         /// </summary>
         public ActionNode_Asset ActionTreeAsset;
-        /// <summary>
-        /// 读取菜单结构列表内容
-        /// </summary>
-        public TextAsset SearchStructures_Json = null;
-        /// <summary>
-        /// 序列化解析到菜单结构列表类
-        /// </summary>
-        public searchBox_NodesRoot SearchStructures;
-        /// <summary>
-        /// 编组收集容器
-        /// </summary>
-        private Dictionary<Group, HashSet<object>> CurrentCreatedGroups = new Dictionary<Group, HashSet<object>>();
-        /// <summary>
-        /// GroupTitle 颜色集
-        /// </summary>
-        public ThemesList ThemesList = new ThemesList();
-        /// <summary>
-        /// 当前选中的所有Edge
-        /// </summary>
-        private List<util_AnimatedEdge> CurrentSelected_Edge = new List<util_AnimatedEdge>();
-        /// <summary>
-        /// 当前选中的所有节点 - 基础
-        /// </summary>
-        private List<Node> CurrentSelectedNodes_Base = new List<Node>();
-        /// <summary>
-        /// 当前选中的所有节点 - 贴图
-        /// </summary>
-        private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
-        /// <summary>
-        /// 当前选中的所有节点 - 变量
-        /// </summary>
-        private List<Node> CurrentSelectedNodes_Variable = new List<Node>();
-        /// <summary>
-        /// 当前选中的所有节点 - 便签
-        /// </summary>
-        private List<VNode_Stick> CurrentSelectedNodes_Stick = new List<VNode_Stick>();
-        /// <summary>
-        /// 当前选中的所有节点 - 标签
-        /// </summary>
-        private List<VNode_Label> CurrentSelectedNodes_Label = new List<VNode_Label>();
-        /// <summary>
-        /// 当前选中的所有编组
-        /// </summary>
-        private List<Group> CurrentSelectedGroups = new List<Group>();
-        /// <summary>
-        /// 自定义网格背景
-        /// </summary>
-        public xg_GraphViewGridBackground GraphviewGridBackground;
-        /// <summary>
-        /// 自定义选择框
-        /// </summary>
-        private xg_GraphViewRectangleSelector GraphviewCustomRectangleSelector;
-        /// <summary>
-        /// 节点颜色标记开关
-        /// </summary>
-        private bool NodeColorDisplay = false;
-        private IMGUIContainer m_ObjectPickerIMGUI;
-        /// <summary>
-        /// 用于打开贴图选择器后选择贴图应用的模式
-        /// </summary>
-        public string SetTextureMode;
-        /// <summary>
-        /// 编辑器自定义背景贴图组件
-        /// </summary>
-        public VisualElement CustomBackground;
+        #endregion
 
         #region GraphView构造
         /// <summary>
@@ -239,7 +253,7 @@ namespace SevenStrikeModules.XGraph
         public xg_GraphView()
         {
             // 读取菜单结构列表内容
-            SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesStructure.json");
+            SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodeStructure.json");
             // 序列化解析到类
             SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(SearchStructures_Json.text);
 
@@ -276,7 +290,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 注册事件委托
-            RegisterCallback<PointerMoveEvent>(Action_MouseMove);
+            RegisterCallback<PointerMoveEvent>(Action_PointerMove);
             // 注册处理快捷键
             RegisterCallback<KeyDownEvent>(Action_KeyDown);
             // 注册鼠标点击事件
@@ -284,7 +298,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 读取Group主题色方案
-            LoadThemes();
+            LoadNodeThemes();
 
             RegisterGroupEvent();
 
@@ -350,7 +364,24 @@ namespace SevenStrikeModules.XGraph
                 CustomBackground.style.unityBackgroundImageTintColor = ActionTreeAsset.GraphviewGridBackgroundThemes.customimagecolor;
 
             if (CustomBackground != null)
-                CustomBackground.style.backgroundImage = ActionTreeAsset.GraphviewGridBackgroundThemes.customimage;
+            {
+                if (ActionTreeAsset.GraphviewGridBackgroundThemes.customimage != null)
+                {
+                    CustomBackground.style.backgroundImage = ActionTreeAsset.GraphviewGridBackgroundThemes.customimage;
+                }
+                else
+                {
+                    Texture2D tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Bg/GradientBackground.png");
+
+                    CustomBackground.style.backgroundImage = tex;
+
+                    if (ActionTreeAsset.GraphviewGridBackgroundThemes.InvertBgGradient)
+                        CustomBackground.style.scale = new StyleScale(new Scale(new Vector3(1, -1, 1)));
+                    else
+                        CustomBackground.style.scale = new StyleScale(new Scale(new Vector3(1, 1, 1)));
+
+                }
+            }
         }
         /// <summary>
         /// 刷新选择框主题
@@ -399,13 +430,13 @@ namespace SevenStrikeModules.XGraph
 
         #region 主题
         /// <summary>
-        /// 读取Group主题色方案
+        /// 读取节点主题色方案
         /// </summary>
-        private void LoadThemes()
+        private void LoadNodeThemes()
         {
-            string json_themes = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/Themes.json").text;
+            string json_themes = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodeThemes.json").text;
             //Debug.Log(json_themes);
-            ThemesList = JsonConvert.DeserializeObject<ThemesList>(json_themes);
+            NodeThemesList = JsonConvert.DeserializeObject<ThemesList>(json_themes);
         }
         /// <summary>
         /// 刷新目标节点主题配色
@@ -414,7 +445,7 @@ namespace SevenStrikeModules.XGraph
         private void RefreshTheme_GraphNode(VNode_Base node)
         {
             // 应用配置文件的颜色到节点的标识颜色
-            foreach (var colorData in ThemesList.Node)
+            foreach (var colorData in NodeThemesList.Node)
             {
                 if (colorData.solution == node.ActionData.themeSolution)
                 {
@@ -706,7 +737,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion        
 
-        #region 连线规则
+        #region 规则
         /// <summary>
         /// GraphView 组件视图内的端口连线规则
         /// </summary>
@@ -745,6 +776,22 @@ namespace SevenStrikeModules.XGraph
             }
 
             return compatiblePorts;
+        }
+        #endregion
+
+        #region 连线
+        /// <summary>
+        /// 两个端口的连线
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public util_AnimatedEdge ConnectNode(Port start, Port end)
+        {
+            util_AnimatedEdge eg = start.ConnectTo<util_AnimatedEdge>(end);
+            AddElement(eg);
+
+            return eg;
         }
         #endregion
     }

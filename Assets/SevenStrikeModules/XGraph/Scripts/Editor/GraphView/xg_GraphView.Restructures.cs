@@ -3,11 +3,9 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Unity.Collections;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEditor.UIElements;
-    using UnityEngine;
-    using UnityEngine.UIElements;
 
     public partial class xg_GraphView
     {
@@ -46,7 +44,6 @@ namespace SevenStrikeModules.XGraph
             Restructure_VariableConnector(ActionTreeAsset.Actions);
             // 根据行为节点里的  -内部变量数据列表-  来重建内部变量与行为节点指定的连线  -“Variable类型端口”
             Restructure_InternalVariableConnector(ActionTreeAsset.Actions);
-
             // 更新变量值数据
             ActionTreeAsset.Variables_Refresh();
 
@@ -64,6 +61,12 @@ namespace SevenStrikeModules.XGraph
 
             // OptionsPanel_GraphView背景颜色值设置
             util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_Bg, ActionTreeAsset.GraphviewGridBackgroundThemes.bgcolor);
+
+            // OptionsPanel_GraphView属性面板背景颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_bg_inspector, ActionTreeAsset.GraphviewGridBackgroundThemes.inspector_bgcolor);
+
+            // OptionsPanel_GraphView黑板面板背景颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_bg_blackboard, ActionTreeAsset.GraphviewGridBackgroundThemes.blackboard_bgcolor);
 
             // OptionsPanel_GraphView网格颜色值设置
             util_XGraphEditorUtility.Element_ColorField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Colorfield_Grid, ActionTreeAsset.GraphviewGridBackgroundThemes.gridcolor);
@@ -86,14 +89,14 @@ namespace SevenStrikeModules.XGraph
             // OptionsPanel_GraphView背景图像值设置
             util_XGraphEditorUtility.Element_ObjectField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Objectfield_CustomImage, ActionTreeAsset.GraphviewGridBackgroundThemes.customimage);
 
+            // OptionsPanel_GraphView 选择框坐标显示开关值设置
+            util_XGraphEditorUtility.Element_ToggleField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Toggle_Invert_Bg_Gradient, ActionTreeAsset.GraphviewGridBackgroundThemes.InvertBgGradient);
+
             // GraphviewGridBackground 网格背景主题改变
             GridBackgroundThemeUpdate();
 
             // GraphviewGridBackground 检测是否有节点
             RecheckNodesIsExist();
-
-            // OptionsPanel_GraphView 选择框坐标显示开关值设置
-            util_XGraphEditorUtility.Element_ToggleField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Toggle_DisplaySelectorCoordinate, ActionTreeAsset.GraphviewRectangleSelectorThemes.displayCoordinate);
 
             // OptionsPanel_GraphView 选择框线分段值设置
             util_XGraphEditorUtility.Element_IntegerField_ValueSet(gv_GraphWindow.xw_OptionsPanel_Integerfield_SelectorLineSegment, ActionTreeAsset.GraphviewRectangleSelectorThemes.segments);
@@ -121,7 +124,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (data is ActionNode_Variable)
                 {
-                    data.SetRoot(ActionTreeAsset);
+                    data.SetActionAssetRoot(ActionTreeAsset);
 
                     VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
                     vNode_Base.RefreshExpandedState();
@@ -136,7 +139,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (!(data is ActionNode_Variable))
                 {
-                    data.SetRoot(ActionTreeAsset);
+                    data.SetActionAssetRoot(ActionTreeAsset);
 
                     if (data.actionNodeType == "Relay")
                     {
@@ -200,9 +203,17 @@ namespace SevenStrikeModules.XGraph
 
                         foreach (var p in n_parent.Port_Outputs)
                         {
-                            util_AnimatedEdge edge = p.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs));
-                            edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                            AddElement(edge);
+                            // 确保输出端口为 ActionNode_Base 同时不是继承于 ActionNode_Base 的 VNode_Variable_Internal 的节点类型
+                            // 此处这样写是为了区分VNode_Base的行为输出端口和自定义扩展的输出端口
+                            if (p.Port.portType == typeof(ActionNode_Base) && p.Port.node.GetType() != typeof(VNode_Variable_Internal))
+                            {
+                                Port port_start = p.Port;
+                                Port port_end = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs);
+
+                                util_AnimatedEdge edge = ConnectNode(port_start, port_end);
+                                edge.OnUnSelectedEdge += OnUnSelectedEdge;
+                                AddElement(edge);
+                            }
                         }
                     }
                 }
@@ -216,6 +227,14 @@ namespace SevenStrikeModules.XGraph
                 if (n_parent is VNode_Relay relay)
                 {
                     relay.CheckConnected();
+                }
+            }
+            // 根据行为树根节点的数据列表  -  检查并重建  -  调用重建回调
+            foreach (var data in actions)
+            {
+                if (data.On_Node_Restructure != null)
+                {
+                    data.On_Node_Restructure();
                 }
             }
         }
@@ -358,7 +377,7 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
+                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, PortStyleType.In);
 
                             if (n_var != null && port_parent != null)
                             {
@@ -409,7 +428,7 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetVariablePort(type, item.TargetPortName);
+                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, PortStyleType.In);
 
                             if (n_var != null && port_parent != null)
                             {

@@ -175,7 +175,7 @@
      font-size: 13px;
 }
 
-.highlighter
+.Stick_highlighter
 {
      position: absolute;
      width: 100%;

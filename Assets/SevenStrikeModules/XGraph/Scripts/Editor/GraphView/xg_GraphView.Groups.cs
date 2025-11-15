@@ -54,7 +54,7 @@ namespace SevenStrikeModules.XGraph
             group_element_title.AddToClassList("group_title");
 
             // 应用配置文件的颜色到编组标题的文字颜色和背景颜色
-            foreach (var colorData in ThemesList.Group)
+            foreach (var colorData in NodeThemesList.Group)
             {
                 if (colorData.solution == groupData.solution)
                 {
@@ -70,9 +70,9 @@ namespace SevenStrikeModules.XGraph
             {
                 evt.menu.AppendSeparator();
                 // 菜单 - 主题色切换
-                for (int i = 0; i < ThemesList.Group.Count; i++)
+                for (int i = 0; i < NodeThemesList.Group.Count; i++)
                 {
-                    ThemeData_Group dat = ThemesList.Group[i];
+                    ThemeData_Group dat = NodeThemesList.Group[i];
                     evt.menu.AppendAction($"T 编组配色/{dat.solution}", d =>
                     {
                         Undo.RecordObject(ActionTreeAsset, "Set Group Color");
@@ -91,21 +91,22 @@ namespace SevenStrikeModules.XGraph
                                         data.solution = dat.solution;
                                     }
                                 }
-
-                                gp.Q<VisualElement>("headerContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color);
-                                gp.Q<VisualElement>("centralContainer").style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color);
-                                gp.Q<Label>("titleLabel").style.color = util_XGraphEditorUtility.Color_From_HexString(dat.title_text_color);
-                                gp.Q<Label>("groupicon").style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString(dat.logo_color);
+                                SetGroupTheme(
+                                    gp, util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color),
+                                    util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color),
+                                    util_XGraphEditorUtility.Color_From_HexString(dat.title_text_color),
+                                    util_XGraphEditorUtility.Color_From_HexString(dat.logo_color));
                             }
                         }
                         else
                         {
                             groupData.solution = dat.solution;
-
-                            group_element_header.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color);
-                            group_element_content.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color);
-                            group_element_title.style.color = util_XGraphEditorUtility.Color_From_HexString(dat.title_text_color);
-                            icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString(dat.logo_color);
+                            SetGroupTheme(
+                                group_element_header, group_element_content, group_element_title, icon,
+                                util_XGraphEditorUtility.Color_From_HexString(dat.title_bg_color),
+                                util_XGraphEditorUtility.Color_From_HexString(dat.content_bg_color),
+                                util_XGraphEditorUtility.Color_From_HexString(dat.title_text_color),
+                                util_XGraphEditorUtility.Color_From_HexString(dat.logo_color));
                         }
                     });
                 }
@@ -130,6 +131,13 @@ namespace SevenStrikeModules.XGraph
 
             // 刷新 BlackBoard 信息显示
             gv_GraphWindow.xw_BlackBoard_UpdateTitleInfo();
+
+            VisualElement group_hignlighter = new VisualElement();
+            group_hignlighter.name = "gp_highlighter";
+            group_hignlighter.AddToClassList("group_highlighter");
+            group_hignlighter.pickingMode = PickingMode.Ignore;
+            util_XGraphEditorUtility.Element_Opacity_Set(group_hignlighter, 0);
+            group.Add(group_hignlighter);
 
             return group;
         }
@@ -344,7 +352,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        private ActionGroupData FindGroupData(Group group)
+        public ActionGroupData FindGroupData(Group group)
         {
             return ActionTreeAsset.Groups.FirstOrDefault(g => g.group == group);
         }
@@ -390,13 +398,7 @@ namespace SevenStrikeModules.XGraph
                     guid = node.ActionData.guid;
 
                     // 注册委托 - 节点头像设置
-                    node.On_NodeAvatar_Set += ((n) =>
-                    {
-                        // 检查编组内是否存在设置了头像的节点
-                        CheckHasAvatarNode(groupData);
-                    });
-                    // 注册委托 - 节点头像移除
-                    node.On_NodeAvatar_Clear += ((n) =>
+                    node.ActionData.On_Node_AvatarChanged += ((n) =>
                     {
                         // 检查编组内是否存在设置了头像的节点
                         CheckHasAvatarNode(groupData);
@@ -450,10 +452,8 @@ namespace SevenStrikeModules.XGraph
                     // 获取移出的节点的guid
                     guid = node.ActionData.guid;
 
-                    // 清空委托 - 节点头像设置
-                    node.On_NodeAvatar_Set = null;
                     // 清空委托 - 节点头像移除
-                    node.On_NodeAvatar_Clear = null;
+                    node.ActionData.On_Node_AvatarChanged = null;
                 }
                 else if (item is VNode_Variable vare)
                 {
@@ -483,6 +483,62 @@ namespace SevenStrikeModules.XGraph
             }
             // 检查编组内是否存在设置了头像的节点
             CheckHasAvatarNode(groupData);
+        }
+        #endregion
+
+        #region 设置编组主题配色
+        public void SetGroupTheme(Group gp, Color title_bg_color, Color content_bg_color, Color title_text_color, Color logo_color)
+        {
+            gp.Q<VisualElement>("headerContainer").style.backgroundColor = title_bg_color;
+            gp.Q<VisualElement>("centralContainer").style.backgroundColor = content_bg_color;
+            gp.Q<Label>("titleLabel").style.color = title_text_color;
+            gp.Q<Label>("groupicon").style.unityBackgroundImageTintColor = logo_color;
+        }
+        public void SetGroupTheme(VisualElement header, VisualElement content, VisualElement title, VisualElement icon, Color title_bg_color, Color content_bg_color, Color title_text_color, Color logo_color)
+        {
+            header.style.backgroundColor = title_bg_color;
+            content.style.backgroundColor = content_bg_color;
+            title.style.color = title_text_color;
+            icon.style.unityBackgroundImageTintColor = logo_color;
+        }
+        #endregion
+
+        #region 查找匹配的主题配色
+        public ThemeData_Group FindGroupTheme(string solution)
+        {
+            ThemeData_Group t_gp = new ThemeData_Group();
+
+            for (int i = 0; i < NodeThemesList.Group.Count; i++)
+            {
+                ThemeData_Group dat = NodeThemesList.Group[i];
+                if (dat.solution == solution)
+                {
+                    t_gp = dat;
+                    break;
+                }
+            }
+
+            return t_gp;
+        }
+        #endregion
+
+        #region 高亮编组
+        /// <summary>
+        /// 高亮编组显示
+        /// </summary>        
+        public void Group_Highlight(Group group, Color col)
+        {
+            VisualElement gp_highlighter = group.Q<VisualElement>("gp_highlighter");
+            util_XGraphEditorUtility.Element_BorderColor_Set(gp_highlighter, col);
+            util_XGraphEditorUtility.Element_Opacity_Set(gp_highlighter, 1);
+        }
+        /// <summary>
+        /// 取消高亮编组显示
+        /// </summary>
+        public void Group_UnHighlight(Group group)
+        {
+            VisualElement gp_highlighter = group.Q<VisualElement>("gp_highlighter");
+            util_XGraphEditorUtility.Element_Opacity_Set(gp_highlighter, 0);
         }
         #endregion
     }

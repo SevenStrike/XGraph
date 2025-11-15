@@ -303,7 +303,7 @@ namespace SevenStrikeModules.XGraph
             Highlighter = new VisualElement();
             Highlighter.pickingMode = PickingMode.Ignore;
             Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("highlighter");
+            Highlighter.AddToClassList("Decal_highlighter");
             util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, DecalData.color);
             UnHighlight();
             Add(Highlighter);
@@ -697,15 +697,17 @@ namespace SevenStrikeModules.XGraph
         {
             if (state)
             {
+                DecalControlContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
                 DecalControlContainer.style.opacity = 1;
                 DecalControlContainer.style.top = -30;
-                DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
+                //DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Visible);
             }
             else
             {
                 DecalControlContainer.style.opacity = 0;
                 DecalControlContainer.style.top = -10;
-                DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
+                //DecalControlContainer.style.visibility = new StyleEnum<Visibility>(Visibility.Hidden);
+                DecalControlContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             }
         }
         /// <summary>

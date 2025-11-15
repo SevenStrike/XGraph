@@ -101,6 +101,8 @@ namespace SevenStrikeModules.XGraph
         public override void Draw_Main()
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
+
+            CreateHighlighter();
         }
         #endregion
     }

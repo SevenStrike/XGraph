@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -11,10 +12,10 @@ namespace SevenStrikeModules.XGraph
         /// 鼠标移动时的回调
         /// </summary>
         /// <param name="evt"></param>
-        private void Action_MouseMove(PointerMoveEvent evt)
+        private void Action_PointerMove(PointerMoveEvent evt)
         {
-            gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
-            gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
+            //gv_GraphWindow.SourceTree.LastGraphViewPosition = GetCurrentViewPosition();
+            //gv_GraphWindow.SourceTree.LastGraphViewZoom = GetCurrentZoomLevel();
             gv_GraphWindow.xw_GraphInfo_GraphMousePos_Set(GetGraphMousePosition_With_PointerEventMousePosition(evt.position));
         }
         /// <summary>
@@ -34,16 +35,18 @@ namespace SevenStrikeModules.XGraph
             if (evt.clickCount == 2 && evt.target is Edge edge)
             {
                 // 先存储边和端口信息
-                var p_child = edge.input;
                 var p_parent = edge.output;
+                var p_child = edge.input;
 
-                VNode_Base node_parent = null;
-                VNode_Base node_child = null;
-
-                if (p_parent.node is VNode_Base p_node)
-                    node_parent = p_node;
-                if (p_child.node is VNode_Base c_node)
-                    node_child = c_node;
+                // 如果是从 "行为节点"  --->  "行为节点"
+                if (!(p_parent.node is VNode_Base) && !(p_child.node is VNode_Base))
+                    return;
+                // 如果是从 "内部变量节点"  --->  "行为节点"
+                if ((p_parent.node is VNode_Variable_Internal) && (p_child.node is VNode_Base))
+                    return;
+                // 如果是从 "变量节点"  --->  "行为节点"
+                if ((p_parent.node is VNode_Variable) && (p_child.node is VNode_Base))
+                    return;
 
                 //断开并移除边
                 p_parent.Disconnect(edge);
@@ -105,6 +108,8 @@ namespace SevenStrikeModules.XGraph
 
             // 清空 BlackboardVariable 选中状态
             gv_GraphWindow.xw_BlackBoardView.VariableList.ClearSelection();
+
+
         }
         /// <summary>
         /// 处理快捷键

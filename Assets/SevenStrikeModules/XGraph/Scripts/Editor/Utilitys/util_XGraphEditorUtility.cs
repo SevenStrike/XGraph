@@ -199,6 +199,7 @@ namespace SevenStrikeModules.XGraph
             // 默认颜色为黑色
             Color nowColor = Color.black;
 
+            // 处理8位颜色码
             if (cleanHex.Length == 8)
             {
                 // 处理8位颜色码（带透明度）
@@ -213,6 +214,7 @@ namespace SevenStrikeModules.XGraph
                     nowColor.a = alphaByte / 255f;
                 }
             }
+            // 处理6位颜色码
             else if (cleanHex.Length == 6)
             {
                 // 处理6位颜色码（无透明度）
@@ -271,15 +273,24 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 将Color类型转换到十六进制颜色码字符串
         /// </summary>
-        /// <param name="nodecolor">填写需要转换成字符串格式的Color类型</param>
-        /// <param name="HasPrefixSymbol">True：前缀带有 # 号，False：无_None # 号前缀</param>
-        /// <returns>此方法返回类型为 -> 字符串_String</returns>
-        public static string Color_To_HexColor(Color color, bool HasPrefixSymbol = false)
+        /// <param name="color">需要转换成字符串格式的Color类型</param>
+        /// <param name="includeAlpha">是否包含透明度通道</param>
+        /// <param name="hasPrefixSymbol">True：前缀带有 # 号，False：无 # 号前缀</param>
+        /// <returns>十六进制颜色码字符串</returns>
+        public static string Color_To_HexColor(Color color, bool includeAlpha = false, bool hasPrefixSymbol = false)
         {
-            if (HasPrefixSymbol)
-                return "#" + ColorUtility.ToHtmlStringRGB(color);
+            if (includeAlpha)
+            {
+                // 使用Unity内置方法处理8位颜色码（包含透明度）
+                string hexString = ColorUtility.ToHtmlStringRGBA(color);
+                return hasPrefixSymbol ? "#" + hexString : hexString;
+            }
             else
-                return ColorUtility.ToHtmlStringRGB(color);
+            {
+                // 使用Unity内置方法处理6位颜色码
+                string hexString = ColorUtility.ToHtmlStringRGB(color);
+                return hasPrefixSymbol ? "#" + hexString : hexString;
+            }
         }
         /// <summary>
         /// 将Color类型转换到字符串
@@ -688,6 +699,64 @@ namespace SevenStrikeModules.XGraph
                 }
             }
             return port;
+        }
+        #endregion
+
+        #region XGraph窗口获取
+        /// <summary>
+        /// 获取XGraph的主窗口
+        /// </summary>
+        /// <returns></returns>
+        public static xg_Window GetGraphviewWindow()
+        {
+            return EditorWindow.GetWindow<xg_Window>();
+        }
+        #endregion
+
+        /// <summary>
+        /// 拷贝文本到系统剪贴板
+        /// </summary>
+        /// <param name="text">要拷贝的文本</param>
+        public static void CopyToClipboard(string text)
+        {
+            GUIUtility.systemCopyBuffer = text;
+        }
+
+        #region 弹窗提示
+        /// <summary>
+        /// 弹窗提示
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
+        /// <param name="ok"></param>
+        public static void DialogMsg(string title, string text, string ok)
+        {
+            EditorUtility.DisplayDialog(title, text, ok);
+        }
+
+        /// <summary>
+        /// 弹窗提示
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
+        /// <param name="ok"></param>
+        /// <param name="cancel"></param>
+        public static void DialogMsg(string title, string text, string ok, string cancel = null)
+        {
+            EditorUtility.DisplayDialog(title, text, ok, cancel);
+        }
+
+        /// <summary>
+        /// 弹窗提示
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
+        /// <param name="ok"></param>
+        /// <param name="cancel"></param>
+        /// <param name="alt"></param>
+        public static void DialogMsg(string title, string text, string ok, string cancel = null, string alt = null)
+        {
+            EditorUtility.DisplayDialogComplex(title, text, ok, cancel, alt);
         }
         #endregion
     }

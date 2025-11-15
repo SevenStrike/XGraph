@@ -2,12 +2,32 @@
 {
     using System;
     using System.Collections.Generic;
+    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
+
+    public class WindowThemeParams
+    {
+        public string solution;
+        public string col_bg;
+        public string col_grid;
+        public string col_thickLine;
+        public string col_customimage;
+        public string col_theme;
+        public string col_blackboard_bg;
+        public string col_inspector_bg;
+        public float val_griddistance;
+        public int val_thicklines;
+    }
+
+    public class WindowThemeList
+    {
+        public List<WindowThemeParams> Themes = new List<WindowThemeParams>();
+    }
 
     public class xg_Window : EditorWindow
     {
@@ -89,6 +109,14 @@
         /// </summary>
         internal ColorField xw_OptionsPanel_Colorfield_ThemeColor;
         /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 黑板变量面板背景色
+        /// </summary>
+        internal ColorField xw_OptionsPanel_Colorfield_bg_blackboard;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 属性面板背景色
+        /// </summary>
+        internal ColorField xw_OptionsPanel_Colorfield_bg_inspector;
+        /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 选择框颜色
         /// </summary>
         internal ColorField xw_OptionsPanel_Colorfield_RectangleSelector;
@@ -109,6 +137,14 @@
         /// </summary>
         internal ObjectField xw_OptionsPanel_Objectfield_CustomImage;
         /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 复位主题配色参数
+        /// </summary>
+        internal Button xw_OptionsPanel_Button_ResetThemeColors;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 设置主题配色参数
+        /// </summary>
+        internal Button xw_OptionsPanel_Button_SetThemeColors;
+        /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 复位背景参数
         /// </summary>
         internal Button xw_OptionsPanel_Button_ResetGridBackGround;
@@ -120,6 +156,10 @@
         /// Graphview编辑器的组件 - 选项面板 - 显示选择框坐标
         /// </summary>
         internal Toggle xw_OptionsPanel_Toggle_DisplaySelectorCoordinate;
+        /// <summary>
+        /// Graphview编辑器的组件 - 选项面板 - 背景反转
+        /// </summary>
+        internal Toggle xw_OptionsPanel_Toggle_Invert_Bg_Gradient;
         #endregion
 
         #region 控件
@@ -233,7 +273,7 @@
         /// <summary>
         /// 当前选中的视觉节点
         /// </summary>
-        Node xw_currentSelectedVisualNode;
+        public Node xw_currentSelectedVisualNode;
         /// <summary>
         /// 此参数用于当取消选中视觉节点的时候的单次执行的判断开关，
         /// </summary>
@@ -318,7 +358,7 @@
                 wnd.xw_graphView.SetViewPosition(wnd.CloneTree.LastGraphViewPosition, wnd.CloneTree.LastGraphViewZoom);
                 #endregion
 
-                #region 移动式属性面板的状态恢复
+                #region 属性面板的状态恢复
                 // 获取最后一次的移动式属性面板开关状态
                 bool inspector_view_toggle = wnd.CloneTree.XGraph_InspectorViewDisplay;
                 // 设置 InspectorViewer 容器可见性
@@ -331,11 +371,11 @@
                     if (wnd.CloneTree != null)
                         wnd.xw_InspectorView.InspectorViewer(wnd.CloneTree);
                 }
-
+                wnd.xw_InspectorView_Container.style.backgroundColor = wnd.CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor;
                 wnd.InspectorViewAction_SetTitle($"{wnd.SourceTree.name} 行为根节点属性");
                 #endregion
 
-                #region 黑板属性面板的状态恢复
+                #region 黑板面板的状态恢复
                 // 获取最后一次的黑板面板开关状态
                 bool blackboard_view_toggle = wnd.CloneTree.XGraph_BlackBoardViewDisplay;
                 // 设置 BlackBoardView  容器可见性
@@ -383,7 +423,7 @@
                 EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
 
                 // 如果最后一次窗口尺寸值不为0则使用最后一次的窗口尺寸，否则就是用默认窗口尺寸，这里使用的 SourceTree 的原因是因为窗口尺寸这个变量不受克隆影响
-                xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1260, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
+                xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1330, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
                 #endregion
 
                 #region 根据资源结构重建可视化行为树节点
@@ -545,29 +585,112 @@
             xw_OptionsContainerRegion_Reg_Other = xw_OptionsContainer.Q<VisualElement>("reg_other");
             #endregion
 
+            VisualElement vm_col_bg = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_bg");
+            VisualElement vm_col_grid = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_grid");
+            VisualElement vm_col_thickline = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_thickline");
+            VisualElement vm_col_customimg = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_bgimage");
+            VisualElement vm_col_theme = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_themecolor");
+            VisualElement vm_col_blackboard = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_bg_blackboard");
+            VisualElement vm_col_inspector = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_bg_inspector");
+            VisualElement vm_toggle_invert_bg_gradient = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "toggle_invert_bg_gradient");
+
             #region GraphView背景颜色组件
-            xw_OptionsPanel_Colorfield_Bg = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_bg");
+            xw_OptionsPanel_Colorfield_Bg = vm_col_bg.Q<ColorField>(name: "colorfield");
             xw_OptionsPanel_Colorfield_Bg.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Bg_changed);
+            vm_col_bg.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Bg.value, true));
+                }
+            });
             #endregion
 
             #region GraphView背景网格颜色组件
-            xw_OptionsPanel_Colorfield_Grid = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_grid");
-            xw_OptionsPanel_Colorfield_Grid.RegisterValueChangedCallback(on_xw_OptionsPanel_Color_Grid_changed);
+            xw_OptionsPanel_Colorfield_Grid = vm_col_grid.Q<ColorField>(name: "colorfield");
+            xw_OptionsPanel_Colorfield_Grid.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_Grid_changed);
+            vm_col_grid.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Grid.value, true));
+                }
+            });
             #endregion
 
             #region GraphView背景网格分界线颜色组件
-            xw_OptionsPanel_Colorfield_Thickline = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_thickline");
+            xw_OptionsPanel_Colorfield_Thickline = vm_col_thickline.Q<ColorField>(name: "colorfield");
             xw_OptionsPanel_Colorfield_Thickline.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_Thickline_changed);
+            vm_col_thickline.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Thickline.value, true));
+                }
+            });
             #endregion
 
             #region GraphView背景图像着色颜色组件
-            xw_OptionsPanel_Colorfield_CustomImage = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_customimage");
+            xw_OptionsPanel_Colorfield_CustomImage = vm_col_customimg.Q<ColorField>(name: "colorfield");
             xw_OptionsPanel_Colorfield_CustomImage.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_CustomImage_changed);
+            vm_col_customimg.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_CustomImage.value, true));
+                }
+            });
             #endregion
 
-            #region GraphView背景图像着色颜色组件
-            xw_OptionsPanel_Colorfield_ThemeColor = xw_OptionsContainerRegion_Reg_Color.Q<ColorField>(name: "colorfield_themecolor");
+            #region GraphView主题色颜色组件
+            xw_OptionsPanel_Colorfield_ThemeColor = vm_col_theme.Q<ColorField>(name: "colorfield");
             xw_OptionsPanel_Colorfield_ThemeColor.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_ThemeColor_changed);
+            vm_col_theme.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_ThemeColor.value, true));
+                }
+            });
+            #endregion
+
+            #region BlackBoard 背景色颜色组件
+            xw_OptionsPanel_Colorfield_bg_blackboard = vm_col_blackboard.Q<ColorField>(name: "colorfield");
+            xw_OptionsPanel_Colorfield_bg_blackboard.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_bg_blackboard_changed);
+            vm_col_blackboard.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_bg_blackboard.value, true));
+                }
+            });
+            #endregion
+
+            #region Inspector 背景色颜色组件
+            xw_OptionsPanel_Colorfield_bg_inspector = vm_col_inspector.Q<ColorField>(name: "colorfield");
+            xw_OptionsPanel_Colorfield_bg_inspector.RegisterValueChangedCallback(on_xw_OptionsPanel_Colorfield_bg_inspector_changed);
+            vm_col_inspector.Q<Label>(name: "title").RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
+                {
+                    util_XGraphEditorUtility.CopyToClipboard(util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_bg_inspector.value, true));
+                }
+            });
+            #endregion
+
+            #region Inspector 背景色颜色组件
+            xw_OptionsPanel_Toggle_Invert_Bg_Gradient = vm_toggle_invert_bg_gradient.Q<Toggle>(name: "toggle");
+            xw_OptionsPanel_Toggle_Invert_Bg_Gradient.RegisterValueChangedCallback(on_xw_OptionsPanel_Toggle_Invert_Bg_Gradient_changed);
+            #endregion
+
+            #region GraphView主题配色复位按钮
+            xw_OptionsPanel_Button_ResetThemeColors = xw_OptionsContainerRegion_Reg_Color.Q<Button>(name: "button_theme_reset");
+            xw_OptionsPanel_Button_ResetThemeColors.clicked += xw_OptionsPanel_Button_ResetThemeColors_Clicked;
+            #endregion
+
+            #region GraphView主题配色设置按钮
+            xw_OptionsPanel_Button_SetThemeColors = xw_OptionsContainerRegion_Reg_Color.Q<Button>(name: "button_theme_set");
+            xw_OptionsPanel_Button_SetThemeColors.RegisterCallback<ClickEvent>(xw_OptionsPanel_Button_SetThemeColors_Clicked);
             #endregion
 
             #region GraphView背景网格间距输入框组件
@@ -586,7 +709,7 @@
             #endregion
 
             #region GraphView背景参数复位按钮
-            xw_OptionsPanel_Button_ResetGridBackGround = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "resetbutton");
+            xw_OptionsPanel_Button_ResetGridBackGround = xw_OptionsContainerRegion_Reg_Params.Q<Button>(name: "button_reset");
             xw_OptionsPanel_Button_ResetGridBackGround.clicked += xw_OptionsPanel_Button_Reset_Clicked;
             #endregion
 
@@ -643,7 +766,7 @@
             #endregion
 
             #region RectangleSelector 复位按钮
-            xw_OptionsPanel_Button_ResetRectangleSelector = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<Button>(name: "resetbutton");
+            xw_OptionsPanel_Button_ResetRectangleSelector = xw_OptionsContainerRegion_Reg_RectangleSelector.Q<Button>(name: "button_reset");
             xw_OptionsPanel_Button_ResetRectangleSelector.clicked += xw_OptionsPanel_Button_ResetRectangleSelector_Clicked;
             #endregion
 
@@ -1241,15 +1364,20 @@
             Undo.RecordObject(CloneTree, "Change Graphview BgColor");
             CloneTree.GraphviewGridBackgroundThemes.bgcolor = evt.newValue;
             xw_graphView.GridBackgroundThemeUpdate();
+
+            string col_tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Bg.value, true, true);
+            xw_OptionsPanel_Colorfield_Bg.tooltip = col_tooltip;
         }
         #endregion
 
         #region OptionsPanel_GraphViewGrid颜色组件逻辑
-        private void on_xw_OptionsPanel_Color_Grid_changed(ChangeEvent<Color> evt)
+        private void on_xw_OptionsPanel_Colorfield_Grid_changed(ChangeEvent<Color> evt)
         {
             Undo.RecordObject(CloneTree, "Change Graphview GridColor");
             CloneTree.GraphviewGridBackgroundThemes.gridcolor = evt.newValue;
             xw_graphView.GridBackgroundThemeUpdate();
+
+            xw_OptionsPanel_Colorfield_Grid.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Grid.value, true, true);
         }
         #endregion
 
@@ -1259,6 +1387,8 @@
             Undo.RecordObject(CloneTree, "Change Graphview ThicklineColor");
             CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = evt.newValue;
             xw_graphView.GridBackgroundThemeUpdate();
+
+            xw_OptionsPanel_Colorfield_Thickline.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_Thickline.value, true, true);
         }
         #endregion
 
@@ -1268,6 +1398,8 @@
             Undo.RecordObject(CloneTree, "Change Graphview CustomImageColor");
             CloneTree.GraphviewGridBackgroundThemes.customimagecolor = evt.newValue;
             xw_graphView.GridBackgroundThemeUpdate();
+
+            xw_OptionsPanel_Colorfield_CustomImage.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_CustomImage.value, true, true);
         }
         #endregion
 
@@ -1283,8 +1415,34 @@
             xw_label_graph_nodeinfo_header_ColorSyncUpdate();
             xw_label_graph_nodeinfo_footer_ColorSyncUpdate();
 
+            xw_OptionsPanel_Colorfield_ThemeColor.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_ThemeColor.value, true, true);
+
             if (OnThemeColorChanged != null)
                 OnThemeColorChanged.Invoke(CloneTree.GraphviewGridBackgroundThemes.themecolor);
+        }
+        #endregion
+
+        #region OptionsPanel_BlackBoard 背景色组件逻辑
+        private void on_xw_OptionsPanel_Colorfield_bg_inspector_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview bg_inspectorColor");
+            CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor = evt.newValue;
+
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(xw_InspectorView_Container, CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor);
+
+            xw_OptionsPanel_Colorfield_bg_inspector.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_bg_inspector.value, true, true);
+        }
+        #endregion
+
+        #region OptionsPanel_Inspector 背景色组件逻辑
+        private void on_xw_OptionsPanel_Colorfield_bg_blackboard_changed(ChangeEvent<Color> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview bg_blackboardColor");
+            CloneTree.GraphviewGridBackgroundThemes.blackboard_bgcolor = evt.newValue;
+
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(xw_BlackBoardView_Container, CloneTree.GraphviewGridBackgroundThemes.blackboard_bgcolor);
+
+            xw_OptionsPanel_Colorfield_bg_blackboard.tooltip = util_XGraphEditorUtility.Color_To_HexColor(xw_OptionsPanel_Colorfield_bg_blackboard.value, true, true);
         }
         #endregion
 
@@ -1425,15 +1583,100 @@
         /// </summary>
         private void xw_OptionsPanel_Button_Reset_Clicked()
         {
-            CloneTree.GraphviewGridBackgroundThemes.bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
-            CloneTree.GraphviewGridBackgroundThemes.gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
-            CloneTree.GraphviewGridBackgroundThemes.customimagecolor = new Color(1, 1, 1, 0);
-            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = new Color(0, 0, 0, 0);
             CloneTree.GraphviewGridBackgroundThemes.spacing = 18;
             CloneTree.GraphviewGridBackgroundThemes.thicklines = 18;
             CloneTree.GraphviewGridBackgroundThemes.customimage = null;
-            CloneTree.GraphviewGridBackgroundThemes.themecolor = new Color(0.23f, 0.99f, 0.60f, 1);
 
+            OptionsPanel_ParamsUpdate();
+
+            xw_graphView.GridBackgroundThemeUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的主题配色设置
+        /// <summary>
+        /// 弹出主题配色菜单对节点编辑器配色样式设定
+        /// </summary>
+        private void xw_OptionsPanel_Button_SetThemeColors_Clicked(ClickEvent evt)
+        {
+            Button btn = evt.target as Button;
+
+            if (btn != null)
+            {
+                // 获取按钮在屏幕上的位置
+                Vector2 screenPosition = btn.worldBound.position;
+
+                // 调整位置，让菜单出现在按钮下方
+                screenPosition.y += btn.worldBound.height;
+
+                // 创建上下文菜单
+                var menu = new GenericMenu();
+
+                // 读取菜单结构列表内容
+                string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/WindowThemes.json").text;
+                WindowThemeList themelist = JsonConvert.DeserializeObject<WindowThemeList>(json);
+
+                foreach (var theme in themelist.Themes)
+                {
+                    // 添加菜单项
+                    menu.AddItem(new GUIContent(theme.solution), false, () =>
+                    {
+                        CloneTree.GraphviewGridBackgroundThemes.bgcolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_bg);
+                        CloneTree.GraphviewGridBackgroundThemes.gridcolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_grid);
+                        CloneTree.GraphviewGridBackgroundThemes.customimagecolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_customimage);
+                        CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_thickLine);
+                        CloneTree.GraphviewGridBackgroundThemes.themecolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_theme);
+                        CloneTree.GraphviewGridBackgroundThemes.blackboard_bgcolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_blackboard_bg);
+                        CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor = util_XGraphEditorUtility.Color_From_HexString(theme.col_inspector_bg);
+                        CloneTree.GraphviewGridBackgroundThemes.spacing = theme.val_griddistance;
+                        CloneTree.GraphviewGridBackgroundThemes.thicklines = theme.val_thicklines;
+
+                        xw_graphView.GridBackgroundThemeUpdate();
+                        OptionsPanel_ParamsUpdate();
+                    });
+                }
+
+                // 显示菜单
+                menu.DropDown(new Rect(screenPosition, Vector2.zero));
+            }
+
+            // 阻止事件继续传播
+            evt.StopPropagation();
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的主题配色复位
+        /// <summary>
+        /// 复位选项面板的主题配色参数
+        /// </summary>
+        private void xw_OptionsPanel_Button_ResetThemeColors_Clicked()
+        {
+            CloneTree.GraphviewGridBackgroundThemes.bgcolor = new Color(0.1647059f, 0.1647059f, 0.1647059f, 0.6862745f);
+            CloneTree.GraphviewGridBackgroundThemes.gridcolor = new Color(0.5803922f, 0.5803922f, 0.5803922f, 0.04705882f);
+            CloneTree.GraphviewGridBackgroundThemes.customimagecolor = new Color(0.5607843f, 0.5607843f, 0.5607843f, 0.9294118f);
+            CloneTree.GraphviewGridBackgroundThemes.thickLinecolor = new Color(0.5529412f, 0.5529412f, 0.5529412f, 0f);
+            CloneTree.GraphviewGridBackgroundThemes.themecolor = new Color(0.2313726f, 0.9882353f, 0.6f, 1);
+            CloneTree.GraphviewGridBackgroundThemes.blackboard_bgcolor = new Color(0.2705882f, 0.2705882f, 0.2705882f, 0.8784314f);
+            CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor = new Color(0.2705882f, 0.2705882f, 0.2705882f, 0.8784314f);
+            CloneTree.GraphviewGridBackgroundThemes.customimage = null;
+
+            OptionsPanel_ParamsUpdate();
+
+            xw_graphView.GridBackgroundThemeUpdate();
+        }
+        #endregion
+
+        #region OptionsPanel Graphview 选项面板的主题背景反转
+        /// <summary>
+        /// 选项面板的背景渐变反转
+        /// </summary>
+        /// <param name="evt"></param>
+        private void on_xw_OptionsPanel_Toggle_Invert_Bg_Gradient_changed(ChangeEvent<bool> evt)
+        {
+            Undo.RecordObject(CloneTree, "Change Graphview Invert_Bg_Gradient");
+            CloneTree.GraphviewGridBackgroundThemes.InvertBgGradient = evt.newValue;
+
+            xw_graphView.GridBackgroundThemeUpdate();
             OptionsPanel_ParamsUpdate();
         }
         #endregion
@@ -1449,6 +1692,12 @@
 
             // OptionsPanel_GraphView背景颜色值设置
             util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_Bg, CloneTree.GraphviewGridBackgroundThemes.bgcolor);
+
+            // OptionsPanel_GraphView属性面板背景颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_bg_inspector, CloneTree.GraphviewGridBackgroundThemes.inspector_bgcolor);
+
+            // OptionsPanel_GraphView黑板面板背景颜色值设置
+            util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_bg_blackboard, CloneTree.GraphviewGridBackgroundThemes.blackboard_bgcolor);
 
             // OptionsPanel_GraphView网格颜色值设置
             util_XGraphEditorUtility.Element_ColorField_ValueSet(xw_OptionsPanel_Colorfield_Grid, CloneTree.GraphviewGridBackgroundThemes.gridcolor);
@@ -1470,6 +1719,9 @@
 
             // OptionsPanel_GraphView 选择框坐标显示开关值设置
             util_XGraphEditorUtility.Element_ToggleField_ValueSet(xw_OptionsPanel_Toggle_DisplaySelectorCoordinate, CloneTree.GraphviewRectangleSelectorThemes.displayCoordinate);
+
+            // OptionsPanel_GraphView 选择框坐标显示开关值设置
+            util_XGraphEditorUtility.Element_ToggleField_ValueSet(xw_OptionsPanel_Toggle_Invert_Bg_Gradient, CloneTree.GraphviewGridBackgroundThemes.InvertBgGradient);
 
             // OptionsPanel_GraphView 选择框线分段值设置
             util_XGraphEditorUtility.Element_IntegerField_ValueSet(xw_OptionsPanel_Integerfield_SelectorLineSegment, CloneTree.GraphviewRectangleSelectorThemes.segments);

@@ -15,7 +15,8 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-
+            if (On_Node_Excute != null)
+                On_Node_Excute();
         }
 
         #region 回调
@@ -33,10 +34,7 @@ namespace SevenStrikeModules.XGraph
         #region 辅助
         public void SetWaitTime(string portName)
         {
-            Variable variable = Variable_Get(portName);
-
-            if (variable != null)
-                Time = variable.GetValue<float>();
+            PortValue_Set<float>(portName, value => Time = value);
         }
         #endregion
     }

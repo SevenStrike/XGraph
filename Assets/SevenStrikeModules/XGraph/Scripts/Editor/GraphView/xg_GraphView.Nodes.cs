@@ -70,6 +70,7 @@ namespace SevenStrikeModules.XGraph
                     args.content = actionnode.content;
                     args.position = actionnode.nodeGraphPosition + new Vector2(81, 46.5f);
                     args.size = actionnode.nodeGraphSize;
+                    args.isConcurrentExecution = actionnode.isConcurrentExecution;
 
                     // 为变量类型节点数据特化处理，需要初始化类型 Variable
                     if (actionnode is ActionNode_Variable avnode)
@@ -110,8 +111,13 @@ namespace SevenStrikeModules.XGraph
                                 break;
                         }
                     }
+                    VNode_Base node = CreateNode(args) as VNode_Base;
 
-                    dupData.DuplicatedNode = CreateNode(args);
+                    // 调用克隆出来的节点的克隆回调
+                    if (node.ActionData.On_Node_Duplicated != null)
+                        node.ActionData.On_Node_Duplicated(node.ActionData, target_base.ActionData);
+
+                    dupData.DuplicatedNode = node;
                 }
                 // 如果克隆的节点为： VNode_Stick
                 else if (original is VNode_Stick target_stick)
@@ -327,6 +333,7 @@ namespace SevenStrikeModules.XGraph
                         NodeCreateArgs_Decal args = new NodeCreateArgs_Decal();
                         args.size = data.size;
                         args.opacity = data.opacity;
+                        args.color = data.color;
                         args.hasTexture = data.HasTexture;
                         args.decalTexture = data.DecalTexture;
                         args.position = realpos;
@@ -368,6 +375,8 @@ namespace SevenStrikeModules.XGraph
                         args.content = data.content;
                         args.opacity = data.opacity;
                         args.position = realpos;
+                        args.font = data.font;
+                        args.color = data.color;
                         args.bold = data.bold;
                         args.italic = data.italic;
                         args.fontSize = data.fontSize;
@@ -744,7 +753,7 @@ namespace SevenStrikeModules.XGraph
             visualNode.RefreshPorts();
             visualNode.CheckTransparentDisplay(args.transparentNode);
             visualNode.CheckAvatarChanged();
-
+            visualNode.CheckExecutionModel();
             return visualNode;
         }
         /// <summary>

@@ -317,7 +317,7 @@ namespace SevenStrikeModules.XGraph
             Highlighter = new VisualElement();
             Highlighter.pickingMode = PickingMode.Ignore;
             Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("highlighter");
+            Highlighter.AddToClassList("Stick_highlighter");
             util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, Color.white);
             UnHighlight();
             AppendElement(GraphNodeContainerType.MainContainer, Highlighter);

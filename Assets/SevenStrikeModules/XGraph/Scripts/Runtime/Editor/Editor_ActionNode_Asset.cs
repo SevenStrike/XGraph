@@ -159,13 +159,13 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    VNode_Base act_node = GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
+                    VNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
                     act_node.Highlight();
                 });
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    VNode_Base act_node = GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
+                    VNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
                     act_node.UnHighlight();
                 });
             }
@@ -195,14 +195,14 @@ namespace SevenStrikeModules.XGraph
                 container_icon.AddToClassList("llist_variable_icon_actionasset");
                 container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
                 container_title.Add(container_icon);
-                container_icon.style.unityBackgroundImageTintColor = GetGraphviewWindow().xw_BlackBoardView.GetVariableThemeColor(vare.type);
+                container_icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.GetVariableThemeColor(vare.type);
 
                 Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{vare.name}", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    List<VNode_Variable> var_nodes = GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
+                    List<VNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
                     foreach (var node in var_nodes)
                     {
                         node.Highlight();
@@ -211,7 +211,7 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    List<VNode_Variable> var_nodes = GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
+                    List<VNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
                     foreach (var node in var_nodes)
                     {
                         node.UnHighlight();
@@ -250,14 +250,14 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
                     if (var_nodes is VNode_Stick sk)
                         sk.Highlight();
                 });
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
                     if (var_nodes is VNode_Stick sk)
                         sk.UnHighlight();
                 });
@@ -294,14 +294,14 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(label.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(label.guid);
                     if (var_nodes is VNode_Label sk)
                         sk.Highlight();
                 });
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(label.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(label.guid);
                     if (var_nodes is VNode_Label sk)
                         sk.UnHighlight();
                 });
@@ -338,14 +338,14 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
                     if (var_nodes is VNode_Decal dc)
                         dc.Highlight();
                 });
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    Node var_nodes = GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
                     if (var_nodes is VNode_Decal dc)
                         dc.UnHighlight();
                 });
@@ -379,6 +379,18 @@ namespace SevenStrikeModules.XGraph
 
                 Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{group.name} ", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_GraphView graph = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView;
+                    graph.Group_Highlight(group.group, util_XGraphEditorUtility.Color_From_HexString(graph.FindGroupTheme(group.solution).title_bg_color));
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    xg_GraphView graph = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView;
+                    graph.Group_UnHighlight(group.group);
+                });
             }
         }
         #endregion
@@ -402,14 +414,6 @@ namespace SevenStrikeModules.XGraph
             sp_LastGraphViewZoom = serializedObject.FindProperty("LastGraphViewZoom");
             sp_LastSaveDateTime = serializedObject.FindProperty("LastSaveDateTime");
             #endregion
-        }
-        /// <summary>
-        /// 获取XGraph的主窗口
-        /// </summary>
-        /// <returns></returns>
-        public xg_Window GetGraphviewWindow()
-        {
-            return EditorWindow.GetWindow<xg_Window>();
         }
         #endregion
     }

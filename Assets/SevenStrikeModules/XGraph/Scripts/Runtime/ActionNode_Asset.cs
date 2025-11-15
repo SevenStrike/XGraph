@@ -3,13 +3,11 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
-    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
     using Object = UnityEngine.Object;
 
@@ -32,6 +30,7 @@ namespace SevenStrikeModules.XGraph
         public string themeSolution;
         public Color themeColor;
         public bool transparentNode;
+        public bool isConcurrentExecution;
         public string content;
         public Vector2 position;
         public Vector2 size;
@@ -519,34 +518,17 @@ namespace SevenStrikeModules.XGraph
     }
     #endregion
 
-    #region 变量连接器
+    #region 端口绑定信息
     [Serializable]
-    public class VarialbleGuidConnector
+    public class BindInfo_Varialble
     {
         [SerializeField] public string TargetPortName;
         [SerializeField] public string VariableNodeGuid;
         [SerializeReference] public Variable variable;
 
-        public VarialbleGuidConnector() { }
+        public BindInfo_Varialble() { }
 
-        public VarialbleGuidConnector(string guid, string name, Variable variable)
-        {
-            this.VariableNodeGuid = guid;
-            this.TargetPortName = name;
-            this.variable = variable.Clone(false);
-        }
-    }
-
-    [Serializable]
-    public class VarialbleInternalGuidConnector
-    {
-        [SerializeField] public string TargetPortName;
-        [SerializeField] public string VariableNodeGuid;
-        [SerializeReference] public Variable variable;
-
-        public VarialbleInternalGuidConnector() { }
-
-        public VarialbleInternalGuidConnector(string guid, string name, Variable variable)
+        public BindInfo_Varialble(string guid, string name, Variable variable)
         {
             this.VariableNodeGuid = guid;
             this.TargetPortName = name;
@@ -1204,11 +1186,14 @@ namespace SevenStrikeModules.XGraph
     /// </summary>
     public class GraphviewGridBackgroundThemes
     {
-        public Color bgcolor = new Color(0.15f, 0.15f, 0.15f, 1);
-        public Color gridcolor = new Color(0.18f, 0.18f, 0.18f, 1);
-        public Color customimagecolor = new Color(1, 1, 1, 0);
-        public Color thickLinecolor = new Color(0, 0, 0, 0);
-        public Color themecolor = new Color(0.23f, 0.99f, 0.60f, 1);
+        public Color bgcolor = new Color(0.1647059f, 0.1647059f, 0.1647059f, 0.6862745f);
+        public Color gridcolor = new Color(0.5803922f, 0.5803922f, 0.5803922f, 0.04705882f);
+        public Color customimagecolor = new Color(0.5607843f, 0.5607843f, 0.5607843f, 0.9294118f);
+        public Color thickLinecolor = new Color(0.5529412f, 0.5529412f, 0.5529412f, 0f);
+        public Color themecolor = new Color(0.2313726f, 0.9882353f, 0.6f, 1);
+        public Color blackboard_bgcolor = new Color(0.2705882f, 0.2705882f, 0.2705882f, 0.8784314f);
+        public Color inspector_bgcolor = new Color(0.2705882f, 0.2705882f, 0.2705882f, 0.8784314f);
+        public bool InvertBgGradient;
         public float spacing = 18;
         public int thicklines = 18;
         public Texture2D customimage;
@@ -1221,11 +1206,14 @@ namespace SevenStrikeModules.XGraph
             t.bgcolor = bgcolor;
             t.gridcolor = gridcolor;
             t.thickLinecolor = thickLinecolor;
+            t.blackboard_bgcolor = blackboard_bgcolor;
+            t.inspector_bgcolor = inspector_bgcolor;
             t.spacing = spacing;
             t.thicklines = thicklines;
             t.customimagecolor = customimagecolor;
             t.customimage = customimage;
             t.themecolor = themecolor;
+            t.InvertBgGradient = InvertBgGradient;
             return t;
         }
     }
@@ -1321,33 +1309,31 @@ namespace SevenStrikeModules.XGraph
     public class DuplicateNodeData
     {
         public string SourceNodeGuid;
-        public object DuplicatedNode;
+#if UNITY_EDITOR
+        public Node DuplicatedNode;
+#endif
     }
     #endregion
+
+    /// <summary>
+    /// PortStyle 类型
+    /// </summary>
+    public enum PortStyleType
+    {
+        /// <summary>
+        /// 输入
+        /// </summary>
+        In = 0,
+        /// <summary>
+        /// 输出
+        /// </summary>
+        Out = 1,
+    }
 
     [CreateAssetMenu(fileName = "NewXGraph", menuName = "XGraphAsset")]
     public class ActionNode_Asset : ScriptableObject
     {
-        /// <summary>
-        /// 黑板变量数值更新后的回调
-        /// </summary>
-        public Action On_VariablesValue_Changed;
-        /// <summary>
-        /// Graphview窗口尺寸变化的回调
-        /// </summary>
-        public Action<Vector2> On_GraphviewSize_Changed;
-        /// <summary>
-        /// Graphview视口位置化的回调
-        /// </summary>
-        public Action<Vector2> On_GraphviewPos_Changed;
-        /// <summary>
-        /// Graphview视口缩放化的回调
-        /// </summary>
-        public Action<float> On_GraphviewZoom_Changed;
-        /// <summary>
-        /// Graphview最后一次保存的回调
-        /// </summary>
-        public Action<string> On_GraphviewLastSave_Changed;
+        #region Graphview 基础参数
         /// <summary>
         /// 记录的节点编辑器最后一次的窗口尺寸
         /// </summary>
@@ -1364,6 +1350,9 @@ namespace SevenStrikeModules.XGraph
         /// 最后一次保存时间
         /// </summary>
         [SerializeField] public string LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+        #endregion
+
+        #region 主题配置
         /// <summary>
         /// 节点编辑器的背景参数
         /// </summary>
@@ -1372,7 +1361,9 @@ namespace SevenStrikeModules.XGraph
         /// 节点编辑器的选择框主题参数
         /// </summary>
         [SerializeField] public GraphviewRectangleSelectorThemes GraphviewRectangleSelectorThemes;
+        #endregion
 
+        #region 面板元素变换数据
         /// <summary>
         /// 记录的节点编辑器最后一次的黑板变量面板变换数据
         /// </summary>
@@ -1405,7 +1396,9 @@ namespace SevenStrikeModules.XGraph
             anc_Right = true,
             size = new Vector2(250, 400)
         };
+        #endregion
 
+        #region Graphview功能开关状态
         /// <summary>
         /// 记录的节点编辑器 Inspector 视图开关
         /// </summary>
@@ -1422,7 +1415,9 @@ namespace SevenStrikeModules.XGraph
         /// 记录的节点编辑器 节点连线数据流效果开关
         /// </summary>
         [SerializeField] public bool XGraph_DisplayNodeFlow;
+        #endregion
 
+        #region 节点数据列表
         /// <summary>
         /// 行为节点列表
         /// </summary>
@@ -1451,14 +1446,30 @@ namespace SevenStrikeModules.XGraph
         /// 黑板变量列表
         /// </summary>
         [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
+        #endregion
 
+        #region 回调
         /// <summary>
-        /// 刷新
+        /// 黑板变量数值更新后的回调
         /// </summary>
-        public void Update()
-        {
-
-        }
+        public Action On_VariablesValue_Changed;
+        /// <summary>
+        /// Graphview窗口尺寸变化的回调
+        /// </summary>
+        public Action<Vector2> On_GraphviewSize_Changed;
+        /// <summary>
+        /// Graphview视口位置化的回调
+        /// </summary>
+        public Action<Vector2> On_GraphviewPos_Changed;
+        /// <summary>
+        /// Graphview视口缩放化的回调
+        /// </summary>
+        public Action<float> On_GraphviewZoom_Changed;
+        /// <summary>
+        /// Graphview最后一次保存的回调
+        /// </summary>
+        public Action<string> On_GraphviewLastSave_Changed;
+        #endregion
 
         #region 资源操作
 #if UNITY_EDITOR
@@ -1494,8 +1505,9 @@ namespace SevenStrikeModules.XGraph
             actionData.TransparentNode = args.transparentNode;
             actionData.content = args.content;
             actionData.nodeGraphSize = args.size;
+            actionData.isConcurrentExecution = args.isConcurrentExecution;
 
-            actionData.SetRoot(this);
+            actionData.SetActionAssetRoot(this);
 
             // 为变量类型节点数据特化处理，需要初始化类型 Variable
             if (actionData is ActionNode_Variable avnode)
@@ -1688,7 +1700,7 @@ namespace SevenStrikeModules.XGraph
                 var newNode = Instantiate(sourceNode);
                 newNode.name = sourceNode.name;
                 newNode.hideFlags = HideFlags.None;
-                newNode.SetRoot(this);
+                newNode.SetActionAssetRoot(this);
                 Actions.Add(newNode);
                 AssetDatabase.AddObjectToAsset(newNode, this);
                 dictionary[sourceNode] = newNode;
@@ -1698,32 +1710,25 @@ namespace SevenStrikeModules.XGraph
             {
                 if (action is ActionNode_Start s && s.childNodes != null)
                 {
-                    var newDebug = dictionary[action] as ActionNode_Start;
-                    newDebug.childNodes.Clear();
+                    var newStart = dictionary[action] as ActionNode_Start;
+                    newStart.childNodes.Clear();
                     foreach (var node in s.childNodes)
                     {
-                        newDebug.childNodes.Add(dictionary[node]);
-                    }
-                }
-
-                if (action is ActionNode_Debug d && d.childNodes != null)
-                {
-                    var newDebug = dictionary[action] as ActionNode_Debug;
-                    newDebug.childNodes.Clear();
-                    foreach (var node in d.childNodes)
-                    {
-                        newDebug.childNodes.Add(dictionary[node]);
+                        newStart.childNodes.Add(dictionary[node]);
+                        // 设置父节点关系
+                        dictionary[node].SetParentNode(newStart);
                     }
                 }
 
                 if (action is ActionNode_Wait w && w.childNodes != null)
                 {
-                    //(dictionary[action] as ActionNode_Wait).childNode = dictionary[w.childNode];
-                    var newComposite = dictionary[action] as ActionNode_Wait;
-                    newComposite.childNodes.Clear();
+                    var newWait = dictionary[action] as ActionNode_Wait;
+                    newWait.childNodes.Clear();
                     foreach (var node in w.childNodes)
                     {
-                        newComposite.childNodes.Add(dictionary[node]);
+                        newWait.childNodes.Add(dictionary[node]);
+                        // 设置父节点关系
+                        dictionary[node].SetParentNode(newWait);
                     }
                 }
 
@@ -1734,6 +1739,21 @@ namespace SevenStrikeModules.XGraph
                     foreach (var node in c.childNodes)
                     {
                         newComposite.childNodes.Add(dictionary[node]);
+                        // 设置父节点关系
+                        dictionary[node].SetParentNode(newComposite);
+                    }
+                }
+
+                // 添加 ActionNode_Relay 的处理
+                if (action is ActionNode_Relay r && r.childNodes != null)
+                {
+                    var newRelay = dictionary[action] as ActionNode_Relay;
+                    newRelay.childNodes.Clear();
+                    foreach (var node in r.childNodes)
+                    {
+                        newRelay.childNodes.Add(dictionary[node]);
+                        // 设置父节点关系
+                        dictionary[node].SetParentNode(newRelay);
                     }
                 }
 
@@ -1743,10 +1763,18 @@ namespace SevenStrikeModules.XGraph
 
                     if (b.childNode_true != null)
                         if (dictionary.TryGetValue(b.childNode_true, out var n_true))
+                        {
                             newBranch.childNode_true = n_true;
+                            // 设置父节点关系
+                            n_true.SetParentNode(newBranch);
+                        }
                     if (b.childNode_false != null)
                         if (dictionary.TryGetValue(b.childNode_false, out var n_false))
+                        {
                             newBranch.childNode_false = n_false;
+                            // 设置父节点关系
+                            n_false.SetParentNode(newBranch);
+                        }
                 }
             }
 
@@ -1843,8 +1871,6 @@ namespace SevenStrikeModules.XGraph
                     newStart.childNodes.Clear();
                 else if (actionNode is ActionNode_Wait newWait)
                     newWait.childNodes.Clear();
-                else if (actionNode is ActionNode_Debug newDebug)
-                    newDebug.childNodes.Clear();
                 else if (actionNode is ActionNode_Composite newComp)
                     newComp.childNodes.Clear();
                 else if (actionNode is ActionNode_Branch newBranch)
@@ -1871,6 +1897,8 @@ namespace SevenStrikeModules.XGraph
                         if (originalRootDic.TryGetValue(originalChild, out var newChild))
                         {
                             newStart.childNodes.Add(newChild);
+                            // 设置父节点关系
+                            newChild.SetParentNode(newStart);
                         }
                     }
                 }
@@ -1884,19 +1912,8 @@ namespace SevenStrikeModules.XGraph
                         if (originalRootDic.TryGetValue(originalChild, out var newChild))
                         {
                             newWait.childNodes.Add(newChild);
-                        }
-                    }
-                }
-
-                // 处理 ActionNode_Debug
-                else if (node is ActionNode_Debug originalDebug)
-                {
-                    var newDebug = newParentNode as ActionNode_Debug;
-                    foreach (var originalChild in originalDebug.childNodes)
-                    {
-                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
-                        {
-                            newDebug.childNodes.Add(newChild);
+                            // 设置父节点关系
+                            newChild.SetParentNode(newWait);
                         }
                     }
                 }
@@ -1910,6 +1927,8 @@ namespace SevenStrikeModules.XGraph
                         if (originalRootDic.TryGetValue(originalChild, out var newChild))
                         {
                             newComposite.childNodes.Add(newChild);
+                            // 设置父节点关系
+                            newChild.SetParentNode(newComposite);
                         }
                     }
                 }
@@ -1923,12 +1942,31 @@ namespace SevenStrikeModules.XGraph
                         if (originalRootDic.TryGetValue(originalBranch.childNode_true, out var new_true))
                         {
                             newBranch.childNode_true = new_true;
+                            // 设置父节点关系
+                            new_true.SetParentNode(newBranch);
                         }
                     if (originalBranch.childNode_false != null)
                         if (originalRootDic.TryGetValue(originalBranch.childNode_false, out var new_false))
                         {
                             newBranch.childNode_false = new_false;
+                            // 设置父节点关系
+                            new_false.SetParentNode(newBranch);
                         }
+                }
+
+                // 处理 ActionNode_Relay（如果存在）
+                else if (node is ActionNode_Relay originalRelay)
+                {
+                    var newRelay = newParentNode as ActionNode_Relay;
+                    foreach (var originalChild in originalRelay.childNodes)
+                    {
+                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
+                        {
+                            newRelay.childNodes.Add(newChild);
+                            // 设置父节点关系
+                            newChild.SetParentNode(newRelay);
+                        }
+                    }
                 }
             }
 
@@ -2003,13 +2041,6 @@ namespace SevenStrikeModules.XGraph
                 nodes = wait.childNodes;
             }
 
-            // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "childNodes"
-            ActionNode_Debug debug = parent as ActionNode_Debug;
-            if (debug != null && debug.childNodes != null)
-            {
-                nodes = debug.childNodes;
-            }
-
             // 如果是 "ActionNode_Composite" 节点，那么就收集 "ActionNode_Composite" 节点下的 "childNodes"
             ActionNode_Composite comp = parent as ActionNode_Composite;
             if (comp != null && comp.childNodes != null)
@@ -2017,7 +2048,7 @@ namespace SevenStrikeModules.XGraph
                 nodes = comp.childNodes;
             }
 
-            // 如果是 "ActionNode_Composite" 节点，那么就收集 "ActionNode_Composite" 节点下的 "childNodes"
+            // 如果是 "ActionNode_Branch" 节点，那么就收集 "ActionNode_Branch" 节点下的 "childNodes"
             ActionNode_Branch branch = parent as ActionNode_Branch;
             if (branch != null)
             {
@@ -2038,6 +2069,9 @@ namespace SevenStrikeModules.XGraph
         public void ChildNode_Add(ActionNode_Base parent, ActionNode_Base child)
         {
             //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
+
+            // 设置父节点关系
+            child.SetParentNode(parent);
 
             #region 特化处理 - Start
             ActionNode_Start start = parent as ActionNode_Start;
@@ -2084,28 +2118,6 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region 特化处理 - Debug
-            ActionNode_Debug debug = parent as ActionNode_Debug;
-            if (debug)
-            {
-#if UNITY_EDITOR
-                Undo.RecordObject(debug, "Connect_DebugNode");
-#endif
-                bool existChild = false;
-                foreach (var c in debug.childNodes)
-                {
-                    if (child.guid == c.guid)
-                        existChild = true;
-                }
-                if (existChild)
-                {
-                    Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
-                    return;
-                }
-                debug.childNodes.Add(child);
-            }
-            #endregion
-
             #region 特化处理 - Composite
             ActionNode_Composite comp = parent as ActionNode_Composite;
             if (comp)
@@ -2149,9 +2161,6 @@ namespace SevenStrikeModules.XGraph
                 relay.childNodes.Add(child);
             }
             #endregion
-
-            // 设置父节点关系
-            child.SetParent(parent);
         }
         /// <summary>
         /// 为资源指定子资源（分支节点专用）
@@ -2161,6 +2170,9 @@ namespace SevenStrikeModules.XGraph
         public void ChildNode_Add(ActionNode_Base parent, ActionNode_Base child, string childmode)
         {
             //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
+
+            // 设置父节点关系
+            child.SetParentNode(parent);
 
             #region 特化处理 - Branch
             ActionNode_Branch branch = parent as ActionNode_Branch;
@@ -2201,9 +2213,6 @@ namespace SevenStrikeModules.XGraph
                 }
             }
             #endregion
-
-            // 设置父节点关系
-            child.SetParent(parent);
         }
         /// <summary>
         /// 从指定的父资源中移除子资源
@@ -2236,17 +2245,6 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            #region 特化处理 - Debug
-            ActionNode_Debug debug = parent as ActionNode_Debug;
-            if (debug)
-            {
-#if UNITY_EDITOR
-                Undo.RecordObject(debug, "RemoveConnect_DebugNode");
-#endif
-                debug.childNodes.Remove(child);
-            }
-            #endregion
-
             #region 特化处理 - Composite
             ActionNode_Composite comp = parent as ActionNode_Composite;
             if (comp)
@@ -2259,7 +2257,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 清理父节点关系
-            child.SetParent(null);
+            child.SetParentNode(null);
         }
         /// <summary>
         /// 从指定的父资源中移除子资源
@@ -2285,7 +2283,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 清理父节点关系
-            child.SetParent(null);
+            child.SetParentNode(null);
         }
         /// <summary>
         /// 寻找匹配guid的行为数据节点

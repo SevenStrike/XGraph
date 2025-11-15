@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
+
     public abstract class ActionNode_Start : ActionNode_Base
     {
         /// <summary>
@@ -11,7 +11,8 @@ namespace SevenStrikeModules.XGraph
 
         public override void Execute()
         {
-
+            if (On_Node_Excute != null)
+                On_Node_Excute();
         }
     }
 }

@@ -294,9 +294,7 @@ namespace SevenStrikeModules.XGraph
             else if (current is ActionNode_Wait wait)
                 list.AddRange(wait.childNodes.FindAll(n => n != null));
             else if (current is ActionNode_Composite composite)
-                list.AddRange(composite.childNodes.FindAll(n => n != null));
-            else if (current is ActionNode_Debug debug)
-                list.AddRange(debug.childNodes.FindAll(n => n != null));
+                list.AddRange(composite.childNodes.FindAll(n => n != null));           
             else if (current is ActionNode_Relay relay)
                 list.AddRange(relay.childNodes.FindAll(n => n != null));
             else if (current is ActionNode_Branch branch)

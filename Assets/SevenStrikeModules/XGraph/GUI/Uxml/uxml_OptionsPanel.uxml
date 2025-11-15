@@ -5,27 +5,47 @@
             <engine:Button name="btn_expand" class="btn_expand" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
         </engine:VisualElement>
         <engine:VisualElement name="OptionsContainer" picking-mode="Ignore" enabled="true" class="OptionsContainer" style="position: relative;">
-            <engine:VisualElement name="reg_color" class="OptionsContainer_InsideRegion_Color" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
-                <engine:Label text="配色" name="Title" class="OptionsTitle" />
-                <engine:VisualElement name="color_bg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
-                    <engine:Label text="背景色" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_bg" value="#000000FF" class="ParamField" />
+            <engine:VisualElement name="reg_color" class="OptionsContainer_InsideRegion_Color" style="flex-grow: 0; justify-content: flex-start; overflow: hidden;">
+                <engine:VisualElement name="left">
+                    <engine:Label text="配色" name="Title" class="OptionsTitle" />
+                    <engine:VisualElement name="color_bg" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="背景色" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="color_grid" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="网格" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="color_thickline" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="分界线" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="color_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="背景图像着色" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="color_themecolor" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="主题色" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
                 </engine:VisualElement>
-                <engine:VisualElement name="color_grid" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
-                    <engine:Label text="网格" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_grid" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                </engine:VisualElement>
-                <engine:VisualElement name="color_thickline" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
-                    <engine:Label text="分界线" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_thickline" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                </engine:VisualElement>
-                <engine:VisualElement name="color_bgimage" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
-                    <engine:Label text="背景图像着色" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_customimage" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                </engine:VisualElement>
-                <engine:VisualElement name="color_themecolor" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
-                    <engine:Label text="主题色" name="title" class="ParamFieldTitle" />
-                    <editor:ColorField name="colorfield_themecolor" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                <engine:VisualElement name="right" style="padding-top: 0; margin-top: 33px;">
+                    <engine:VisualElement name="color_bg_blackboard" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="变量面板背景" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="color_bg_inspector" class="ColorFieldContainer ParamFieldContainer" style="width: auto;">
+                        <engine:Label text="属性面板背景" name="title" class="ParamFieldTitle" />
+                        <editor:ColorField name="colorfield" value="#000000FF" class="ParamField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="toggle_invert_bg_gradient" class="ColorFieldContainer ParamFieldContainer" style="margin-bottom: 14px;">
+                        <engine:Label text="背景渐变反转" name="title" class="ParamFieldTitle" />
+                        <engine:Toggle name="toggle" class="ParamField" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="Buttons" style="flex-direction: row; align-items: center; align-self: auto; margin-top: 12px;">
+                        <engine:Button text="主题样式方案" name="button_theme_set" class="ButtonText" style="width: auto; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; height: 30px; margin-top: 0; flex-grow: 1;" />
+                        <engine:Button text="重置" name="button_theme_reset" class="ButtonText" style="width: auto; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; height: 30px; margin-top: 0; flex-grow: 1;" />
+                    </engine:VisualElement>
                 </engine:VisualElement>
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" style="width: 1px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/sepline.png?fileID=2800000&amp;guid=df626e800f8f8744baf117e45cfdaf7a&amp;type=3#sepline&quot;);" />
@@ -43,7 +63,7 @@
                     <engine:Label text="背景图像" name="title" class="ParamFieldTitle" />
                     <editor:ObjectField allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="objectfield_customimage" class="ParamField" />
                 </engine:VisualElement>
-                <engine:Button text="恢复默认" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; height: 30px; margin-top: 12px; font-size: 14px; -unity-font-style: normal; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;);" />
+                <engine:Button text="恢复默认" name="button_reset" class="ButtonText" style="width: auto; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; height: 30px; margin-top: 12px;" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_rectselector" class="OptionsContainer_InsideRegion_Param" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">
@@ -60,7 +80,7 @@
                     <engine:Label text="坐标显示" name="title" class="ParamFieldTitle" />
                     <engine:Toggle name="toggle_selectorline_displaycoordinate" class="ParamField" />
                 </engine:VisualElement>
-                <engine:Button text="恢复默认" name="resetbutton" class="ParamFieldTitle ParamField" style="width: auto; -unity-text-align: middle-center; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 12px; height: 30px; font-size: 14px; -unity-font-style: normal; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Heavy.ttf?fileID=12800000&amp;guid=72f2755737ddb2545a774f68d54027aa&amp;type=3#x_Heavy&quot;);" />
+                <engine:Button text="恢复默认" name="button_reset" class="ButtonText" style="width: auto; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 12px; height: 30px;" />
             </engine:VisualElement>
             <engine:VisualElement name="sepline" class="sepline" />
             <engine:VisualElement name="reg_blackboards" class="OptionsContainer_InsideRegion_BlackBoards" style="flex-grow: 0; justify-content: flex-start; flex-direction: column; overflow: hidden;">

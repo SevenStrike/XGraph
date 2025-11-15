@@ -1,0 +1,157 @@
+{
+    "Group": [
+        {
+            "solution": "M 默认",
+            "title_bg_color": "#161616",
+            "title_text_color": "#DDDDDD",
+            "content_bg_color": "#75757517",
+            "logo_color": "#DDDDDD"
+        },
+        {
+            "solution": "M 明亮",
+            "title_bg_color": "#D1D1D1",
+            "title_text_color": "#222222",
+            "content_bg_color": "#75757517",
+            "logo_color": "#222222"
+        },
+        {
+            "solution": "E 通透",
+            "title_bg_color": "#00000000",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#00000000",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "H 火岩",
+            "title_bg_color": "#A93131",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "T 铁锈",
+            "title_bg_color": "#8C4C2E",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "G 橄榄",
+            "title_bg_color": "#5D6E33",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "L 湖绿",
+            "title_bg_color": "#4A7E59",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "K 矿紫",
+            "title_bg_color": "#664DA1",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "W 雾海",
+            "title_bg_color": "#336C78",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "Y 夜岚",
+            "title_bg_color": "#366591",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "F 绯樱",
+            "title_bg_color": "#FF7AC0",
+            "title_text_color": "#222222",
+            "content_bg_color": "#75757517",
+            "logo_color": "#222222"
+        },
+        {
+            "solution": "S 松针",
+            "title_bg_color": "#467432",
+            "title_text_color": "#FFFFFF",
+            "content_bg_color": "#75757517",
+            "logo_color": "#FFFFFF"
+        },
+        {
+            "solution": "N 柠檬",
+            "title_bg_color": "#D4B635",
+            "title_text_color": "#222222",
+            "content_bg_color": "#75757517",
+            "logo_color": "#222222"
+        }
+    ],
+    "Node": [
+        {
+            "solution": "M 默认",
+            "nodecolor": "#FFFFFF"
+        },
+        {
+            "solution": "H 灰色",
+            "nodecolor": "#878787"
+        },
+        {
+            "solution": "V 暗色",
+            "nodecolor": "#161616"
+        },
+        {
+            "solution": "J 橘色",
+            "nodecolor": "#FFA32F"
+        },
+        {
+            "solution": "G 绯红色",
+            "nodecolor": "#CC3636"
+        },
+        {
+            "solution": "C 赤焰色",
+            "nodecolor": "#FF6D34"
+        },
+        {
+            "solution": "N 柠檬黄",
+            "nodecolor": "#E0D05C"
+        },
+        {
+            "solution": "O 橄榄绿",
+            "nodecolor": "#D5FF17"
+        },
+        {
+            "solution": "F 粉色",
+            "nodecolor": "#FA92FF"
+        },
+        {
+            "solution": "Z 紫色",
+            "nodecolor": "#8F47FF"
+        },
+        {
+            "solution": "Q 青色",
+            "nodecolor": "#39FFAB"
+        },
+        {
+            "solution": "L 绿色",
+            "nodecolor": "#22D640"
+        },
+        {
+            "solution": "P 薄荷绿",
+            "nodecolor": "#86CC5F"
+        },
+        {
+            "solution": "R 亮蓝",
+            "nodecolor": "#4CDBFF"
+        },
+        {
+            "solution": "B 宝石蓝",
+            "nodecolor": "#2583FF"
+        }
+    ]
+}

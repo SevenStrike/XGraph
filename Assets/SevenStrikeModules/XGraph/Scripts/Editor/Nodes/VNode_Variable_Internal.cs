@@ -97,7 +97,7 @@ namespace SevenStrikeModules.XGraph
             graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
 
             // 每次初始化时先清空，避免重复注册
-            On_InternalVariableValue_Changed = null;
+            VariableData.On_InternalVariableValue_Changed = null;
         }
 
         /// <summary>
@@ -183,11 +183,12 @@ namespace SevenStrikeModules.XGraph
                 case VariableType.String:
                     TextField f_string = new TextField();
                     f_string.name = "Field_String";
-                    f_string.multiline = true;
+                    //f_string.multiline = true;
                     f_string.value = VariableData.variable.GetValue<string>();
                     f_string.RegisterCallback<BlurEvent>(VariableDataChanged_String);
                     f_string.AddToClassList("value_field_string");
                     f_string.Q(name: "unity-text-input").AddToClassList("value_field_string_input");
+                    f_string.Q(className: "unity-text-element").AddToClassList("value_field_string_text-element");
                     element = f_string;
                     break;
                 case VariableType.Float:
@@ -365,9 +366,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -389,9 +390,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -413,9 +414,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -437,9 +438,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -461,9 +462,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -485,9 +486,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -509,9 +510,9 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
@@ -587,21 +588,13 @@ namespace SevenStrikeModules.XGraph
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
             // 通知注册了变量数值改变的回调
-            if (On_InternalVariableValue_Changed != null)
+            if (VariableData.On_InternalVariableValue_Changed != null)
             {
-                On_InternalVariableValue_Changed();
+                VariableData.On_InternalVariableValue_Changed();
             }
 
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
-        }
-        /// <summary>
-        /// 黑板变量数值变化时的回调
-        /// </summary>
-        public override void On_VariablesValue_Changed()
-        {
-            base.On_VariablesValue_Changed();
-            VariableNodeFieldValueUpdate();
         }
         public void VariableNodeFieldValueUpdate()
         {
@@ -666,6 +659,17 @@ namespace SevenStrikeModules.XGraph
                     }
                     break;
             }
+        }
+        #endregion
+
+        #region 重写
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+            VariableNodeFieldValueUpdate();
         }
         #endregion
     }

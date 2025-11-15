@@ -114,6 +114,7 @@
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    flex-direction: row;
 }
 
 .OptionsContainer_InsideRegion_Param {
@@ -261,4 +262,12 @@
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     margin-right: 10px;
+}
+
+.ButtonText {
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
 }

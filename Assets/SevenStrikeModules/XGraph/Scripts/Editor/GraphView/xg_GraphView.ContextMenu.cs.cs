@@ -88,9 +88,9 @@ namespace SevenStrikeModules.XGraph
                 });
 
                 // 菜单 - 主题色切换
-                for (int i = 0; i < ThemesList.Node.Count; i++)
+                for (int i = 0; i < NodeThemesList.Node.Count; i++)
                 {
-                    ThemeData_Node dat = ThemesList.Node[i];
+                    ThemeData_Node dat = NodeThemesList.Node[i];
                     evt.menu.AppendAction($"T 节点配色/{dat.solution}", (action) =>
                     {
                         if (CurrentSelectedNodes_Base.Count > 0)
