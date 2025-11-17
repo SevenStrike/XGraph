@@ -22,10 +22,7 @@ namespace SevenStrikeModules.XGraph
 
             Sample_GraphAsset asset = RootAsset as Sample_GraphAsset;
             if (asset != null)
-            {
                 asset.ModuleController.Module_Active(activateName, activateState);
-            }
-
         }
 
         /// <summary>

@@ -44,6 +44,14 @@
                     "actionNodeType": "Wait",
                     "iconName": "wait",
                     "visualNodeType": "Graph_Wait"
+                },
+                {
+                    "name": "获取灯光",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_",
+                    "actionNodeType": "GetLight",
+                    "iconName": "light",
+                    "visualNodeType": "Graph_GetLight"
                 }
             ]
         },

@@ -69,7 +69,7 @@ namespace SevenStrikeModules.XGraph
                     sp_activateAllModules.boolValue = value.newValue;
                     serializedObject.ApplyModifiedProperties();
                 }
-                start.SetStartDispayModules("激活所有模组");
+                start.Set_ModulesInitialized("激活所有模组");
             });
             #endregion
 
