@@ -5,10 +5,8 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class Graph_Sample_ModuleActivate : VNode_Base
+    public class Graph_Wait : VNode_Base
     {
-        Action_Sample_ModuleActivate active;
-
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
             base.Initialize(graphView, pos, data);
@@ -18,9 +16,7 @@ namespace SevenStrikeModules.XGraph
             // 加入行为端口
             port_in.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
             // 加入变量端口
-            port_in.Add(new xGraph_NodePort("名称", typeof(Variable_String), Port.Capacity.Single));
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("激活", typeof(Variable_Bool), Port.Capacity.Single));
+            port_in.Add(new xGraph_NodePort("时间", typeof(Variable_Float), Port.Capacity.Single));
             InputPort_Set(port_in);
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
@@ -28,8 +24,6 @@ namespace SevenStrikeModules.XGraph
             port_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Multi));
             OutputPort_Set(port_out);
             #endregion
-
-            active = data as Action_Sample_ModuleActivate;
         }
 
         #region 节点绘制
@@ -68,8 +62,8 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            active.Set_ActivateModuleName("名称");
-            active.Set_ActivateModuleState("激活");
+            ActionNode_Wait wait = ActionData as ActionNode_Wait;
+            wait.SetWaitTime("时间");
         }
         /// <summary>
         /// 当克隆节点时

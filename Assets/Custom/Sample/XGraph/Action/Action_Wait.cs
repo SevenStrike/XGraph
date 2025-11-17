@@ -1,6 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    public class Action_Sample_End : ActionNode_End
+    public class Action_Wait : ActionNode_Wait
     {
         public override void Execute()
         {

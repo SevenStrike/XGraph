@@ -5,7 +5,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class Graph_Sample_Composite : VNode_Base
+    public class Graph_ModuleInitialize : VNode_Base
     {
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -13,16 +13,18 @@ namespace SevenStrikeModules.XGraph
 
             #region 端口设置
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
-            // 加入行为端口
-            port_in.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));
             InputPort_Set(port_in);
 
-            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
+            List<xGraph_NodePort> ports_out = new List<xGraph_NodePort>();
             // 加入行为端口
-            port_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Multi));
-            OutputPort_Set(port_out);
+            ports_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Multi));
+            OutputPort_Set(ports_out);
             #endregion
         }
+
+        public Graph_ModuleInitialize() { }
 
         #region 节点绘制
         public override VNode_Base Draw()
@@ -48,6 +50,9 @@ namespace SevenStrikeModules.XGraph
             // 绘制扩展容器
             Draw_Extension();
 
+            // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
+            inputContainer.style.paddingTop = 25;
+
             return this;
         }
         #endregion
@@ -59,6 +64,11 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
+
+            Action_ModuleInitialize start = ActionData as Action_ModuleInitialize;
+
+            // 根据获取的目标端口的变量节点值来更新节点变量
+            start.SetStartDispayModules("激活所有模组");
         }
         /// <summary>
         /// 当克隆节点时
@@ -67,19 +77,6 @@ namespace SevenStrikeModules.XGraph
         public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
         {
             base.On_Nodes_Duplicated(list);
-
-            foreach (var node in list)
-            {
-                if (node.DuplicatedNode is Graph_Sample_Composite cur)
-                {
-                    // 找到克隆的父物体行为节点
-                    Graph_Sample_Composite source = graphView.FindNode(node.SourceNodeGuid) as Graph_Sample_Composite;
-
-                    // 调用行为数据脚本中的 On_Node_Duplicated 事件以便于行为数据Editor界面下的控件获取克隆父物体的特定变量数据
-                    if (cur.ActionData.On_Node_Duplicated != null)
-                        cur.ActionData.On_Node_Duplicated(cur.ActionData, source.ActionData);
-                }
-            }
         }
         /// <summary>
         /// 当节点重建时

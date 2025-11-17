@@ -31,12 +31,11 @@ public class Sample_Workflow : MonoBehaviour
     /// 显示调试信息
     /// </summary>
     public bool Logs = true;
-    public string StartNodeType = "Module_Initialize";
 
     /// <summary>
     /// Sample 场景控制器，用于赋值给行为资源中的目标脚本对象
     /// </summary>
-    public Sample_Module_Controller Sample_Controller;
+    public Module_Controller Sample_Controller;
 
     private void Start()
     {
@@ -46,7 +45,7 @@ public class Sample_Workflow : MonoBehaviour
         // 为每一个行为注册运行时变量值改变回调
         RegisterVariableChangeWithAction();
 
-        SampleAsset.Sample_Controller = Sample_Controller;
+        SampleAsset.ModuleController = Sample_Controller;
     }
 
     private void OnDisable()
@@ -162,7 +161,7 @@ public class Sample_Workflow : MonoBehaviour
         isRunning = true;
         util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", Logs);
 
-        var startNode = SampleAsset.Actions.Find(n => n.actionNodeType == StartNodeType);
+        var startNode = SampleAsset.Actions.Find(n => n.isStartNode);
         yield return Action_Execute(startNode);
 
         isRunning = false;
@@ -343,10 +342,10 @@ public class Sample_Workflow : MonoBehaviour
             return false;
         }
 
-        var start = SampleAsset.Actions.Find(n => n.actionNodeType == StartNodeType);
+        var start = SampleAsset.Actions.Find(n => n.isStartNode);
         if (start == null)
         {
-            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"未能找到  {StartNodeType}  类型节点！", "", Logs);
+            util_Dashboard.LogMsg(util_Dashboard.MsgType.警告, $"未能找到指定的起始节点！", "", Logs);
             return false;
         }
 
@@ -413,7 +412,7 @@ public class Sample_Workflow : MonoBehaviour
     public void SetActionAsset(ActionNode_Asset asset)
     {
         SampleAsset = asset as Sample_GraphAsset;
-        SampleAsset.Sample_Controller = Sample_Controller;
+        SampleAsset.ModuleController = Sample_Controller;
     }
     #endregion
 }

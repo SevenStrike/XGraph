@@ -1,6 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
-    public class Action_Sample_ModuleInitialize : ActionNode_Start
+    public class Action_ModuleInitialize : ActionNode_Start
     {
         public bool activateAllModules;
 
@@ -13,10 +13,7 @@ namespace SevenStrikeModules.XGraph
 
             Sample_GraphAsset asset = RootAsset as Sample_GraphAsset;
 
-            if (activateAllModules)
-                asset.Sample_Controller.modules_active(true);
-            else
-                asset.Sample_Controller.modules_active(false);
+            asset.ModuleController.Modules_Active(activateAllModules);
         }
         /// <summary>
         /// 当任意变量值改变时调用

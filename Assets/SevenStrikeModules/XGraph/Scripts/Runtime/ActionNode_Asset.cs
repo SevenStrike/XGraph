@@ -2302,6 +2302,21 @@ namespace SevenStrikeModules.XGraph
 
             return null;
         }
+        /// <summary>
+        /// 设置逻辑起始节点
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="state"></param>
+        public void SetStartNode(ActionNode_Base action)
+        {
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                if (action.guid == Actions[i].guid)
+                    Actions[i].isStartNode = true;
+                else
+                    Actions[i].isStartNode = false;
+            }
+        }
         #endregion
 
         #region 便签操作

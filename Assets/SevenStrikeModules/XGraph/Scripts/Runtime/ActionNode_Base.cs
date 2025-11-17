@@ -88,6 +88,10 @@ namespace SevenStrikeModules.XGraph
         /// 行为根节点
         /// </summary>
         [SerializeField] public ActionNode_Asset RootAsset;
+        /// <summary>
+        /// 起始节点
+        /// </summary>
+        [SerializeField] public bool isStartNode;
         #endregion
 
         #region 节点数据接驳器
@@ -158,6 +162,10 @@ namespace SevenStrikeModules.XGraph
         /// 当节点为内部变量且内部变量值改变时
         /// </summary>
         public Action On_InternalVariableValue_Changed;
+        /// <summary>
+        /// 当指定起始节点时
+        /// </summary>
+        public Action<bool> On_Node_IsStartNodeChanged;
 #if UNITY_EDITOR
         /// <summary>
         /// 当节点连线的时候的委托事件
@@ -180,11 +188,6 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <returns></returns>
         public abstract void Execute();
-
-        public virtual void SetsValue(object value)
-        {
-
-        }
 
         #region 辅助
         /// <summary>

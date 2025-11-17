@@ -3,10 +3,10 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine.UIElements;
 
-    [CustomEditor(typeof(Action_Sample_Wait))]
-    public class Editor_Action_Sample_Wait : Editor_ActionNode_Wait
+    [CustomEditor(typeof(Action_Wait))]
+    public class Editor_Action_Wait : Editor_ActionNode_Wait
     {
-        private Action_Sample_Wait wait;
+        private Action_Wait wait;
 
         public override void OnEnable()
         {
@@ -19,7 +19,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            wait = target as Action_Sample_Wait;
+            wait = target as Action_Wait;
         }
         /// <summary>
         /// 获取序列化属性

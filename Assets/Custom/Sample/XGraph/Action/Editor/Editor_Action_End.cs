@@ -3,10 +3,10 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine.UIElements;
 
-    [CustomEditor(typeof(Action_Sample_End))]
-    public class Editor_Action_Sample_End : Editor_ActionNode_End
+    [CustomEditor(typeof(Action_End))]
+    public class Editor_Action_End : Editor_ActionNode_End
     {
-        private Action_Sample_End end;
+        private Action_End end;
 
         public override void OnEnable()
         {
@@ -19,7 +19,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            end = target as Action_Sample_End;
+            end = target as Action_End;
         }
         /// <summary>
         /// 获取序列化属性

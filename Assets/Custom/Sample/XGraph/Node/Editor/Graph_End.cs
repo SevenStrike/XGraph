@@ -5,7 +5,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class Graph_Sample_Wait : VNode_Base
+    public class Graph_End : VNode_Base
     {
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, ActionNode_Base data = null)
         {
@@ -15,14 +15,7 @@ namespace SevenStrikeModules.XGraph
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
             // 加入行为端口
             port_in.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Single));
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("时间", typeof(Variable_Float), Port.Capacity.Single));
             InputPort_Set(port_in);
-
-            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-            // 加入行为端口
-            port_out.Add(new xGraph_NodePort("", typeof(ActionNode_Base), Port.Capacity.Multi));
-            OutputPort_Set(port_out);
             #endregion
         }
 
@@ -44,8 +37,8 @@ namespace SevenStrikeModules.XGraph
             // 绘制输入节点容器
             Draw_Input();
 
-            // 绘制输出节点容器
-            Draw_Output();
+            //// 绘制输出节点容器
+            //Draw_Output();
 
             // 绘制扩展容器
             Draw_Extension();
@@ -61,9 +54,6 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
-
-            ActionNode_Wait wait = ActionData as ActionNode_Wait;
-            wait.SetWaitTime("时间");
         }
         /// <summary>
         /// 当克隆节点时
@@ -72,6 +62,19 @@ namespace SevenStrikeModules.XGraph
         public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
         {
             base.On_Nodes_Duplicated(list);
+
+            foreach (var node in list)
+            {
+                if (node.DuplicatedNode is Graph_End cur)
+                {
+                    // 找到克隆的父物体行为节点
+                    Graph_End source = graphView.FindNode(node.SourceNodeGuid) as Graph_End;
+
+                    // 调用行为数据脚本中的 On_Node_Duplicated 事件以便于行为数据Editor界面下的控件获取克隆父物体的特定变量数据
+                    if (cur.ActionData.On_Node_Duplicated != null)
+                        cur.ActionData.On_Node_Duplicated(cur.ActionData, source.ActionData);
+                }
+            }
         }
         /// <summary>
         /// 当节点重建时

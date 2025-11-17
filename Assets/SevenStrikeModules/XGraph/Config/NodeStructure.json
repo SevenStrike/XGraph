@@ -8,42 +8,42 @@
                 {
                     "name": "模组初始化",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_Sample_",
+                    "prefixClass": "Action_",
                     "actionNodeType": "ModuleInitialize",
                     "iconName": "start",
-                    "visualNodeType": "Graph_Sample_ModuleInitialize"
+                    "visualNodeType": "Graph_ModuleInitialize"
                 },
                 {
                     "name": "模组激活",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_Sample_",
+                    "prefixClass": "Action_",
                     "actionNodeType": "ModuleActivate",
                     "iconName": "composite",
-                    "visualNodeType": "Graph_Sample_ModuleActivate"
+                    "visualNodeType": "Graph_ModuleActivate"
+                },
+                {
+                    "name": "舞台主灯光开关",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "Action_",
+                    "actionNodeType": "MainLightEnable",
+                    "iconName": "composite",
+                    "visualNodeType": "Graph_MainLightEnable"
                 },
                 {
                     "name": "结束",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_Sample_",
+                    "prefixClass": "Action_",
                     "actionNodeType": "End",
                     "iconName": "end",
-                    "visualNodeType": "Graph_Sample_End"
-                },
-                {
-                    "name": "合成",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_Sample_",
-                    "actionNodeType": "Composite",
-                    "iconName": "composite",
-                    "visualNodeType": "Graph_Sample_Composite"
+                    "visualNodeType": "Graph_End"
                 },
                 {
                     "name": "等待",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_Sample_",
+                    "prefixClass": "Action_",
                     "actionNodeType": "Wait",
                     "iconName": "wait",
-                    "visualNodeType": "Graph_Sample_Wait"
+                    "visualNodeType": "Graph_Wait"
                 }
             ]
         },

@@ -149,6 +149,25 @@ namespace SevenStrikeModules.XGraph
                     evt.StopPropagation();
                 });
 
+                if (nodebase is not VNode_Variable_Internal)
+                {
+                    evt.menu.AppendAction($"X 设为起始节点", (action) =>
+                    {
+                        if (CurrentSelectedNodes_Base.Count > 0)
+                        {
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                            {
+                                VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+
+                                ActionTreeAsset.SetStartNode(node.ActionData);
+                                if (node.ActionData.On_Node_IsStartNodeChanged != null)
+                                    node.ActionData.On_Node_IsStartNodeChanged(true);
+                            }
+                        }
+                        evt.StopPropagation();
+                    });
+                }
+
                 // 设置节点头像
                 if (nodebase.ActionData.actionNodeType != "Relay")
                 {

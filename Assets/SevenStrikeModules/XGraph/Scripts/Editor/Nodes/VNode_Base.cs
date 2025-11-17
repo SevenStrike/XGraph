@@ -263,7 +263,6 @@ namespace SevenStrikeModules.XGraph
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
-
         }
 
         #region 拖拽素材到节点
@@ -530,7 +529,6 @@ namespace SevenStrikeModules.XGraph
         public virtual void Draw_Main()
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
-
             CreateHighlighter();
 
             #region 头像组件
@@ -538,7 +536,7 @@ namespace SevenStrikeModules.XGraph
             {
                 RegisterAvatarClicked();
             }
-            #endregion
+            #endregion           
         }
 
         internal void CreateHighlighter()
@@ -955,7 +953,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 节点透明背景
+        #region 节点透明背景   
         /// <summary>
         /// 检查节点背景透明化
         /// </summary>
@@ -981,6 +979,8 @@ namespace SevenStrikeModules.XGraph
             Undo.RecordObject(ActionData, $"Set NodeTransparentMode - {state}");
             ActionData.TransparentNode = state;
             CheckTransparentDisplay(state);
+
+            graphView.Restructure_Graph(ActionData.RootAsset);
         }
         #endregion
 

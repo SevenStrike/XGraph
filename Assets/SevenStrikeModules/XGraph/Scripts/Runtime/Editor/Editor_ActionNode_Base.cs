@@ -17,6 +17,7 @@ namespace SevenStrikeModules.XGraph
             sp_guid,
             sp_path,
             sp_actionNodeType,
+            sp_isStartNode,
             sp_visualNodeType,
             sp_nodeGraphPosition,
             sp_nodeGraphSize,
@@ -145,7 +146,7 @@ namespace SevenStrikeModules.XGraph
             };
             #endregion
 
-            #region 节点并发模式
+            #region 通透样式
             Toggle tog_transparentNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "通透样式：", sp_TransparentNode.boolValue, new string[] { "field_bool" });
             tog_transparentNode.RegisterValueChangedCallback((value) =>
             {
@@ -255,6 +256,23 @@ namespace SevenStrikeModules.XGraph
             {
                 serializedObject.Update();
                 tog_concurrent.value = value;
+            };
+            #endregion
+
+            #region 设置起始节点
+            Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", sp_isStartNode.boolValue, new string[] { "field_bool" });
+            tog_isStartNode.RegisterValueChangedCallback((value) =>
+            {
+                Undo.RecordObject(baseScript, "Change IsStartNode");
+                sp_isStartNode.boolValue = value.newValue;
+
+                baseScript.RootAsset.SetStartNode(baseScript);
+                serializedObject.ApplyModifiedProperties();
+            });
+            baseScript.On_Node_IsStartNodeChanged += (value) =>
+            {
+                serializedObject.Update();
+                tog_isStartNode.value = value;
             };
             #endregion
 
@@ -574,6 +592,7 @@ namespace SevenStrikeModules.XGraph
             sp_TransparentNode = serializedObject.FindProperty("TransparentNode");
             sp_Avatar = serializedObject.FindProperty("Avatar");
             sp_NodeIcon = serializedObject.FindProperty("NodeIcon");
+            sp_isStartNode = serializedObject.FindProperty("isStartNode");
             #endregion
         }
         #endregion
