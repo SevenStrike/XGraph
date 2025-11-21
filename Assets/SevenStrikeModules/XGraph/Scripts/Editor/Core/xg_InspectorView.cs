@@ -48,10 +48,10 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 如果选中的节点是 VNode_Base
-            if (nodeview is VNode_Base n_base)
+            if (nodeview is xNode_Base n_base)
             {
                 // 如果选中的节点类型是：VNode_Base 同时也是：VNode_Variable_Internal 
-                if (nodeview is VNode_Variable_Internal n_internalvar)
+                if (nodeview is xNode_Variable_Internal n_internalvar)
                     GUI_InternalVariableNode(n_internalvar);
                 // 如果选中的节点类型是：VNode_Base 但并不是：VNode_Variable_Internal 
                 else
@@ -59,19 +59,19 @@ namespace SevenStrikeModules.XGraph
             }
 
             // 如果选中的节点是 VNode_Decal
-            if (nodeview is VNode_Decal n_decal)
+            if (nodeview is xNode_Decal n_decal)
             {
                 GUI_DecalNode(n_decal);
             }
 
             // 如果选中的节点是 VNode_Label
-            if (nodeview is VNode_Label n_label)
+            if (nodeview is xNode_Label n_label)
             {
                 GUI_LabelNode(n_label);
             }
 
             // 如果选中的节点是 VNode_Variable
-            if (nodeview is VNode_Variable n_variable)
+            if (nodeview is xNode_Variable n_variable)
             {
                 GUI_VariableNode(n_variable);
             }
@@ -97,7 +97,7 @@ namespace SevenStrikeModules.XGraph
         /// 绘制行为根资源的属性界面
         /// </summary>
         /// <param root_title="nodesasset"></param>
-        internal void InspectorViewer(ActionNode_Asset nodesasset)
+        internal void InspectorViewer(xAction_Asset nodesasset)
         {
             #region 清空面板内容
             Clear();
@@ -134,7 +134,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建行为节点的属性面板
         /// </summary>
         /// <param name="target"></param>
-        private void GUI_ActionNode(VNode_Base n_base)
+        private void GUI_ActionNode(xNode_Base n_base)
         {
             var target = n_base.ActionData;
 
@@ -160,7 +160,7 @@ namespace SevenStrikeModules.XGraph
                 // 存在Editor解释文件，使用自定义界面样式
                 case true:
                     editor = Editor.CreateEditor(target, editorType);
-                    if (editor is Editor_ActionNode_Base actionEditor)
+                    if (editor is Editor_xAction_Base actionEditor)
                         container.Add(actionEditor.CreateGraphviewInespector());
                     break;
                 // 不存在Editor解释文件，使用内置界面样式
@@ -180,7 +180,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建行为根资源的属性面板
         /// </summary>
         /// <param name="target"></param>
-        private void GUI_ActionAsset(ActionNode_Asset nodesasset)
+        private void GUI_ActionAsset(xAction_Asset nodesasset)
         {
             var target = nodesasset;
 
@@ -206,7 +206,7 @@ namespace SevenStrikeModules.XGraph
                 // 存在Editor解释文件，使用自定义界面样式
                 case true:
                     editor = Editor.CreateEditor(target, editorType);
-                    if (editor is Editor_ActionNode_Asset actionEditor)
+                    if (editor is Editor_xAction_Asset actionEditor)
                         container.Add(actionEditor.CreateGraphviewInespector());
                     break;
                 // 不存在Editor解释文件，使用内置界面样式
@@ -226,7 +226,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建内部变量节点的属性面板
         /// </summary>
         /// <param name="n_var_internal"></param>
-        private void GUI_InternalVariableNode(VNode_Variable_Internal n_var_internal)
+        private void GUI_InternalVariableNode(xNode_Variable_Internal n_var_internal)
         {
             var data = n_var_internal.VariableData;
 
@@ -269,7 +269,7 @@ namespace SevenStrikeModules.XGraph
             #region 值
             switch (data.variable.type)
             {
-                case VariableType.String:
+                case xVariableType.String:
                     TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", data.variable.GetValue<string>(), new string[1] { "field_text" });
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -308,7 +308,7 @@ namespace SevenStrikeModules.XGraph
                         field_string.value = data.variable.GetValue<string>();
                     });
                     break;
-                case VariableType.Float:
+                case xVariableType.Float:
                     FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", data.variable.GetValue<float>(), new string[1] { "field_float" });
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -347,7 +347,7 @@ namespace SevenStrikeModules.XGraph
                         field_float.value = data.variable.GetValue<float>();
                     });
                     break;
-                case VariableType.Int:
+                case xVariableType.Int:
                     IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", data.variable.GetValue<int>(), new string[1] { "field_int" });
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -386,7 +386,7 @@ namespace SevenStrikeModules.XGraph
                         field_int.value = data.variable.GetValue<int>();
                     });
                     break;
-                case VariableType.Bool:
+                case xVariableType.Bool:
                     Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", data.variable.GetValue<bool>(), new string[1] { "field_bool" });
                     n_var_internal.VariableData.On_InternalVariableValue_Changed += (() =>
                     {
@@ -430,7 +430,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
                     });
                     break;
-                case VariableType.Vector2:
+                case xVariableType.Vector2:
                     Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", data.variable.GetValue<Vector2>(), new string[1] { "field_vector2" });
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -469,7 +469,7 @@ namespace SevenStrikeModules.XGraph
                         field_vector2.value = data.variable.GetValue<Vector2>();
                     });
                     break;
-                case VariableType.Vector3:
+                case xVariableType.Vector3:
                     Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", data.variable.GetValue<Vector3>(), new string[1] { "field_vecto3" });
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -508,7 +508,7 @@ namespace SevenStrikeModules.XGraph
                         field_vector3.value = data.variable.GetValue<Vector3>();
                     });
                     break;
-                case VariableType.Vector4:
+                case xVariableType.Vector4:
                     Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", data.variable.GetValue<Vector4>(), new string[1] { "field_vector4" });
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -547,7 +547,7 @@ namespace SevenStrikeModules.XGraph
                         field_vector4.value = data.variable.GetValue<Vector4>();
                     });
                     break;
-                case VariableType.Color:
+                case xVariableType.Color:
                     ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", data.variable.GetValue<Color>(), new string[1] { "field_color" });
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -593,7 +593,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建黑板变量节点的属性面板
         /// </summary>
         /// <param name="n_variable"></param>
-        private void GUI_VariableNode(VNode_Variable n_variable)
+        private void GUI_VariableNode(xNode_Variable n_variable)
         {
             var data = n_variable.VariableData;
 
@@ -652,7 +652,7 @@ namespace SevenStrikeModules.XGraph
             #region 值
             switch (data.type)
             {
-                case VariableType.String:
+                case xVariableType.String:
                     TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", data.variable.GetValue<string>(), new string[1] { "field_text" });
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -669,7 +669,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
                     });
                     break;
-                case VariableType.Float:
+                case xVariableType.Float:
                     FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", data.variable.GetValue<float>(), new string[1] { "field_float" });
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -686,7 +686,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
                     });
                     break;
-                case VariableType.Int:
+                case xVariableType.Int:
                     IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", data.variable.GetValue<int>(), new string[1] { "field_int" });
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -703,7 +703,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
                     });
                     break;
-                case VariableType.Bool:
+                case xVariableType.Bool:
                     Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", data.variable.GetValue<bool>(), new string[1] { "field_bool" });
                     field_bool.RegisterValueChangedCallback((value) =>
                     {
@@ -720,7 +720,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
                     });
                     break;
-                case VariableType.Vector2:
+                case xVariableType.Vector2:
                     Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", data.variable.GetValue<Vector2>(), new string[1] { "field_vector2" });
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -737,7 +737,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
                     });
                     break;
-                case VariableType.Vector3:
+                case xVariableType.Vector3:
                     Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", data.variable.GetValue<Vector3>(), new string[1] { "field_vecto3" });
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -754,7 +754,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
                     });
                     break;
-                case VariableType.Vector4:
+                case xVariableType.Vector4:
                     Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", data.variable.GetValue<Vector4>(), new string[1] { "field_vector4" });
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -771,7 +771,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
                     });
                     break;
-                case VariableType.Color:
+                case xVariableType.Color:
                     ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", data.variable.GetValue<Color>(), new string[1] { "field_color" });
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -795,7 +795,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建贴图节点的属性面板
         /// </summary>
         /// <param name="n_decal"></param>
-        private void GUI_DecalNode(VNode_Decal n_decal)
+        private void GUI_DecalNode(xNode_Decal n_decal)
         {
             var data = n_decal.DecalData;
 
@@ -863,7 +863,7 @@ namespace SevenStrikeModules.XGraph
         /// 创建标签节点的属性面板
         /// </summary>
         /// <param name="n_label"></param>
-        private void GUI_LabelNode(VNode_Label n_label)
+        private void GUI_LabelNode(xNode_Label n_label)
         {
             var data = n_label.LabelData;
 
@@ -1036,7 +1036,7 @@ namespace SevenStrikeModules.XGraph
             #region 值
             switch (vare.type)
             {
-                case VariableType.String:
+                case xVariableType.String:
                     TextField field_string = util_XGraphInspectorGUI.GUI_Field_String(container, "变量值：", vare.GetValue<string>(), new string[] { "field_text" });
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1050,7 +1050,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Float:
+                case xVariableType.Float:
                     FloatField field_float = util_XGraphInspectorGUI.GUI_Field_Float(container, "变量值：", vare.GetValue<float>(), new string[] { "field_float" });
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1064,7 +1064,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Int:
+                case xVariableType.Int:
                     IntegerField field_int = util_XGraphInspectorGUI.GUI_Field_Int(container, "变量值：", vare.GetValue<int>(), new string[] { "field_int" });
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1078,7 +1078,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Bool:
+                case xVariableType.Bool:
                     Toggle field_bool = util_XGraphInspectorGUI.GUI_Field_Bool(container, "变量值：", vare.GetValue<bool>(), new string[] { "field_bool" });
                     field_bool.RegisterValueChangedCallback((value) =>
                     {
@@ -1092,7 +1092,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Vector2:
+                case xVariableType.Vector2:
                     Vector2Field field_vector2 = util_XGraphInspectorGUI.GUI_Field_Vector2(container, "变量值：", vare.GetValue<Vector2>(), new string[] { "field_vector2" });
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1106,7 +1106,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Vector3:
+                case xVariableType.Vector3:
                     Vector3Field field_vector3 = util_XGraphInspectorGUI.GUI_Field_Vector3(container, "变量值：", vare.GetValue<Vector3>(), new string[] { "field_vecto3" });
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1120,7 +1120,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Vector4:
+                case xVariableType.Vector4:
                     Vector4Field field_vector4 = util_XGraphInspectorGUI.GUI_Field_Vector4(container, "变量值：", vare.GetValue<Vector4>(), new string[] { "field_vector4" });
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1134,7 +1134,7 @@ namespace SevenStrikeModules.XGraph
                         graphwindow.CloneTree.Variables_Refresh();
                     });
                     break;
-                case VariableType.Color:
+                case xVariableType.Color:
                     ColorField field_color = util_XGraphInspectorGUI.GUI_Field_Color(container, "变量值：", vare.GetValue<Color>(), new string[] { "field_color" });
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
@@ -1177,7 +1177,7 @@ namespace SevenStrikeModules.XGraph
             Node n_in = n_edge.input.node;
 
             Color themeColor = Color.white;
-            if (n_out is VNode_Variable n_var)
+            if (n_out is xNode_Variable n_var)
             {
                 foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
                 {
@@ -1242,15 +1242,15 @@ namespace SevenStrikeModules.XGraph
         private string GetNodeType(Node node)
         {
             string text = string.Empty;
-            if (node is VNode_Base out_base)
+            if (node is xNode_Base out_base)
             {
                 text = "行为节点";
             }
-            if (node is VNode_Variable out_var)
+            if (node is xNode_Variable out_var)
             {
                 text = "黑板变量";
             }
-            if (node is VNode_Variable_Internal out_internalvar)
+            if (node is xNode_Variable_Internal out_internalvar)
             {
                 text = "内部变量";
             }
@@ -1260,11 +1260,11 @@ namespace SevenStrikeModules.XGraph
         private string GetNodeName(Node node)
         {
             string text = string.Empty;
-            if (node is VNode_Base out_base)
+            if (node is xNode_Base out_base)
             {
                 text = out_base.ActionData.identifyName;
             }
-            if (node is VNode_Variable out_var)
+            if (node is xNode_Variable out_var)
             {
                 text = out_var.VariableData.name;
             }
@@ -1278,7 +1278,7 @@ namespace SevenStrikeModules.XGraph
         private Color GetNodeThemeColor(Node node)
         {
             Color col = Color.white;
-            if (node is VNode_Base out_base)
+            if (node is xNode_Base out_base)
             {
                 col = out_base.ActionData.themeColor;
             }
@@ -1292,14 +1292,14 @@ namespace SevenStrikeModules.XGraph
         private Texture2D GetNodeIcon(Node node)
         {
             Texture2D tex = null;
-            if (node is VNode_Base out_base)
+            if (node is xNode_Base out_base)
             {
                 if (out_base.ActionData.NodeIcon == null)
                     tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{out_base.ActionData.icon}.png");
                 else
                     tex = out_base.ActionData.NodeIcon;
             }
-            if (node is VNode_Variable out_var)
+            if (node is xNode_Variable out_var)
             {
                 tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/blackboardvariable.png");
             }

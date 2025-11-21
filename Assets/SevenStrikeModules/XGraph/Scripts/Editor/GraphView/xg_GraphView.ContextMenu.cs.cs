@@ -42,7 +42,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region  确认当前有点击的物体是否是ActionNode
-            if (evt.target is VNode_Base nodebase)
+            if (evt.target is xNode_Base nodebase)
             {
 
                 // 菜单 - 自定主题色切换
@@ -58,7 +58,7 @@ namespace SevenStrikeModules.XGraph
                         Debug.LogWarning("Could not invoke Color Picker for XGraph.");
                         return;
                     }
-                    VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base.First();
+                    xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base.First();
                     var defaultColor = Color.gray;
                     defaultColor = node.ActionData.themeColor;
                     defaultColor.a = 1.0f;
@@ -68,7 +68,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         foreach (var selectable in selection)
                         {
-                            if (selectable is VNode_Base node)
+                            if (selectable is xNode_Base node)
                             {
                                 Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
@@ -97,7 +97,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
 
                                 Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
@@ -117,39 +117,42 @@ namespace SevenStrikeModules.XGraph
 
                 evt.menu.AppendSeparator();
 
-                // 执行模式切换
-                evt.menu.AppendAction($"E 执行模式/E 顺序", (action) =>
+                if (evt.target is not xNode_Property)
                 {
-                    if (CurrentSelectedNodes_Base.Count > 0)
+                    // 执行模式切换
+                    evt.menu.AppendAction($"E 执行模式/E 顺序", (action) =>
                     {
-                        for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                        if (CurrentSelectedNodes_Base.Count > 0)
                         {
-                            VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
-                            node.ActionData.isConcurrentExecution = false;
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                            {
+                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
+                                node.ActionData.isConcurrentExecution = false;
 
-                            if (node.ActionData.On_Node_ConcurrentChanged != null)
-                                node.ActionData.On_Node_ConcurrentChanged(false);
+                                if (node.ActionData.On_Node_ConcurrentChanged != null)
+                                    node.ActionData.On_Node_ConcurrentChanged(false);
+                            }
                         }
-                    }
-                    evt.StopPropagation();
-                });
-                evt.menu.AppendAction($"E 执行模式/D 并发", (action) =>
-                {
-                    if (CurrentSelectedNodes_Base.Count > 0)
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"E 执行模式/D 并发", (action) =>
                     {
-                        for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                        if (CurrentSelectedNodes_Base.Count > 0)
                         {
-                            VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
-                            node.ActionData.isConcurrentExecution = true;
+                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
+                            {
+                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
+                                node.ActionData.isConcurrentExecution = true;
 
-                            if (node.ActionData.On_Node_ConcurrentChanged != null)
-                                node.ActionData.On_Node_ConcurrentChanged(true);
+                                if (node.ActionData.On_Node_ConcurrentChanged != null)
+                                    node.ActionData.On_Node_ConcurrentChanged(true);
+                            }
                         }
-                    }
-                    evt.StopPropagation();
-                });
+                        evt.StopPropagation();
+                    });
+                }
 
-                if (nodebase is not VNode_Variable_Internal)
+                if (nodebase is not xNode_Variable_Internal && evt.target is not xNode_Property)
                 {
                     evt.menu.AppendAction($"X 设为起始节点", (action) =>
                     {
@@ -157,7 +160,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
 
                                 ActionTreeAsset.SetStartNode(node.ActionData);
                                 if (node.ActionData.On_Node_IsStartNodeChanged != null)
@@ -180,7 +183,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                                 {
-                                    VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+                                    xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
                                     node.NodeAvatar_Remove();
                                     node.UnregisterAvatarClicked();
                                 }
@@ -203,13 +206,18 @@ namespace SevenStrikeModules.XGraph
                         });
                     }
                     evt.menu.AppendSeparator();
-                    evt.menu.AppendAction($"B 图标/B 恢复原生图标", (action) =>
+                    evt.menu.AppendAction($"B 图标/B 设置标题图标", (action) =>
+                    {
+                        OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionData.NodeIcon);
+                        evt.StopPropagation();
+                    });
+                    evt.menu.AppendAction($"B 图标/W 恢复原生图标", (action) =>
                     {
                         if (CurrentSelectedNodes_Base.Count > 0)
                         {
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
-                                VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
                                 Undo.RecordObject(node.ActionData, "Restore ActionNodeTitleIcon");
                                 node.ActionData.NodeIcon = null;
 
@@ -219,11 +227,6 @@ namespace SevenStrikeModules.XGraph
                         }
                         evt.StopPropagation();
                     });
-                    evt.menu.AppendAction($"B 图标/V 设置标题图标", (action) =>
-                    {
-                        OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionData.NodeIcon);
-                        evt.StopPropagation();
-                    });
                 }
                 evt.menu.AppendSeparator();
                 isInGraphNode = true;
@@ -231,7 +234,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region  确认当前有点击的物体是否是 VariableNode
-            if (evt.target is VNode_Variable nodevar)
+            if (evt.target is xNode_Variable nodevar)
             {
                 evt.menu.AppendAction($"C 查看变量名称", (action) =>
                 {
@@ -239,7 +242,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         for (int s = 0; s < CurrentSelectedNodes_Variable.Count; s++)
                         {
-                            VNode_Variable node = (VNode_Variable)CurrentSelectedNodes_Variable[s];
+                            xNode_Variable node = (xNode_Variable)CurrentSelectedNodes_Variable[s];
                             Debug.Log(node.VariableData.name);
                         }
                     }
@@ -266,14 +269,14 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region  确认当前有点击的物体是否是Stick节点
-            if (evt.target is VNode_Stick stick)
+            if (evt.target is xNode_Stick stick)
             {
                 isInStickNode = true;
             }
             #endregion
 
             #region  确认当前有点击的物体是否是Decal节点
-            if (evt.target is VNode_Decal decal)
+            if (evt.target is xNode_Decal decal)
             {
                 if (decal.DecalData.HasTexture)
                 {
@@ -284,7 +287,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             for (int s = 0; s < CurrentSelectedNodes_Decal.Count; s++)
                             {
-                                VNode_Decal node = CurrentSelectedNodes_Decal[s];
+                                xNode_Decal node = CurrentSelectedNodes_Decal[s];
                                 node.NodeDecalTexture_Remove();
                             }
                         }
@@ -430,7 +433,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                         {
-                            VNode_Base node_a = (VNode_Base)CurrentSelectedNodes_Base[s];
+                            xNode_Base node_a = (xNode_Base)CurrentSelectedNodes_Base[s];
                             node_a.TransparentDisplay_Set(true);
                         }
                     }
@@ -438,7 +441,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         for (int s = 0; s < CurrentSelectedNodes_Variable.Count; s++)
                         {
-                            VNode_Variable node_v = (VNode_Variable)CurrentSelectedNodes_Variable[s];
+                            xNode_Variable node_v = (xNode_Variable)CurrentSelectedNodes_Variable[s];
                             node_v.TransparentDisplay_Set(true);
                         }
                     }
@@ -450,7 +453,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                         {
-                            VNode_Base node = (VNode_Base)CurrentSelectedNodes_Base[s];
+                            xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
                             node.TransparentDisplay_Set(false);
                         }
                     }
@@ -458,7 +461,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         for (int s = 0; s < CurrentSelectedNodes_Variable.Count; s++)
                         {
-                            VNode_Variable node_v = (VNode_Variable)CurrentSelectedNodes_Variable[s];
+                            xNode_Variable node_v = (xNode_Variable)CurrentSelectedNodes_Variable[s];
                             node_v.TransparentDisplay_Set(false);
                         }
                     }
@@ -545,7 +548,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     foreach (var node in CurrentSelectedNodes_Base)
                     {
-                        if (node is VNode_Base n_base)
+                        if (node is xNode_Base n_base)
                         {
                             if (n_base.ActionData.actionNodeType != "Relay")
                             {

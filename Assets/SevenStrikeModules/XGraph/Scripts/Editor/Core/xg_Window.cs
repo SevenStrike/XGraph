@@ -10,25 +10,6 @@
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class WindowThemeParams
-    {
-        public string solution;
-        public string col_bg;
-        public string col_grid;
-        public string col_thickLine;
-        public string col_customimage;
-        public string col_theme;
-        public string col_blackboard_bg;
-        public string col_inspector_bg;
-        public float val_griddistance;
-        public int val_thicklines;
-    }
-
-    public class WindowThemeList
-    {
-        public List<WindowThemeParams> Themes = new List<WindowThemeParams>();
-    }
-
     public class xg_Window : EditorWindow
     {
         #region 组件
@@ -310,11 +291,11 @@
         /// <summary>
         /// 原始行为树复制体，放置修改源资源，保证安全修改
         /// </summary>
-        public ActionNode_Asset CloneTree;
+        public xAction_Asset CloneTree;
         /// <summary>
         /// 原始行为树
         /// </summary>
-        public ActionNode_Asset SourceTree;
+        public xAction_Asset SourceTree;
         #endregion
 
         /// <summary>
@@ -339,7 +320,7 @@
         [OnOpenAsset(1)]
         public static bool OnOpenAssets(int id, int line)
         {
-            if (EditorUtility.InstanceIDToObject(id) is ActionNode_Asset datatree)
+            if (EditorUtility.InstanceIDToObject(id) is xAction_Asset datatree)
             {
                 #region 加载窗口
                 // 注意：执行顺序强调 ！！！ GetWindow 方法会先触发执行 CreateGUI 方法然后再继续下面的代码
@@ -920,8 +901,8 @@
                     if (string.IsNullOrEmpty(path_source)) return;
 
                     // 根据路径恢复加载节点方案资源
-                    var tree_source = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_source);
-                    var tree_clone = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path_clone);
+                    var tree_source = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_source);
+                    var tree_clone = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_clone);
                     if (tree_clone != null)
                     {
                         var window = GetWindow<xg_Window>();
@@ -935,7 +916,7 @@
         /// </summary>
         /// <param name="tree_source"></param>
         /// <param name="tree_clone"></param>
-        public void ReloadTreeFromPath(ActionNode_Asset tree_source, ActionNode_Asset tree_clone)
+        public void ReloadTreeFromPath(xAction_Asset tree_source, xAction_Asset tree_clone)
         {
             if (tree_source == null) return;
 
@@ -1045,12 +1026,17 @@
             xw_InspectorView.ClearInspector();
 
             // 选中的节点为：行为节点
-            if (nodeview is VNode_Base n_base)
+            if (nodeview is xNode_Base n_base)
             {
                 // 选中的节点为：内部变量节点
-                if (n_base is VNode_Variable_Internal n_vare_internal)
+                if (n_base is xNode_Variable_Internal n_vare_internal)
                 {
                     Node_InternalVariable_Selected(n_vare_internal);
+                }
+                // 选中的节点为：内部变量节点
+                else if (n_base is xNode_Property n_property)
+                {
+                    Node_Property_Selected(n_property);
                 }
                 // 选中的节点为：行为节点
                 else
@@ -1062,22 +1048,22 @@
                 xw_InspectorView.InspectorViewer(nodeview);
             }
             // 选中的节点为：黑板变量节点
-            else if (nodeview is VNode_Variable n_vare)
+            else if (nodeview is xNode_Variable n_vare)
             {
                 Node_Variable_Selected(n_vare);
             }
             // 选中的节点为：贴图节点
-            else if (nodeview is VNode_Decal n_decal)
+            else if (nodeview is xNode_Decal n_decal)
             {
                 Node_Decal_Selected(n_decal);
             }
             // 选中的节点为：便签节点
-            else if (nodeview is VNode_Stick n_stick)
+            else if (nodeview is xNode_Stick n_stick)
             {
                 Node_Stick_Selected(n_stick);
             }
             // 选中的节点为：标签节点
-            else if (nodeview is VNode_Label n_label)
+            else if (nodeview is xNode_Label n_label)
             {
                 Node_Label_Selected(n_label);
             }
@@ -1107,10 +1093,10 @@
                 xw_InspectorView.InspectorViewer(selectedNode);
 
                 // 选中的节点为：行为节点
-                if (selectedNode is VNode_Base n_base)
+                if (selectedNode is xNode_Base n_base)
                 {
                     // 选中的节点为：内部变量节点
-                    if (n_base is VNode_Variable_Internal n_vare_internal)
+                    if (n_base is xNode_Variable_Internal n_vare_internal)
                     {
                         Node_InternalVariable_Selected(n_vare_internal);
                     }
@@ -1121,22 +1107,22 @@
                     }
                 }
                 // 选中的节点为：黑板变量节点
-                else if (selectedNode is VNode_Variable n_vare)
+                else if (selectedNode is xNode_Variable n_vare)
                 {
                     Node_Variable_Selected(n_vare);
                 }
                 // 选中的节点为：贴图节点
-                else if (selectedNode is VNode_Decal n_decal)
+                else if (selectedNode is xNode_Decal n_decal)
                 {
                     Node_Decal_Selected(n_decal);
                 }
                 // 选中的节点为：便签节点
-                else if (selectedNode is VNode_Stick n_stick)
+                else if (selectedNode is xNode_Stick n_stick)
                 {
                     Node_Stick_Selected(n_stick);
                 }
                 // 选中的节点为：标签节点
-                else if (selectedNode is VNode_Label n_label)
+                else if (selectedNode is xNode_Label n_label)
                 {
                     Node_Label_Selected(n_label);
                 }
@@ -1288,7 +1274,7 @@
         /// 选中节点：变量
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_Variable_Selected(VNode_Variable n_vare)
+        private void Node_Variable_Selected(xNode_Variable n_vare)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"黑板变量节点");
@@ -1299,7 +1285,7 @@
         /// 选中节点：行为
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_Action_Selected(VNode_Base n_base)
+        private void Node_Action_Selected(xNode_Base n_base)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"行为节点");
@@ -1310,7 +1296,7 @@
         /// 选中节点：内部变量
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_InternalVariable_Selected(VNode_Variable_Internal n_vare_internal)
+        private void Node_InternalVariable_Selected(xNode_Variable_Internal n_vare_internal)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"内部变量节点");
@@ -1318,10 +1304,21 @@
             xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"值：{n_vare_internal.VariableData.variable.GetValue()}");
         }
         /// <summary>
+        /// 选中节点：属性
+        /// </summary>
+        /// <param name="n_vare"></param>
+        private void Node_Property_Selected(xNode_Property n_property)
+        {
+            // 加载 Inspector 面板标题文字
+            InspectorViewAction_SetTitle($"属性节点");
+            // 显示当前选中的节点的类型信息
+            //xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"值：{n_vare_internal.VariableData.variable.GetValue()}");
+        }
+        /// <summary>
         /// 选中节点：标签
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_Label_Selected(VNode_Label n_label)
+        private void Node_Label_Selected(xNode_Label n_label)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"标签节点");
@@ -1332,7 +1329,7 @@
         /// 选中节点：便签
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_Stick_Selected(VNode_Stick n_stick)
+        private void Node_Stick_Selected(xNode_Stick n_stick)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"便签节点");
@@ -1343,7 +1340,7 @@
         /// 选中节点：贴图
         /// </summary>
         /// <param name="n_vare"></param>
-        private void Node_Decal_Selected(VNode_Decal n_decal)
+        private void Node_Decal_Selected(xNode_Decal n_decal)
         {
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"贴图节点");
@@ -1754,9 +1751,9 @@
             #endregion
 
             #region 高亮显示节点
-            VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
-            List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
-            foreach (VNode_Variable v in vNode_Variables)
+            xVariableType v_type = (xVariableType)Enum.Parse(typeof(xVariableType), (string)label.userData);
+            List<xNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
+            foreach (xNode_Variable v in vNode_Variables)
             {
                 v.Highlight();
             }
@@ -1777,8 +1774,8 @@
             #endregion
 
             #region 取消高亮显示节点
-            VariableType v_type = (VariableType)Enum.Parse(typeof(VariableType), (string)label.userData);
-            List<VNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
+            xVariableType v_type = (xVariableType)Enum.Parse(typeof(xVariableType), (string)label.userData);
+            List<xNode_Variable> vNode_Variables = xw_BlackBoardView.FindVariableNodes(v_type);
             foreach (var v in vNode_Variables)
             {
                 v.UnHighlight();
@@ -2105,14 +2102,14 @@
         public void ActionTree_Open()
         {
             // 准备预打开的资源类
-            ActionNode_Asset tree = null;
+            xAction_Asset tree = null;
 
             #region 获取打开资源路径并获取目标资源
             string path = EditorUtility.OpenFilePanel("Select Tree Asset", "Assets", "asset");
             if (!string.IsNullOrEmpty(path))
             {
                 path = path.Replace(Application.dataPath, "Assets"); // 转为 Unity 相对路径
-                tree = AssetDatabase.LoadAssetAtPath<ActionNode_Asset>(path);
+                tree = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path);
             }
             else
             {
@@ -2248,10 +2245,10 @@
         /// </summary>
         /// <param name="element"></param>
         /// <param name="key"></param>
-        private ElementPanelTransformData Element_Transform_Save(VisualElement element)
+        private VisualElementTransformData Element_Transform_Save(VisualElement element)
         {
             // 创建一个位置数据结构，记录所有可能的定位值
-            ElementPanelTransformData data = new ElementPanelTransformData();
+            VisualElementTransformData data = new VisualElementTransformData();
 
             data.left = element.style.left.value.value;
             data.top = element.style.top.value.value;
@@ -2272,7 +2269,7 @@
         /// </summary>
         /// <param name="key"></param>
         /// <param name="element"></param>
-        public void Element_Transform_Load(ElementPanelTransformData data, VisualElement element)
+        public void Element_Transform_Load(VisualElementTransformData data, VisualElement element)
         {
             // 重置所有定位属性
             element.style.left = StyleKeyword.Auto;
@@ -2333,7 +2330,7 @@
             // 检测并刷新所有视觉节点的位置
             foreach (var dataNode in CloneTree.Actions)
             {
-                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as VNode_Base;
+                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as xNode_Base;
                 if (visualNode != null)
                 {
                     // 如果该节点位置有变化则刷新该节点位置

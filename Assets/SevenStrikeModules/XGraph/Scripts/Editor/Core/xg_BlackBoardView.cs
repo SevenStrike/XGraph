@@ -7,17 +7,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class VariableTheme
-    {
-        public string type;
-        public string color;
-    }
-
-    public class VariableThemesGroup
-    {
-        public List<VariableTheme> VariableThemes = new List<VariableTheme>();
-    }
-
     /// <summary>
     /// XGraph的GraphView BlackBoard基础件，[UxmlElement]用于在UIBuilder中出现BlackBoardView的控件
     /// </summary>
@@ -443,8 +432,8 @@ namespace SevenStrikeModules.XGraph
             string guid = ele.viewDataKey;
 
             #region 高亮显示节点
-            List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
-            foreach (VNode_Variable v in vNode_Variables)
+            List<xNode_Variable> vNode_Variables = FindVariableNodes(guid);
+            foreach (xNode_Variable v in vNode_Variables)
             {
                 v.Highlight();
             }
@@ -461,7 +450,7 @@ namespace SevenStrikeModules.XGraph
             string guid = ele.viewDataKey;
 
             #region 取消高亮显示节点
-            List<VNode_Variable> vNode_Variables = FindVariableNodes(guid);
+            List<xNode_Variable> vNode_Variables = FindVariableNodes(guid);
             foreach (var v in vNode_Variables)
             {
                 v.UnHighlight();
@@ -495,35 +484,35 @@ namespace SevenStrikeModules.XGraph
                 // 添加菜单项
                 menu.AddItem(new GUIContent("S 字符串变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.String));
+                    AddVariable(Variable_Create(xVariableType.String));
                 });
                 menu.AddItem(new GUIContent("F 浮点数变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Float));
+                    AddVariable(Variable_Create(xVariableType.Float));
                 });
                 menu.AddItem(new GUIContent("I 整数变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Int));
+                    AddVariable(Variable_Create(xVariableType.Int));
                 });
                 menu.AddItem(new GUIContent("B 布尔变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Bool));
+                    AddVariable(Variable_Create(xVariableType.Bool));
                 });
                 menu.AddItem(new GUIContent("V 2维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Vector2));
+                    AddVariable(Variable_Create(xVariableType.Vector2));
                 });
                 menu.AddItem(new GUIContent("V 3维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Vector3));
+                    AddVariable(Variable_Create(xVariableType.Vector3));
                 });
                 menu.AddItem(new GUIContent("V 4维向量变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Vector4));
+                    AddVariable(Variable_Create(xVariableType.Vector4));
                 });
                 menu.AddItem(new GUIContent("C 颜色变量"), false, () =>
                 {
-                    AddVariable(Variable_Create(VariableType.Color));
+                    AddVariable(Variable_Create(xVariableType.Color));
                 });
                 // 显示菜单
                 menu.DropDown(new Rect(screenPosition, Vector2.zero));
@@ -562,33 +551,33 @@ namespace SevenStrikeModules.XGraph
         /// 创建黑板的变量
         /// </summary>
         /// <param name="type"></param>
-        public Variable Variable_Create(VariableType type)
+        public Variable Variable_Create(xVariableType type)
         {
             Variable vare = null;
             switch (type)
             {
-                case VariableType.String:
+                case xVariableType.String:
                     vare = new Variable_String(type.ToString());
                     break;
-                case VariableType.Float:
+                case xVariableType.Float:
                     vare = new Variable_Float(type.ToString());
                     break;
-                case VariableType.Int:
+                case xVariableType.Int:
                     vare = new Variable_Int(type.ToString());
                     break;
-                case VariableType.Bool:
+                case xVariableType.Bool:
                     vare = new Variable_Bool(type.ToString());
                     break;
-                case VariableType.Vector2:
+                case xVariableType.Vector2:
                     vare = new Variable_Vector2(type.ToString());
                     break;
-                case VariableType.Vector3:
+                case xVariableType.Vector3:
                     vare = new Variable_Vector3(type.ToString());
                     break;
-                case VariableType.Vector4:
+                case xVariableType.Vector4:
                     vare = new Variable_Vector4(type.ToString());
                     break;
-                case VariableType.Color:
+                case xVariableType.Color:
                     vare = new Variable_Color(type.ToString());
                     break;
             }
@@ -613,7 +602,7 @@ namespace SevenStrikeModules.XGraph
                 // 获取到变量结构类
                 Variable var = item as Variable;
 
-                List<VNode_Variable> varNodes = FindVariableNodes(var.guid);
+                List<xNode_Variable> varNodes = FindVariableNodes(var.guid);
                 foreach (var node in varNodes)
                 {
                     graphWindow.xw_graphView.Node_Delete(node);
@@ -657,7 +646,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="variable"></param>
         /// <returns></returns>
-        public Color GetVariableThemeColor(VariableType type)
+        public Color GetVariableThemeColor(xVariableType type)
         {
             Color node_color = Color.white;
             foreach (var theme in VariableThemeList.VariableThemes)
@@ -684,7 +673,7 @@ namespace SevenStrikeModules.XGraph
                     node.description = variable.description;
 
                     // 注意：同时通过匹配到的 node 节点数据的guid找到节点并修改节点的显示名称！
-                    VNode_Variable varNode = graphWindow.xw_graphView.FindNode(node.guid) as VNode_Variable;
+                    xNode_Variable varNode = graphWindow.xw_graphView.FindNode(node.guid) as xNode_Variable;
                     if (varNode != null)
                     {
                         // 设置 Variable 节点的标题名称
@@ -800,15 +789,15 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public List<VNode_Variable> FindVariableNodes(VariableType type)
+        public List<xNode_Variable> FindVariableNodes(xVariableType type)
         {
-            List<VNode_Variable> list = new List<VNode_Variable>();
+            List<xNode_Variable> list = new List<xNode_Variable>();
 
             foreach (var v in graphWindow.CloneTree.Variables)
             {
                 if (v.type == type)
                 {
-                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as xNode_Variable);
                 }
             }
             return list;
@@ -819,14 +808,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        public List<VNode_Variable> FindVariableNodes(string guid)
+        public List<xNode_Variable> FindVariableNodes(string guid)
         {
-            List<VNode_Variable> list = new List<VNode_Variable>();
+            List<xNode_Variable> list = new List<xNode_Variable>();
             foreach (var v in graphWindow.CloneTree.Variables)
             {
                 if (v.varguid == guid)
                 {
-                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as VNode_Variable);
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as xNode_Variable);
                 }
             }
             return list;

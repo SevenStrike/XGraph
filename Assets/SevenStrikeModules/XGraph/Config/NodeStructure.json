@@ -8,50 +8,50 @@
                 {
                     "name": "模组初始化",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "ModuleInitialize",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "module_initialize",
                     "iconName": "start",
-                    "visualNodeType": "Graph_ModuleInitialize"
+                    "visualNodeType": "mc_node_module_initialize"
                 },
                 {
                     "name": "模组激活",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "ModuleActivate",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "module_activate",
                     "iconName": "composite",
-                    "visualNodeType": "Graph_ModuleActivate"
+                    "visualNodeType": "mc_node_module_activate"
                 },
                 {
-                    "name": "舞台主灯光开关",
+                    "name": "主灯控制",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "MainLightEnable",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "light_control",
                     "iconName": "composite",
-                    "visualNodeType": "Graph_MainLightEnable"
+                    "visualNodeType": "mc_node_light_control"
                 },
                 {
-                    "name": "结束",
+                    "name": "结束模组控制",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "End",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "end",
                     "iconName": "end",
-                    "visualNodeType": "Graph_End"
+                    "visualNodeType": "mc_node_end"
                 },
                 {
-                    "name": "等待",
+                    "name": "间隔等待",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "Wait",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "wait",
                     "iconName": "wait",
-                    "visualNodeType": "Graph_Wait"
+                    "visualNodeType": "mc_node_wait"
                 },
                 {
-                    "name": "获取灯光",
+                    "name": "灯光属性",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "Action_",
-                    "actionNodeType": "GetLight",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "property_light",
                     "iconName": "light",
-                    "visualNodeType": "Graph_GetLight"
+                    "visualNodeType": "mc_node_property_light"
                 }
             ]
         },
@@ -62,18 +62,18 @@
                 {
                     "name": "分支",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Branch",
                     "iconName": "branch",
-                    "visualNodeType": "VNode_Branch"
+                    "visualNodeType": "xNode_Branch"
                 },
                 {
                     "name": "延展",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Relay",
                     "iconName": "relay",
-                    "visualNodeType": "VNode_Relay"
+                    "visualNodeType": "xNode_Relay"
                 }
             ]
         },
@@ -84,66 +84,66 @@
                 {
                     "name": "String",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Float",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Int",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Bool",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Vector2",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Vector3",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Vector4",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 },
                 {
                     "name": "Color",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "ActionNode_",
+                    "prefixClass": "xAction_",
                     "actionNodeType": "Variable",
                     "iconName": "variable",
-                    "visualNodeType": "VNode_Variable_Internal"
+                    "visualNodeType": "xNode_Variable_Internal"
                 }
             ]
         },
@@ -157,7 +157,7 @@
                     "prefixClass": "",
                     "actionNodeType": "Stick",
                     "iconName": "stick",
-                    "visualNodeType": "VNode_Stick"
+                    "visualNodeType": "xNode_Stick"
                 },
                 {
                     "name": "标签",
@@ -165,7 +165,7 @@
                     "prefixClass": "",
                     "actionNodeType": "Label",
                     "iconName": "label",
-                    "visualNodeType": "VNode_Label"
+                    "visualNodeType": "xNode_Label"
                 },
                 {
                     "name": "贴图",
@@ -173,7 +173,7 @@
                     "prefixClass": "",
                     "actionNodeType": "Decal",
                     "iconName": "decal",
-                    "visualNodeType": "VNode_Decal"
+                    "visualNodeType": "xNode_Decal"
                 }
             ]
         }

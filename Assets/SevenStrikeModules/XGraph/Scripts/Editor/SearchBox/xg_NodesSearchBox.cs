@@ -249,7 +249,7 @@ namespace SevenStrikeModules.XGraph
                 args.position = graphView.GetNodeCreatedMousePosition();
                 args.size = Vector2.one * 100;
 
-                VariableType type;
+                xVariableType type;
                 // 判断类型是否是有效的类型
                 bool parsedVariableType = Enum.TryParse(types.visual_name, out type);
                 if (parsedVariableType)

@@ -12,7 +12,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 初始化编组并注册相关事件
         /// </summary>
-        private Group CreateGroup(string title, Vector2 position, ActionGroupData groupData = null)
+        private Group CreateGroup(string title, Vector2 position, xGroupData groupData = null)
         {
             Group group = new Group
             {
@@ -154,30 +154,30 @@ namespace SevenStrikeModules.XGraph
             // 收集选中节点的GUID
             foreach (var n in selectedNodes)
             {
-                if (n is VNode_Base node)
+                if (n is xNode_Base node)
                 {
                     nodes_guid.Add(node.ActionData.guid);
                 }
-                else if (n is VNode_Variable vare)
+                else if (n is xNode_Variable vare)
                 {
                     nodes_guid.Add(vare.VariableData.guid);
                 }
-                else if (n is VNode_Stick stick)
+                else if (n is xNode_Stick stick)
                 {
                     nodes_guid.Add(stick.StickData.guid);
                 }
-                else if (n is VNode_Label label)
+                else if (n is xNode_Label label)
                 {
                     nodes_guid.Add(label.LabelData.guid);
                 }
-                else if (n is VNode_Decal decal)
+                else if (n is xNode_Decal decal)
                 {
                     nodes_guid.Add(decal.DecalData.guid);
                 }
             }
 
             // 创建编组数据
-            ActionGroupData gp_data = new ActionGroupData(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
+            xGroupData gp_data = new xGroupData(title, GUID.Generate().ToString(), localMousePosition, nodes_guid, "M 默认", null, null);
 
             // 初始化编组
             Group gp = CreateGroup(title, localMousePosition, gp_data);
@@ -203,7 +203,7 @@ namespace SevenStrikeModules.XGraph
         /// <param solution="newName"></param>
         private void ChangeGroupName(Group group, string newName)
         {
-            ActionGroupData groupData = ActionTreeAsset.Groups
+            xGroupData groupData = ActionTreeAsset.Groups
                 .FirstOrDefault(g => g.group == group);
 
             if (groupData != null && groupData.name != newName)
@@ -238,7 +238,7 @@ namespace SevenStrikeModules.XGraph
             bool hasmark = false;
             foreach (var node in nodes)
             {
-                if (node is VNode_Base bs)
+                if (node is xNode_Base bs)
                 {
                     if (bs.ActionData.actionNodeType != "Relay" && bs.ActionData.HasAvatar)
                     {
@@ -352,7 +352,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        public ActionGroupData FindGroupData(Group group)
+        public xGroupData FindGroupData(Group group)
         {
             return ActionTreeAsset.Groups.FirstOrDefault(g => g.group == group);
         }
@@ -360,7 +360,7 @@ namespace SevenStrikeModules.XGraph
         /// 检查编组内是否存在设置了头像的节点
         /// </summary>
         /// <param name="groupData"></param>
-        private void CheckHasAvatarNode(ActionGroupData groupData)
+        private void CheckHasAvatarNode(xGroupData groupData)
         {
             // 检查编组中是否存在设置了Avatar的节点
             groupData.hasAvatarNodes = HasMarkIconNodes(groupData.group);
@@ -385,14 +385,14 @@ namespace SevenStrikeModules.XGraph
         public void On_Group_AddedElements(Group group, IEnumerable<GraphElement> nodes)
         {
             // 查找对应的 ActionGroupData
-            ActionGroupData groupData = FindGroupData(group);
+            xGroupData groupData = FindGroupData(group);
             Undo.RecordObject(ActionTreeAsset, "Group AddedElements");
 
             // ---------------------处理  移入  的节点
             foreach (var item in nodes)
             {
                 string guid = null;
-                if (item is VNode_Base node)
+                if (item is xNode_Base node)
                 {
                     // 获取移入的节点的guid
                     guid = node.ActionData.guid;
@@ -404,22 +404,22 @@ namespace SevenStrikeModules.XGraph
                         CheckHasAvatarNode(groupData);
                     });
                 }
-                else if (item is VNode_Variable vare)
+                else if (item is xNode_Variable vare)
                 {
                     // 获取移入的节点的guid
                     guid = vare.VariableData.guid;
                 }
-                else if (item is VNode_Stick stick)
+                else if (item is xNode_Stick stick)
                 {
                     // 获取移入的节点的guid
                     guid = stick.StickData.guid;
                 }
-                else if (item is VNode_Label label)
+                else if (item is xNode_Label label)
                 {
                     // 获取移入的节点的guid
                     guid = label.LabelData.guid;
                 }
-                else if (item is VNode_Decal decal)
+                else if (item is xNode_Decal decal)
                 {
                     // 获取移入的节点的guid
                     guid = decal.DecalData.guid;
@@ -440,14 +440,14 @@ namespace SevenStrikeModules.XGraph
         public void On_Group_RemoveElements(Group group, IEnumerable<GraphElement> nodes)
         {
             // 查找对应的 ActionGroupData
-            ActionGroupData groupData = FindGroupData(group);
+            xGroupData groupData = FindGroupData(group);
             Undo.RecordObject(ActionTreeAsset, "Group RemovedElements");
 
             // ---------------------处理  移出  的节点
             foreach (var item in nodes)
             {
                 string guid = null;
-                if (item is VNode_Base node)
+                if (item is xNode_Base node)
                 {
                     // 获取移出的节点的guid
                     guid = node.ActionData.guid;
@@ -455,22 +455,22 @@ namespace SevenStrikeModules.XGraph
                     // 清空委托 - 节点头像移除
                     node.ActionData.On_Node_AvatarChanged = null;
                 }
-                else if (item is VNode_Variable vare)
+                else if (item is xNode_Variable vare)
                 {
                     // 获取移出的节点的guid
                     guid = vare.VariableData.guid;
                 }
-                else if (item is VNode_Stick stick)
+                else if (item is xNode_Stick stick)
                 {
                     // 获取移出的节点的guid
                     guid = stick.StickData.guid;
                 }
-                else if (item is VNode_Label label)
+                else if (item is xNode_Label label)
                 {
                     // 获取移出的节点的guid
                     guid = label.LabelData.guid;
                 }
-                else if (item is VNode_Decal decal)
+                else if (item is xNode_Decal decal)
                 {
                     // 获取移出的节点的guid
                     guid = decal.DecalData.guid;

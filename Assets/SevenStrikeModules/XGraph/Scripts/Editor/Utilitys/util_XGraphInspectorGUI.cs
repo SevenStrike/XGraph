@@ -100,7 +100,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="styles_title"></param>
         /// <param name="styles_sub"></param>
         /// <returns></returns>
-        public static VisualElement GUI_Title(this VisualElement root, ActionNode_Base nodedata, string title, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null)
+        public static VisualElement GUI_Title(this VisualElement root, xAction_Base nodedata, string title, string[] styles_group = null, string[] styles_mark = null, string[] styles_title = null)
         {
             // 标题组
             VisualElement vm_group = new VisualElement();

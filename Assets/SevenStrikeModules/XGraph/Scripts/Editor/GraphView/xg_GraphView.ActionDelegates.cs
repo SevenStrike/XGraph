@@ -39,13 +39,16 @@ namespace SevenStrikeModules.XGraph
                 var p_child = edge.input;
 
                 // 如果是从 "行为节点"  --->  "行为节点"
-                if (!(p_parent.node is VNode_Base) && !(p_child.node is VNode_Base))
+                if (!(p_parent.node is xNode_Base) && !(p_child.node is xNode_Base))
                     return;
                 // 如果是从 "内部变量节点"  --->  "行为节点"
-                if ((p_parent.node is VNode_Variable_Internal) && (p_child.node is VNode_Base))
+                if ((p_parent.node is xNode_Variable_Internal) && (p_child.node is xNode_Base))
                     return;
                 // 如果是从 "变量节点"  --->  "行为节点"
-                if ((p_parent.node is VNode_Variable) && (p_child.node is VNode_Base))
+                if ((p_parent.node is xNode_Variable) && (p_child.node is xNode_Base))
+                    return;
+                // 如果是从 "属性节点"  --->  "行为节点"
+                if ((p_parent.node is xNode_Property) && (p_child.node is xNode_Base))
                     return;
 
                 //断开并移除边
@@ -57,11 +60,11 @@ namespace SevenStrikeModules.XGraph
                 NodeCreateArgs_Action args = new NodeCreateArgs_Action();
                 args.visualName = "延展";
                 args.prefixNamespace = "SevenStrikeModules.XGraph";
-                args.prefixClass = "ActionNode_";
+                args.prefixClass = "xAction_";
                 args.actionNodeType = "Relay";
                 args.iconName = "relay";
                 args.nodeIcon = null;
-                args.visualNodeType = "VNode_Relay";
+                args.visualNodeType = "xNode_Relay";
                 args.hasAvatar = false;
                 args.avatar = null;
                 args.themeSolution = null;
@@ -71,14 +74,14 @@ namespace SevenStrikeModules.XGraph
                 args.position = graphMouse_pos;
                 args.size = Vector2.one * 100;
 
-                VNode_Relay relaynode = Node_MakeRelay(graphMouse_pos, ActionTreeAsset.Create(args));
+                xNode_Relay relaynode = Node_MakeRelay(graphMouse_pos, ActionTreeAsset.Create(args));
                 relaynode.Draw();
                 relaynode.expanded = true;
                 relaynode.RefreshExpandedState();
                 relaynode.RefreshPorts();
 
-                Edge edge1 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(relaynode.Port_Inputs).ConnectTo(p_parent);
-                Edge edge2 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(relaynode.Port_Outputs).ConnectTo(p_child);
+                Edge edge1 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(relaynode.Port_Inputs).ConnectTo(p_parent);
+                Edge edge2 = util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(relaynode.Port_Outputs).ConnectTo(p_child);
 
                 AddElement(edge1);
                 AddElement(edge2);
@@ -201,7 +204,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     if (data.guid == nodes.viewDataKey)
                     {
-                        if (nodes is VNode_Base bs)
+                        if (nodes is xNode_Base bs)
                         {
                             if (!state)
                                 bs.MarkColor_Hidden();

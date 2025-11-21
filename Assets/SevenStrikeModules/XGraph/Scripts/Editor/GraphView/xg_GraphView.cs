@@ -7,8 +7,10 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
-    using Color = UnityEngine.Color;
 
+    /// <summary>
+    ///  节点端口类
+    /// </summary>
     public class xGraph_NodePort
     {
         /// <summary>
@@ -48,41 +50,6 @@ namespace SevenStrikeModules.XGraph
         {
 
         }
-    }
-
-    /// <summary>
-    /// GraphView 容器类型
-    /// </summary>
-    public enum GraphNodeContainerType
-    {
-        /// <summary>
-        /// 主容器
-        /// </summary>
-        MainContainer = 0,
-        /// <summary>
-        /// 标题
-        /// </summary>
-        TitleContainer = 1,
-        /// <summary>
-        /// 标题按钮
-        /// </summary>
-        TitleButtonContainer = 2,
-        /// <summary>
-        /// 顶部容器
-        /// </summary>
-        TopContainer = 3,
-        /// <summary>
-        /// 输入端口容器
-        /// </summary>
-        InputContainer = 4,
-        /// <summary>
-        /// 输出端口容器
-        /// </summary>
-        OutputContainer = 5,
-        /// <summary>
-        /// 扩展容器
-        /// </summary>
-        ExtensionContainer = 6,
     }
 
     /// <summary>
@@ -178,7 +145,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当前选中的所有节点 - 贴图
         /// </summary>
-        private List<VNode_Decal> CurrentSelectedNodes_Decal = new List<VNode_Decal>();
+        private List<xNode_Decal> CurrentSelectedNodes_Decal = new List<xNode_Decal>();
         /// <summary>
         /// 当前选中的所有节点 - 变量
         /// </summary>
@@ -186,11 +153,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当前选中的所有节点 - 便签
         /// </summary>
-        private List<VNode_Stick> CurrentSelectedNodes_Stick = new List<VNode_Stick>();
+        private List<xNode_Stick> CurrentSelectedNodes_Stick = new List<xNode_Stick>();
         /// <summary>
         /// 当前选中的所有节点 - 标签
         /// </summary>
-        private List<VNode_Label> CurrentSelectedNodes_Label = new List<VNode_Label>();
+        private List<xNode_Label> CurrentSelectedNodes_Label = new List<xNode_Label>();
         /// <summary>
         /// 当前选中的所有编组
         /// </summary>
@@ -243,7 +210,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当前正在编辑的资源
         /// </summary>
-        public ActionNode_Asset ActionTreeAsset;
+        public xAction_Asset ActionTreeAsset;
         #endregion
 
         #region GraphView构造
@@ -442,7 +409,7 @@ namespace SevenStrikeModules.XGraph
         /// 刷新目标节点主题配色
         /// </summary>
         /// <param name="node"></param>
-        private void RefreshTheme_GraphNode(VNode_Base node)
+        private void RefreshTheme_GraphNode(xNode_Base node)
         {
             // 应用配置文件的颜色到节点的标识颜色
             foreach (var colorData in NodeThemesList.Node)
@@ -470,9 +437,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        public VNode_Base FindNodeView(string guid)
+        public xNode_Base FindNodeView(string guid)
         {
-            return GetNodeByGuid(guid) as VNode_Base;
+            return GetNodeByGuid(guid) as xNode_Base;
         }
         /// <summary>
         /// 根据数据节点的GUID来获取目标视觉节点
@@ -575,9 +542,9 @@ namespace SevenStrikeModules.XGraph
             List<util_AnimatedEdge> g_node_edges = new List<util_AnimatedEdge>();
             List<Node> g_node_actions = new List<Node>();
             List<Node> g_node_variables = new List<Node>();
-            List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
-            List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
-            List<VNode_Label> g_node_labels = new List<VNode_Label>();
+            List<xNode_Decal> g_node_decals = new List<xNode_Decal>();
+            List<xNode_Stick> g_node_sticks = new List<xNode_Stick>();
+            List<xNode_Label> g_node_labels = new List<xNode_Label>();
             List<Group> g_node_groups = new List<Group>();
 
             foreach (var n in selection)
@@ -586,24 +553,24 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_edges.Add(edge);
                 }
-                if (n is VNode_Base node)
+                if (n is xNode_Base node)
                 {
                     if (node.ActionData.actionNodeType != "Stick")
                         g_node_actions.Add(node);
                 }
-                if (n is VNode_Variable vare)
+                if (n is xNode_Variable vare)
                 {
                     g_node_variables.Add(vare);
                 }
-                if (n is VNode_Decal decal)
+                if (n is xNode_Decal decal)
                 {
                     g_node_decals.Add(decal);
                 }
-                if (n is VNode_Stick stick)
+                if (n is xNode_Stick stick)
                 {
                     g_node_sticks.Add(stick);
                 }
-                if (n is VNode_Label label)
+                if (n is xNode_Label label)
                 {
                     g_node_labels.Add(label);
                 }
@@ -652,9 +619,9 @@ namespace SevenStrikeModules.XGraph
             List<util_AnimatedEdge> g_node_edges = new List<util_AnimatedEdge>();
             List<Node> g_node_actions = new List<Node>();
             List<Node> g_node_variables = new List<Node>();
-            List<VNode_Decal> g_node_decals = new List<VNode_Decal>();
-            List<VNode_Stick> g_node_sticks = new List<VNode_Stick>();
-            List<VNode_Label> g_node_labels = new List<VNode_Label>();
+            List<xNode_Decal> g_node_decals = new List<xNode_Decal>();
+            List<xNode_Stick> g_node_sticks = new List<xNode_Stick>();
+            List<xNode_Label> g_node_labels = new List<xNode_Label>();
             List<Group> g_node_groups = new List<Group>();
 
             foreach (var n in selection)
@@ -663,23 +630,23 @@ namespace SevenStrikeModules.XGraph
                 {
                     g_node_edges.Add(edge);
                 }
-                if (n is VNode_Base node)
+                if (n is xNode_Base node)
                 {
                     g_node_actions.Add(node);
                 }
-                if (n is VNode_Variable vare)
+                if (n is xNode_Variable vare)
                 {
                     g_node_variables.Add(vare);
                 }
-                if (n is VNode_Decal decal)
+                if (n is xNode_Decal decal)
                 {
                     g_node_decals.Add(decal);
                 }
-                if (n is VNode_Stick stick)
+                if (n is xNode_Stick stick)
                 {
                     g_node_sticks.Add(stick);
                 }
-                if (n is VNode_Label label)
+                if (n is xNode_Label label)
                 {
                     g_node_labels.Add(label);
                 }

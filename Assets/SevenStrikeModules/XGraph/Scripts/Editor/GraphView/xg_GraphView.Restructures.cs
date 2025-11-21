@@ -13,7 +13,7 @@ namespace SevenStrikeModules.XGraph
         /// 根据数据行为树根节点容器里的子资源来重建GraphView的视觉节点
         /// </summary>
         /// <param name="actiontree"></param>
-        public void Restructure_Graph(ActionNode_Asset actiontree)
+        public void Restructure_Graph(xAction_Asset actiontree)
         {
             // 获取到数据根节点
             ActionTreeAsset = actiontree;
@@ -44,6 +44,8 @@ namespace SevenStrikeModules.XGraph
             Restructure_VariableConnector(ActionTreeAsset.Actions);
             // 根据行为节点里的  -内部变量数据列表-  来重建内部变量与行为节点指定的连线  -“Variable类型端口”
             Restructure_InternalVariableConnector(ActionTreeAsset.Actions);
+            // 根据行为节点里的  -属性记录列表-  来重建属性节点的端口与行为节点指定的端口连线
+            Restructure_Propertys(ActionTreeAsset.Actions);
             // 更新变量值数据
             ActionTreeAsset.Variables_Refresh();
 
@@ -116,17 +118,17 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的行为列表数据来重建GraphView的视觉  -  行为节点
         /// </summary>
         /// <param name="actions"></param>
-        private void Restructure_Actions(List<ActionNode_Base> actions)
+        private void Restructure_Actions(List<xAction_Base> actions)
         {
             // 根据根节点的数据列表  -  重建  -  内部变量节点
             // 内部变量节点优先重建 - 为了确保后续的行为节点能正常注册 On_InternalVariable_ValueChanged 回调
             foreach (var data in actions)
             {
-                if (data is ActionNode_Variable)
+                if (data is xAction_Variable)
                 {
                     data.SetActionAssetRoot(ActionTreeAsset);
 
-                    VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                    xNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
                     vNode_Base.RefreshExpandedState();
 
                     // 检查头像设置情况
@@ -137,20 +139,20 @@ namespace SevenStrikeModules.XGraph
             // 根据根节点的数据列表  -  重建  -  行为节点
             foreach (var data in actions)
             {
-                if (!(data is ActionNode_Variable))
+                if (data is not xAction_Variable)
                 {
                     data.SetActionAssetRoot(ActionTreeAsset);
 
                     if (data.actionNodeType == "Relay")
                     {
-                        VNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
+                        xNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
                         vNode_Relay.Draw();
                         vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.TransparentNode);
                         vNode_Relay.RefreshExpandedState();
                     }
                     else
                     {
-                        VNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                        xNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
                         vNode_Base.RefreshExpandedState();
 
                         // 检查头像设置情况
@@ -162,9 +164,9 @@ namespace SevenStrikeModules.XGraph
             // 根据行为树根节点的数据列表  -  重建  -  行为连线
             foreach (var data in actions)
             {
-                if (data is ActionNode_Branch branch_node)
+                if (data is xAction_Branch branch_node)
                 {
-                    VNode_Base n_branch = FindNodeView(branch_node.guid);
+                    xNode_Base n_branch = FindNodeView(branch_node.guid);
 
                     foreach (var port in n_branch.Port_Outputs)
                     {
@@ -172,8 +174,8 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch_node.childNode_true != null)
                             {
-                                VNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
-                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_true.Port_Inputs));
+                                xNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
+                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_true.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
@@ -182,8 +184,8 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch_node.childNode_false != null)
                             {
-                                VNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
-                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_false.Port_Inputs));
+                                xNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
+                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_false.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
@@ -198,17 +200,17 @@ namespace SevenStrikeModules.XGraph
                     // child 为每一个子数据节点
                     foreach (var child in children)
                     {
-                        VNode_Base n_parent = FindNodeView(data.guid);
-                        VNode_Base n_child = FindNodeView(child.guid);
+                        xNode_Base n_parent = FindNodeView(data.guid);
+                        xNode_Base n_child = FindNodeView(child.guid);
 
                         foreach (var p in n_parent.Port_Outputs)
                         {
                             // 确保输出端口为 ActionNode_Base 同时不是继承于 ActionNode_Base 的 VNode_Variable_Internal 的节点类型
                             // 此处这样写是为了区分VNode_Base的行为输出端口和自定义扩展的输出端口
-                            if (p.Port.portType == typeof(ActionNode_Base) && p.Port.node.GetType() != typeof(VNode_Variable_Internal))
+                            if (p.Port.portType == typeof(xAction_Base) && p.Port.node.GetType() != typeof(xNode_Variable_Internal))
                             {
                                 Port port_start = p.Port;
-                                Port port_end = util_XGraphEditorUtility.GetPort_WithType_OfPortList<ActionNode_Base>(n_child.Port_Inputs);
+                                Port port_end = util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_child.Port_Inputs);
 
                                 util_AnimatedEdge edge = ConnectNode(port_start, port_end);
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
@@ -222,9 +224,9 @@ namespace SevenStrikeModules.XGraph
             foreach (var data in actions)
             {
                 // 获取延展节点
-                VNode_Base n_parent = FindNodeView(data.guid);
+                xNode_Base n_parent = FindNodeView(data.guid);
                 // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
-                if (n_parent is VNode_Relay relay)
+                if (n_parent is xNode_Relay relay)
                 {
                     relay.CheckConnected();
                 }
@@ -240,10 +242,54 @@ namespace SevenStrikeModules.XGraph
         }
 
         /// <summary>
+        /// 根据行为树根节点里的行为列表数据来重建行为节点中的属性记录连线
+        /// </summary>
+        /// <param name="actions"></param>
+        private void Restructure_Propertys(List<xAction_Base> actions)
+        {
+            foreach (var data in actions)
+            {
+                if (data is xAction_Base base_node)
+                {
+                    // 找到当前行为的节点
+                    xNode_Base n_base = FindNodeView(base_node.guid);
+
+                    // 遍历当前行为节点的行为数据的属性记录列表
+                    foreach (var prop in data.binded_propertys)
+                    {
+                        // 找到对应记录中的Guid的属性节点
+                        xNode_Property n_property = FindNodeView(prop.Property_GUID) as xNode_Property;
+
+                        if (n_property != null)
+                        {
+                            // 遍历当前行为节点的 InputPort（输入端口）
+                            foreach (var p in n_base.Port_Inputs)
+                            {
+                                // 如果当前行为节点的端口不是 "行为类型端口" 并且端口名称和记录中的目标端口名称相等
+                                if (p.Port.portType != typeof(xAction_Base) && p.Port.portName == prop.Action_PortName)
+                                {
+                                    // 匹配的行为节点的端口
+                                    Port port_start = p.Port;
+                                    // 匹配的属性节点的端口
+                                    Port port_end = n_property.GetPort(prop.Property_PortName, xPortType.Out);
+
+                                    // 重建端口连线
+                                    util_AnimatedEdge edge = ConnectNode(port_start, port_end);
+                                    edge.OnUnSelectedEdge += OnUnSelectedEdge;
+                                    AddElement(edge);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉  -  便签节点
         /// </summary>
         /// <param name="datas_stick"></param>
-        public void Restructure_Sticks(List<ActionStickData> datas_stick)
+        public void Restructure_Sticks(List<xStickData> datas_stick)
         {
             foreach (var data in datas_stick)
             {
@@ -255,7 +301,7 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的便签列表数据来重建GraphView的视觉  -  标签节点
         /// </summary>
         /// <param name="datas_label"></param>
-        public void Restructure_Labels(List<ActionLabelData> datas_label)
+        public void Restructure_Labels(List<xLabelData> datas_label)
         {
             foreach (var data in datas_label)
             {
@@ -267,11 +313,11 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的贴图列表数据来重建GraphView的视觉  -  贴图节点
         /// </summary>
         /// <param name="ActionDecalData"></param>
-        public void Restructure_Decals(List<ActionDecalData> datas_decal)
+        public void Restructure_Decals(List<xDecalData> datas_decal)
         {
             foreach (var data in datas_decal)
             {
-                VNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
+                xNode_Decal vNode_Decal = Node_MakeDecal(data.position, data).Draw();
                 // 检查头像设置情况
                 vNode_Decal.CheckDecalTextureChanged();
             }
@@ -281,12 +327,12 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的变量列表数据来重建GraphView的视觉  -  黑板变量节点
         /// </summary>
         /// <param name="datas_var"></param>
-        public void Restructure_Variable(List<ActionVariableData> datas_var)
+        public void Restructure_Variable(List<xVariableData> datas_var)
         {
             foreach (var data in datas_var)
             {
                 data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
-                VNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
+                xNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
                 vNode_Variable.Draw();
                 vNode_Variable.CheckTransparentDisplay(vNode_Variable.VariableData.TransparentNode);
                 vNode_Variable.RefreshExpandedState();
@@ -297,7 +343,7 @@ namespace SevenStrikeModules.XGraph
         /// 根据行为树根节点里的编组列表数据来重建GraphView的视觉  -  编组
         /// </summary>
         /// <param name="datas_group"></param>
-        public void Restructure_Groups(List<ActionGroupData> datas_group)
+        public void Restructure_Groups(List<xGroupData> datas_group)
         {
             if (datas_group == null || datas_group.Count == 0) return;
 
@@ -313,7 +359,7 @@ namespace SevenStrikeModules.XGraph
                 foreach (string guid in groupData.guids)
                 {
                     // 查找 - 行为节点
-                    var action = nodes.ToList().FirstOrDefault(n => n is VNode_Base node_action && node_action.ActionData.guid == guid);
+                    var action = nodes.ToList().FirstOrDefault(n => n is xNode_Base node_action && node_action.ActionData.guid == guid);
                     if (action != null)
                     {
                         group.AddElement(action);
@@ -321,28 +367,28 @@ namespace SevenStrikeModules.XGraph
                     }
 
                     // 查找 - 黑板变量节点
-                    var stick = nodes.ToList().FirstOrDefault(n => n is VNode_Stick node_stick && node_stick.StickData.guid == guid);
+                    var stick = nodes.ToList().FirstOrDefault(n => n is xNode_Stick node_stick && node_stick.StickData.guid == guid);
                     if (stick != null)
                     {
                         group.AddElement(stick);
                     }
 
                     // 查找 - 标签节点
-                    var label = nodes.ToList().FirstOrDefault(n => n is VNode_Label node_label && node_label.LabelData.guid == guid);
+                    var label = nodes.ToList().FirstOrDefault(n => n is xNode_Label node_label && node_label.LabelData.guid == guid);
                     if (label != null)
                     {
                         group.AddElement(label);
                     }
 
                     // 查找 - 贴图节点
-                    var decal = nodes.ToList().FirstOrDefault(n => n is VNode_Decal node_decal && node_decal.DecalData.guid == guid);
+                    var decal = nodes.ToList().FirstOrDefault(n => n is xNode_Decal node_decal && node_decal.DecalData.guid == guid);
                     if (decal != null)
                     {
                         group.AddElement(decal);
                     }
 
                     // 查找 - 黑板变量节点
-                    var vare = nodes.ToList().FirstOrDefault(n => n is VNode_Variable node_var && node_var.VariableData.guid == guid);
+                    var vare = nodes.ToList().FirstOrDefault(n => n is xNode_Variable node_var && node_var.VariableData.guid == guid);
                     if (vare != null)
                     {
                         group.AddElement(vare);
@@ -355,7 +401,7 @@ namespace SevenStrikeModules.XGraph
         /// 根据所有行为节点的 “黑板变量数据列表”来重建 “黑板变量节点”与行为节点的连线
         /// </summary>
         /// <param name="datas_action"></param>
-        public void Restructure_VariableConnector(List<ActionNode_Base> datas_action)
+        public void Restructure_VariableConnector(List<xAction_Base> datas_action)
         {
             // 根据行为树根节点的数据列表  -  重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
             foreach (var action in datas_action)
@@ -363,21 +409,21 @@ namespace SevenStrikeModules.XGraph
                 if (action.VariableDatas != null && action.VariableDatas.Count > 0)
                 {
                     // 父节点
-                    VNode_Base n_parent = FindNodeView(action.guid);
+                    xNode_Base n_parent = FindNodeView(action.guid);
 
                     for (int i = 0; i < action.VariableDatas.Count; i++)
                     {
                         var item = action.VariableDatas[i];
 
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
-                        VNode_Variable n_var = FindNode(item.VariableNodeGuid) as VNode_Variable;
+                        xNode_Variable n_var = FindNode(item.VariableNodeGuid) as xNode_Variable;
                         if (n_var != null)
                         {
                             // 获取变量节点的变量类型
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, PortStyleType.In);
+                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
 
                             if (n_var != null && port_parent != null)
                             {
@@ -400,7 +446,7 @@ namespace SevenStrikeModules.XGraph
         /// 根据所有行为节点的 “内部变量数据列表”来重建 “内部变量节点”与行为节点的连线
         /// </summary>
         /// <param name="datas_action"></param>
-        public void Restructure_InternalVariableConnector(List<ActionNode_Base> datas_action)
+        public void Restructure_InternalVariableConnector(List<xAction_Base> datas_action)
         {
             foreach (var action in datas_action)
             {
@@ -408,7 +454,7 @@ namespace SevenStrikeModules.XGraph
                 if (action.InternalVariableDatas != null && action.InternalVariableDatas.Count > 0)
                 {
                     // 获得父节点
-                    VNode_Base n_parent = FindNodeView(action.guid);
+                    xNode_Base n_parent = FindNodeView(action.guid);
 
                     // 循环遍历内部变量列表
                     for (int i = 0; i < action.InternalVariableDatas.Count; i++)
@@ -417,7 +463,7 @@ namespace SevenStrikeModules.XGraph
                         var item = action.InternalVariableDatas[i];
 
                         // 在节点图内找到目标  -  内部变量节点  -  与  -  行为节点  -  的  -  匹配端口  -  连接
-                        VNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as VNode_Variable_Internal;
+                        xNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
                         if (n_var != null)
                         {
                             n_var.VariableData.variable = item.variable.Clone(false);
@@ -428,7 +474,7 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, PortStyleType.In);
+                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
 
                             if (n_var != null && port_parent != null)
                             {
