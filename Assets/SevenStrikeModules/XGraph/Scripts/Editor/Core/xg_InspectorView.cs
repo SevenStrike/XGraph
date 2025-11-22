@@ -1254,7 +1254,10 @@ namespace SevenStrikeModules.XGraph
             {
                 text = "内部变量";
             }
-
+            if (node is xNode_Property out_property)
+            {
+                text = "属性节点";
+            }
             return text;
         }
         private string GetNodeName(Node node)

@@ -47,10 +47,10 @@ namespace SevenStrikeModules.XGraph
         {
             Foldout fold = base.Folder_Extensions(root);
 
-            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "灯光开关", sp_lightEnable.boolValue, new string[] { "field_bool" });
+            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "开关", sp_lightEnable.boolValue, new string[] { "field_bool" });
             toggle.RegisterValueChangedCallback((v) =>
             {
-                if (VariableBindConnectorsExist())
+                if (isVariableBinded("开关"))
                 {
                     serializedObject.Update();
                     toggle.value = sp_lightEnable.boolValue;

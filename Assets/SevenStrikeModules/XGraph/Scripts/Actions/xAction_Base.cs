@@ -174,7 +174,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 当指定起始节点时
         /// </summary>
-        public Action<bool> On_Node_IsStartNodeChanged;
+        public Action<bool> On_Node_IsStartNode;
 #if UNITY_EDITOR
         /// <summary>
         /// 当节点连线的时候的委托事件

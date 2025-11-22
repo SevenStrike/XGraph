@@ -119,10 +119,10 @@ namespace SevenStrikeModules.XGraph
             Foldout fold = base.Folder_Extensions(root);
 
             #region 等待时间
-            FloatField field_time = util_XGraphInspectorGUI.GUI_Field_Float(fold, "<b>时间： </b>", sp_Time.floatValue, new string[] { "field_float" });
+            FloatField field_time = util_XGraphInspectorGUI.GUI_Field_Float(fold, "时间", sp_Time.floatValue, new string[] { "field_float" });
             field_time.RegisterCallback<ChangeEvent<float>>((evt) =>
             {
-                if (VariableBindConnectorsExist())
+                if (isVariableBinded("时间"))
                 {
                     serializedObject.Update();
                     field_time.value = sp_Time.floatValue;

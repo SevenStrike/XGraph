@@ -188,8 +188,9 @@ namespace SevenStrikeModules.XGraph
             ActionData.On_Node_RemovedEdge = null;
             ActionData.On_Node_RemovedEdge += On_Node_RemovedEdge;
 
-            ActionData.On_Node_IsStartNodeChanged = null;
-            ActionData.On_Node_IsStartNodeChanged += On_Node_IsStartNodeChanged;
+            // 注册节点被指定为起始节点时
+            ActionData.On_Node_IsStartNode = null;
+            ActionData.On_Node_IsStartNode += On_Node_IsStartNode;
 
             // 当Graphview编辑器的主题色改变时
             graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
@@ -843,7 +844,7 @@ namespace SevenStrikeModules.XGraph
         /// 设为起始节点时
         /// </summary>
         /// <param name="state"></param>
-        private void On_Node_IsStartNodeChanged(bool state)
+        private void On_Node_IsStartNode(bool state)
         {
             StartNodeMark_Displayer(state);
         }

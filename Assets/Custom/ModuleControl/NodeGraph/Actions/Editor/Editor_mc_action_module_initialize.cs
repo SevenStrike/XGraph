@@ -53,7 +53,7 @@ namespace SevenStrikeModules.XGraph
             toggle.RegisterValueChangedCallback((value) =>
             {
                 // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (VariableBindConnectorsExist())
+                if (isVariableBinded("激活所有模组"))
                 {
                     serializedObject.Update();
                     toggle.value = sp_activateAllModules.boolValue;

@@ -998,8 +998,8 @@ namespace SevenStrikeModules.XGraph
                 else
                     Actions[i].isStartNode = false;
 
-                if (Actions[i].On_Node_IsStartNodeChanged != null)
-                    Actions[i].On_Node_IsStartNodeChanged(Actions[i].isStartNode);
+                if (Actions[i].On_Node_IsStartNode != null)
+                    Actions[i].On_Node_IsStartNode(Actions[i].isStartNode);
             }
         }
         #endregion

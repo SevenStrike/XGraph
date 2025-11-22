@@ -314,7 +314,7 @@ namespace SevenStrikeModules.XGraph
                             baseScript.RootAsset.SetStartNode(baseScript);
                             serializedObject.ApplyModifiedProperties();
                         });
-                baseScript.On_Node_IsStartNodeChanged += (value) =>
+                baseScript.On_Node_IsStartNode += (value) =>
                 {
                     serializedObject.Update();
                     tog_isStartNode.value = value;
@@ -705,12 +705,39 @@ namespace SevenStrikeModules.XGraph
         /// 是否存在变量绑定
         /// </summary>
         /// <returns></returns>
-        internal bool VariableBindConnectorsExist()
+        internal bool isVariableBinded()
         {
-            if (baseScript.VariableDatas.Count > 0 || baseScript.InternalVariableDatas.Count > 0)
-                return true;
-            else
-                return false;
+            return baseScript.VariableDatas.Count > 0 || baseScript.InternalVariableDatas.Count > 0 || baseScript.binded_propertys.Count > 0;
+        }
+        /// <summary>
+        /// 检查是否存在目标名称的变量或属性绑定
+        /// </summary>
+        /// <param name="bindname">绑定的字段名称（如"名称"、"激活"）</param>
+        /// <returns></returns>
+        internal bool isVariableBinded(string bindname)
+        {
+            // 检查黑板变量
+            foreach (var variableData in baseScript.VariableDatas)
+            {
+                if (variableData.TargetPortName == bindname)
+                    return true;
+            }
+
+            // 检查内部变量
+            foreach (var internalVariableData in baseScript.InternalVariableDatas)
+            {
+                if (internalVariableData.TargetPortName == bindname)
+                    return true;
+            }
+
+            // 检查属性绑定
+            foreach (var property in baseScript.binded_propertys)
+            {
+                if (property.Action_PortName == bindname)
+                    return true;
+            }
+
+            return false;
         }
         #endregion
     }

@@ -56,7 +56,7 @@ namespace SevenStrikeModules.XGraph
             field_name.RegisterCallback<ChangeEvent<string>>((evt) =>
             {
                 // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (VariableBindConnectorsExist())
+                if (isVariableBinded("名称"))
                 {
                     serializedObject.Update();
                     field_name.value = sp_activateName.stringValue;
@@ -76,7 +76,7 @@ namespace SevenStrikeModules.XGraph
             field_state.RegisterValueChangedCallback((v) =>
             {
                 // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (VariableBindConnectorsExist())
+                if (isVariableBinded("激活"))
                 {
                     serializedObject.Update();
                     field_state.value = sp_activateState.boolValue;
