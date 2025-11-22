@@ -229,3 +229,43 @@
      transition-duration: 0.3s;
      transition-timing-function: ease-out-cubic;
 }
+
+.startnode_border
+{
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     border-radius: 5px;
+     border-width: 1px;
+     border-top-color: rgba(0, 0, 0,0);
+     border-bottom-color: rgba(0, 0, 0,0);
+     border-left-color: rgba(0, 0, 0,0);
+     border-right-color: rgba(0, 0, 0,0);
+}
+
+.startnode_mark
+{
+     position: absolute;
+     border-radius: 2.5px;
+     width: 5px;
+     height: 5px;
+     left: 0px;
+     top: -25px;
+}
+
+.startnode_text
+{
+     position: absolute;
+     font-size: 13px;
+     -unity-font-style: bold;
+     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+     border-radius: 5px;
+     letter-spacing: 5px;
+     height: auto;
+     width: auto;
+     padding: 5px;
+     padding-left: 8px;
+     padding-right: 8px;
+     left: 8px;
+     top: -35px;
+}

@@ -279,39 +279,47 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点并发模式
-            Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", sp_isConcurrentExecution.boolValue, new string[] { "field_bool" });
-            tog_concurrent.RegisterValueChangedCallback((value) =>
+            // 要忽略掉属性节点，因为属性节点不参与行为的流程执行逻辑
+            if (baseScript is not xAction_Property)
             {
-                Undo.RecordObject(baseScript, "Change ConcurrentMode");
-                sp_isConcurrentExecution.boolValue = value.newValue;
+                Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", sp_isConcurrentExecution.boolValue, new string[] { "field_bool" });
+                tog_concurrent.RegisterValueChangedCallback((value) =>
+                {
+                    Undo.RecordObject(baseScript, "Change ConcurrentMode");
+                    sp_isConcurrentExecution.boolValue = value.newValue;
 
-                serializedObject.ApplyModifiedProperties();
+                    serializedObject.ApplyModifiedProperties();
 
-                if (baseScript.On_Node_ConcurrentChanged != null)
-                    baseScript.On_Node_ConcurrentChanged(value.newValue);
-            });
-            baseScript.On_Node_ConcurrentChanged += (value) =>
-            {
-                serializedObject.Update();
-                tog_concurrent.value = value;
-            };
+                    if (baseScript.On_Node_ConcurrentChanged != null)
+                        baseScript.On_Node_ConcurrentChanged(value.newValue);
+                });
+                baseScript.On_Node_ConcurrentChanged += (value) =>
+                {
+                    serializedObject.Update();
+                    tog_concurrent.value = value;
+                };
+            }
             #endregion
 
             #region 设置起始节点
-            Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", sp_isStartNode.boolValue, new string[] { "field_bool" });
-            tog_isStartNode.RegisterValueChangedCallback((value) =>
+            // 要忽略掉属性节点，因为不能将属性节点作为起始节点
+            if (baseScript is not xAction_Property)
             {
-                Undo.RecordObject(baseScript, "Change IsStartNode");
-                sp_isStartNode.boolValue = value.newValue;
+                Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", sp_isStartNode.boolValue, new string[] { "field_bool" });
+                tog_isStartNode.RegisterValueChangedCallback((value) =>
+                        {
+                            Undo.RecordObject(baseScript, "Change IsStartNode");
+                            sp_isStartNode.boolValue = value.newValue;
 
-                baseScript.RootAsset.SetStartNode(baseScript);
-                serializedObject.ApplyModifiedProperties();
-            });
-            baseScript.On_Node_IsStartNodeChanged += (value) =>
-            {
-                serializedObject.Update();
-                tog_isStartNode.value = value;
-            };
+                            baseScript.RootAsset.SetStartNode(baseScript);
+                            serializedObject.ApplyModifiedProperties();
+                        });
+                baseScript.On_Node_IsStartNodeChanged += (value) =>
+                {
+                    serializedObject.Update();
+                    tog_isStartNode.value = value;
+                };
+            }
             #endregion
 
             #region 父行为

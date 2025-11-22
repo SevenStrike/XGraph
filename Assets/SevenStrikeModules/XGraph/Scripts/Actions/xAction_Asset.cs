@@ -997,6 +997,9 @@ namespace SevenStrikeModules.XGraph
                     Actions[i].isStartNode = true;
                 else
                     Actions[i].isStartNode = false;
+
+                if (Actions[i].On_Node_IsStartNodeChanged != null)
+                    Actions[i].On_Node_IsStartNodeChanged(Actions[i].isStartNode);
             }
         }
         #endregion

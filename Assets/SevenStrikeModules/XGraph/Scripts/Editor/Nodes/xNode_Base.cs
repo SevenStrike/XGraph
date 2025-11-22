@@ -36,6 +36,18 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private VisualElement Highlighter;
         /// <summary>
+        /// 设为起始节点的边框
+        /// </summary>
+        private VisualElement IsStartNodeBorder;
+        /// <summary>
+        /// 设为起始节点的标记
+        /// </summary>
+        private VisualElement IsStartNodeMark;
+        /// <summary>
+        /// 设为起始节点的文字
+        /// </summary>
+        public Label IsStartNodeText;
+        /// <summary>
         /// 视觉节点图标
         /// </summary>
         public Label ExecutionIcon;
@@ -175,6 +187,12 @@ namespace SevenStrikeModules.XGraph
             // 注册节点创建连线的回调
             ActionData.On_Node_RemovedEdge = null;
             ActionData.On_Node_RemovedEdge += On_Node_RemovedEdge;
+
+            ActionData.On_Node_IsStartNodeChanged = null;
+            ActionData.On_Node_IsStartNodeChanged += On_Node_IsStartNodeChanged;
+
+            // 当Graphview编辑器的主题色改变时
+            graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
         }
 
         /// <summary>
@@ -519,22 +537,6 @@ namespace SevenStrikeModules.XGraph
             AppendElement(xNodeContainerType.TitleContainer, nodeMark);
         }
 
-        public virtual void ExecutionModeMark()
-        {
-            ExecutionIcon = new Label("");
-            ExecutionIcon.AddToClassList("ExecutionIcon");
-            CheckExecutionModel();
-        }
-
-        /// <summary>
-        /// 节点颜色标记
-        /// </summary>
-        private void CreateNodeMark()
-        {
-            nodeMark = new VisualElement();
-            nodeMark.AddToClassList("nodeMark");
-        }
-
         /// <summary>
         /// 绘制主容器
         /// </summary>
@@ -542,6 +544,7 @@ namespace SevenStrikeModules.XGraph
         {
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
             CreateHighlighter();
+            CreateIsStartNodeMark();
 
             #region 头像组件
             if (ActionData.HasAvatar)
@@ -549,20 +552,6 @@ namespace SevenStrikeModules.XGraph
                 RegisterAvatarClicked();
             }
             #endregion           
-        }
-
-        internal void CreateHighlighter()
-        {
-            #region 高亮面
-            Highlighter = new VisualElement();
-            Highlighter.pickingMode = PickingMode.Ignore;
-            Highlighter.name = "HighlighterVisualler";
-            Highlighter.AddToClassList("node_highlighter");
-            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
-            UnHighlight();
-            AppendElement(xNodeContainerType.MainContainer, Highlighter);
-            Highlighter.BringToFront();
-            #endregion
         }
         #endregion
 
@@ -850,6 +839,18 @@ namespace SevenStrikeModules.XGraph
         {
             CheckExecutionModel();
         }
+        /// <summary>
+        /// 设为起始节点时
+        /// </summary>
+        /// <param name="state"></param>
+        private void On_Node_IsStartNodeChanged(bool state)
+        {
+            StartNodeMark_Displayer(state);
+        }
+        private void OnGraphViewEditorThemeColorChanged(Color color)
+        {
+            StartNodeMark_Displayer(ActionData.isStartNode);
+        }
         #endregion
 
         #region 头像设置
@@ -1026,6 +1027,23 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 创建节点颜色标记
+        /// </summary>
+        private void CreateNodeMark()
+        {
+            nodeMark = new VisualElement();
+            nodeMark.AddToClassList("nodeMark");
+        }
+        /// <summary>
+        /// 执行模式图标创建
+        /// </summary>
+        public virtual void ExecutionModeMark()
+        {
+            ExecutionIcon = new Label("");
+            ExecutionIcon.AddToClassList("ExecutionIcon");
+            CheckExecutionModel();
+        }
         /// <summary>
         /// 元素的视觉布局样式
         /// </summary>
@@ -1226,6 +1244,22 @@ namespace SevenStrikeModules.XGraph
 
         #region 高亮
         /// <summary>
+        /// 创建高亮面
+        /// </summary>
+        public void CreateHighlighter()
+        {
+            #region 高亮面
+            Highlighter = new VisualElement();
+            Highlighter.pickingMode = PickingMode.Ignore;
+            Highlighter.name = "HighlighterVisualler";
+            Highlighter.AddToClassList("node_highlighter");
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
+            UnHighlight();
+            AppendElement(xNodeContainerType.MainContainer, Highlighter);
+            Highlighter.BringToFront();
+            #endregion
+        }
+        /// <summary>
         /// 高亮显示节点
         /// </summary>        
         public virtual void Highlight()
@@ -1246,6 +1280,55 @@ namespace SevenStrikeModules.XGraph
         public virtual void UnHighlight()
         {
             util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0);
+        }
+        #endregion
+
+        #region 创建标记为起始节点的元素
+        /// <summary>
+        /// 创建标记为起始节点的元素
+        /// </summary>
+        public void CreateIsStartNodeMark()
+        {
+            #region 边
+            IsStartNodeBorder = new VisualElement();
+            IsStartNodeBorder.pickingMode = PickingMode.Ignore;
+            IsStartNodeBorder.name = "StartNodeBorder";
+            IsStartNodeBorder.AddToClassList("startnode_border");
+            AppendElement(xNodeContainerType.MainContainer, IsStartNodeBorder);
+            IsStartNodeBorder.BringToFront();
+            #endregion
+
+            #region 标记
+            IsStartNodeMark = new VisualElement();
+            IsStartNodeMark.pickingMode = PickingMode.Ignore;
+            IsStartNodeMark.name = "StartNodeMark";
+            IsStartNodeMark.AddToClassList("startnode_mark");
+            IsStartNodeBorder.Add(IsStartNodeMark);
+            IsStartNodeMark.BringToFront();
+            #endregion
+
+            #region 文字
+            IsStartNodeText = new Label();
+            IsStartNodeText.pickingMode = PickingMode.Ignore;
+            IsStartNodeText.name = "StartNodeText";
+            IsStartNodeText.text = "起始节点";
+            IsStartNodeText.AddToClassList("startnode_text");
+            IsStartNodeBorder.Add(IsStartNodeText);
+            IsStartNodeText.BringToFront();
+            #endregion
+
+            StartNodeMark_Displayer(ActionData.isStartNode);
+        }
+
+        /// <summary>
+        /// 起始节点标记可见性控制
+        /// </summary>
+        /// <param name="state"></param>
+        public void StartNodeMark_Displayer(bool state)
+        {
+            util_XGraphEditorUtility.Element_BorderColor_Set(IsStartNodeBorder, state ? graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor : Color.clear);
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(IsStartNodeMark, state ? graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor : Color.clear);
+            util_XGraphEditorUtility.Element_Color_Set(IsStartNodeText, state ? Color.white : Color.clear);
         }
         #endregion
 

@@ -137,8 +137,20 @@ namespace SevenStrikeModules.XGraph
 
                 VisualElement container_title = new VisualElement();
                 container_title.AddToClassList("list_titlebg_actionasset");
+                if (action.isStartNode)
+                {
+                    Color themecol = action.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                    container_title.style.backgroundColor = new StyleColor(new Color(themecol.r, themecol.g, themecol.b, 0.3f));
+
+                    // 当Graphview编辑器的主题色改变时
+                    util_XGraphEditorUtility.GetGraphviewWindow().OnThemeColorChanged += (color) =>
+                    {
+                        container_title.style.backgroundColor = new StyleColor(new Color(color.r, color.g, color.b, 0.3f));
+                    };
+                }
                 container.Add(container_title);
 
+                // 行为节点图标
                 VisualElement container_icon = new VisualElement();
                 container_icon.pickingMode = PickingMode.Ignore;
                 container_icon.AddToClassList("list_item_icon");
@@ -146,9 +158,11 @@ namespace SevenStrikeModules.XGraph
                 container_title.Add(container_icon);
                 container_icon.style.unityBackgroundImageTintColor = action.themeColor;
 
+                // 行为节点名称
                 Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{action.identifyName}", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
 
+                // 行为执行模式图标
                 VisualElement container_concurrent_icon = new VisualElement();
                 container_concurrent_icon.pickingMode = PickingMode.Ignore;
                 container_concurrent_icon.AddToClassList("llist_concurrent_icon_actionasset");

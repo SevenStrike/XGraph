@@ -154,21 +154,17 @@ namespace SevenStrikeModules.XGraph
 
                 if (nodebase is not xNode_Variable_Internal && evt.target is not xNode_Property)
                 {
-                    evt.menu.AppendAction($"X 设为起始节点", (action) =>
+                    if (CurrentSelectedNodes_Base.Count == 1)
                     {
-                        if (CurrentSelectedNodes_Base.Count > 0)
+                        evt.menu.AppendAction($"X 设为起始节点", (action) =>
                         {
-                            for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
-                            {
-                                xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
+                            xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[0];
 
-                                ActionTreeAsset.SetStartNode(node.ActionData);
-                                if (node.ActionData.On_Node_IsStartNodeChanged != null)
-                                    node.ActionData.On_Node_IsStartNodeChanged(true);
-                            }
-                        }
-                        evt.StopPropagation();
-                    });
+                            ActionTreeAsset.SetStartNode(node.ActionData);
+
+                            evt.StopPropagation();
+                        });
+                    }
                 }
 
                 // 设置节点头像

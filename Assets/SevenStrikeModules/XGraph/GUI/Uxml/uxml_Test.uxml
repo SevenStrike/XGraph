@@ -1,4 +1,4 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_Inspector.uss?fileID=7433441132597879392&amp;guid=7c94c18eb31eb8142809679bc5474f33&amp;type=3#uss_Inspector" />
-    <engine:VisualElement style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/path.png?fileID=2800000&amp;guid=7dac6f433e8529f43934b89de7a1d1c1&amp;type=3#path&quot;);" />
+    <engine:VisualElement style="width: 100%; height: 100%;" />
 </engine:UXML>

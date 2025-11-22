@@ -15615,8 +15615,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1444357494}
-  - component: {fileID: 1444357497}
   - component: {fileID: 1444357495}
+  - component: {fileID: 1444357497}
+  - component: {fileID: 1444357498}
   m_Layer: 0
   m_Name: ModuleController
   m_TagString: Untagged
@@ -15648,11 +15649,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1444357493}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c8baea72317a9942ac727452b20d227, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f40178970aa68b46941b1e2702fa551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ModulesRoot: {fileID: 2093927247}
   ModulesEffective: []
+  smoothValue: 0
+  smoothEnabled: 0
   smoothSpeed: 0.05
   LightIntensity: 0
   MainLight: {fileID: 2042483595}
@@ -15672,6 +15675,23 @@ MonoBehaviour:
   SaveValueChangesInRuntime: 1
   Logs: 1
   TargetScript: {fileID: 1444357495}
+--- !u!114 &1444357498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444357493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db2a2f94bd0fa2544826a433c6cd6857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GraphRunner: {fileID: 1444357497}
+  actionStart: 115
+  actionKill: 107
+  actionPause: 112
+  actionResume: 114
 --- !u!1 &1471331477
 GameObject:
   m_ObjectHideFlags: 0

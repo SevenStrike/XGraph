@@ -33,9 +33,9 @@ public class mc_GraphRunner : MonoBehaviour
     public bool Logs = true;
 
     /// <summary>
-    /// Sample 场景控制器，用于赋值给行为资源中的目标脚本对象
+    /// 自定义的目标脚本，用于赋值给行为资源中的目标脚本对象，利用此脚本可达成行为节点对目标脚本功能的调用
     /// </summary>
-    public Module_Controller TargetScript;
+    public ModuleController TargetScript;
 
     private void Start()
     {
@@ -56,14 +56,7 @@ public class mc_GraphRunner : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-            Action_Start();
-        if (Input.GetKeyDown(KeyCode.K))
-            Action_Kill();
-        if (Input.GetKeyDown(KeyCode.P))
-            Action_Pause();
-        if (Input.GetKeyDown(KeyCode.R))
-            Action_Resume();
+
     }
 
     #region 编辑器内运行时保存参数的监听事件

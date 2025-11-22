@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class Module_Controller : MonoBehaviour
+public class ModuleController : MonoBehaviour
 {
-    public Transform ModulesRoot;
-    public Module_Effective[] ModulesEffective;
-    private float smoothValue = 0;
-    private bool smoothEnabled = false;
-    public float smoothSpeed = 0.05f;
-    public float LightIntensity = 0;
-    public Light MainLight;
+    [SerializeField] public Transform ModulesRoot;
+    [SerializeField] public ModuleEffective[] ModulesEffective;
+    [SerializeField] private float smoothValue = 0;
+    [SerializeField] private bool smoothEnabled = false;
+    [SerializeField] public float smoothSpeed = 0.05f;
+    [SerializeField] public float LightIntensity = 0;
+    [SerializeField] public Light MainLight;
 
     void Start()
     {
@@ -23,10 +23,10 @@ public class Module_Controller : MonoBehaviour
 
     private void Modules_Initialize()
     {
-        ModulesEffective = new Module_Effective[ModulesRoot.childCount];
+        ModulesEffective = new ModuleEffective[ModulesRoot.childCount];
         for (int i = 0; i < ModulesRoot.childCount; i++)
         {
-            ModulesEffective[i] = ModulesRoot.GetChild(i).GetComponent<Module_Effective>();
+            ModulesEffective[i] = ModulesRoot.GetChild(i).GetComponent<ModuleEffective>();
         }
 
         LightIntensity = MainLight.intensity;

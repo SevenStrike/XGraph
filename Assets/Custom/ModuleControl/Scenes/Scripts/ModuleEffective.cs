@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class modulescale
@@ -10,7 +9,7 @@ public class modulescale
     public Vector3 scale;
 }
 
-public class Module_Effective : MonoBehaviour
+public class ModuleEffective : MonoBehaviour
 {
     [SerializeField] public Transform blocksRoot;
     [SerializeField] public modulescale[] blocks;
