@@ -5262,8 +5262,8 @@ Transform:
   m_Children:
   - {fileID: 1077350994}
   - {fileID: 2042483593}
-  - {fileID: 1067650633}
   - {fileID: 1922873103}
+  - {fileID: 1067650633}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &734624121
@@ -15654,11 +15654,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ModulesRoot: {fileID: 2093927247}
   ModulesEffective: []
-  smoothValue: 0
-  smoothEnabled: 0
-  smoothSpeed: 0.05
-  LightIntensity: 0
-  MainLight: {fileID: 2042483595}
+  sp_MainLight:
+    light: {fileID: 2042483595}
+    smoothValue: 0
+    value: 0
+    state: 0
+    speed: 0.05
+  sp_AnchorLight:
+    light: {fileID: 1922873102}
+    smoothValue: 0
+    value: 0
+    state: 0
+    speed: 0.05
 --- !u!114 &1444357497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15675,6 +15682,7 @@ MonoBehaviour:
   SaveValueChangesInRuntime: 1
   Logs: 1
   TargetScript: {fileID: 1444357495}
+  ManualExecutionMode: 0
 --- !u!114 &1444357498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15688,10 +15696,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GraphRunner: {fileID: 1444357497}
-  actionStart: 115
-  actionKill: 107
-  actionPause: 112
-  actionResume: 114
+  key_ActionStart: 115
+  key_ActionKill: 107
+  key_ActionPause: 112
+  key_ActionResume: 114
+  key_ActionManualStep: 32
+  key_RunnerMode: 109
+  Logs: 1
 --- !u!1 &1471331477
 GameObject:
   m_ObjectHideFlags: 0
@@ -18784,12 +18795,12 @@ GameObject:
   - component: {fileID: 1922873102}
   - component: {fileID: 1922873101}
   m_Layer: 0
-  m_Name: PointLight
+  m_Name: Point_Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1922873101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18823,7 +18834,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 0.6933962, g: 1, b: 0.91977376, a: 1}
+  m_Color: {r: 0.3277255, g: 0.61, b: 0.5095294, a: 1}
   m_Intensity: 1
   m_Range: 1.212642
   m_SpotAngle: 30

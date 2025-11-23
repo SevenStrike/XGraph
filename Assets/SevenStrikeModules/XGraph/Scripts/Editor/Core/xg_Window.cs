@@ -201,10 +201,6 @@
         /// </summary>
         private Button xw_btn_open;
         /// <summary>
-        ///  xw_graphView 控件 - 清空按钮
-        /// </summary>
-        private Button xw_btn_clear;
-        /// <summary>
         ///  xw_graphView 控件 - 聚焦内容
         /// </summary>
         private Button xw_btn_FrameAll;
@@ -781,10 +777,6 @@
             // 打开按钮
             xw_btn_open = root.Q<Button>("btn_Load");
             xw_btn_open.clicked += xw_btn_open_clicked;
-
-            // 清空按钮
-            xw_btn_clear = root.Q<Button>("btn_Clear");
-            xw_btn_clear.clicked += xw_btn_clear_clicked;
 
             // 重聚焦按钮
             xw_btn_FrameAll = root.Q<Button>("btn_FrameAll");
@@ -1851,13 +1843,6 @@
             RestructureGraphViews();
         }
         /// <summary>
-        /// 清空按钮逻辑
-        /// </summary>
-        private void xw_btn_clear_clicked()
-        {
-            ActionTree_Clear();
-        }
-        /// <summary>
         /// 打开按钮逻辑
         /// </summary>
         private void xw_btn_open_clicked()
@@ -2086,16 +2071,6 @@
         #endregion
 
         #region ActionTree全局操作
-        /// <summary>
-        /// 清空行为树
-        /// </summary>
-        public void ActionTree_Clear()
-        {
-            // 清空GraphView的所有节点
-            xw_graphView.ClearGraphViewContents();
-            // 刷新 BlackBoard 显示
-            xw_BlackBoard_UpdateTitleInfo();
-        }
         /// <summary>
         /// 打开行为树资源
         /// </summary>

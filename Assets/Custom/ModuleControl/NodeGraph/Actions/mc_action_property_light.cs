@@ -51,9 +51,9 @@ namespace SevenStrikeModules.XGraph
             mc_GraphAsset asset = RootAsset as mc_GraphAsset;
             if (asset != null)
             {
-                if (asset.ModuleController.MainLight != null)
+                if (asset.ModuleController.sp_MainLight.light != null)
                 {
-                    Light = asset.ModuleController.MainLight;
+                    Light = asset.ModuleController.sp_MainLight.light;
 
                     // 更新属性数值
                     foreach (var prop in PropertyVariables)

@@ -15,7 +15,7 @@ namespace SevenStrikeModules.XGraph
 
             mc_GraphAsset asset = RootAsset as mc_GraphAsset;
             if (asset != null)
-                asset.ModuleController.Modules_Active(activateAllModules);
+                asset.ModuleController.Modules_Active(activateAllModules, true);
         }
 
         /// <summary>

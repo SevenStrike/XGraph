@@ -22,6 +22,14 @@
                     "visualNodeType": "mc_node_module_activate"
                 },
                 {
+                    "name": "模组激活（全部）",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "mc_action_",
+                    "actionNodeType": "modules_activate",
+                    "iconName": "composite",
+                    "visualNodeType": "mc_node_modules_activate"
+                },
+                {
                     "name": "主灯控制",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
                     "prefixClass": "mc_action_",

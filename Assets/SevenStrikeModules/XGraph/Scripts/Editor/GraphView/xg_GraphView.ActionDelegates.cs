@@ -162,11 +162,6 @@ namespace SevenStrikeModules.XGraph
                 MakeGroup("节点编组", gv_NodeCreatedPosition);
                 evt.StopPropagation();
             }
-            if (evt.keyCode == KeyCode.C && ((evt.ctrlKey && evt.shiftKey) || evt.commandKey))
-            {
-                gv_GraphWindow.ActionTree_Clear();
-                evt.StopPropagation();
-            }
             if (evt.keyCode == KeyCode.Escape)
             {
                 gv_GraphWindow.Close();
