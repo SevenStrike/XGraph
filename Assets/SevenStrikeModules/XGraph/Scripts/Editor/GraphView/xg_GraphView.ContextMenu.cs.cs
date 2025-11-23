@@ -356,17 +356,6 @@ namespace SevenStrikeModules.XGraph
                     evt.StopPropagation();
                 });
                 #endregion
-
-                #region 节点操作：清空节点
-                if (nodes.Count() > 0)
-                {
-                    evt.menu.AppendAction("Z 清空节点", (action) =>
-                    {
-                        ClearGraphViewContents();
-                        evt.StopPropagation();
-                    });
-                }
-                #endregion
             }
 
             evt.menu.AppendSeparator();
