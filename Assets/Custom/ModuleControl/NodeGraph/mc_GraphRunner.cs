@@ -37,6 +37,31 @@ public class mc_GraphRunner : MonoBehaviour
     /// </summary>
     public ModuleController TargetScript;
 
+    /// <summary>
+    /// 手动执行模式开关
+    /// </summary>
+    public bool ManualExecutionMode = false;
+    /// <summary>
+    /// 当前正在执行的节点（手动模式下）
+    /// </summary>
+    private xAction_Base currentManualNode;
+    /// <summary>
+    /// 手动执行模式下是否正在等待延时节点
+    /// </summary>
+    private bool isWaitingForDelay = false;
+    /// <summary>
+    /// 手动执行模式下的节点执行队列
+    /// </summary>
+    private Queue<xAction_Base> manualExecutionQueue = new Queue<xAction_Base>();
+    /// <summary>
+    /// 手动执行完成回调
+    /// </summary>
+    public Action OnManual_StepComplete;
+    /// <summary>
+    /// 手动执行等待结束回调
+    /// </summary>
+    public Action OnManual_WaitComplete;
+
     private void Start()
     {
 #if UNITY_EDITOR
@@ -52,46 +77,175 @@ public class mc_GraphRunner : MonoBehaviour
     {
         // 注销每一个行为运行时变量值改变回调
         UnregisterVariableChangeWithAction();
+
+        // 清理手动执行模式
+        Manual_CleanupMode();
     }
 
     void Update()
     {
-
+        // 手动模式下检查等待状态
+        if (ManualExecutionMode && isWaitingForDelay)
+        {
+            // 可以在这里添加等待状态的UI提示等
+        }
     }
 
-    #region 编辑器内运行时保存参数的监听事件
-#if UNITY_EDITOR
-    private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
+    #region Runner 手动模式
+    /// <summary>
+    /// 手动执行下一步（仅在手动模式下有效）
+    /// </summary>
+    public void Manual_Action_Execution()
     {
-        if (SaveValueChangesInRuntime)
+        if (!ManualExecutionMode || !isRunning)
+        {
+            util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式未启用或流程未运行", "", Logs);
             return;
-
-        if (obj == PlayModeStateChange.EnteredPlayMode)
-        {
-            // 创建运行时克隆
-            if (!CreateRuntimeClone())
-            {
-                util_Dashboard.LogMsg(xMessageType.错误, $"无法创建克隆资源！", "", Logs);
-                return;
-            }
         }
-        if (obj == PlayModeStateChange.ExitingPlayMode)
+
+        if (isWaitingForDelay)
         {
-            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
-            // 恢复原始资源
-            RestoreOriginalAsset();
+            util_Dashboard.LogMsg(xMessageType.警告, $"正在等待延时节点完成，请稍后再试", "", Logs);
+            return;
+        }
+
+        if (manualExecutionQueue.Count == 0)
+        {
+            util_Dashboard.LogMsg(xMessageType.信息, $"流程执行完成", "", Logs);
+            isRunning = false;
+            OnManual_StepComplete?.Invoke();
+            return;
+        }
+
+        currentManualNode = manualExecutionQueue.Dequeue();
+        StartCoroutine(Manual_ExecuteAction(currentManualNode));
+    }
+    /// <summary>
+    /// 初始化手动执行模式
+    /// </summary>
+    private void Manual_InitializeMode()
+    {
+        Manual_CleanupMode();
+
+        var startNode = SampleAsset.Actions.Find(n => n.isStartNode);
+        if (startNode != null)
+        {
+            isRunning = true;
+            manualExecutionQueue.Enqueue(startNode);
+            util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", Logs);
         }
     }
-#endif
+    /// <summary>
+    /// 执行手动模式下的单个节点
+    /// </summary>
+    private IEnumerator Manual_ExecuteAction(xAction_Base node)
+    {
+        if (node == null || !isRunning) yield break;
+
+        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+
+        // 特殊处理等待节点
+        if (node is xAction_Wait waitNode)
+        {
+            yield return Manual_HandleWait(waitNode);
+        }
+        else
+        {
+            // 执行普通节点
+            node.Execute();
+
+            // 获取子节点并加入队列
+            var children = Action_GetChildrenActions(node);
+            foreach (var child in children)
+            {
+                if (child != null)
+                    manualExecutionQueue.Enqueue(child);
+            }
+
+            OnManual_StepComplete?.Invoke();
+        }
+    }
+    /// <summary>
+    /// 手动模式下的等待节点处理
+    /// </summary>
+    private IEnumerator Manual_HandleWait(xAction_Wait waitNode)
+    {
+        isWaitingForDelay = true;
+        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.identifyName}  {waitNode.Time}s", Logs);
+
+        // 执行等待节点
+        waitNode.Execute();
+
+        float elapsed = 0;
+        while (elapsed < waitNode.Time && isRunning)
+        {
+            // 处理暂停
+            while (isPaused && isRunning)
+            {
+                yield return null;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!isRunning)
+        {
+            isWaitingForDelay = false;
+            yield break;
+        }
+
+        // 等待完成后获取子节点
+        var children = Action_GetChildrenActions(waitNode);
+        foreach (var child in children)
+        {
+            if (child != null)
+                manualExecutionQueue.Enqueue(child);
+        }
+
+        isWaitingForDelay = false;
+        OnManual_WaitComplete?.Invoke();
+        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] 等待节点完成", "", Logs);
+    }
+    /// <summary>
+    /// 清理手动执行模式
+    /// </summary>
+    private void Manual_CleanupMode()
+    {
+        manualExecutionQueue.Clear();
+        currentManualNode = null;
+        isWaitingForDelay = false;
+        StopAllCoroutines();
+    }
     #endregion
 
-    #region WorkFlow
+    #region Runner 流程执行控制
+    /// <summary>
+    /// 验证是否存在起始节点
+    /// </summary>
+    private bool Runner_StartNodeValidate()
+    {
+        if (SampleAsset == null || SampleAsset.Actions.Count == 0)
+        {
+            util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", Logs);
+            return false;
+        }
+
+        var start = SampleAsset.Actions.Find(n => n.isStartNode);
+        if (start == null)
+        {
+            util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", Logs);
+            return false;
+        }
+
+        return true;
+    }
     /// <summary>
     /// 行为开始
     /// </summary>
-    public void Action_Start()
+    public void Runner_Start()
     {
-        if (!Action_Validate())
+        if (!Runner_StartNodeValidate())
         {
             util_Dashboard.LogMsg(xMessageType.错误, $"行为流程启动失败！", "", Logs);
             return;
@@ -103,29 +257,41 @@ public class mc_GraphRunner : MonoBehaviour
             return;
         }
 
+        // 手动执行模式初始化
+        if (ManualExecutionMode)
+        {
+            Manual_InitializeMode();
+            util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式已启动，等待手动执行指令", "", Logs);
+            return;
+        }
+
         StopAllCoroutines();
         StartCoroutine(Action_Flow());
     }
-
     /// <summary>
     /// 行为停止
     /// </summary>
-    public void Action_Kill()
+    public void Runner_Kill()
     {
         isRunning = false;
         // 强制解除暂停
         isPaused = false;
+
+        // 清理手动模式
+        if (ManualExecutionMode)
+        {
+            Manual_CleanupMode();
+        }
 
         // 注销每一个行为运行时变量值改变回调
         UnregisterVariableChangeWithAction();
 
         util_Dashboard.LogMsg(xMessageType.信息, $"流程停止！", "", Logs);
     }
-
     /// <summary>
     /// 行为暂停
     /// </summary>
-    public void Action_Pause()
+    public void Runner_Pause()
     {
         if (isRunning)
         {
@@ -133,11 +299,10 @@ public class mc_GraphRunner : MonoBehaviour
             util_Dashboard.LogMsg(xMessageType.信息, $"流程暂停！", "", Logs);
         }
     }
-
     /// <summary>
     /// 行为恢复
     /// </summary>
-    public void Action_Resume()
+    public void Runner_Resume()
     {
         if (isRunning && isPaused)
         {
@@ -145,7 +310,9 @@ public class mc_GraphRunner : MonoBehaviour
             util_Dashboard.LogMsg(xMessageType.信息, $"流程继续！", "", Logs);
         }
     }
+    #endregion
 
+    #region Runner 行为逻辑
     /// <summary>
     /// 行为流程
     /// </summary>
@@ -160,7 +327,6 @@ public class mc_GraphRunner : MonoBehaviour
         isRunning = false;
         util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", Logs);
     }
-
     /// <summary>
     /// 行为执行
     /// </summary>
@@ -181,7 +347,7 @@ public class mc_GraphRunner : MonoBehaviour
         // 处理特殊节点类型
         if (action is xAction_Wait waitNode)
         {
-            yield return HandlePausableWait(waitNode);
+            yield return Action_HandlePausableWait(waitNode);
             yield break;
         }
 
@@ -190,7 +356,7 @@ public class mc_GraphRunner : MonoBehaviour
         action.Execute();
 
         // 获取子节点
-        var childrens = Action_GetChildrenNodes(action);
+        var childrens = Action_GetChildrenActions(action);
 
         if (childrens.Count == 0)
             yield break;
@@ -207,8 +373,7 @@ public class mc_GraphRunner : MonoBehaviour
             yield return Action_Execute_Sequential(childrens);
         }
     }
-
-    private IEnumerator HandlePausableWait(xAction_Wait waitNode)
+    private IEnumerator Action_HandlePausableWait(xAction_Wait waitNode)
     {
         // 初始检查
         if (!isRunning || waitNode == null) yield break;
@@ -235,13 +400,12 @@ public class mc_GraphRunner : MonoBehaviour
         if (!isRunning) yield break;
 
         // 执行子节点（必须包含！）
-        var children = Action_GetChildrenNodes(waitNode);
+        var children = Action_GetChildrenActions(waitNode);
         if (children.Count > 0)
         {
             yield return waitNode.isConcurrentExecution ? Action_Execute_Concurrent(children) : Action_Execute_Sequential(children);
         }
     }
-
     /// <summary>
     /// 顺序执行子节点
     /// </summary>
@@ -253,7 +417,6 @@ public class mc_GraphRunner : MonoBehaviour
             yield return Action_Execute(child);
         }
     }
-
     /// <summary>
     /// 并发执行子节点
     /// </summary>
@@ -285,7 +448,6 @@ public class mc_GraphRunner : MonoBehaviour
             }
         }
     }
-
     /// <summary>
     /// 带回调的执行方法
     /// </summary>
@@ -294,11 +456,10 @@ public class mc_GraphRunner : MonoBehaviour
         yield return Action_Execute(node);
         callback?.Invoke();
     }
-
     /// <summary>
     /// 返回当前节点下的子节点列表
     /// </summary>
-    private List<xAction_Base> Action_GetChildrenNodes(xAction_Base current)
+    private List<xAction_Base> Action_GetChildrenActions(xAction_Base current)
     {
         var list = new List<xAction_Base>();
 
@@ -323,27 +484,21 @@ public class mc_GraphRunner : MonoBehaviour
         }
         return list;
     }
+    #endregion
 
+    #region 辅助
     /// <summary>
-    /// 验证行为树
+    /// 设置节点资源
     /// </summary>
-    private bool Action_Validate()
+    /// <param name="asset"></param>
+    public void SetActionAsset(xAction_Asset asset)
     {
-        if (SampleAsset == null || SampleAsset.Actions.Count == 0)
-        {
-            util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", Logs);
-            return false;
-        }
-
-        var start = SampleAsset.Actions.Find(n => n.isStartNode);
-        if (start == null)
-        {
-            util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", Logs);
-            return false;
-        }
-
-        return true;
+        // 转换后赋值
+        SampleAsset = asset as mc_GraphAsset;
+        // 将目标控制脚本赋值
+        SampleAsset.ModuleController = TargetScript;
     }
+    #endregion
 
     #region 为每一个继承ActionBase的对象注册变量数值变化回调
     /// <summary>
@@ -398,14 +553,29 @@ public class mc_GraphRunner : MonoBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// 设置节点流程资源
-    /// </summary>
-    /// <param name="asset"></param>
-    public void SetActionAsset(xAction_Asset asset)
+    #region 编辑器内运行时保存参数的监听事件
+#if UNITY_EDITOR
+    private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
     {
-        SampleAsset = asset as mc_GraphAsset;
-        SampleAsset.ModuleController = TargetScript;
+        if (SaveValueChangesInRuntime)
+            return;
+
+        if (obj == PlayModeStateChange.EnteredPlayMode)
+        {
+            // 创建运行时克隆
+            if (!CreateRuntimeClone())
+            {
+                util_Dashboard.LogMsg(xMessageType.错误, $"无法创建克隆资源！", "", Logs);
+                return;
+            }
+        }
+        if (obj == PlayModeStateChange.ExitingPlayMode)
+        {
+            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+            // 恢复原始资源
+            RestoreOriginalAsset();
+        }
     }
+#endif
     #endregion
 }
