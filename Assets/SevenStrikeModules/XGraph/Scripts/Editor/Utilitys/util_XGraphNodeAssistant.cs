@@ -1,6 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
@@ -575,22 +574,5 @@ namespace SevenStrikeModules.XGraph
             return content;
         }
         #endregion
-
-        [InitializeOnLoadMethod]
-        private static void Reloader_In_ScriptRecomplier()
-        {
-            AssemblyReloadEvents.afterAssemblyReload += () =>
-            {
-                EditorApplication.delayCall += () =>
-                {
-                    ReloadWindow();
-                };
-            };
-        }
-
-        private static void ReloadWindow()
-        {
-
-        }
     }
 }
