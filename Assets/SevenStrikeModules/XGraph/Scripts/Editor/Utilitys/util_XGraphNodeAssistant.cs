@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
@@ -31,17 +32,19 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 参数
-        string nodeName = "";
-        string nickName = "";
-        string surffix = "";
-        string iconguid = "";
-        string xtype = "";
+        [SerializeField] private string nodeName = "";
+        [SerializeField] private string nickName = "";
+        [SerializeField] private string surffix = "";
+        [SerializeField] private string iconguid = "";
+        [SerializeField] private string xtype = "";
         #endregion
+
+        public static util_XGraphNodeAssistant wnd;
 
         [MenuItem("Assets/Create/XGraph/J 节点扩展助手", false, -100)]
         public static void CreateActionGraphNode()
         {
-            util_XGraphNodeAssistant wnd = GetWindow<util_XGraphNodeAssistant>(true);
+            wnd = GetWindow<util_XGraphNodeAssistant>(true);
             wnd.titleContent = new GUIContent("XGraphNodeAssistant");
             wnd.minSize = new Vector2(350, 800);
             wnd.maxSize = wnd.minSize;
@@ -572,5 +575,22 @@ namespace SevenStrikeModules.XGraph
             return content;
         }
         #endregion
+
+        [InitializeOnLoadMethod]
+        private static void Reloader_In_ScriptRecomplier()
+        {
+            AssemblyReloadEvents.afterAssemblyReload += () =>
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    ReloadWindow();
+                };
+            };
+        }
+
+        private static void ReloadWindow()
+        {
+
+        }
     }
 }

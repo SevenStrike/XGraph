@@ -18,7 +18,9 @@
             <editor:ObjectField label="节点图标" name="obj_icon" class="input_params" />
             <engine:TextField label="节点昵称" name="input_nickname" class="input_params" />
         </engine:VisualElement>
-        <engine:Label text="&lt;b&gt;列表结构数据&lt;/b&gt; " name="previewtitle" style="height: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 14px; margin-top: 20px; padding-left: 5px; padding-right: 5px; overflow: hidden; text-overflow: ellipsis; -unity-font-style: normal; margin-bottom: 10px;" />
+        <engine:Label text="&lt;b&gt;列表结构数据&lt;/b&gt; " name="previewtitle" style="height: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 14px; margin-top: 20px; padding-left: 5px; padding-right: 5px; overflow: hidden; text-overflow: ellipsis; -unity-font-style: normal; margin-bottom: 10px;">
+            <engine:Label text="( 需要手动加入到节点配置表 )" name="previewtitle" style="position: absolute; left: 106px; -unity-font-style: normal; font-size: 12px; top: 2px; color: rgba(210, 210, 210, 0.46);" />
+        </engine:Label>
         <engine:VisualElement name="nodeStructContent" style="height: 127px;">
             <engine:TextField multiline="true" auto-correction="false" value="&#10;&#10;&#10;&#10;&#10;" vertical-scroller-visibility="AlwaysVisible" emoji-fallback-support="false" select-all-on-focus="false" name="contentField" style="height: 100%;" />
         </engine:VisualElement>
@@ -54,6 +56,7 @@
                 <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 38px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
             </engine:VisualElement>
         </engine:VisualElement>
+        <engine:Label text="&lt;b&gt;列表结构数据&lt;/b&gt; " name="previewtitle" style="height: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 14px; margin-top: 20px; padding-left: 5px; padding-right: 5px; overflow: hidden; text-overflow: ellipsis; -unity-font-style: normal; margin-bottom: 10px;" />
     </engine:VisualElement>
     <engine:VisualElement name="nodeStyle" style="width: 50%; align-self: center; height: 63px; background-color: rgb(60, 60, 60); border-left-color: rgb(25, 25, 25); border-right-color: rgb(25, 25, 25); border-top-color: rgb(25, 25, 25); border-bottom-color: rgb(25, 25, 25); border-top-width: 0.5px; border-right-width: 0.5px; border-bottom-width: 0.5px; border-left-width: 0.5px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; flex-direction: row; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; overflow: visible; bottom: 24px;">
         <engine:VisualElement name="node_icon" style="width: 16px; height: 16px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/GraphIcon/arrow.png?fileID=2800000&amp;guid=0a4daa5b210366743a06c03f7d6ff078&amp;type=3#arrow&quot;); overflow: hidden;" />
