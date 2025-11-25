@@ -34,7 +34,7 @@ namespace SevenStrikeModules.XGraph
         string nodeName = "";
         string nickName = "";
         string surffix = "";
-        string iconpath = "";
+        string iconguid = "";
         string xtype = "";
         #endregion
 
@@ -136,7 +136,7 @@ namespace SevenStrikeModules.XGraph
         private void obj_icon_changed(ChangeEvent<UnityEngine.Object> evt)
         {
             node_icon.style.backgroundImage = new StyleBackground(Background.FromTexture2D(evt.newValue as Texture2D));
-            iconpath = AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(evt.newValue)).ToString();
+            iconguid = AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(evt.newValue)).ToString();
             update_Data();
         }
         private void drop_types_changed(ChangeEvent<string> evt)
@@ -153,7 +153,22 @@ namespace SevenStrikeModules.XGraph
             if (string.IsNullOrEmpty(path))
                 return;
 
-            Debug.Log(path);
+            if (!AssetDatabase.IsValidFolder($"{path}/{nodeName}"))
+            {
+                string path_root = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(path, nodeName));
+                string path_editor = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(path_root, "Editor"));
+                Debug.Log(path_root);
+                Debug.Log(path_editor);
+
+                ScriptMaker_Create(path_root, $"action_{surffix}_{nodeName}", scr_action);
+                ScriptMaker_Create(path_editor, $"editor_{surffix}_{nodeName}", scr_editor);
+                ScriptMaker_Create(path_editor, $"graph_{surffix}_{nodeName}", scr_graph);
+
+                // 刷新资源数据库
+                AssetDatabase.Refresh();
+
+                Debug.Log($"扩展节点 {nodeName} 结构已创建！");
+            }
         }
         #endregion
 
@@ -197,7 +212,7 @@ namespace SevenStrikeModules.XGraph
         }
         private void update_StructContent()
         {
-            string content = $"{{\r\n\"    name\": \"{(string.IsNullOrEmpty(nickName) ? nodeName : nickName)}\",\r\n\"    prefixNamespace\": \"SevenStrikeModules.XGraph\",\r\n\"    prefixClass\": \"action_{surffix}_\",\r\n\"    actionNodeType\": \"{nodeName}\",\r\n\"    icon\": \"{iconpath}\",\r\n\"    visualNodeType\": \"graph_{surffix}_{nodeName}\"\r\n}}";
+            string content = $"{{\r\n    \"name\": \"{(string.IsNullOrEmpty(nickName) ? nodeName : nickName)}\",\r\n    \"prefixNamespace\": \"SevenStrikeModules.XGraph\",\r\n    \"prefixClass\": \"action_{surffix}_\",\r\n    \"actionNodeType\": \"{nodeName}\",\r\n    \"icon\": \"{(obj_icon.value == null ? "0a4daa5b210366743a06c03f7d6ff078" : iconguid)}\",\r\n    \"visualNodeType\": \"graph_{surffix}_{nodeName}\"\r\n}}";
             field_content_set(contentField, $"{content}");
         }
         #endregion
@@ -235,31 +250,12 @@ namespace SevenStrikeModules.XGraph
 
             return null;
         }
-        private void ScriptMaker_Create(string ScriptName, string namespaceName)
+        private void ScriptMaker_Create(string folderPath, string ScriptName, string ScriptContent)
         {
-            // 获取选中的文件夹路径
-            string folderPath = "Assets";
-            if (Selection.activeObject != null)
-            {
-                folderPath = AssetDatabase.GetAssetPath(Selection.activeObject);
-                if (!AssetDatabase.IsValidFolder(folderPath))
-                {
-                    folderPath = Path.GetDirectoryName(folderPath);
-                }
-            }
-
             string scriptPath = Path.Combine(folderPath, ScriptName + ".cs");
 
-            // 生成脚本内容
-            string scriptContent = "ScriptContent";
-
             // 创建脚本文件
-            File.WriteAllText(scriptPath, scriptContent);
-
-            // 刷新资源数据库
-            AssetDatabase.Refresh();
-
-            Debug.Log($"脚本已创建: {scriptPath}");
+            File.WriteAllText(scriptPath, ScriptContent);
         }
         private string CreatePortContent()
         {
@@ -354,20 +350,20 @@ namespace SevenStrikeModules.XGraph
             string content = "";
 
             content = $@"namespace SevenStrikeModules.XGraph
-            {{
-                using UnityEngine;
-            
-                public class action_{surffix}_{nodeName} : {xtype}
-                {{
-                    /// <summary>
-                    /// 节点执行
-                    /// </summary>
-                    public override void Execute()
-                    {{
-                        base.Execute();
-                    }}           
-                }}
-            }}";
+{{
+    using UnityEngine;
+
+    public class action_{surffix}_{nodeName} : {xtype}
+    {{
+        /// <summary>
+        /// 节点执行
+        /// </summary>
+        public override void Execute()
+        {{
+            base.Execute();
+        }}           
+    }}
+}}";
             return content;
         }
         private string ScriptMaker_CreateContent_Editor()
@@ -375,53 +371,53 @@ namespace SevenStrikeModules.XGraph
             string content = "";
 
             content = $@"namespace SevenStrikeModules.XGraph
-            {{
-                using UnityEditor;
-                using UnityEngine.UIElements;
-            
-                [CustomEditor(typeof(action_{surffix}_{nodeName}))]
-                public class editor_{surffix}_{nodeName} : editor_{xtype}
-                {{
-                    /// <summary>
-                    /// 目标对象
-                    /// </summary>
-                    private action_{surffix}_{nodeName} {nodeName};
-            
-                    public override void OnEnable()
-                    {{
-                        base.OnEnable();
-                    }}
-                    /// <summary>
-                    /// 获取脚本
-                    /// </summary>
-                    public override void GetTargetScript()
-                    {{
-                        base.GetTargetScript();
-            
-                        {nodeName} = target as action_{surffix}_{nodeName};
-                    }}
-                    /// <summary>
-                    /// 获取序列化属性
-                    /// </summary>
-                    public override void GetProperties()
-                    {{
-                        base.GetProperties();
-                    }}
-            
-                    //------------------------------------------------------
-            
-                    /// <summary>
-                    /// 自定义组件折叠容器
-                    /// </summary>
-                    /// <param name=""root""></param>
-                    public override Foldout Folder_Extensions(VisualElement root)
-                    {{
-                        Foldout fold = base.Folder_Extensions(root);
-            
-                        return fold;
-                    }}
-                }}
-            }}";
+{{
+    using UnityEditor;
+    using UnityEngine.UIElements;
+
+    [CustomEditor(typeof(action_{surffix}_{nodeName}))]
+    public class editor_{surffix}_{nodeName} : editor_{xtype}
+    {{
+        /// <summary>
+        /// 目标对象
+        /// </summary>
+        private action_{surffix}_{nodeName} {nodeName};
+
+        public override void OnEnable()
+        {{
+            base.OnEnable();
+        }}
+        /// <summary>
+        /// 获取脚本
+        /// </summary>
+        public override void GetTargetScript()
+        {{
+            base.GetTargetScript();
+
+            {nodeName} = target as action_{surffix}_{nodeName};
+        }}
+        /// <summary>
+        /// 获取序列化属性
+        /// </summary>
+        public override void GetProperties()
+        {{
+            base.GetProperties();
+        }}
+
+        //------------------------------------------------------
+
+        /// <summary>
+        /// 自定义组件折叠容器
+        /// </summary>
+        /// <param name=""root""></param>
+        public override Foldout Folder_Extensions(VisualElement root)
+        {{
+            Foldout fold = base.Folder_Extensions(root);
+
+            return fold;
+        }}
+    }}
+}}";
             return content;
         }
         private string ScriptMaker_CreateContent_Graph()
@@ -429,150 +425,150 @@ namespace SevenStrikeModules.XGraph
             string content = "";
 
             content = $@"namespace SevenStrikeModules.XGraph
-            {{
-                using System.Collections.Generic;
-                using UnityEditor.Experimental.GraphView;
-                using UnityEngine;
-                using UnityEngine.UIElements;
-            
-                public class graph_{surffix}_{nodeName} : {(xtype != "xAction_Property" ? "xNode_Base" : "xNode_Property")}
-                {{
-                    action_{surffix}_{nodeName} {nodeName};
+{{
+    using System.Collections.Generic;
+    using UnityEditor.Experimental.GraphView;
+    using UnityEngine;
+    using UnityEngine.UIElements;
 
-                    public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
-                    {{
-                        base.Initialize(graphView, pos, data);
-            
-                        {CreatePortContent()}     
+    public class graph_{surffix}_{nodeName} : {(xtype != "xAction_Property" ? "xNode_Base" : "xNode_Property")}
+    {{
+        action_{surffix}_{nodeName} {nodeName};
 
-                        {nodeName} = ActionData as action_{surffix}_{nodeName};
-                    }}                       
+        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
+        {{
+            base.Initialize(graphView, pos, data);
 
-                    #region 节点绘制
-                    public override xNode_Base Draw()
-                    {{
-                        // 绘制主容器
-                        Draw_Main();
-            
-                        // 绘制标题容器
-                        Draw_Title();
-            
-                        // 绘制标题按钮容器
-                        Draw_TitleButton();
-            
-                        // 绘制顶部容器
-                        Draw_Top();{CreateNodeInputDraw()}{CreateNodeOutputDraw()}                        
-            
-                        // 绘制扩展容器
-                        Draw_Extension();{CreateStartNodePortOffset()}
+            {CreatePortContent()}     
 
-                        return this;
-                    }}
-                    #endregion
-            
-                    #region 重写
-                    /// <summary>
-                    /// 黑板变量数值变化时的回调
-                    /// </summary>
-                    public override void On_VariablesValue_Changed()
-                    {{
-                        base.On_VariablesValue_Changed();
-                    }}
-                    /// <summary>
-                    /// 当克隆节点时
-                    /// </summary>
-                    /// <param name=""list""></param>
-                    public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
-                    {{
-                        base.On_Nodes_Duplicated(list);
-                    }}
-                    /// <summary>
-                    /// 当节点重建时
-                    /// </summary>
-                    public override void On_Node_Restructure()
-                    {{
-                        base.On_Node_Restructure();
-                    }}
-                    /// <summary>
-                    /// 当节点连线时
-                    /// </summary>
-                    /// <param name=""edge""></param>
-                    public override void On_Node_CreateEdge(Edge edge)
-                    {{
-                        base.On_Node_CreateEdge(edge);
-                    }}
-                    /// <summary>
-                    /// 当节点移除连线时
-                    /// </summary>
-                    /// <param name=""edge""></param>
-                    public override void On_Node_RemovedEdge(Edge edge)
-                    {{
-                        base.On_Node_RemovedEdge(edge);
-                    }}
-                    /// <summary>
-                    /// 当节点头像改变时
-                    /// </summary>
-                    /// <param name=""tex""></param>
-                    public override void On_Node_AvatarChanged(Texture2D tex)
-                    {{
-                        base.On_Node_AvatarChanged(tex);
-                    }}
-                    /// <summary>
-                    /// 当节点执行模式改变时
-                    /// </summary>
-                    /// <param name=""state""></param>
-                    public override void On_Node_ConcurrentChanged(bool state)
-                    {{
-                        base.On_Node_ConcurrentChanged(state);
-                    }}
-                    /// <summary>
-                    /// 当改变节点图标时
-                    /// </summary>
-                    /// <param name=""tex""></param>
-                    public override void On_Node_IconChanged(Texture2D tex)
-                    {{
-                        base.On_Node_IconChanged(tex);
-                    }}
-                    /// <summary>
-                    /// 当改变节点颜色主题时
-                    /// </summary>
-                    public override void On_Node_ThemeColorChanged()
-                    {{
-                        base.On_Node_ThemeColorChanged();
-                    }}
-                    /// <summary>
-                    /// 当改变节点通透模式时
-                    /// </summary>
-                    /// <param name=""state""></param>
-                    public override void On_Node_TransparentChanged(bool state)
-                    {{
-                        base.On_Node_TransparentChanged(state);
-                    }}
-                    /// <summary>
-                    /// 当改变节点尺寸时
-                    /// </summary>
-                    /// <param name=""evt""></param>
-                    public override void OnSizeChanged(GeometryChangedEvent evt)
-                    {{
-                        base.OnSizeChanged(evt);
-                    }}
-                    /// <summary>
-                    /// 当选中节点时
-                    /// </summary>
-                    public override void OnSelected()
-                    {{
-                        base.OnSelected();
-                    }}
-                    /// <summary>
-                    /// 当取消选中节点时
-                    /// </summary>
-                    public override void OnUnselected()
-                    {{
-                        base.OnUnselected();
-                    }}
-                    #endregion
-                }}
-            }}";
+            {nodeName} = ActionData as action_{surffix}_{nodeName};
+        }}                       
+
+        #region 节点绘制
+        public override xNode_Base Draw()
+        {{
+            // 绘制主容器
+            Draw_Main();
+
+            // 绘制标题容器
+            Draw_Title();
+
+            // 绘制标题按钮容器
+            Draw_TitleButton();
+
+            // 绘制顶部容器
+            Draw_Top();{CreateNodeInputDraw()}{CreateNodeOutputDraw()}                        
+
+            // 绘制扩展容器
+            Draw_Extension();{CreateStartNodePortOffset()}
+
+            return this;
+        }}
+        #endregion
+
+        #region 重写
+        /// <summary>
+        /// 黑板变量数值变化时的回调
+        /// </summary>
+        public override void On_VariablesValue_Changed()
+        {{
+            base.On_VariablesValue_Changed();
+        }}
+        /// <summary>
+        /// 当克隆节点时
+        /// </summary>
+        /// <param name=""list""></param>
+        public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
+        {{
+            base.On_Nodes_Duplicated(list);
+        }}
+        /// <summary>
+        /// 当节点重建时
+        /// </summary>
+        public override void On_Node_Restructure()
+        {{
+            base.On_Node_Restructure();
+        }}
+        /// <summary>
+        /// 当节点连线时
+        /// </summary>
+        /// <param name=""edge""></param>
+        public override void On_Node_CreateEdge(Edge edge)
+        {{
+            base.On_Node_CreateEdge(edge);
+        }}
+        /// <summary>
+        /// 当节点移除连线时
+        /// </summary>
+        /// <param name=""edge""></param>
+        public override void On_Node_RemovedEdge(Edge edge)
+        {{
+            base.On_Node_RemovedEdge(edge);
+        }}
+        /// <summary>
+        /// 当节点头像改变时
+        /// </summary>
+        /// <param name=""tex""></param>
+        public override void On_Node_AvatarChanged(Texture2D tex)
+        {{
+            base.On_Node_AvatarChanged(tex);
+        }}
+        /// <summary>
+        /// 当节点执行模式改变时
+        /// </summary>
+        /// <param name=""state""></param>
+        public override void On_Node_ConcurrentChanged(bool state)
+        {{
+            base.On_Node_ConcurrentChanged(state);
+        }}
+        /// <summary>
+        /// 当改变节点图标时
+        /// </summary>
+        /// <param name=""tex""></param>
+        public override void On_Node_IconChanged(Texture2D tex)
+        {{
+            base.On_Node_IconChanged(tex);
+        }}
+        /// <summary>
+        /// 当改变节点颜色主题时
+        /// </summary>
+        public override void On_Node_ThemeColorChanged()
+        {{
+            base.On_Node_ThemeColorChanged();
+        }}
+        /// <summary>
+        /// 当改变节点通透模式时
+        /// </summary>
+        /// <param name=""state""></param>
+        public override void On_Node_TransparentChanged(bool state)
+        {{
+            base.On_Node_TransparentChanged(state);
+        }}
+        /// <summary>
+        /// 当改变节点尺寸时
+        /// </summary>
+        /// <param name=""evt""></param>
+        public override void OnSizeChanged(GeometryChangedEvent evt)
+        {{
+            base.OnSizeChanged(evt);
+        }}
+        /// <summary>
+        /// 当选中节点时
+        /// </summary>
+        public override void OnSelected()
+        {{
+            base.OnSelected();
+        }}
+        /// <summary>
+        /// 当取消选中节点时
+        /// </summary>
+        public override void OnUnselected()
+        {{
+            base.OnUnselected();
+        }}
+        #endregion
+    }}
+}}";
             return content;
         }
         #endregion

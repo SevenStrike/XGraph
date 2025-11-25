@@ -24,19 +24,19 @@ namespace SevenStrikeModules.XGraph
 
             #region 灯光强度
             Variable vare_intensity = new Variable_Float("强度");
-            vare_intensity.description = "属性：实时获取到的 - 灯光强度";
+            vare_intensity.description = "实时获取到的 - 灯光强度";
             Propertys_Add(vare_intensity);
             #endregion
 
             #region 灯光范围
             Variable vare_range = new Variable_Float("范围");
-            vare_range.description = "属性：实时获取到的 - 灯光范围";
+            vare_range.description = "实时获取到的 - 灯光范围";
             Propertys_Add(vare_range);
             #endregion
 
             #region 灯光颜色
             Variable vare_color = new Variable_Color("颜色");
-            vare_color.description = "属性：实时获取到的 - 灯光颜色";
+            vare_color.description = "实时获取到的 - 灯光颜色";
             Propertys_Add(vare_color);
             #endregion
         }

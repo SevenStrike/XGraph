@@ -109,7 +109,7 @@ namespace SevenStrikeModules.XGraph
 
             VisualElement container_icon = new VisualElement();
             container_icon.AddToClassList("list_item_icon");
-            container_icon.style.backgroundImage = child.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{child.icon}.png") : child.NodeIcon;
+            container_icon.style.backgroundImage = child.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(child.icon)) : child.NodeIcon;
             container_title.Add(container_icon);
 
             util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{child.identifyName}", new string[] { "labeltext", "list_item_title" });
