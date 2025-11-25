@@ -1,0 +1,76 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/XGraphNodeAssistant.uss?fileID=7433441132597879392&amp;guid=01c085a3dfbcf0f4f9202e31f0615d64&amp;type=3#XGraphNodeAssistant" />
+    <engine:VisualElement name="TitleContainer" style="flex-direction: row; padding-top: 15px; padding-right: 10px; padding-bottom: 15px; padding-left: 10px; width: 100%; overflow: hidden; flex-shrink: 0;">
+        <engine:VisualElement name="con_title" style="overflow: hidden; flex-shrink: 0; width: 100%; flex-direction: row;">
+            <engine:VisualElement name="icon" style="width: 20px; height: 20px; margin-right: 10px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/assistant.png?fileID=2800000&amp;guid=d1104a6bccf0baf46833f4a02ff3bd98&amp;type=3#assistant&quot;); flex-shrink: 0;" />
+            <engine:Label text="&lt;b&gt;XGraph&lt;/b&gt; 节点扩展助手" name="title" class="TitleName" style="overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; flex-grow: 0; width: 261px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="sepline" style="border-top-width: 2px; border-top-color: rgba(255, 255, 255, 0.25); margin-left: 10px; margin-right: 10px;" />
+    <engine:VisualElement name="controls" style="flex-grow: 1; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 5px; flex-shrink: 0; overflow: hidden;">
+        <engine:VisualElement name="control">
+            <engine:TextField label="节点前缀" name="input_suffix" class="input_params" />
+            <engine:TextField label="节点类名" name="input_name" class="input_params" />
+            <engine:TextField label="行为类" enabled="false" name="pr_action" class="input_params" />
+            <engine:TextField label="行为编辑器" enabled="false" name="pr_editor" class="input_params" />
+            <engine:TextField label="节点类" enabled="false" name="pr_graph" class="input_params" />
+            <engine:DropdownField label="继承类型" name="drop_types" class="input_params" />
+            <editor:ObjectField label="节点图标" name="obj_icon" class="input_params" />
+            <engine:TextField label="节点昵称" name="input_nickname" class="input_params" />
+        </engine:VisualElement>
+        <engine:Label text="&lt;b&gt;列表结构数据&lt;/b&gt; " name="previewtitle" style="height: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 14px; margin-top: 20px; padding-left: 5px; padding-right: 5px; overflow: hidden; text-overflow: ellipsis; -unity-font-style: normal; margin-bottom: 10px;" />
+        <engine:VisualElement name="nodeStructContent" style="height: 127px;">
+            <engine:TextField multiline="true" auto-correction="false" value="&#10;&#10;&#10;&#10;&#10;" vertical-scroller-visibility="AlwaysVisible" emoji-fallback-support="false" select-all-on-focus="false" name="contentField" style="height: 100%;" />
+        </engine:VisualElement>
+        <engine:Label text="&lt;b&gt;预览文件结构&lt;/b&gt; " name="previewtitle" style="height: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 14px; margin-top: 20px; padding-left: 5px; padding-right: 5px; overflow: hidden; text-overflow: ellipsis; -unity-font-style: normal; margin-bottom: 5px;" />
+        <engine:VisualElement name="folder_structure" style="margin-left: 0; padding-left: 5px; padding-right: 5px; margin-top: 10px; overflow: hidden;">
+            <engine:VisualElement name="fd_folderName" style="flex-direction: row; margin-bottom: 10px; overflow: visible;">
+                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/folder.png?fileID=2800000&amp;guid=fc8495be64479c34e94a45a41c718c7f&amp;type=3#folder&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
+                <engine:Label text="mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 1; padding-left: 5px; text-overflow: ellipsis; overflow: hidden; flex-shrink: 1;" />
+                <engine:VisualElement name="line" style="position: absolute; height: 110px; border-left-color: rgba(255, 255, 255, 0.24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 7px; top: 20px;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="fd_actionName" style="flex-direction: row; margin-bottom: 10px; padding-left: 30px; overflow: visible;">
+                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/c%23.png?fileID=2800000&amp;guid=d9ed12ad9a0b12146bcef08e0dc31646&amp;type=3#c#&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
+                <engine:Label text="&lt;b&gt;&lt;color=#FFBF23&gt;action_&lt;/color&gt;&lt;/b&gt;mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
+                <engine:Label text="行为" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
+                <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 8px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="EditorFolder" style="flex-direction: row; margin-bottom: 10px; padding-left: 30px; overflow: visible;">
+                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/folder.png?fileID=2800000&amp;guid=fc8495be64479c34e94a45a41c718c7f&amp;type=3#folder&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
+                <engine:Label text="Editor" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
+                <engine:VisualElement name="line" style="position: absolute; height: 60px; border-left-color: rgba(255, 255, 255, 0.24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 37px; top: 20px;" />
+                <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 8px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="fd_editorName" style="flex-direction: row; margin-bottom: 10px; padding-left: 60px; overflow: visible;">
+                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/c%23.png?fileID=2800000&amp;guid=d9ed12ad9a0b12146bcef08e0dc31646&amp;type=3#c#&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
+                <engine:Label text="&lt;b&gt;&lt;color=#FFBF23&gt;editor_&lt;/color&gt;&lt;/b&gt;mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
+                <engine:Label text="属性" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
+                <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 38px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="fd_graphName" style="flex-direction: row; margin-bottom: 10px; padding-left: 60px; overflow: visible; margin-left: 0;">
+                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/c%23.png?fileID=2800000&amp;guid=d9ed12ad9a0b12146bcef08e0dc31646&amp;type=3#c#&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
+                <engine:Label text="&lt;b&gt;&lt;color=#FFBF23&gt;graph_&lt;/color&gt;&lt;/b&gt;mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
+                <engine:Label text="节点" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
+                <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 38px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="nodeStyle" style="width: 50%; align-self: center; height: 63px; background-color: rgb(60, 60, 60); border-left-color: rgb(25, 25, 25); border-right-color: rgb(25, 25, 25); border-top-color: rgb(25, 25, 25); border-bottom-color: rgb(25, 25, 25); border-top-width: 0.5px; border-right-width: 0.5px; border-bottom-width: 0.5px; border-left-width: 0.5px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; flex-direction: row; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; overflow: visible; bottom: 24px;">
+        <engine:VisualElement name="node_icon" style="width: 16px; height: 16px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/GraphIcon/arrow.png?fileID=2800000&amp;guid=0a4daa5b210366743a06c03f7d6ff078&amp;type=3#arrow&quot;); overflow: hidden;" />
+        <engine:Label text="-" name="node_nickname" style="margin-left: 10px; width: auto; flex-grow: 1; overflow: hidden; -unity-font-style: bold; font-size: 13px; height: 16px; -unity-text-align: middle-left;" />
+        <engine:VisualElement name="port" style="position: absolute; border-left-color: rgba(255, 255, 255, 0.62); border-right-color: rgba(255, 255, 255, 0.62); border-top-color: rgba(255, 255, 255, 0.62); border-bottom-color: rgba(255, 255, 255, 0.62); flex-shrink: 0; width: 10px; height: 10px; top: 31px; left: -19px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;">
+            <engine:VisualElement name="dot" style="position: absolute; width: 4px; height: 4px; background-color: rgb(255, 255, 255); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; top: 1px; left: 1px;">
+                <engine:VisualElement name="line" style="position: absolute; flex-shrink: 0; top: 1px; left: -21px; width: 539%; background-color: rgb(255, 255, 255); height: 2px;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="port" style="position: absolute; border-left-color: rgba(255, 255, 255, 0.62); border-right-color: rgba(255, 255, 255, 0.62); border-top-color: rgba(255, 255, 255, 0.62); border-bottom-color: rgba(255, 255, 255, 0.62); flex-shrink: 0; width: 10px; height: 10px; top: 31px; left: auto; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; right: -19px;">
+            <engine:VisualElement name="dot" style="position: absolute; width: 4px; height: 4px; background-color: rgb(255, 255, 255); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; top: 1px; left: 1px;">
+                <engine:VisualElement name="line" style="position: absolute; flex-shrink: 0; top: 1px; left: auto; width: 539%; background-color: rgb(255, 255, 255); height: 2px; right: -21px;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="line" style="position: absolute; border-top-color: rgba(163, 163, 163, 0.53); flex-shrink: 0; top: 42px; left: 0; border-top-width: 2px; width: 100%;" />
+    </engine:VisualElement>
+    <engine:VisualElement name="footer" style="bottom: 0; flex-grow: 0; height: 55px; flex-direction: column-reverse; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
+        <engine:Button text="创建扩展节点" name="btn_save" style="margin-bottom: 0; height: 35px; margin-top: 0; margin-right: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 13px; -unity-font-style: bold; letter-spacing: 5px;" />
+    </engine:VisualElement>
+</engine:UXML>

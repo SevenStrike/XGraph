@@ -3,7 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Unity.Collections;
+    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
 
@@ -17,6 +17,9 @@ namespace SevenStrikeModules.XGraph
         {
             // 获取到数据根节点
             ActionTreeAsset = actiontree;
+
+            if (ActionTreeAsset.GraphNodesStruct != null)
+                CustomSearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(ActionTreeAsset.GraphNodesStruct.text);
 
             graphViewChanged -= OnGraphViewChanged;
 

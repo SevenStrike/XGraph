@@ -143,7 +143,9 @@ namespace SevenStrikeModules.XGraph
 
             #region  尝试查找是否有自定义 Editor
             string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
+            string name = target.GetType().Name;
+            string result = util_XGraphEditorUtility.HasString(name, "xAction") ? name : util_XGraphEditorUtility.ExtractString(name, 7);
+            var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{result}, {asm}");
             #endregion
 
             #region 布局容器
@@ -160,7 +162,7 @@ namespace SevenStrikeModules.XGraph
                 // 存在Editor解释文件，使用自定义界面样式
                 case true:
                     editor = Editor.CreateEditor(target, editorType);
-                    if (editor is Editor_xAction_Base actionEditor)
+                    if (editor is editor_xAction_Base actionEditor)
                         container.Add(actionEditor.CreateGraphviewInespector());
                     break;
                 // 不存在Editor解释文件，使用内置界面样式
@@ -189,7 +191,7 @@ namespace SevenStrikeModules.XGraph
 
             #region  尝试查找是否有自定义 Editor
             string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.Editor_{target.GetType().Name}, {asm}");
+            var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{target.GetType().Name}, {asm}");
             #endregion
 
             #region 布局容器
@@ -206,7 +208,7 @@ namespace SevenStrikeModules.XGraph
                 // 存在Editor解释文件，使用自定义界面样式
                 case true:
                     editor = Editor.CreateEditor(target, editorType);
-                    if (editor is Editor_xAction_Asset actionEditor)
+                    if (editor is editor_xAction_Asset actionEditor)
                         container.Add(actionEditor.CreateGraphviewInespector());
                     break;
                 // 不存在Editor解释文件，使用内置界面样式

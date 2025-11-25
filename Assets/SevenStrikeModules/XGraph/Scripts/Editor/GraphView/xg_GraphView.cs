@@ -67,6 +67,11 @@ namespace SevenStrikeModules.XGraph
         /// 序列化解析到菜单结构列表类
         /// </summary>
         public searchBox_NodesRoot SearchStructures;
+        /// <summary>
+        /// 序列化解析到菜单结构列表类
+        /// </summary>
+        public searchBox_NodesRoot CustomSearchStructures;
+
         #endregion
 
         #region 参数
@@ -220,7 +225,7 @@ namespace SevenStrikeModules.XGraph
         public xg_GraphView()
         {
             // 读取菜单结构列表内容
-            SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodeStructure.json");
+            SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesStruct.json");
             // 序列化解析到类
             SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(SearchStructures_Json.text);
 
@@ -494,19 +499,52 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Vector2 GetCurrentViewPosition()
         {
-            // viewTransform.matrix 包含平移和缩放信息
-            Matrix4x4 matrix = viewTransform.matrix;
+            //// viewTransform.matrix 包含平移和缩放信息
+            //Matrix4x4 matrix = viewTransform.matrix;
 
-            // 提取平移部分（通常位于 matrix.m03 和 matrix.m13）
-            float panX = matrix.m03;
-            float panY = matrix.m13;
+            //// 提取平移部分（通常位于 matrix.m03 和 matrix.m13）
+            //float panX = matrix.m03;
+            //float panY = matrix.m13;
 
-            Vector2 pos = new Vector2(panX, panY);
+            //Vector2 pos = new Vector2(panX, panY);
 
-            if (ActionTreeAsset != null && ActionTreeAsset.On_GraphviewPos_Changed != null)
-                ActionTreeAsset.On_GraphviewPos_Changed(pos);
+            //if (ActionTreeAsset != null && ActionTreeAsset.On_GraphviewPos_Changed != null)
+            //    ActionTreeAsset.On_GraphviewPos_Changed(pos);
 
-            return pos;
+            //return pos;
+            // 安全检查：确保 viewTransform 和 matrix 有效
+            if (viewTransform == null || viewTransform.matrix == Matrix4x4.zero)
+            {
+                return Vector2.zero;
+            }
+
+            try
+            {
+                // viewTransform.matrix 包含平移和缩放信息
+                Matrix4x4 matrix = viewTransform.matrix;
+
+                // 检查矩阵是否有效
+                if (float.IsNaN(matrix.m03) || float.IsNaN(matrix.m13))
+                {
+                    return Vector2.zero;
+                }
+
+                // 提取平移部分（通常位于 matrix.m03 和 matrix.m13）
+                float panX = matrix.m03;
+                float panY = matrix.m13;
+
+                Vector2 pos = new Vector2(panX, panY);
+
+                if (ActionTreeAsset != null && ActionTreeAsset.On_GraphviewPos_Changed != null)
+                    ActionTreeAsset.On_GraphviewPos_Changed(pos);
+
+                return pos;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"获取 GraphView 位置时出错: {ex.Message}");
+                return Vector2.zero;
+            }
         }
         /// <summary>
         /// 获取当前视口的缩放

@@ -1,0 +1,127 @@
+{
+    "root_title": "节点列表",
+    "root_types": [
+        {
+            "catergory_title": "逻辑",
+            "catergory_icon": "0ea205b4e9c015141a529733a078c63e",
+            "catergory_nodes": [
+                {
+                    "name": "分支",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Branch",
+                    "icon": "cdf46b898e90fe64e95fbd6f9eb4d799",
+                    "visualNodeType": "xNode_Branch"
+                },
+                {
+                    "name": "延展",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Relay",
+                    "icon": "5b1a4c4fab62dfb4aaee07e7171a1251",
+                    "visualNodeType": "xNode_Relay"
+                }
+            ]
+        },
+        {
+            "catergory_title": "变量",
+            "catergory_icon": "f8a4caf1273661a478e40111a1b6c550",
+            "catergory_nodes": [
+                {
+                    "name": "String",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Float",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Int",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Bool",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector2",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector3",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Vector4",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                },
+                {
+                    "name": "Color",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Variable",
+                    "icon": "882ad97b01f2b944bb65b11e1094256f",
+                    "visualNodeType": "xNode_Variable_Internal"
+                }
+            ]
+        },
+        {
+            "catergory_title": "零件",
+            "catergory_icon": "3240b4c5aeeab8043a6505ba67563502",
+            "catergory_nodes": [
+                {
+                    "name": "便签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Stick",
+                    "icon": "80f986c8d482f3b47872d8d5388115d3",
+                    "visualNodeType": "xNode_Stick"
+                },
+                {
+                    "name": "标签",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Label",
+                    "icon": "ce9f1c5873419314b9f7c2b60653c4aa",
+                    "visualNodeType": "xNode_Label"
+                },
+                {
+                    "name": "贴图",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "",
+                    "actionNodeType": "Decal",
+                    "icon": "46b8fd08882c7dd49bd1960ae8d8d1a2",
+                    "visualNodeType": "xNode_Decal"
+                }
+            ]
+        }
+    ]
+}

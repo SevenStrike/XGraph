@@ -759,5 +759,28 @@ namespace SevenStrikeModules.XGraph
             EditorUtility.DisplayDialogComplex(title, text, ok, cancel, alt);
         }
         #endregion
+
+        #region 字符串操作
+        /// <summary>
+        /// 提取字符串
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string ExtractString(string target, int length)
+        {
+            return target.Substring(length);
+        }
+        /// <summary>
+        /// 判断目标字符串是否包含指定的子字符串
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public static bool HasString(string target, string condition)
+        {
+            return target.Contains(condition);
+        }
+        #endregion
     }
 }

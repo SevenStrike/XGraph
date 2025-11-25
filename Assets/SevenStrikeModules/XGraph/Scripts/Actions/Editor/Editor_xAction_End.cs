@@ -4,7 +4,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine.UIElements;
 
     [CustomEditor(typeof(xAction_End), true)]
-    public class Editor_xAction_End : Editor_xAction_Base
+    public class editor_xAction_End : editor_xAction_Base
     {
         /// <summary>
         /// 目标对象

@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using Unity.Plastic.Newtonsoft.Json;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
 
@@ -59,7 +60,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 图标名称
         /// </summary>
-        public string iconName;
+        public string icon;
         /// <summary>
         /// 节点级类型视觉节点枚举
         /// </summary>
@@ -144,27 +145,59 @@ namespace SevenStrikeModules.XGraph
         private List<SearchTreeEntry> NodeMenuListStructure()
         {
             // 读取菜单结构列表内容
-            graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodeStructure.json");
+            graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesStruct.json");
 
             // 序列化解析到类
             graphView.SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.SearchStructures_Json.text);
 
+            if (graphView.ActionTreeAsset.GraphNodesStruct != null)
+            {
+                // 序列化解析到类（获取行为资源文件中的 GraphStructureAsset 专属节点结构，用于叠加到基础节点列表中）
+                graphView.CustomSearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.ActionTreeAsset.GraphNodesStruct.text);
+            }
+
+            // 合并节点结构列表（基础节点 + 自定义节点）
+            searchBox_NodesRoot sbx = new searchBox_NodesRoot();
+            sbx.root_title = graphView.SearchStructures.root_title;
+
+            // 先把自定义的节点注入
+            if (graphView.CustomSearchStructures != null)
+            {
+                foreach (var item in graphView.CustomSearchStructures.root_types)
+                {
+                    sbx.root_types.Add(item);
+                }
+            }
+
+            // 再把基础的节点注入
+            foreach (var item in graphView.SearchStructures.root_types)
+            {
+                sbx.root_types.Add(item);
+            }
+
+
             List<SearchTreeEntry> entries = new List<SearchTreeEntry>();
 
             // 搜索框内添加主标题分类名称
-            entries.Add(new SearchTreeGroupEntry(new GUIContent(graphView.SearchStructures.root_title)) { level = 1 });
+            entries.Add(new SearchTreeGroupEntry(new GUIContent(sbx.root_title)) { level = 1 });
 
             // 节点一级分类
-            List<searchBox_Nodes> list = graphView.SearchStructures.root_types;
+            List<searchBox_Nodes> list = sbx.root_types;
             for (int s = 0; s < list.Count; s++)
             {
-                Texture2D categoryicon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{list[s].catergory_icon}.png");
+                // 指定位置查找图片
+                //Texture2D categoryicon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{list[s].catergory_icon}.png");
+                // 根据GUID查找图片
+                Texture2D categoryicon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(list[s].catergory_icon));
                 entries.Add(new SearchTreeGroupEntry(new GUIContent($"   {list[s].catergory_title}", categoryicon)) { level = 2 });
                 for (int i = 0; i < list[s].catergory_nodes.Count; i++)
                 {
                     // 节点二级分类
                     searchBox_Node item = list[s].catergory_nodes[i];
-                    Texture2D icon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{item.iconName}.png");
+                    // 指定位置查找图片
+                    //Texture2D icon = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{item.icon}.png");
+                    // 根据GUID查找图片
+                    Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(item.icon));
                     entries.Add(new SearchTreeEntry(new GUIContent($"   {item.name}", icon))
                     {
                         level = 3,
@@ -174,7 +207,7 @@ namespace SevenStrikeModules.XGraph
                             item.prefixNamespace,
                             item.prefixClass,
                             item.actionNodeType,
-                            item.iconName,
+                            item.icon,
                             item.visualNodeType)
                     });
                 }

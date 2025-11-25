@@ -8,7 +8,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine.Windows;
 
     [CustomEditor(typeof(xAction_Base), true)]
-    public class Editor_xAction_Base : Editor
+    public class editor_xAction_Base : Editor
     {
         /// <summary>
         /// 目标对象

@@ -5,7 +5,7 @@ namespace SevenStrikeModules.XGraph
     using System.IO;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "NewXGraph", menuName = "XGraphAsset")]
+    [CreateAssetMenu(fileName = "NewNodeGraph", menuName = "XGraph/GraphAssets/Default")]
     public class xAction_Asset : ScriptableObject
     {
         #region Graphview 基础参数
@@ -25,6 +25,10 @@ namespace SevenStrikeModules.XGraph
         /// 最后一次保存时间
         /// </summary>
         [SerializeField] public string LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+        /// <summary>
+        /// 专属节点配置表
+        /// </summary>
+        [SerializeField] public TextAsset GraphNodesStruct;
         #endregion
 
         #region 主题配置
@@ -328,6 +332,8 @@ namespace SevenStrikeModules.XGraph
             XGraph_DisplayNodeColor = targetAsset.XGraph_DisplayNodeColor;
             XGraph_DisplayNodeFlow = targetAsset.XGraph_DisplayNodeFlow;
 
+            GraphNodesStruct = targetAsset.GraphNodesStruct;
+
             Last_GraphView_BlackboardPanel_TransformData = targetAsset.Last_GraphView_BlackboardPanel_TransformData.Clone();
             Last_GraphView_InspectorPanel_TransformData = targetAsset.Last_GraphView_InspectorPanel_TransformData.Clone();
 
@@ -479,6 +485,8 @@ namespace SevenStrikeModules.XGraph
             newActionAsset.XGraph_InspectorViewDisplay = XGraph_InspectorViewDisplay;
             newActionAsset.XGraph_DisplayNodeColor = XGraph_DisplayNodeColor;
             newActionAsset.XGraph_DisplayNodeFlow = XGraph_DisplayNodeFlow;
+
+            newActionAsset.GraphNodesStruct = GraphNodesStruct;
 
             newActionAsset.Last_GraphView_BlackboardPanel_TransformData = Last_GraphView_BlackboardPanel_TransformData.Clone();
             newActionAsset.Last_GraphView_InspectorPanel_TransformData = Last_GraphView_InspectorPanel_TransformData.Clone();

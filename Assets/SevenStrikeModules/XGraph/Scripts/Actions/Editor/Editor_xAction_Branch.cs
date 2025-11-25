@@ -6,7 +6,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine.UIElements;
 
     [CustomEditor(typeof(xAction_Branch))]
-    public class Editor_xAction_Branch : Editor_xAction_Base
+    public class editor_xAction_Branch : editor_xAction_Base
     {
         /// <summary>
         /// 目标对象

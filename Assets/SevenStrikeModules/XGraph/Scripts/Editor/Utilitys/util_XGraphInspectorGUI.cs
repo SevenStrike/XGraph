@@ -119,7 +119,7 @@ namespace SevenStrikeModules.XGraph
                 vm_mark.AddToClassList(styles_mark[i]);
             }
             if (nodedata.NodeIcon == null)
-                vm_mark.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{nodedata.icon}.png");
+                vm_mark.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(nodedata.icon));
             else
                 vm_mark.style.backgroundImage = nodedata.NodeIcon;
             vm_group.Add(vm_mark);

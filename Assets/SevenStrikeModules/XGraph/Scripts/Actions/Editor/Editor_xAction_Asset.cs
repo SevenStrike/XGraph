@@ -7,7 +7,7 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine.UIElements;
 
     [CustomEditor(typeof(xAction_Asset), true)]
-    public class Editor_xAction_Asset : Editor
+    public class editor_xAction_Asset : Editor
     {
         private xAction_Asset baseScript;
 
@@ -154,7 +154,8 @@ namespace SevenStrikeModules.XGraph
                 VisualElement container_icon = new VisualElement();
                 container_icon.pickingMode = PickingMode.Ignore;
                 container_icon.AddToClassList("list_item_icon");
-                container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{action.icon}.png") : action.NodeIcon;
+                //container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{action.icon}.png") : action.NodeIcon;
+                container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(action.icon)) : action.NodeIcon;
                 container_title.Add(container_icon);
                 container_icon.style.unityBackgroundImageTintColor = action.themeColor;
 

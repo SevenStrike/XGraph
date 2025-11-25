@@ -13,6 +13,8 @@ namespace SevenStrikeModules.XGraph
             gv_NodesSearchBox = ScriptableObject.CreateInstance<xg_NodesSearchBox>();
             gv_NodesSearchBox.Init(this);
 
+
+
             // 当激活节点创建时使用实例化的节点搜索主体指定为搜索框的内容
             OpenNodeSearchBox();
         }

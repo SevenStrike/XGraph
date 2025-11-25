@@ -15678,7 +15678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 602bdf3665d4b3f498b1ff845c6d0343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SampleAsset: {fileID: 11400000, guid: bd6506a649a3d8a45ae50d7c406bd545, type: 2}
+  SampleAsset: {fileID: 11400000, guid: a67bdf276a56b164e98f2002075ff3df, type: 2}
   SaveValueChangesInRuntime: 1
   Logs: 1
   TargetScript: {fileID: 1444357495}
