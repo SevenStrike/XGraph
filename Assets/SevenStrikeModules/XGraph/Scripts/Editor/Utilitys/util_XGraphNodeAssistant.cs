@@ -4,6 +4,7 @@ namespace SevenStrikeModules.XGraph
     using System.IO;
     using System.Text.RegularExpressions;
     using UnityEditor;
+    using UnityEditor.Overlays;
     using UnityEngine;
     using UnityEngine.UIElements;
     using ObjectField = UnityEditor.UIElements.ObjectField;
@@ -12,7 +13,7 @@ namespace SevenStrikeModules.XGraph
     {
         #region 控件
         [SerializeField] private VisualTreeAsset m_VisualTreeAsset;
-        [SerializeField] private TextField input_suffix;
+        [SerializeField] private TextField input_prefix;
         [SerializeField] private TextField input_name;
         [SerializeField] private TextField contentField;
         [SerializeField] private TextField pr_action;
@@ -33,17 +34,15 @@ namespace SevenStrikeModules.XGraph
         #region 参数
         [SerializeField] private string nodeName = "";
         [SerializeField] private string nickName = "";
-        [SerializeField] private string surffix = "";
+        [SerializeField] private string prefix = "";
         [SerializeField] private string iconguid = "";
         [SerializeField] private string xtype = "";
         #endregion
 
-        public static util_XGraphNodeAssistant wnd;
-
-        [MenuItem("Assets/Create/XGraph/J 节点扩展助手", false, -100)]
+        [MenuItem("Assets/XGraph/N 节点扩展助手", false, 100)]
         public static void CreateActionGraphNode()
         {
-            wnd = GetWindow<util_XGraphNodeAssistant>(true);
+            util_XGraphNodeAssistant wnd = GetWindow<util_XGraphNodeAssistant>(true);
             wnd.titleContent = new GUIContent("XGraphNodeAssistant");
             wnd.minSize = new Vector2(350, 800);
             wnd.maxSize = wnd.minSize;
@@ -57,38 +56,34 @@ namespace SevenStrikeModules.XGraph
             var visual_window = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_XGraphNodeAssistant.uxml");
             visual_window.CloneTree(root);
 
-            input_suffix = root.Q<TextField>("input_suffix");
-            input_suffix.RegisterValueChangedCallback(input_suffix_changed);
-
+            // 先获取所有控件引用
+            input_prefix = root.Q<TextField>("input_prefix");
             input_name = root.Q<TextField>("input_name");
-            input_name.RegisterValueChangedCallback(input_name_changed);
-
             contentField = root.Q<TextField>("contentField");
             pr_action = root.Q<TextField>("pr_action");
             pr_editor = root.Q<TextField>("pr_editor");
             pr_graph = root.Q<TextField>("pr_graph");
-
-            fd_folderName = root.Q<VisualElement>("fd_folderName").Q<Label>("name");
-            fd_actionName = root.Q<VisualElement>("fd_actionName").Q<Label>("name");
-            fd_editorName = root.Q<VisualElement>("fd_editorName").Q<Label>("name");
-            fd_graphName = root.Q<VisualElement>("fd_graphName").Q<Label>("name");
-
+            fd_folderName = root.Q<VisualElement>("fd_folderName")?.Q<Label>("name");
+            fd_actionName = root.Q<VisualElement>("fd_actionName")?.Q<Label>("name");
+            fd_editorName = root.Q<VisualElement>("fd_editorName")?.Q<Label>("name");
+            fd_graphName = root.Q<VisualElement>("fd_graphName")?.Q<Label>("name");
             btn_save = root.Q<Button>("btn_save");
-            btn_save.clicked += Btn_save_clicked;
-
             obj_icon = root.Q<ObjectField>("obj_icon");
-            obj_icon.objectType = typeof(Texture2D);
-            obj_icon.RegisterValueChangedCallback(obj_icon_changed);
-
             input_nickname = root.Q<TextField>("input_nickname");
-            input_nickname.RegisterValueChangedCallback(input_nickname_changed);
-
             node_icon = root.Q<VisualElement>("node_icon");
             node_nickname = root.Q<Label>("node_nickname");
-
             drop_types = root.Q<DropdownField>("drop_types");
+
+            // 注册事件回调
+            input_prefix.RegisterValueChangedCallback(input_prefix_changed);
+            input_name.RegisterValueChangedCallback(input_name_changed);
+            obj_icon.objectType = typeof(Texture2D);
+            obj_icon.RegisterValueChangedCallback(obj_icon_changed);
+            input_nickname.RegisterValueChangedCallback(input_nickname_changed);
             drop_types.RegisterValueChangedCallback(drop_types_changed);
-            // 添加选项
+            btn_save.clicked += Btn_save_clicked;
+
+            // 设置下拉框选项
             drop_types.choices = new List<string>
             {
                 "起始",
@@ -97,15 +92,24 @@ namespace SevenStrikeModules.XGraph
                 "属性",
                 "结束"
             };
-            drop_types.value = drop_types.choices[0];
+            drop_types.value = drop_types.choices[LoadPrefsData_Int("xtype")];
+
             setxtype(drop_types.value);
+
+            // 最后设置初始值（触发回调）
+            input_prefix.value = LoadPrefsData_String("prefix");
+            input_name.value = LoadPrefsData_String("nodeName");
+            input_nickname.value = LoadPrefsData_String("nickName");
+
+            // 确保数据正确更新
+            update_Data();
         }
 
         #region 控件回调
         private void input_name_changed(ChangeEvent<string> evt)
         {
             // 使用正则表达式移除所有非小写字母和非下划线的字符
-            string filtered = Regex.Replace(evt.newValue, @"[^a-zA-Z_]", "");
+            string filtered = Regex.Replace(evt.newValue, @"[^a-zA-Z0-9_]", "");
             // 如果值被修改，更新TextField但不触发回调
             if (filtered != evt.newValue)
             {
@@ -115,11 +119,13 @@ namespace SevenStrikeModules.XGraph
 
             nodeName = filtered;
             update_Data();
+
+            SavePrefsData_String("nodeName", filtered);
         }
-        private void input_suffix_changed(ChangeEvent<string> evt)
+        private void input_prefix_changed(ChangeEvent<string> evt)
         {
             // 使用正则表达式移除所有非小写字母和非下划线的字符
-            string filtered = Regex.Replace(evt.newValue, @"[^a-zA-Z_]", "");
+            string filtered = Regex.Replace(evt.newValue, @"[^a-zA-Z0-9_]", "");
             // 如果值被修改，更新TextField但不触发回调
             if (filtered != evt.newValue)
             {
@@ -127,13 +133,17 @@ namespace SevenStrikeModules.XGraph
                 textField.SetValueWithoutNotify(filtered);
             }
 
-            surffix = filtered;
+            prefix = filtered;
             update_Data();
+
+            SavePrefsData_String("prefix", filtered);
         }
         private void input_nickname_changed(ChangeEvent<string> evt)
         {
             nickName = evt.newValue;
             update_Data();
+
+            SavePrefsData_String("nickName", nickName);
         }
         private void obj_icon_changed(ChangeEvent<UnityEngine.Object> evt)
         {
@@ -143,7 +153,10 @@ namespace SevenStrikeModules.XGraph
         }
         private void drop_types_changed(ChangeEvent<string> evt)
         {
+
             setxtype(evt.newValue);
+            int currentIndex = drop_types.choices.IndexOf(drop_types.value);
+            SavePrefsData_Int("xtype", currentIndex);
         }
         private void Btn_save_clicked()
         {
@@ -157,14 +170,14 @@ namespace SevenStrikeModules.XGraph
 
             if (!AssetDatabase.IsValidFolder($"{path}/{nodeName}"))
             {
-                string path_root = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(path, nodeName));
+                string path_root = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(path, $"{prefix}_{nodeName}"));
                 string path_editor = AssetDatabase.GUIDToAssetPath(AssetDatabase.CreateFolder(path_root, "Editor"));
                 Debug.Log(path_root);
                 Debug.Log(path_editor);
 
-                ScriptMaker_Create(path_root, $"action_{surffix}_{nodeName}", scr_action);
-                ScriptMaker_Create(path_editor, $"editor_{surffix}_{nodeName}", scr_editor);
-                ScriptMaker_Create(path_editor, $"graph_{surffix}_{nodeName}", scr_graph);
+                ScriptMaker_Create(path_root, $"action_{prefix}_{nodeName}", scr_action);
+                ScriptMaker_Create(path_editor, $"editor_{prefix}_{nodeName}", scr_editor);
+                ScriptMaker_Create(path_editor, $"graph_{prefix}_{nodeName}", scr_graph);
 
                 // 刷新资源数据库
                 AssetDatabase.Refresh();
@@ -174,6 +187,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
+        #region 辅助
         private void setxtype(string type)
         {
             switch (type)
@@ -195,26 +209,27 @@ namespace SevenStrikeModules.XGraph
                     break;
             }
         }
+        #endregion
 
         #region 数据刷新
         private void update_Data()
         {
-            field_content_set(pr_action, $"action_{surffix}_{nodeName}");
-            field_content_set(pr_editor, $"editor_{surffix}_{nodeName}");
-            field_content_set(pr_graph, $"graph_{surffix}_{nodeName}");
+            field_content_set(pr_action, $"action_{prefix}_{nodeName}");
+            field_content_set(pr_editor, $"editor_{prefix}_{nodeName}");
+            field_content_set(pr_graph, $"graph_{prefix}_{nodeName}");
 
             update_StructContent();
 
             label_content_set(node_nickname, string.IsNullOrEmpty(nickName) ? nodeName : nickName);
 
-            label_content_set(fd_folderName, $"{surffix}_{nodeName}");
-            label_content_set(fd_actionName, $"<b><color=#FFBF23>action_</color></b>{surffix}_{nodeName}");
-            label_content_set(fd_editorName, $"<b><color=#FFBF23>editor_</color></b>{surffix}_{nodeName}");
-            label_content_set(fd_graphName, $"<b><color=#FFBF23>graph_</color></b>{surffix}_{nodeName}");
+            label_content_set(fd_folderName, $"{prefix}_{nodeName}");
+            label_content_set(fd_actionName, $"<b><color=#FFBF23>action_</color></b>{prefix}_{nodeName}");
+            label_content_set(fd_editorName, $"<b><color=#FFBF23>editor_</color></b>{prefix}_{nodeName}");
+            label_content_set(fd_graphName, $"<b><color=#FFBF23>graph_</color></b>{prefix}_{nodeName}");
         }
         private void update_StructContent()
         {
-            string content = $"{{\r\n    \"name\": \"{(string.IsNullOrEmpty(nickName) ? nodeName : nickName)}\",\r\n    \"prefixNamespace\": \"SevenStrikeModules.XGraph\",\r\n    \"prefixClass\": \"action_{surffix}_\",\r\n    \"actionNodeType\": \"{nodeName}\",\r\n    \"icon\": \"{(obj_icon.value == null ? "0a4daa5b210366743a06c03f7d6ff078" : iconguid)}\",\r\n    \"visualNodeType\": \"graph_{surffix}_{nodeName}\"\r\n}}";
+            string content = $"{{\r\n    \"name\": \"{(string.IsNullOrEmpty(nickName) ? nodeName : nickName)}\",\r\n    \"prefixNamespace\": \"SevenStrikeModules.XGraph\",\r\n    \"prefixClass\": \"action_{prefix}_\",\r\n    \"actionNodeType\": \"{nodeName}\",\r\n    \"icon\": \"{(obj_icon.value == null ? "0a4daa5b210366743a06c03f7d6ff078" : iconguid)}\",\r\n    \"visualNodeType\": \"graph_{prefix}_{nodeName}\"\r\n}}";
             field_content_set(contentField, $"{content}");
         }
         #endregion
@@ -222,11 +237,18 @@ namespace SevenStrikeModules.XGraph
         #region 控件控制
         private void field_content_set(TextField field, string content)
         {
-            field.value = content;
+            if (field != null)
+            {
+                field.value = content;
+            }
         }
+
         private void label_content_set(Label label, string content)
         {
-            label.text = content;
+            if (label != null)
+            {
+                label.text = content;
+            }
         }
         #endregion
 
@@ -355,7 +377,7 @@ namespace SevenStrikeModules.XGraph
 {{
     using UnityEngine;
 
-    public class action_{surffix}_{nodeName} : {xtype}
+    public class action_{prefix}_{nodeName} : {xtype}
     {{
         /// <summary>
         /// 节点执行
@@ -377,13 +399,13 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine.UIElements;
 
-    [CustomEditor(typeof(action_{surffix}_{nodeName}))]
-    public class editor_{surffix}_{nodeName} : editor_{xtype}
+    [CustomEditor(typeof(action_{prefix}_{nodeName}))]
+    public class editor_{prefix}_{nodeName} : editor_{xtype}
     {{
         /// <summary>
         /// 目标对象
         /// </summary>
-        private action_{surffix}_{nodeName} {nodeName};
+        private action_{prefix}_{nodeName} {nodeName};
 
         public override void OnEnable()
         {{
@@ -396,7 +418,7 @@ namespace SevenStrikeModules.XGraph
         {{
             base.GetTargetScript();
 
-            {nodeName} = target as action_{surffix}_{nodeName};
+            {nodeName} = target as action_{prefix}_{nodeName};
         }}
         /// <summary>
         /// 获取序列化属性
@@ -433,9 +455,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class graph_{surffix}_{nodeName} : {(xtype != "xAction_Property" ? "xNode_Base" : "xNode_Property")}
+    public class graph_{prefix}_{nodeName} : {(xtype != "xAction_Property" ? "xNode_Base" : "xNode_Property")}
     {{
-        action_{surffix}_{nodeName} {nodeName};
+        action_{prefix}_{nodeName} {nodeName};
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {{
@@ -443,7 +465,7 @@ namespace SevenStrikeModules.XGraph
 
             {CreatePortContent()}     
 
-            {nodeName} = ActionData as action_{surffix}_{nodeName};
+            {nodeName} = ActionData as action_{prefix}_{nodeName};
         }}                       
 
         #region 节点绘制
@@ -572,6 +594,154 @@ namespace SevenStrikeModules.XGraph
     }}
 }}";
             return content;
+        }
+        #endregion
+
+        #region 重新编译时XGraph资源重载操作
+        /// <summary>
+        /// 在脚本重新编辑后重新加载资源，不会导致引用丢失产生报错
+        /// </summary>
+        [InitializeOnLoadMethod]
+        private static void Reloader_In_ScriptRecomplier()
+        {
+            AssemblyReloadEvents.afterAssemblyReload += () =>
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    var wnd = GetWindow<util_XGraphNodeAssistant>(true);
+                    wnd.titleContent = new GUIContent("XGraphNodeAssistant");
+                    wnd.minSize = new Vector2(350, 800);
+                    wnd.maxSize = wnd.minSize;
+                    wnd.ReloadWindow();
+                };
+            };
+        }
+        /// <summary>
+        /// 重新引用行为树编辑器的目标行为树资源
+        /// </summary>
+        /// <param name="tree_source"></param>
+        /// <param name="tree_clone"></param>
+        public void ReloadWindow()
+        {
+            // 延迟重建可视化行为树结构
+            EditorApplication.delayCall += () =>
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    ControlsInitialized();
+
+                    // 恢复输入框的值
+                    if (input_prefix != null)
+                        input_prefix.SetValueWithoutNotify(prefix);
+
+                    if (input_name != null)
+                        input_name.SetValueWithoutNotify(nodeName);
+
+                    if (input_nickname != null)
+                        input_nickname.SetValueWithoutNotify(nickName);
+
+                    if (obj_icon != null && !string.IsNullOrEmpty(iconguid))
+                    {
+                        string assetPath = AssetDatabase.GUIDToAssetPath(iconguid);
+                        Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+                        if (icon != null)
+                        {
+                            obj_icon.SetValueWithoutNotify(icon);
+
+                            // 更新图标显示
+                            if (node_icon != null)
+                                node_icon.style.backgroundImage = new StyleBackground(Background.FromTexture2D(icon));
+                        }
+                    }
+
+                    if (drop_types != null && drop_types.choices.Count > 0)
+                    {
+                        // 确保当前值在选项中
+                        if (!string.IsNullOrEmpty(xtype))
+                        {
+                            string currentType = GetDropdownValueFromXType(xtype);
+                            if (!string.IsNullOrEmpty(currentType))
+                                drop_types.SetValueWithoutNotify(currentType);
+                        }
+                    }
+
+                    // 更新所有显示数据
+                    SafeUpdateData();
+                };
+            };
+        }
+        #endregion
+
+        /// <summary>
+        /// 确保所有控件都已经初始化
+        /// </summary>
+        private void ControlsInitialized()
+        {
+            if (rootVisualElement == null) return;
+
+            // 重新获取控件引用
+            input_prefix = rootVisualElement.Q<TextField>("input_prefix");
+            input_name = rootVisualElement.Q<TextField>("input_name");
+            input_nickname = rootVisualElement.Q<TextField>("input_nickname");
+            contentField = rootVisualElement.Q<TextField>("contentField");
+            pr_action = rootVisualElement.Q<TextField>("pr_action");
+            pr_editor = rootVisualElement.Q<TextField>("pr_editor");
+            pr_graph = rootVisualElement.Q<TextField>("pr_graph");
+            fd_folderName = rootVisualElement.Q<VisualElement>("fd_folderName")?.Q<Label>("name");
+            fd_actionName = rootVisualElement.Q<VisualElement>("fd_actionName")?.Q<Label>("name");
+            fd_editorName = rootVisualElement.Q<VisualElement>("fd_editorName")?.Q<Label>("name");
+            fd_graphName = rootVisualElement.Q<VisualElement>("fd_graphName")?.Q<Label>("name");
+            obj_icon = rootVisualElement.Q<ObjectField>("obj_icon");
+            node_icon = rootVisualElement.Q<VisualElement>("node_icon");
+            node_nickname = rootVisualElement.Q<Label>("node_nickname");
+            drop_types = rootVisualElement.Q<DropdownField>("drop_types");
+        }
+        /// <summary>
+        /// 安全地更新数据，避免空引用
+        /// </summary>
+        private void SafeUpdateData()
+        {
+            try
+            {
+                update_Data();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"更新数据时发生错误: {e.Message}");
+            }
+        }
+        /// <summary>
+        /// 根据xtype获取对应的下拉框显示值
+        /// </summary>
+        private string GetDropdownValueFromXType(string xType)
+        {
+            switch (xType)
+            {
+                case "xAction_Start": return "起始";
+                case "xAction_Composite": return "合成";
+                case "xAction_Wait": return "等待";
+                case "xAction_Property": return "属性";
+                case "xAction_End": return "结束";
+                default: return "起始";
+            }
+        }
+
+        #region 数据持久化
+        private void SavePrefsData_String(string key, string data)
+        {
+            EditorPrefs.SetString(key, data);
+        }
+        private string LoadPrefsData_String(string key)
+        {
+            return EditorPrefs.GetString(key, "");
+        }
+        private void SavePrefsData_Int(string key, int value)
+        {
+            EditorPrefs.SetInt(key, value);
+        }
+        private int LoadPrefsData_Int(string key)
+        {
+            return EditorPrefs.GetInt(key, 0);
         }
         #endregion
     }

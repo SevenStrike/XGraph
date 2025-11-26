@@ -1300,7 +1300,7 @@ namespace SevenStrikeModules.XGraph
             if (node is xNode_Base out_base)
             {
                 if (out_base.ActionData.NodeIcon == null)
-                    tex = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{out_base.ActionData.icon}.png");
+                    tex = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(out_base.ActionData.icon));
                 else
                     tex = out_base.ActionData.NodeIcon;
             }
