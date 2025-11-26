@@ -62,12 +62,12 @@
                     "visualNodeType": "graph_mc_property_mainlight"
                 },
                 {
-                    "name": "相机旋转",
+                    "name": "相机位置",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "action_ss_",
-                    "actionNodeType": "cameraRotate",
+                    "prefixClass": "action_ff_",
+                    "actionNodeType": "ccset",
                     "icon": "0a4daa5b210366743a06c03f7d6ff078",
-                    "visualNodeType": "graph_ss_cameraRotate"
+                    "visualNodeType": "graph_ff_ccset"
                 }
             ]
         }

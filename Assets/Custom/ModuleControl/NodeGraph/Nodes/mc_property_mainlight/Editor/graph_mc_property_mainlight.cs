@@ -25,31 +25,6 @@ namespace SevenStrikeModules.XGraph
             property_mainlight = data as action_mc_property_mainlight;
         }
 
-        #region 节点绘制
-        public override xNode_Base Draw()
-        {
-            // 绘制主容器
-            Draw_Main();
-
-            // 绘制标题容器
-            Draw_Title();
-
-            // 绘制标题按钮容器
-            Draw_TitleButton();
-
-            // 绘制顶部容器
-            Draw_Top();
-
-            // 绘制输出节点容器
-            Draw_Output();
-
-            // 绘制扩展容器
-            Draw_Extension();
-
-            return this;
-        }
-        #endregion
-
         #region 重写
         /// <summary>
         /// 黑板变量数值变化时的回调

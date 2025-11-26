@@ -289,7 +289,7 @@ namespace SevenStrikeModules.XGraph
                 content = @$"  #region 端口设置
                 List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
                 // 加入行为端口
-                port_out.Add(new xGraph_NodePort(""属性端口"", typeof(Variable_String), Port.Capacity.Multi));
+                port_out.Add(new xGraph_NodePort(""属性"", typeof(Variable_Float), Port.Capacity.Multi));
                 OutputPort_Set(port_out);
                 #endregion";
             }
@@ -369,6 +369,69 @@ namespace SevenStrikeModules.XGraph
             }
             return content;
         }
+        private string CreateNodeDraw()
+        {
+            string content = "";
+
+            if (xtype != "xAction_Property")
+            {
+                content = $@"
+
+
+    #region 节点绘制
+        public override xNode_Base Draw()
+        {{
+            // 绘制主容器
+            Draw_Main();
+
+            // 绘制标题容器
+            Draw_Title();
+
+            // 绘制标题按钮容器
+            Draw_TitleButton();
+
+            // 绘制顶部容器
+            Draw_Top();{CreateNodeInputDraw()}{CreateNodeOutputDraw()}                        
+
+            // 绘制扩展容器
+            Draw_Extension();{CreateStartNodePortOffset()}
+
+            return this;
+        }}
+        #endregion";
+            }
+            return content;
+        }
+        private string CreatePropertyNodeAction()
+        {
+            string content = "";
+            content = $@"
+
+
+        /// <summary>
+        /// 初始化属性变量列表
+        /// </summary>
+        public override void Propertys_Initialize()
+        {{
+            base.Propertys_Initialize();
+
+            #region 属性
+            Variable vare_property = new Variable_Float(""属性"");
+            vare_property.description = ""实时获取到的 - 属性"";
+            Propertys_Add(vare_property);
+            #endregion
+        }}
+
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        public override void Propertys_Update()
+        {{
+            base.Propertys_Update();
+        }}";
+
+            return content;
+        }
         private string ScriptMaker_CreateContent_Action()
         {
             string content = "";
@@ -385,7 +448,7 @@ namespace SevenStrikeModules.XGraph
         public override void Execute()
         {{
             base.Execute();
-        }}           
+        }}{CreatePropertyNodeAction()}
     }}
 }}";
             return content;
@@ -466,29 +529,7 @@ namespace SevenStrikeModules.XGraph
             {CreatePortContent()}     
 
             {nodeName} = ActionData as action_{prefix}_{nodeName};
-        }}                       
-
-        #region 节点绘制
-        public override xNode_Base Draw()
-        {{
-            // 绘制主容器
-            Draw_Main();
-
-            // 绘制标题容器
-            Draw_Title();
-
-            // 绘制标题按钮容器
-            Draw_TitleButton();
-
-            // 绘制顶部容器
-            Draw_Top();{CreateNodeInputDraw()}{CreateNodeOutputDraw()}                        
-
-            // 绘制扩展容器
-            Draw_Extension();{CreateStartNodePortOffset()}
-
-            return this;
-        }}
-        #endregion
+        }}{CreateNodeDraw()}
 
         #region 重写
         /// <summary>

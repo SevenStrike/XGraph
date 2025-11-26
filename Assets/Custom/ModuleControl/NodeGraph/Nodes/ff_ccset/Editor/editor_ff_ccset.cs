@@ -3,13 +3,13 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor;
     using UnityEngine.UIElements;
 
-    [CustomEditor(typeof(action_ss_cameraRotate))]
-    public class editor_ss_cameraRotate : editor_xAction_Composite
+    [CustomEditor(typeof(action_ff_ccset))]
+    public class editor_ff_ccset : editor_xAction_Property
     {
         /// <summary>
         /// 目标对象
         /// </summary>
-        private action_ss_cameraRotate cameraRotate;
+        private action_ff_ccset ccset;
 
         public override void OnEnable()
         {
@@ -22,7 +22,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            cameraRotate = target as action_ss_cameraRotate;
+            ccset = target as action_ff_ccset;
         }
         /// <summary>
         /// 获取序列化属性
