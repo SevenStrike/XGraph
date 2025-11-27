@@ -63,7 +63,7 @@ namespace SevenStrikeModules.XGraph
         public xg_BlackBoardView()
         {
             // 读取菜单结构列表内容
-            string theme = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/VariableThemes.json").text;
+            string theme = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Themes_Variable.json").text;
             VariableThemeList = JsonConvert.DeserializeObject<VariableThemesGroup>(theme);
 
             // 指定样式

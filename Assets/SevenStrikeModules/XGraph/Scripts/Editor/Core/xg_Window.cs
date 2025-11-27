@@ -1602,7 +1602,7 @@
                 var menu = new GenericMenu();
 
                 // 读取菜单结构列表内容
-                string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/WindowThemes.json").text;
+                string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Themes_Window.json").text;
                 WindowThemeList themelist = JsonConvert.DeserializeObject<WindowThemeList>(json);
 
                 foreach (var theme in themelist.Themes)

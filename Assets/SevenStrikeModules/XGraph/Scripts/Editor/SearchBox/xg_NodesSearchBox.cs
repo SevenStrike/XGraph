@@ -145,7 +145,7 @@ namespace SevenStrikeModules.XGraph
         private List<SearchTreeEntry> NodeMenuListStructure()
         {
             // 读取菜单结构列表内容
-            graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/NodesStruct.json");
+            graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Nodes.json");
 
             // 序列化解析到类
             graphView.SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.SearchStructures_Json.text);

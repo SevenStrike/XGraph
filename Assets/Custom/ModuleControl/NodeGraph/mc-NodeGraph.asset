@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a66d9447c87e74d87cc60da0fe3d68, type: 3}
   m_Name: mc-NodeGraph
   m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 0, y: 0}
+  LastGraphWindowSize: {x: 1330, y: 800}
   LastGraphViewPosition: {x: 0, y: 0}
   LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-11-27  -  14:20:48
+  LastSaveDateTime: 2025-11-27  -  15:42:48
   GraphNodesStruct: {fileID: 0}
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
