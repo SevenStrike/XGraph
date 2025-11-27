@@ -24,7 +24,7 @@ namespace SevenStrikeModules.XGraph
         [MenuItem("Assets/XGraph/C 子节点管理助手", false, 101)]
         public static void CreateActionGraphNode()
         {
-            util_XGraphNodeChildManager wnd = GetWindow<util_XGraphNodeChildManager>(false);
+            util_XGraphNodeChildManager wnd = GetWindow<util_XGraphNodeChildManager>(true);
             wnd.titleContent = new GUIContent("子节点管理助手");
             wnd.minSize = new Vector2(350, 500);
         }
@@ -233,8 +233,10 @@ namespace SevenStrikeModules.XGraph
             VisualElement mark = element.Q<VisualElement>("mark");
             // 获取 title 标签
             Label lab_title = element.Q<Label>("name");
+            // 获取 action_type 标签
+            Label lab_act_type = element.Q<Label>("act_type");
             // 获取 type 标签
-            Label lab_type = element.Q<Label>("type");
+            Label lab_node_type = element.Q<Label>("node_type");
             // 获取 type 标签
             Button btn_del = element.Q<Button>("btn_del");
 
@@ -249,9 +251,30 @@ namespace SevenStrikeModules.XGraph
                 lab_title.text = action.identifyName;
 
             // 设置 type 标签
-            if (lab_type != null)
-                lab_type.text = action.actionNodeType;
+            if (lab_node_type != null)
+                lab_node_type.text = action.actionNodeType;
 
+            // 设置 type 标签
+            if (lab_act_type != null)
+            {
+                if (action is xAction_Base)
+                {
+                    lab_act_type.text = "行为";
+                    lab_act_type.style.color = util_XGraphEditorUtility.Color_From_HexString("#3BFE9B");
+                }
+
+                if (action is xAction_Variable)
+                {
+                    lab_act_type.text = "变量";
+                    lab_act_type.style.color = util_XGraphEditorUtility.Color_From_HexString("#FFA96E");
+                }
+
+                if (action is xAction_Property)
+                {
+                    lab_act_type.text = "属性";
+                    lab_act_type.style.color = util_XGraphEditorUtility.Color_From_HexString("#CDCDCD");
+                }
+            }
             // 注册删除节点按钮事件
             btn_del.clicked += () =>
             {
