@@ -19,7 +19,6 @@ public class ModuleEffective : MonoBehaviour
     [SerializeField] public LineRenderer line;
     [SerializeField] public Transform anchor;
     [SerializeField] public float alpha = 0f;
-    [SerializeField] public GameObject text;
     [SerializeField] public Material BlockMaterial;
 
     void Start()
@@ -68,12 +67,8 @@ public class ModuleEffective : MonoBehaviour
         // 初始化块锚点
         anchor = transform.Find("Anchor");
 
-        // 初始化块锚点
-        text = transform.Find("MarkText").gameObject;
-
         SetBlocksScale(smoothValue);
         SetLineOpacity(0);
-        SetMarkTextVisible(false);
     }
     /// <summary>
     /// 激活模组
@@ -87,8 +82,6 @@ public class ModuleEffective : MonoBehaviour
             smoothValue = state ? 1 : 0;
         if (!fastmode)
             StartCoroutine(FlashLine(state));
-        if (!fastmode)
-            StartCoroutine(FlashText(state));
 
         if (!fastmode)
             StartCoroutine(PulseEmissive(state));
@@ -139,14 +132,6 @@ public class ModuleEffective : MonoBehaviour
         line.sharedMaterial.color = color;
     }
     /// <summary>
-    /// 设置MarkText的可见性
-    /// </summary>
-    /// <param name="alpha"></param>
-    private void SetMarkTextVisible(bool state)
-    {
-        text.SetActive(state);
-    }
-    /// <summary>
     /// 缩放块物体
     /// </summary>
     /// <param name="block"></param>
@@ -176,28 +161,6 @@ public class ModuleEffective : MonoBehaviour
             SetLineOpacity(1);
         else
             SetLineOpacity(0f);
-    }
-    /// <summary>
-    /// 闪烁 Text
-    /// </summary>
-    private IEnumerator FlashText(bool state = true)
-    {
-        // 第一次闪烁：0 → 1 → 0
-        SetMarkTextVisible(true);
-        yield return new WaitForSeconds(0.045f);
-        SetMarkTextVisible(false);
-        yield return new WaitForSeconds(0.045f);
-
-        // 第二次闪烁：0 → 0.35
-        SetMarkTextVisible(true);
-        yield return new WaitForSeconds(0.045f);
-        SetMarkTextVisible(false);
-        yield return new WaitForSeconds(0.045f);
-
-        if (state)
-            SetMarkTextVisible(true);
-        else
-            SetMarkTextVisible(false);
     }
     /// <summary>
     /// 自发光脉动

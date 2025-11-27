@@ -155,12 +155,12 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 资源操作
-#if UNITY_EDITOR
         /// <summary>
         /// 创建数据节点到列表中
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
+#if UNITY_EDITOR
         public xAction_Base Create(NodeCreateArgs_Action args)
         {
             UnityEditor.Undo.RecordObject(this, "Added ActionTree Asset");
