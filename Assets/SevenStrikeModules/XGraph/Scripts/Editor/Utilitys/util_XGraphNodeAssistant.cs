@@ -43,7 +43,7 @@ namespace SevenStrikeModules.XGraph
         public static void CreateActionGraphNode()
         {
             util_XGraphNodeAssistant wnd = GetWindow<util_XGraphNodeAssistant>(true);
-            wnd.titleContent = new GUIContent("XGraphNodeAssistant");
+            wnd.titleContent = new GUIContent("节点扩展助手");
             wnd.minSize = new Vector2(350, 800);
             wnd.maxSize = wnd.minSize;
         }
@@ -636,82 +636,7 @@ namespace SevenStrikeModules.XGraph
 }}";
             return content;
         }
-        #endregion
-
-        #region 重新编译时XGraph资源重载操作
-        /// <summary>
-        /// 在脚本重新编辑后重新加载资源，不会导致引用丢失产生报错
-        /// </summary>
-        [InitializeOnLoadMethod]
-        private static void Reloader_In_ScriptRecomplier()
-        {
-            AssemblyReloadEvents.afterAssemblyReload += () =>
-            {
-                EditorApplication.delayCall += () =>
-                {
-                    var wnd = GetWindow<util_XGraphNodeAssistant>(true);
-                    wnd.titleContent = new GUIContent("XGraphNodeAssistant");
-                    wnd.minSize = new Vector2(350, 800);
-                    wnd.maxSize = wnd.minSize;
-                    wnd.ReloadWindow();
-                };
-            };
-        }
-        /// <summary>
-        /// 重新引用行为树编辑器的目标行为树资源
-        /// </summary>
-        /// <param name="tree_source"></param>
-        /// <param name="tree_clone"></param>
-        public void ReloadWindow()
-        {
-            // 延迟重建可视化行为树结构
-            EditorApplication.delayCall += () =>
-            {
-                EditorApplication.delayCall += () =>
-                {
-                    ControlsInitialized();
-
-                    // 恢复输入框的值
-                    if (input_prefix != null)
-                        input_prefix.SetValueWithoutNotify(prefix);
-
-                    if (input_name != null)
-                        input_name.SetValueWithoutNotify(nodeName);
-
-                    if (input_nickname != null)
-                        input_nickname.SetValueWithoutNotify(nickName);
-
-                    if (obj_icon != null && !string.IsNullOrEmpty(iconguid))
-                    {
-                        string assetPath = AssetDatabase.GUIDToAssetPath(iconguid);
-                        Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
-                        if (icon != null)
-                        {
-                            obj_icon.SetValueWithoutNotify(icon);
-
-                            // 更新图标显示
-                            if (node_icon != null)
-                                node_icon.style.backgroundImage = new StyleBackground(Background.FromTexture2D(icon));
-                        }
-                    }
-
-                    if (drop_types != null && drop_types.choices.Count > 0)
-                    {
-                        // 确保当前值在选项中
-                        if (!string.IsNullOrEmpty(xtype))
-                        {
-                            string currentType = GetDropdownValueFromXType(xtype);
-                            if (!string.IsNullOrEmpty(currentType))
-                                drop_types.SetValueWithoutNotify(currentType);
-                        }
-                    }
-
-                    // 更新所有显示数据
-                    SafeUpdateData();
-                };
-            };
-        }
-        #endregion
+        #endregion      
 
         /// <summary>
         /// 确保所有控件都已经初始化

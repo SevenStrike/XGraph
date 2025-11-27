@@ -541,7 +541,7 @@ namespace SevenStrikeModules.XGraph
 #endif
             }
 
-            newActionAsset.name = this.name + "_CloneRoot";
+            newActionAsset.name = this.name;
             newActionAsset.LastGraphWindowSize = this.LastGraphWindowSize;
             newActionAsset.LastGraphViewPosition = this.LastGraphViewPosition;
             newActionAsset.LastGraphViewZoom = this.LastGraphViewZoom;
@@ -662,7 +662,7 @@ namespace SevenStrikeModules.XGraph
 
             if (saveAsset)
             {
-                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/{newActionAsset.name}.asset" : clonepath);
+                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/GraphNodeTempAsset.asset" : clonepath);
 
                 // 更新变量赋值数据
                 newActionAsset.Variables_Refresh();

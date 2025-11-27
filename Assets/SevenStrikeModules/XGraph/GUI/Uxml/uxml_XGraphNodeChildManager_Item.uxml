@@ -1,0 +1,10 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_XGraphNodeChildManager_Item.uss?fileID=7433441132597879392&amp;guid=16176faad264fd5408d4ffe2410c4aaa&amp;type=3#uss_XGraphNodeChildManager_Item" />
+    <engine:VisualElement name="item" style="flex-direction: row; align-items: center; height: 48px;">
+        <engine:VisualElement name="mark" style="width: 2px; margin-right: 10px; height: 10px; flex-shrink: 0; background-color: rgb(59, 254, 155);" />
+        <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/GraphIcon/arrow.png?fileID=2800000&amp;guid=0a4daa5b210366743a06c03f7d6ff078&amp;type=3#arrow&quot;); margin-right: 10px; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-shrink: 0;" />
+        <engine:Label text="asdasddadwqeqadsa" name="name" class="item_identityname" />
+        <engine:Label text="fdgdfertrewrdsfsdf" name="type" class="item_actionType" style="right: 0;" />
+        <engine:Button text="X" name="btn_del" style="-unity-font-style: bold; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); height: 20px; margin-top: 0; right: auto; flex-grow: 0;" />
+    </engine:VisualElement>
+</engine:UXML>

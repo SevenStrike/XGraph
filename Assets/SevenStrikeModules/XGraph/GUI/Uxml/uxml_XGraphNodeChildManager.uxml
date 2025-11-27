@@ -1,0 +1,24 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_XGraphNodeChildManager.uss?fileID=7433441132597879392&amp;guid=cd5c7bfc7fa05e54a830015a707afd5f&amp;type=3#uss_XGraphNodeChildManager" />
+    <engine:Label text="暂未选择任何节点资源" name="warnText" class="WarnName" style="overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; flex-grow: 0; width: 100%; position: absolute; height: auto; -unity-text-align: middle-center; top: 50%; color: rgba(255, 255, 255, 0.17);" />
+    <engine:VisualElement name="TitleContainer" style="flex-direction: row; padding-top: 15px; padding-right: 10px; padding-bottom: 15px; padding-left: 10px; width: 100%; overflow: hidden; flex-shrink: 0; flex-grow: 0; height: 50px;">
+        <engine:VisualElement name="con_title" style="overflow: hidden; flex-shrink: 0; width: 100%; flex-direction: row;">
+            <engine:VisualElement name="icon" style="width: 20px; height: 20px; margin-right: 10px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/assistant.png?fileID=2800000&amp;guid=d1104a6bccf0baf46833f4a02ff3bd98&amp;type=3#assistant&quot;); flex-shrink: 0;" />
+            <engine:Label text="子节点管理助手" name="title" class="TitleName" style="overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; flex-grow: 0; width: 261px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="sepline" style="border-top-width: 2px; border-top-color: rgba(255, 255, 255, 0.25); margin-left: 10px; margin-right: 10px;" />
+    <engine:VisualElement name="controls" style="flex-grow: 1; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 5px; flex-shrink: 1; height: 100%; -unity-background-image-tint-color: rgba(255, 255, 255, 0);">
+        <engine:VisualElement name="graphAssetTitle" style="flex-direction: row; margin-bottom: 10px; overflow: visible; flex-shrink: 0;">
+            <engine:VisualElement name="icon" style="width: 40px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Icon.png?fileID=2800000&amp;guid=8284d08a7854be04da1ce19338e8f6c7&amp;type=3#Icon&quot;); margin-right: 10px; height: 40px; flex-shrink: 0;" />
+            <engine:Label text="-" name="title" style="-unity-text-align: middle-left; flex-grow: 1; padding-left: 5px; text-overflow: ellipsis; overflow: hidden; flex-shrink: 1; font-size: 15px; -unity-font-style: bold;" />
+            <engine:Label text="行为资源" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
+        </engine:VisualElement>
+        <engine:ScrollView name="Childs_Scrollview" style="padding-top: 15px; padding-bottom: 25px; background-color: rgba(255, 0, 0, 0); display: none;" />
+        <engine:ListView name="Childs" />
+    </engine:VisualElement>
+    <engine:VisualElement name="footer" style="bottom: 0; flex-grow: 1; height: 55px; flex-direction: row; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; background-color: rgb(56, 56, 56); flex-shrink: 0;">
+        <engine:Button text="保存更改" name="btn_save" style="margin-bottom: 0; height: 35px; margin-top: 0; margin-right: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 13px; -unity-font-style: bold; letter-spacing: 5px; flex-grow: 1; padding-right: 0; flex-shrink: 1;" />
+        <engine:Button text="修复&amp;清理" name="btn_fixed" style="margin-bottom: 0; height: 35px; margin-top: 0; margin-right: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 13px; -unity-font-style: bold; letter-spacing: 5px; flex-grow: 0.3; padding-left: 0; flex-shrink: 1; width: auto;" />
+    </engine:VisualElement>
+</engine:UXML>

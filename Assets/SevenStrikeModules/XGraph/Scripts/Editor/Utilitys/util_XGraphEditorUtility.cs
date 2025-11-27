@@ -729,9 +729,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="title"></param>
         /// <param name="text"></param>
         /// <param name="ok"></param>
-        public static void DialogMsg(string title, string text, string ok)
+        public static bool DialogMsg(string title, string text, string ok)
         {
-            EditorUtility.DisplayDialog(title, text, ok);
+            return EditorUtility.DisplayDialog(title, text, ok);
         }
 
         /// <summary>
@@ -741,9 +741,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="text"></param>
         /// <param name="ok"></param>
         /// <param name="cancel"></param>
-        public static void DialogMsg(string title, string text, string ok, string cancel = null)
+        public static bool DialogMsg(string title, string text, string ok, string cancel = null)
         {
-            EditorUtility.DisplayDialog(title, text, ok, cancel);
+            return EditorUtility.DisplayDialog(title, text, ok, cancel);
         }
 
         /// <summary>
@@ -754,9 +754,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="ok"></param>
         /// <param name="cancel"></param>
         /// <param name="alt"></param>
-        public static void DialogMsg(string title, string text, string ok, string cancel = null, string alt = null)
+        public static int DialogMsg(string title, string text, string ok, string cancel = null, string alt = null)
         {
-            EditorUtility.DisplayDialogComplex(title, text, ok, cancel, alt);
+            return EditorUtility.DisplayDialogComplex(title, text, ok, cancel, alt);
         }
         #endregion
 

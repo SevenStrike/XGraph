@@ -7,9 +7,11 @@
     -unity-text-align: middle-left;
 }
 
-.input_params {
+.WarnName {
+    font-size: 20px;
+    -unity-font-style: normal;
+    color: rgb(255, 255, 255);
     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
-    margin-bottom: 3px;
-    margin-top: 5px;
-    height: 20px;
+    height: 100%;
+    -unity-text-align: middle-left;
 }
