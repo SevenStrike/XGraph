@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a66d9447c87e74d87cc60da0fe3d68, type: 3}
+  m_Name: mc-NodeGraph
+  m_EditorClassIdentifier: 
+  LastGraphWindowSize: {x: 0, y: 0}
+  LastGraphViewPosition: {x: 0, y: 0}
+  LastGraphViewZoom: 1
+  LastSaveDateTime: 2025-11-27  -  14:20:48
+  GraphNodesStruct: {fileID: 0}
+  GraphviewGridBackgroundThemes:
+    bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
+    gridcolor: {r: 0.5803922, g: 0.5803922, b: 0.5803922, a: 0.04705882}
+    customimagecolor: {r: 0.5607843, g: 0.5607843, b: 0.5607843, a: 0.9294118}
+    thickLinecolor: {r: 0.5529412, g: 0.5529412, b: 0.5529412, a: 0}
+    themecolor: {r: 0.2313726, g: 0.9882353, b: 0.6, a: 1}
+    blackboard_bgcolor: {r: 0.2705882, g: 0.2705882, b: 0.2705882, a: 0.8784314}
+    inspector_bgcolor: {r: 0.2705882, g: 0.2705882, b: 0.2705882, a: 0.8784314}
+    InvertBgGradient: 0
+    spacing: 18
+    thicklines: 18
+    customimage: {fileID: 0}
+  GraphviewRectangleSelectorThemes:
+    rectangleSelectorLineColor: {r: 1, g: 1, b: 1, a: 0.6}
+    segments: 4
+    displayCoordinate: 0
+  Last_GraphView_BlackboardPanel_TransformData:
+    top: 10
+    bottom: 0
+    left: 13
+    right: 0
+    anc_Top: 1
+    anc_Bottom: 0
+    anc_Left: 1
+    anc_Right: 0
+    size: {x: 250, y: 400}
+  Last_GraphView_InspectorPanel_TransformData:
+    top: 10
+    bottom: 0
+    left: 0
+    right: 13
+    anc_Top: 1
+    anc_Bottom: 0
+    anc_Left: 0
+    anc_Right: 1
+    size: {x: 250, y: 400}
+  XGraph_InspectorViewDisplay: 0
+  XGraph_BlackBoardViewDisplay: 0
+  XGraph_DisplayNodeColor: 0
+  XGraph_DisplayNodeFlow: 0
+  Actions: []
+  Variables: []
+  Sticks: []
+  Labels: []
+  Decals: []
+  Groups: []
+  BlackboardVariable: []
+  Propertys: []
+  ModuleController: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []

@@ -12,6 +12,7 @@ namespace SevenStrikeModules.XGraph
         public static string path_Node = "Assets/SevenStrikeModules/XGraph/Scripts/Editor/Node/";
         public static string path_Utility = "Assets/SevenStrikeModules/XGraph/Scripts/Editor/Utilitys/";
         public static string path_GUI = "Assets/SevenStrikeModules/XGraph/GUI/";
+        public static string path_Bg = "Assets/SevenStrikeModules/XGraph/GUI/Bg/";
         public static string path_Uss = "Assets/SevenStrikeModules/XGraph/GUI/Uss/";
         public static string path_Uxml = "Assets/SevenStrikeModules/XGraph/GUI/Uxml/";
         public static string path_Textures = "Assets/SevenStrikeModules/XGraph/Textures/";
@@ -57,6 +58,14 @@ namespace SevenStrikeModules.XGraph
         public static string GetPath_GUI()
         {
             return path_GUI;
+        }
+        /// <summary>
+        /// 获取XGraph GUI/Bg路径，根目录：SevenStrikeModules/XGraph/GUI/Bg/
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPath_GUI_Bg()
+        {
+            return path_Bg;
         }
         /// <summary>
         /// 获取XGraph GUI/Uss路径，根目录：SevenStrikeModules/XGraph/GUI/Uss/

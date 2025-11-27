@@ -50,7 +50,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement gra = new VisualElement();
             gra.name = "gradient";
             gra.pickingMode = PickingMode.Ignore;
-            gra.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}GraphViewViggnet.png");
+            gra.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI_Bg()}GraphViewViggnet.png");
             Add(gra);
 
             TipLabel = new Label();
