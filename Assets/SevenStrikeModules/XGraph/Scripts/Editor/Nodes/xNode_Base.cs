@@ -1328,6 +1328,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         public void StartNodeMark_Displayer(bool state)
         {
+            bool isrelay = this is xNode_Relay;
+            util_XGraphEditorUtility.Element_BorderRadius_Set(IsStartNodeBorder, isrelay ? 13 : 5, isrelay ? 13 : 5, isrelay ? 13 : 5, isrelay ? 13 : 5);
             util_XGraphEditorUtility.Element_BorderColor_Set(IsStartNodeBorder, state ? graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor : Color.clear);
             util_XGraphEditorUtility.Element_BackgroundColor_Set(IsStartNodeMark, state ? graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor : Color.clear);
             util_XGraphEditorUtility.Element_Color_Set(IsStartNodeText, state ? Color.white : Color.clear);

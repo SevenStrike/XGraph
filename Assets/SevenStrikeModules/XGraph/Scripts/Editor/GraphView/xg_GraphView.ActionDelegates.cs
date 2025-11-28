@@ -62,7 +62,7 @@ namespace SevenStrikeModules.XGraph
                 args.prefixNamespace = "SevenStrikeModules.XGraph";
                 args.prefixClass = "xAction_";
                 args.actionNodeType = "Relay";
-                args.iconName = "relay";
+                args.iconName = "5b1a4c4fab62dfb4aaee07e7171a1251";
                 args.nodeIcon = null;
                 args.visualNodeType = "xNode_Relay";
                 args.hasAvatar = false;

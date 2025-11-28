@@ -632,6 +632,21 @@ namespace SevenStrikeModules.XGraph
         /// 控制元素 - 边框颜色设置
         /// </summary>
         /// <param name="element"></param>
+        /// <param name="topleft"></param>
+        /// <param name="topright"></param>
+        /// <param name="bottomright"></param>
+        /// <param name="bottomleft"></param>
+        public static void Element_BorderRadius_Set(VisualElement element, float topleft, float topright, float bottomright, float bottomleft)
+        {
+            element.style.borderTopLeftRadius = topleft;
+            element.style.borderTopRightRadius = topright;
+            element.style.borderBottomRightRadius = bottomright;
+            element.style.borderBottomLeftRadius = bottomleft;
+        }
+        /// <summary>
+        /// 控制元素 - 边框颜色设置
+        /// </summary>
+        /// <param name="element"></param>
         /// <param name="color"></param>
         public static void Element_BorderColor_Set(VisualElement element, Color color)
         {

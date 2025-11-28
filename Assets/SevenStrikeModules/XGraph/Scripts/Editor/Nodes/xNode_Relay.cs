@@ -103,6 +103,8 @@ namespace SevenStrikeModules.XGraph
             mainContainer.style.overflow = new StyleEnum<Overflow>(Overflow.Visible);
 
             CreateHighlighter();
+
+            CreateIsStartNodeMark();
         }
         #endregion
     }

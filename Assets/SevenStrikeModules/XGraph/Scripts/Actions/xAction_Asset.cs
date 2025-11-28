@@ -125,10 +125,6 @@ namespace SevenStrikeModules.XGraph
         /// 黑板变量列表
         /// </summary>
         [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
-        /// <summary>
-        /// 属性列表
-        /// </summary>
-        [SerializeReference] public List<xAction_Property> Propertys = new List<xAction_Property>();
         #endregion
 
         #region 回调
