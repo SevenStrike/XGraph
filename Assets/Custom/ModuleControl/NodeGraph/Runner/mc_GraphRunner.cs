@@ -12,10 +12,6 @@ public class mc_GraphRunner : MonoBehaviour
     /// </summary>
     public mc_GraphAsset SampleAsset;
     /// <summary>
-    /// 运行时使用的克隆行为资源
-    /// </summary>
-    private mc_GraphAsset SampleAssetClone;
-    /// <summary>
     /// 流程运行中
     /// </summary>
     private bool isRunning = false;
@@ -23,10 +19,6 @@ public class mc_GraphRunner : MonoBehaviour
     /// 流程暂停中
     /// </summary>
     private bool isPaused = false;
-    /// <summary>
-    /// 编辑器内运行时保存参数的改动
-    /// </summary>
-    public bool SaveValueChangesInRuntime = true;
     /// <summary>
     /// 显示调试信息
     /// </summary>
@@ -64,9 +56,6 @@ public class mc_GraphRunner : MonoBehaviour
 
     private void Start()
     {
-#if UNITY_EDITOR
-        EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
-#endif
         // 为每一个行为注册运行时变量值改变回调
         RegisterVariableChangeWithAction();
 
@@ -521,61 +510,5 @@ public class mc_GraphRunner : MonoBehaviour
             action.UnregisterVariableValueChanged();
         }
     }
-    #endregion
-
-    #region 运行时克隆
-    /// <summary>
-    /// 创建运行时克隆
-    /// </summary>
-    private bool CreateRuntimeClone()
-    {
-        if (SampleAsset == null)
-        {
-            util_Dashboard.LogMsg(xMessageType.错误, $"无法创建克隆资源！", "", Logs);
-            return false;
-        }
-
-        SampleAssetClone = (mc_GraphAsset)SampleAsset.Clone("", false);
-        return true;
-    }
-
-    /// <summary>
-    /// 恢复原始资源
-    /// </summary>
-    private void RestoreOriginalAsset()
-    {
-        if (SampleAssetClone != null)
-        {
-            SampleAsset.Replace(SampleAssetClone);
-            util_Dashboard.LogMsg(xMessageType.警告, $"已恢复原始行为资源！", "", Logs);
-            SampleAssetClone = null;
-        }
-    }
-    #endregion
-
-    #region 编辑器内运行时保存参数的监听事件
-#if UNITY_EDITOR
-    private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
-    {
-        if (SaveValueChangesInRuntime)
-            return;
-
-        if (obj == PlayModeStateChange.EnteredPlayMode)
-        {
-            // 创建运行时克隆
-            if (!CreateRuntimeClone())
-            {
-                util_Dashboard.LogMsg(xMessageType.错误, $"无法创建克隆资源！", "", Logs);
-                return;
-            }
-        }
-        if (obj == PlayModeStateChange.ExitingPlayMode)
-        {
-            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
-            // 恢复原始资源
-            RestoreOriginalAsset();
-        }
-    }
-#endif
     #endregion
 }

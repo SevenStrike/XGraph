@@ -11753,7 +11753,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SampleAsset: {fileID: 11400000, guid: 2ec037053a0453f429732e6fe57fac02, type: 2}
-  SaveValueChangesInRuntime: 1
   Logs: 1
   TargetScript: {fileID: 1444357495}
   ManualExecutionMode: 0
