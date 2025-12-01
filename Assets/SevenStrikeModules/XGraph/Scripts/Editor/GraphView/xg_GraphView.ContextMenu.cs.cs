@@ -70,7 +70,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (selectable is xNode_Base node)
                             {
-                                Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
+                                //Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
                                 // 将主题方案名称赋值
                                 node.ActionData.themeSolution = "自定义";
@@ -99,7 +99,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
 
-                                Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
+                                //Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
                                 // 将主题方案名称赋值
                                 node.ActionData.themeSolution = dat.solution;
@@ -214,7 +214,7 @@ namespace SevenStrikeModules.XGraph
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
                                 xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
-                                Undo.RecordObject(node.ActionData, "Restore ActionNodeTitleIcon");
+                                //Undo.RecordObject(node.ActionData, "Restore ActionNodeTitleIcon");
                                 node.ActionData.NodeIcon = null;
 
                                 if (node.ActionData.On_Node_IconChanged != null)

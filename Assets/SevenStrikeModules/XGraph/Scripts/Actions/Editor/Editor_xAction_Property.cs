@@ -24,7 +24,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            actionScript = target as xAction_Property;
+            //actionScript = target as xAction_Property;
         }
         /// <summary>
         /// 获取序列化属性

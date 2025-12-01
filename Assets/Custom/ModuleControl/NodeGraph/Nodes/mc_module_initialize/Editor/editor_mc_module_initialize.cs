@@ -26,7 +26,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            start = target as action_mc_module_initialize;
+            //start = target as action_mc_module_initialize;
         }
         /// <summary>
         /// 获取序列化属性

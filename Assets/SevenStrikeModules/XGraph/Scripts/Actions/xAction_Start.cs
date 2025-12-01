@@ -2,7 +2,7 @@ namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
 
-    public abstract class xAction_Start : xAction_Base
+    public class xAction_Start : xAction_Base
     {
         /// <summary>
         /// 子节点列表

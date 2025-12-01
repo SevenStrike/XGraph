@@ -24,7 +24,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            actionScript = target as xAction_Start;
+            //actionScript = target as xAction_Start;
         }
         /// <summary>
         /// 获取序列化属性
@@ -78,7 +78,7 @@ namespace SevenStrikeModules.XGraph
                     xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
                     if (child != null)
                     {
-                        EditorGUIUtility.PingObject(child);
+                        //EditorGUIUtility.PingObject(child);
                     }
                 });
 

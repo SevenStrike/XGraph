@@ -49,7 +49,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public virtual void GetTargetScript()
         {
-            baseScript = target as xAction_Base;
+            //baseScript = target as xAction_Base;
         }
         /// <summary>
         /// 寻找序列化属性
@@ -90,7 +90,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, baseScript, sp_identifyName.stringValue, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
             titlegroup.RegisterCallback<PointerDownEvent>((evt) =>
             {
-                EditorGUIUtility.PingObject(baseScript);
+                //EditorGUIUtility.PingObject(baseScript);
             });
             #endregion
 
@@ -188,7 +188,7 @@ namespace SevenStrikeModules.XGraph
             Toggle tog_transparentNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "通透样式：", sp_TransparentNode.boolValue, new string[] { "field_bool" });
             tog_transparentNode.RegisterValueChangedCallback((value) =>
             {
-                Undo.RecordObject(baseScript, "Change TransparentNode");
+                //Undo.RecordObject(baseScript, "Change TransparentNode");
                 sp_TransparentNode.boolValue = value.newValue;
 
                 serializedObject.ApplyModifiedProperties();
@@ -207,7 +207,7 @@ namespace SevenStrikeModules.XGraph
             ObjectField avatarobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "头像", sp_Avatar.objectReferenceValue, new string[] { "field_object" });
             avatarobj.RegisterValueChangedCallback(value =>
             {
-                Undo.RecordObject(baseScript, "Change Avatar");
+                //Undo.RecordObject(baseScript, "Change Avatar");
                 if (avatarobj.value != null)
                     sp_HasAvatar.boolValue = true;
                 else
@@ -235,7 +235,7 @@ namespace SevenStrikeModules.XGraph
             ObjectField iconobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "图标", sp_NodeIcon.objectReferenceValue, new string[] { "field_object" });
             iconobj.RegisterValueChangedCallback(value =>
             {
-                Undo.RecordObject(baseScript, "Change Avatar");
+                //Undo.RecordObject(baseScript, "Change Avatar");
                 Texture2D tex = value.newValue as Texture2D;
                 sp_NodeIcon.objectReferenceValue = tex;
                 serializedObject.ApplyModifiedProperties();
@@ -285,7 +285,7 @@ namespace SevenStrikeModules.XGraph
                 Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", sp_isConcurrentExecution.boolValue, new string[] { "field_bool" });
                 tog_concurrent.RegisterValueChangedCallback((value) =>
                 {
-                    Undo.RecordObject(baseScript, "Change ConcurrentMode");
+                    //Undo.RecordObject(baseScript, "Change ConcurrentMode");
                     sp_isConcurrentExecution.boolValue = value.newValue;
 
                     serializedObject.ApplyModifiedProperties();
@@ -308,7 +308,7 @@ namespace SevenStrikeModules.XGraph
                 Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", sp_isStartNode.boolValue, new string[] { "field_bool" });
                 tog_isStartNode.RegisterValueChangedCallback((value) =>
                         {
-                            Undo.RecordObject(baseScript, "Change IsStartNode");
+                            //Undo.RecordObject(baseScript, "Change IsStartNode");
                             sp_isStartNode.boolValue = value.newValue;
 
                             baseScript.RootAsset.SetStartNode(baseScript);
@@ -405,7 +405,7 @@ namespace SevenStrikeModules.XGraph
                     xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
                     if (parent != null)
                     {
-                        EditorGUIUtility.PingObject(parent);
+                        //EditorGUIUtility.PingObject(parent);
                     }
                 });
 

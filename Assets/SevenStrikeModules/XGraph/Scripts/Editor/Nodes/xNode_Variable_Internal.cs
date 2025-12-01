@@ -362,7 +362,7 @@ namespace SevenStrikeModules.XGraph
                 return;
             }
 
-            Undo.RecordObject(VariableData, "Change NodeData String Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData String Variable");
             VariableData.variable.SetValue<string>(field.text);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -386,7 +386,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<float>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Float Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Float Variable");
             VariableData.variable.SetValue<float>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -410,7 +410,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<int>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Int Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Int Variable");
             VariableData.variable.SetValue<int>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -434,7 +434,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<Vector2>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
             VariableData.variable.SetValue<Vector2>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -458,7 +458,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<Vector3>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
             VariableData.variable.SetValue<Vector3>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -482,7 +482,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<Vector4>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
             VariableData.variable.SetValue<Vector4>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -506,7 +506,7 @@ namespace SevenStrikeModules.XGraph
                 field.value = VariableData.VariableDatas.First().variable.GetValue<Color>();
                 return;
             }
-            Undo.RecordObject(VariableData, "Change NodeData Color Variable");
+            //Undo.RecordObject(VariableData, "Change NodeData Color Variable");
             VariableData.variable.SetValue<Color>(field.value);
             // 更新变量值数据
             graphView.ActionTreeAsset.Variables_Refresh();
@@ -579,7 +579,7 @@ namespace SevenStrikeModules.XGraph
                 Toggle_Check(VariableData.VariableDatas.First().variable.GetValue<bool>());
                 return;
             }
-            Undo.RecordObject(VariableData, "Changed Toggle State");
+            //Undo.RecordObject(VariableData, "Changed Toggle State");
 
             bool sw = VariableData.variable.GetValue<bool>();
             sw = !sw;

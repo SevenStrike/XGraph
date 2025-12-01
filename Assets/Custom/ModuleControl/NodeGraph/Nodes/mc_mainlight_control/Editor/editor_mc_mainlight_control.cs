@@ -26,7 +26,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            mainlight = target as action_mc_mainlight_control;
+            //mainlight = target as action_mc_mainlight_control;
         }
         /// <summary>
         /// 获取序列化属性

@@ -25,6 +25,7 @@ namespace SevenStrikeModules.XGraph
             OutputPort_Set(ports_out);
             #endregion
 
+
             module_Initialize = ActionData as action_mc_module_initialize;
         }
 

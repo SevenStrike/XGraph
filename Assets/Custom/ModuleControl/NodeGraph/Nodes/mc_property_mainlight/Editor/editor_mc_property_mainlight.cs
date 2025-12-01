@@ -22,7 +22,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            property_light = target as action_mc_property_mainlight;
+            //property_light = target as action_mc_property_mainlight;
         }
         /// <summary>
         /// 获取序列化属性

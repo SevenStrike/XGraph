@@ -21,7 +21,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            wait = target as action_mc_wait;
+            //wait = target as action_mc_wait;
         }
         /// <summary>
         /// 获取序列化属性

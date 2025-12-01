@@ -27,7 +27,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.GetTargetScript();
 
-            activator = target as action_mc_modules_activate;
+            //activator = target as action_mc_modules_activate;
         }
         /// <summary>
         /// 获取序列化属性

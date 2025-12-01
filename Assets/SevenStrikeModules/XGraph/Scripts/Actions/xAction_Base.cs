@@ -8,9 +8,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.Experimental.GraphView;
 #endif
     using UnityEngine;
-    using static UnityEngine.Rendering.DebugUI;
 
-    public abstract class xAction_Base : ScriptableObject
+    [Serializable]
+    public class xAction_Base
     {
         #region 节点参数
         /// <summary>
@@ -104,6 +104,10 @@ namespace SevenStrikeModules.XGraph
         /// 内部变量Guids接驳列表
         /// </summary>
         [SerializeField] public List<Binder_Varialble> InternalVariableDatas = new List<Binder_Varialble>();
+        /// <summary>
+        /// 绑定的属性列表
+        /// </summary>
+        [SerializeField] public List<Binder_Property> binded_propertys = new List<Binder_Property>();
         #endregion
 
         #region 回调
@@ -111,6 +115,42 @@ namespace SevenStrikeModules.XGraph
         /// 当节点执行时的委托事件
         /// </summary>
         public Action On_Node_Excute;
+        /// <summary>
+        /// 当改变节点主题色时的委托事件
+        /// </summary>
+        public Action On_Node_ThemeColorChanged;
+        /// <summary>
+        /// 当节点解除绑定变量的时候的委托事件
+        /// </summary>
+        public Action On_Node_Variable_Unbinded;
+        /// <summary>
+        /// 当节点解除绑定属性的时候的委托事件
+        /// </summary>
+        public Action On_Node_Property_Unbinded;
+        /// <summary>
+        /// 当节点重建的时候的委托事件
+        /// </summary>
+        public Action On_Node_Restructure;
+        /// <summary>
+        /// 当节点为内部变量且内部变量值改变时
+        /// </summary>
+        public Action On_InternalVariableValue_Changed;
+        /// <summary>
+        /// 当改变节点标题名称时的委托事件
+        /// </summary>
+        public Action<string> On_Node_TitleChanged;
+        /// <summary>
+        /// 当改变节点执行模式的委托事件
+        /// </summary>
+        public Action<bool> On_Node_ConcurrentChanged;
+        /// <summary>
+        /// 当改变节点通透样式的委托事件
+        /// </summary>
+        public Action<bool> On_Node_TransparentChanged;
+        /// <summary>
+        /// 当指定起始节点时
+        /// </summary>
+        public Action<bool> On_Node_IsStartNode;
         /// <summary>
         /// 当移动节点位置时的委托事件
         /// </summary>
@@ -128,53 +168,17 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<Texture2D> On_Node_AvatarChanged;
         /// <summary>
-        /// 当改变节点主题色时的委托事件
-        /// </summary>
-        public Action On_Node_ThemeColorChanged;
-        /// <summary>
-        /// 当改变节点标题名称时的委托事件
-        /// </summary>
-        public Action<string> On_Node_TitleChanged;
-        /// <summary>
-        /// 当改变节点执行模式的委托事件
-        /// </summary>
-        public Action<bool> On_Node_ConcurrentChanged;
-        /// <summary>
-        /// 当改变节点通透样式的委托事件
-        /// </summary>
-        public Action<bool> On_Node_TransparentChanged;
-        /// <summary>
         /// 当节点绑定变量的时候的委托事件
         /// </summary>
         public Action<Variable> On_Node_Variable_Binded;
-        /// <summary>
-        /// 当节点解除绑定变量的时候的委托事件
-        /// </summary>
-        public Action On_Node_Variable_Unbinded;
         /// <summary>
         /// 当节点绑定属性的时候的委托事件
         /// </summary>
         public Action<xAction_Property> On_Node_Property_Binded;
         /// <summary>
-        /// 当节点解除绑定属性的时候的委托事件
-        /// </summary>
-        public Action On_Node_Property_Unbinded;
-        /// <summary>
         /// 当节点被克隆的时候的委托事件
         /// </summary>
         public Action<xAction_Base, xAction_Base> On_Node_Duplicated;
-        /// <summary>
-        /// 当节点重建的时候的委托事件
-        /// </summary>
-        public Action On_Node_Restructure;
-        /// <summary>
-        /// 当节点为内部变量且内部变量值改变时
-        /// </summary>
-        public Action On_InternalVariableValue_Changed;
-        /// <summary>
-        /// 当指定起始节点时
-        /// </summary>
-        public Action<bool> On_Node_IsStartNode;
 #if UNITY_EDITOR
         /// <summary>
         /// 当节点连线的时候的委托事件
@@ -192,16 +196,15 @@ namespace SevenStrikeModules.XGraph
         public xAction_Base ParentNode => _parentNode;
         #endregion
 
-        #region 绑定的属性列表
-        public List<Binder_Property> binded_propertys = new List<Binder_Property>();
-        #endregion
-
         #region 节点执行方法
         /// <summary>
         /// 行为节点执行方法
         /// </summary>
         /// <returns></returns>
-        public abstract void Execute();
+        public virtual void Execute()
+        {
+
+        }
         #endregion
 
         #region 辅助
@@ -255,30 +258,6 @@ namespace SevenStrikeModules.XGraph
         public string GetInfo()
         {
             return $"{namespaces}.{classes}{actionNodeType.ToString()}   /   {visualNodeType.ToString()}   /   {identifyName}";
-        }
-        /// <summary>
-        /// 获取行为资源的路径
-        /// </summary>
-        /// <returns></returns>
-        public string GetPath()
-        {
-            string val = "";
-            string[] texts = path.Split(new char[1] { '\\' });
-            int index = 0;
-            foreach (string t in texts)
-            {
-                if (index != texts.Length - 1)
-                {
-                    val += t + "  >  ";
-                    index++;
-                }
-                else
-                {
-                    val += t;
-                    index++;
-                }
-            }
-            return val;
         }
         #endregion
 
@@ -508,10 +487,7 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-#if UNITY_EDITOR
-                Undo.RecordObject(this, "Bind Variable Connector");
                 VariableDatas.Add(new Binder_Varialble(data.guid, portName, data.variable));
-#endif
             }
 
             if (On_Node_Variable_Binded != null)
@@ -524,14 +500,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="portName"></param>
         public void VariableData_Unbind(string guid, string portName)
         {
-#if UNITY_EDITOR
-            Undo.RecordObject(this, "Unbind Variable Connector");
-
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
             if (On_Node_Variable_Unbinded != null)
                 On_Node_Variable_Unbinded();
-#endif
         }
         #endregion
 
@@ -559,12 +531,9 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-#if UNITY_EDITOR
-                Undo.RecordObject(this, "Bind VariableInternal Connector");
                 Binder_Varialble con = new Binder_Varialble(data.guid, portName, data.variable);
                 con.variable.name = data.identifyName;
                 InternalVariableDatas.Add(con);
-#endif
             }
 
             if (On_Node_Variable_Binded != null)
@@ -577,15 +546,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="portName"></param>
         public void InternalVariableData_Unbind(string guid, string portName)
         {
-#if UNITY_EDITOR
-            Undo.RecordObject(this, "Unbind InternalVariable Connector");
-
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
 
             if (On_Node_Variable_Unbinded != null)
                 On_Node_Variable_Unbinded();
-#endif
         }
         #endregion
 
@@ -617,8 +582,6 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-#if UNITY_EDITOR
-                Undo.RecordObject(this, "Bind Property");
                 Binder_Property con = new Binder_Property(
                     prop.identifyName,
                     prop.guid,
@@ -627,7 +590,6 @@ namespace SevenStrikeModules.XGraph
                     action_port_name,
                     action_port_type);
                 binded_propertys.Add(con);
-#endif
             }
 
             if (On_Node_Property_Binded != null)
@@ -640,9 +602,6 @@ namespace SevenStrikeModules.XGraph
         /// <param name="property_port_name"></param>
         public void Property_Unbind(string guid, string property_port_name, string property_port_type, string action_port_name, string action_port_type)
         {
-#if UNITY_EDITOR
-            Undo.RecordObject(this, "Unbind Property");
-
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
             binded_propertys.RemoveAll(item =>
             {
@@ -655,8 +614,76 @@ namespace SevenStrikeModules.XGraph
 
             if (On_Node_Property_Unbinded != null)
                 On_Node_Property_Unbinded();
-#endif
         }
         #endregion
+
+        /// <summary>
+        /// 创建当前对象的深克隆副本
+        /// </summary>
+        /// <returns></returns>
+        public virtual xAction_Base Clone()
+        {
+            // 创建新实例
+            xAction_Base clone = Activator.CreateInstance(this.GetType()) as xAction_Base;
+
+            // 复制基础字段
+            clone.identifyName = this.identifyName;
+            clone.content = this.content;
+            clone.guid = System.Guid.NewGuid().ToString(); // 新GUID
+            clone.namespaces = this.namespaces;
+            clone.classes = this.classes;
+            clone.path = this.path;
+            clone.actionNodeType = this.actionNodeType;
+            clone.icon = this.icon;
+            clone.visualNodeType = this.visualNodeType;
+            clone.nodeGraphPosition = this.nodeGraphPosition;
+            clone.nodeGraphSize = this.nodeGraphSize;
+            clone.themeSolution = this.themeSolution;
+            clone.themeColor = this.themeColor;
+            clone.isConcurrentExecution = this.isConcurrentExecution;
+            clone.HasAvatar = this.HasAvatar;
+            clone.TransparentNode = this.TransparentNode;
+            clone.Avatar = this.Avatar;
+            clone.NodeIcon = this.NodeIcon;
+            clone.RootAsset = this.RootAsset;
+            clone.isStartNode = this.isStartNode;
+
+            // 深复制列表
+            clone.VariableDatas = new List<Binder_Varialble>();
+            foreach (var item in this.VariableDatas)
+            {
+                clone.VariableDatas.Add(new Binder_Varialble(
+                    item.VariableNodeGuid,
+                    item.TargetPortName,
+                    item.variable?.Clone(false)
+                ));
+            }
+
+            clone.InternalVariableDatas = new List<Binder_Varialble>();
+            foreach (var item in this.InternalVariableDatas)
+            {
+                clone.InternalVariableDatas.Add(new Binder_Varialble(
+                    item.VariableNodeGuid,
+                    item.TargetPortName,
+                    item.variable?.Clone(false)
+                ));
+            }
+
+            clone.binded_propertys = new List<Binder_Property>();
+            foreach (var item in this.binded_propertys)
+            {
+                Binder_Property prop = new Binder_Property();
+                prop.Property_GUID = item.Property_GUID;
+                prop.Property_PortType = item.Property_PortType;
+                prop.Property_PortName = item.Property_PortName;
+                prop.Property_NodeName = item.Property_NodeName;
+                prop.Action_PortType = item.Action_PortType;
+                prop.Action_PortName = item.Action_PortName;
+
+                clone.binded_propertys.Add(prop);
+            }
+
+            return clone;
+        }
     }
 }

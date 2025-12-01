@@ -107,7 +107,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 节点携带的数据
         /// </summary>
-        public xAction_Base ActionData { get; set; }
+        public xAction_Base ActionData;
         #endregion
 
         #region 端口
@@ -270,7 +270,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
-            Undo.RecordObject(ActionData, "SetPosition VisualNode");
+            //Undo.RecordObject(ActionData, "SetPosition VisualNode");
             base.SetPosition(newPos);
             if (ActionData != null)
             {
@@ -581,10 +581,10 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnTitleInputFieldBlur(BlurEvent evt)
         {
-            Undo.RecordObject(ActionData, "Change ActionNode Name");
+            //Undo.RecordObject(ActionData, "Change ActionNode Name");
 
-            if (TitleInputField.value != ActionData.name && TitleInputField.value != ActionData.identifyName)
-                TitleLabel.text = ActionData.name = ActionData.identifyName = TitleInputField.value;
+            if (TitleInputField.value != ActionData.identifyName)
+                TitleLabel.text = ActionData.identifyName = TitleInputField.value;
 
             ActionData.path = Regex.Replace(ActionData.path, @" > .*?\.asset$", $" > {TitleInputField.value}.asset");
 
@@ -740,7 +740,7 @@ namespace SevenStrikeModules.XGraph
                 // 修复：正确的撤销目标应该是 ActionData
                 if (ActionData != null)
                 {
-                    Undo.RecordObject(ActionData, "Change Node Size");
+                    //Undo.RecordObject(ActionData, "Change Node Size");
                     ActionData.nodeGraphSize = newSize;
 
                     // 如果需要，也可以标记资产为脏
@@ -937,7 +937,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeAvatar_Set(Texture2D tex)
         {
-            Undo.RecordObject(ActionData, "Set ActionNode Avatar");
+            //Undo.RecordObject(ActionData, "Set ActionNode Avatar");
             // 头像状态开关 = 开
             ActionData.HasAvatar = true;
             // 头像图像设置
@@ -954,7 +954,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeAvatar_Remove()
         {
-            Undo.RecordObject(ActionData, "Remove ActionNode Avatar");
+            //Undo.RecordObject(ActionData, "Remove ActionNode Avatar");
             // 头像状态开关 = 关
             ActionData.HasAvatar = false;
             // 头像图像移除
@@ -990,7 +990,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="state"></param>
         public void TransparentDisplay_Set(bool state)
         {
-            Undo.RecordObject(ActionData, $"Set NodeTransparentMode - {state}");
+            //Undo.RecordObject(ActionData, $"Set NodeTransparentMode - {state}");
             ActionData.TransparentNode = state;
             CheckTransparentDisplay(state);
 
@@ -1015,7 +1015,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="tex"></param>
         public void NodeTitleIcon_Set(Texture2D tex)
         {
-            Undo.RecordObject(ActionData, "Set ActionNode TitleIcon");
+            //Undo.RecordObject(ActionData, "Set ActionNode TitleIcon");
 
             ActionData.NodeIcon = tex;
             NodeTitleIconLabel.style.backgroundImage = tex;

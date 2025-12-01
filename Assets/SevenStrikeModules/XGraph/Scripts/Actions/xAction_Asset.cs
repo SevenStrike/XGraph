@@ -3,9 +3,9 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using UnityEditor.VersionControl;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "NewNodeGraph", menuName = "XGraph/GraphAssets/Default")]
     public class xAction_Asset : ScriptableObject
     {
         #region Graphview 基础参数
@@ -124,7 +124,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量列表
         /// </summary>
-        [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
+        [SerializeField] public List<Variable> BlackboardVariable = new List<Variable>();
         #endregion
 
         #region 回调
@@ -156,101 +156,121 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-#if UNITY_EDITOR
         public xAction_Base Create(NodeCreateArgs_Action args)
         {
-            UnityEditor.Undo.RecordObject(this, "Added ActionTree Asset");
-            // 解析得到行为基础类
-            string asm = typeof(xAction_Base).Assembly.FullName;
-            // 拼接字符串得到行为类
-            Type type = Type.GetType($"{args.prefixNamespace}.{args.prefixClass}{args.actionNodeType},{asm}", true);
+            xAction_Base action = null;
 
-            // 创建行为资源
-            xAction_Base actionData = ScriptableObject.CreateInstance(type) as xAction_Base;
-            actionData.name = args.visualName;
-            actionData.guid = UnityEditor.GUID.Generate().ToString();
-            actionData.actionNodeType = args.actionNodeType;
-            actionData.icon = args.iconName;
-            actionData.NodeIcon = args.nodeIcon;
-            actionData.visualNodeType = args.visualNodeType;
-            actionData.identifyName = args.visualName;
-            actionData.namespaces = args.prefixNamespace;
-            actionData.classes = args.prefixClass;
-            actionData.HasAvatar = args.hasAvatar;
-            actionData.Avatar = args.avatar;
-            actionData.themeSolution = args.themeSolution;
-            actionData.themeColor = args.themeColor;
-            actionData.TransparentNode = args.transparentNode;
-            actionData.content = args.content;
-            actionData.nodeGraphSize = args.size;
-            actionData.isConcurrentExecution = args.isConcurrentExecution;
+            // 根据命名空间和类名动态创建特定类型
+            if (!string.IsNullOrEmpty(args.prefixNamespace) &&
+                !string.IsNullOrEmpty(args.prefixClass) &&
+                !string.IsNullOrEmpty(args.actionNodeType))
+            {
+                string fullTypeName = $"{args.prefixNamespace}.{args.prefixClass}{args.actionNodeType}";
 
-            actionData.SetActionAssetRoot(this);
+                try
+                {
+                    // 尝试通过反射创建特定类型
+                    Type actionType = Type.GetType(fullTypeName);
+                    if (actionType != null && typeof(xAction_Base).IsAssignableFrom(actionType))
+                    {
+                        action = Activator.CreateInstance(actionType) as xAction_Base;
+                        Debug.Log($"成功创建特定类型: {fullTypeName}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"无法创建类型 {fullTypeName}，将使用基类 xAction_Base");
+                        action = new xAction_Base();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"创建类型 {fullTypeName} 时出错: {ex.Message}");
+                    action = new xAction_Base();
+                }
+            }
+            else
+            {
+                // 如果没有指定特定类型，使用基类
+                action = new xAction_Base();
+            }
+
+#if UNITY_EDITOR
+            action.guid = UnityEditor.GUID.Generate().ToString();
+#endif
+            action.actionNodeType = args.actionNodeType;
+            action.icon = args.iconName;
+            action.NodeIcon = args.nodeIcon;
+            action.visualNodeType = args.visualNodeType;
+            action.identifyName = args.visualName;
+            action.namespaces = args.prefixNamespace;
+            action.classes = args.prefixClass;
+            action.HasAvatar = args.hasAvatar;
+            action.Avatar = args.avatar;
+            action.themeSolution = args.themeSolution;
+            action.themeColor = args.themeColor;
+            action.TransparentNode = args.transparentNode;
+            action.content = args.content;
+            action.nodeGraphSize = args.size;
+            action.isConcurrentExecution = args.isConcurrentExecution;
+
+            // 设置行为数据的目标根资源为当前资源类
+            action.SetActionAssetRoot(this);
 
             // 为变量类型节点数据特化处理，需要初始化类型 Variable
-            if (actionData is xAction_Variable avnode)
+            if (action is xAction_Variable v)
             {
-                avnode.variable = avnode.Initialized(args.visualName, args.variable.type);
+                v.variable = v.Initialized(args.visualName, args.variable.type);
                 if (args.variable != null)
                 {
                     switch (args.variable.type)
                     {
                         case xVariableType.String:
                             if (args.variable is Variable_String v_string)
-                                avnode.variable.SetValue(v_string.GetValue<string>());
+                                v.variable.SetValue(v_string.GetValue<string>());
                             break;
                         case xVariableType.Float:
                             if (args.variable is Variable_Float v_float)
-                                avnode.variable.SetValue(v_float.GetValue<float>());
+                                v.variable.SetValue(v_float.GetValue<float>());
                             break;
                         case xVariableType.Int:
                             if (args.variable is Variable_Int v_int)
-                                avnode.variable.SetValue(v_int.GetValue<int>());
+                                v.variable.SetValue(v_int.GetValue<int>());
                             break;
                         case xVariableType.Bool:
                             if (args.variable is Variable_Bool v_bool)
-                                avnode.variable.SetValue(v_bool.GetValue<bool>());
+                                v.variable.SetValue(v_bool.GetValue<bool>());
                             break;
                         case xVariableType.Vector2:
                             if (args.variable is Variable_Vector2 v_Vector2)
-                                avnode.variable.SetValue(v_Vector2.GetValue<Vector2>());
+                                v.variable.SetValue(v_Vector2.GetValue<Vector2>());
                             break;
                         case xVariableType.Vector3:
                             if (args.variable is Variable_Vector3 v_Vector3)
-                                avnode.variable.SetValue(v_Vector3.GetValue<Vector3>());
+                                v.variable.SetValue(v_Vector3.GetValue<Vector3>());
                             break;
                         case xVariableType.Vector4:
                             if (args.variable is Variable_Vector4 v_Vector4)
-                                avnode.variable.SetValue(v_Vector4.GetValue<Vector4>());
+                                v.variable.SetValue(v_Vector4.GetValue<Vector4>());
                             break;
                         case xVariableType.Color:
                             if (args.variable is Variable_Color v_Color)
-                                avnode.variable.SetValue(v_Color.GetValue<Color>());
+                                v.variable.SetValue(v_Color.GetValue<Color>());
                             break;
                     }
                 }
             }
+
             // 如果创建的是属性节点，那么需要为属性节点初始化属性变量项，为后期其他节点获取数值做好准备工作
-            if (actionData is xAction_Property property)
+            if (action is xAction_Property p)
             {
-                property.Propertys_Initialize();
+                p.Propertys_Initialize();
             }
+
             // 添加到列表中
-            Actions.Add(actionData);
+            Actions.Add(action);
 
-            // 添加到资源文件下
-            UnityEditor.AssetDatabase.AddObjectToAsset(actionData, this);
-            //AssetDatabase.SaveAssets();
-
-            // 创建后获取该行为树节点相对行为树资源根节点的路径
-            string re_path = Path.GetDirectoryName(UnityEditor.AssetDatabase.GetAssetPath(Actions[^1]));
-            string opt_path = re_path.Replace("Temp", $"{this.name}");
-            string combine_path = $"{opt_path}   >   {Actions[^1].name}.asset";
-            Actions[^1].path = combine_path;
-
-            return actionData;
+            return action;
         }
-#endif
         /// <summary>
         /// 从列表中移除一个数据节点
         /// </summary>
@@ -258,28 +278,13 @@ namespace SevenStrikeModules.XGraph
         public void Remove(xAction_Base node)
         {
             if (node == null) return;
-
-#if UNITY_EDITOR
-            UnityEditor.Undo.RecordObject(this, "Removed ChildAction");
             Actions.Remove(node);
-            UnityEditor.Undo.DestroyObjectImmediate(node);
-            //AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
-#endif
         }
         /// <summary>
         /// 从列表中清空所有数据节点
         /// </summary>
         public void Clear()
         {
-#if UNITY_EDITOR
-            // 移除子级的所有资源
-            foreach (var node in Actions)
-            {
-                UnityEditor.AssetDatabase.RemoveObjectFromAsset(node);
-                DestroyImmediate(node, true);
-            }
-
             // 清空资源列表
             Actions.Clear();
             // 清空便签列表
@@ -292,383 +297,301 @@ namespace SevenStrikeModules.XGraph
             Variable_Clear();
             // 清空编组列表
             NodeGroup_Clear();
-
-            // 刷新资源状态
-            UnityEditor.EditorUtility.SetDirty(this);
-            //AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
-#endif
         }
         /// <summary>
         /// 使用目标资源替换当前资源
         /// </summary>
-        /// <param name="targetAsset"></param>
-        public void Replace(xAction_Asset targetAsset)
+        /// <param name="target"></param>
+        public void Replace(xAction_Asset target)
         {
-            if (targetAsset == null) return;
+            if (target == null) return;
 
-#if UNITY_EDITOR
             // 清空当前原始资源的所有子节点
             Clear();
-
             // 更新所有使用到的变量值（当前资源 - 更新）
             this.Variables_Refresh();
-            UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
-
             // 更新所有使用到的变量值（目标资源 - 更新）
-            targetAsset.Variables_Refresh();
-            UnityEditor.AssetDatabase.SaveAssetIfDirty(targetAsset);
+            target.Variables_Refresh();
 
-            LastSaveDateTime = targetAsset.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            #region Graphs
+            // 对象名称
+            name = target.name;
+            // 最后一次的窗口尺寸
+            LastGraphWindowSize = target.LastGraphWindowSize;
+            // 最后一次的视口位置
+            LastGraphViewPosition = target.LastGraphViewPosition;
+            // 最后一次的视口缩放
+            LastGraphViewZoom = target.LastGraphViewZoom;
+            // 最后一次保存日期与时间
+            LastSaveDateTime = target.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            // 背景主题配置参数（脱离引用克隆）
+            GraphviewGridBackgroundThemes = target.GraphviewGridBackgroundThemes.Clone();
+            // 选择框主题配置参数（脱离引用克隆）
+            GraphviewRectangleSelectorThemes = target.GraphviewRectangleSelectorThemes.Clone();
+            // 浮动面板数据 - 黑板（脱离引用克隆）
+            Last_GraphView_BlackboardPanel_TransformData = target.Last_GraphView_BlackboardPanel_TransformData.Clone();
+            // 浮动面板数据 - 属性（脱离引用克隆）
+            Last_GraphView_InspectorPanel_TransformData = target.Last_GraphView_InspectorPanel_TransformData.Clone();
+            // 开关参数 - 黑板
+            XGraph_BlackBoardViewDisplay = target.XGraph_BlackBoardViewDisplay;
+            // 开关参数 - 属性
+            XGraph_InspectorViewDisplay = target.XGraph_InspectorViewDisplay;
+            // 开关参数 - 节点颜色标记
+            XGraph_DisplayNodeColor = target.XGraph_DisplayNodeColor;
+            // 开关参数 - 节点数据流
+            XGraph_DisplayNodeFlow = target.XGraph_DisplayNodeFlow;
+            // 自定义扩展节点列表配置文件
+            GraphNodesStruct = target.GraphNodesStruct;
+            #endregion
 
-            GraphviewGridBackgroundThemes = targetAsset.GraphviewGridBackgroundThemes.Clone();
+            #region Nodes
+            // 用 targetAsset 中的 Actions 覆盖当前 Actions 数据列表
+            Actions = new List<xAction_Base>();
+            foreach (var action in target.Actions)
+            {
+                // 脱离引用克隆
+                xAction_Base clone = action.Clone();
+                // 设置根资源
+                clone.SetActionAssetRoot(this);
 
-            XGraph_BlackBoardViewDisplay = targetAsset.XGraph_BlackBoardViewDisplay;
-            XGraph_InspectorViewDisplay = targetAsset.XGraph_InspectorViewDisplay;
-            XGraph_DisplayNodeColor = targetAsset.XGraph_DisplayNodeColor;
-            XGraph_DisplayNodeFlow = targetAsset.XGraph_DisplayNodeFlow;
+                if (clone is xAction_Start s && s.childNodes != null)
+                {
+                    foreach (var node in s.childNodes)
+                    {
+                        // 设置父节点关系
+                        node.SetParentNode(s);
+                    }
+                }
 
-            GraphNodesStruct = targetAsset.GraphNodesStruct;
+                if (clone is xAction_Wait w && w.childNodes != null)
+                {
+                    foreach (var node in w.childNodes)
+                    {
+                        // 设置父节点关系
+                        node.SetParentNode(w);
+                    }
+                }
 
-            Last_GraphView_BlackboardPanel_TransformData = targetAsset.Last_GraphView_BlackboardPanel_TransformData.Clone();
-            Last_GraphView_InspectorPanel_TransformData = targetAsset.Last_GraphView_InspectorPanel_TransformData.Clone();
+                if (clone is xAction_Composite c && c.childNodes != null)
+                {
+                    foreach (var node in c.childNodes)
+                    {
+                        // 设置父节点关系
+                        node.SetParentNode(c);
+                    }
+                }
 
-            GraphviewRectangleSelectorThemes = targetAsset.GraphviewRectangleSelectorThemes.Clone();
+                if (clone is xAction_Relay r && r.childNodes != null)
+                {
+                    foreach (var node in r.childNodes)
+                    {
+                        // 设置父节点关系
+                        node.SetParentNode(r);
+                    }
+                }
 
-            // 覆盖原有的 Decals 数据列表
+                if (clone is xAction_Branch b)
+                {
+                    if (b.childNode_true != null)
+                    {
+                        // 设置父节点关系
+                        b.childNode_true.SetParentNode(b);
+                    }
+                    if (b.childNode_false != null)
+                    {
+                        // 设置父节点关系
+                        b.childNode_false.SetParentNode(b);
+                    }
+                }
+
+                Actions.Add(clone);
+            }
+            // 用 targetAsset 中的 Decals 覆盖当前 Decals 数据列表
             Decals = new List<xDecalData>();
-            foreach (var decal in targetAsset.Decals)
+            foreach (var decal in target.Decals)
             {
                 Decals.Add(decal.Clone(false));
             }
-
-            // 覆盖原有的 Sticks 数据列表
+            // 用 targetAsset 中的 Sticks 覆盖当前 Sticks 数据列表
             Sticks = new List<xStickData>();
-            foreach (var stick in targetAsset.Sticks)
+            foreach (var stick in target.Sticks)
             {
                 Sticks.Add(stick.Clone(false));
             }
-
-            // 覆盖原有的 Labels  数据列表
+            // 用 targetAsset 中的 Labels 覆盖当前 Labels 数据列表
             Labels = new List<xLabelData>();
-            foreach (var label in targetAsset.Labels)
+            foreach (var label in target.Labels)
             {
                 Labels.Add(label.Clone(false));
             }
-
-            // 覆盖原有的 Groups 数据列表
+            // 用 targetAsset 中的 Groups 覆盖当前 Groups 数据列表
             Groups = new List<xGroupData>();
-            foreach (var group in targetAsset.Groups)
+            foreach (var group in target.Groups)
             {
                 Groups.Add(group.Clone(false));
             }
-
-            // 覆盖原有的 Variables 数据列表
+            // 用 targetAsset 中的 Variables 覆盖当前 Variables 数据列表
             Variables = new List<xVariableData>();
-            foreach (var vare in targetAsset.Variables)
+            foreach (var vare in target.Variables)
             {
                 Variables.Add(vare.Clone(false));
             }
-
-            // 覆盖原有的 BlackboardVariable 数据列表
+            // 用 targetAsset 中的 ActBlackboardVariable 覆盖当前 BlackboardVariable 数据列表
             BlackboardVariable = new List<Variable>();
-            foreach (var vare in targetAsset.BlackboardVariable)
+            foreach (var vare in target.BlackboardVariable)
             {
                 BlackboardVariable.Add(vare.Clone(false));
             }
-
-            // 创建新节点副本并添加到原始资源中
-            Dictionary<xAction_Base, xAction_Base> dictionary = new Dictionary<xAction_Base, xAction_Base>();
-            foreach (var sourceNode in targetAsset.Actions)
-            {
-                var newNode = Instantiate(sourceNode);
-                newNode.name = sourceNode.name;
-                newNode.hideFlags = HideFlags.None;
-                newNode.SetActionAssetRoot(this);
-                Actions.Add(newNode);
-                UnityEditor.AssetDatabase.AddObjectToAsset(newNode, this);
-                dictionary[sourceNode] = newNode;
-            }
-            // 重建父子引用关系
-            foreach (var action in targetAsset.Actions)
-            {
-                if (action is xAction_Start s && s.childNodes != null)
-                {
-                    var newStart = dictionary[action] as xAction_Start;
-                    newStart.childNodes.Clear();
-                    foreach (var node in s.childNodes)
-                    {
-                        newStart.childNodes.Add(dictionary[node]);
-                        // 设置父节点关系
-                        dictionary[node].SetParentNode(newStart);
-                    }
-                }
-
-                if (action is xAction_Wait w && w.childNodes != null)
-                {
-                    var newWait = dictionary[action] as xAction_Wait;
-                    newWait.childNodes.Clear();
-                    foreach (var node in w.childNodes)
-                    {
-                        newWait.childNodes.Add(dictionary[node]);
-                        // 设置父节点关系
-                        dictionary[node].SetParentNode(newWait);
-                    }
-                }
-
-                if (action is xAction_Composite c && c.childNodes != null)
-                {
-                    var newComposite = dictionary[action] as xAction_Composite;
-                    newComposite.childNodes.Clear();
-                    foreach (var node in c.childNodes)
-                    {
-                        newComposite.childNodes.Add(dictionary[node]);
-                        // 设置父节点关系
-                        dictionary[node].SetParentNode(newComposite);
-                    }
-                }
-
-                // 添加 ActionNode_Relay 的处理
-                if (action is xAction_Relay r && r.childNodes != null)
-                {
-                    var newRelay = dictionary[action] as xAction_Relay;
-                    newRelay.childNodes.Clear();
-                    foreach (var node in r.childNodes)
-                    {
-                        newRelay.childNodes.Add(dictionary[node]);
-                        // 设置父节点关系
-                        dictionary[node].SetParentNode(newRelay);
-                    }
-                }
-
-                if (action is xAction_Branch b)
-                {
-                    var newBranch = dictionary[action] as xAction_Branch;
-
-                    if (b.childNode_true != null)
-                        if (dictionary.TryGetValue(b.childNode_true, out var n_true))
-                        {
-                            newBranch.childNode_true = n_true;
-                            // 设置父节点关系
-                            n_true.SetParentNode(newBranch);
-                        }
-                    if (b.childNode_false != null)
-                        if (dictionary.TryGetValue(b.childNode_false, out var n_false))
-                        {
-                            newBranch.childNode_false = n_false;
-                            // 设置父节点关系
-                            n_false.SetParentNode(newBranch);
-                        }
-                }
-            }
-
-            UnityEditor.AssetDatabase.Refresh();
-            UnityEditor.AssetDatabase.SaveAssets();
-#endif
+            #endregion
         }
         /// <summary>
         /// 创建当前流程设计的克隆体（仅编辑器下）
         /// </summary>
         /// <returns></returns>
-        public xAction_Asset Clone(string clonepath = "", bool saveAsset = true)
+        public xAction_Asset Clone()
         {
             // 创建新的 ActionNode_Asset
-            xAction_Asset newActionAsset = ScriptableObject.CreateInstance<xAction_Asset>();
+            xAction_Asset asset = CreateInstance<xAction_Asset>();
 
-            newActionAsset.LastSaveDateTime = LastSaveDateTime;
+            #region Graphs
+            // 对象名称
+            asset.name = name;
+            // 最后一次的窗口尺寸
+            asset.LastGraphWindowSize = LastGraphWindowSize;
+            // 最后一次的视口位置
+            asset.LastGraphViewPosition = LastGraphViewPosition;
+            // 最后一次的视口缩放
+            asset.LastGraphViewZoom = LastGraphViewZoom;
+            // 最后一次保存日期与时间
+            asset.LastSaveDateTime = LastSaveDateTime;
+            // 开关参数 - 黑板
+            asset.XGraph_BlackBoardViewDisplay = XGraph_BlackBoardViewDisplay;
+            // 开关参数 - 属性
+            asset.XGraph_InspectorViewDisplay = XGraph_InspectorViewDisplay;
+            // 开关参数 - 节点颜色标记
+            asset.XGraph_DisplayNodeColor = XGraph_DisplayNodeColor;
+            // 开关参数 - 节点数据流
+            asset.XGraph_DisplayNodeFlow = XGraph_DisplayNodeFlow;
+            // 自定义扩展节点列表配置文件
+            asset.GraphNodesStruct = GraphNodesStruct;
+            // 浮动面板数据 - 黑板（脱离引用克隆）
+            asset.Last_GraphView_BlackboardPanel_TransformData = Last_GraphView_BlackboardPanel_TransformData.Clone();
+            // 浮动面板数据 - 属性（脱离引用克隆）
+            asset.Last_GraphView_InspectorPanel_TransformData = Last_GraphView_InspectorPanel_TransformData.Clone();
+            // 背景主题配置参数（脱离引用克隆）
+            asset.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
+            // 选择框主题配置参数（脱离引用克隆）
+            asset.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
+            #endregion
 
-            newActionAsset.XGraph_BlackBoardViewDisplay = XGraph_BlackBoardViewDisplay;
-            newActionAsset.XGraph_InspectorViewDisplay = XGraph_InspectorViewDisplay;
-            newActionAsset.XGraph_DisplayNodeColor = XGraph_DisplayNodeColor;
-            newActionAsset.XGraph_DisplayNodeFlow = XGraph_DisplayNodeFlow;
-
-            newActionAsset.GraphNodesStruct = GraphNodesStruct;
-
-            newActionAsset.Last_GraphView_BlackboardPanel_TransformData = Last_GraphView_BlackboardPanel_TransformData.Clone();
-            newActionAsset.Last_GraphView_InspectorPanel_TransformData = Last_GraphView_InspectorPanel_TransformData.Clone();
-
-            newActionAsset.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
-
-            newActionAsset.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
-
-            // 实例化新的 Sticks 列表，并从原始资源复制项
-            newActionAsset.Sticks = new List<xStickData>();
-            foreach (var item in Sticks)
+            #region Nodes
+            // 将当前的 Actions 列表克隆到 asset.Actions
+            asset.Actions = new List<xAction_Base>();
+            foreach (var a in Actions)
             {
-                newActionAsset.Sticks.Add(item.Clone(false));
-            }
-
-            // 实例化新的 Labels 列表，并从原始资源复制项
-            newActionAsset.Labels = new List<xLabelData>();
-            foreach (var item in Labels)
-            {
-                newActionAsset.Labels.Add(item.Clone(false));
-            }
-
-            // 实例化新的 Decals 列表，并从原始资源复制项
-            newActionAsset.Decals = new List<xDecalData>();
-            foreach (var item in Decals)
-            {
-                newActionAsset.Decals.Add(item.Clone(false));
-            }
-
-            // 实例化新的 Variables 列表，并从原始资源复制项
-            newActionAsset.Variables = new List<xVariableData>();
-            foreach (var item in Variables)
-            {
-                newActionAsset.Variables.Add(item.Clone(false));
-            }
-
-            // 实例化新的 Groups 列表，并从原始资源复制项
-            newActionAsset.Groups = new List<xGroupData>();
-            foreach (var item in Groups)
-            {
-#if UNITY_EDITOR
-                newActionAsset.Groups.Add(item.Clone(false));
-#endif
-            }
-
-            // 实例化新的 BlackboardVariable 列表，并从原始资源复制项
-            newActionAsset.BlackboardVariable = new List<Variable>();
-            foreach (var bbv in BlackboardVariable)
-            {
-#if UNITY_EDITOR
-                newActionAsset.BlackboardVariable.Add(bbv.Clone(false));
-#endif
-            }
-
-            newActionAsset.name = this.name;
-            newActionAsset.LastGraphWindowSize = this.LastGraphWindowSize;
-            newActionAsset.LastGraphViewPosition = this.LastGraphViewPosition;
-            newActionAsset.LastGraphViewZoom = this.LastGraphViewZoom;
-
-            // 用于映射原始节点到新节点（不包含分支逻辑类）
-            Dictionary<xAction_Base, xAction_Base> originalRootDic = new Dictionary<xAction_Base, xAction_Base>();
-
-            // 复制所有节点（不包含分支逻辑类）
-            foreach (var node in this.Actions)
-            {
-                xAction_Base actionNode = Instantiate(node);
-                actionNode.name = node.name;
-                actionNode.hideFlags = HideFlags.None;
-
-                // 关键修复点：初始化时清空所有子引用
-                if (actionNode is xAction_Start newStart)
-                    newStart.childNodes.Clear();
-                else if (actionNode is xAction_Wait newWait)
-                    newWait.childNodes.Clear();
-                else if (actionNode is xAction_Composite newComp)
-                    newComp.childNodes.Clear();
-                else if (actionNode is xAction_Branch newBranch)
-                {
-                    newBranch.childNode_true = null;
-                    newBranch.childNode_false = null;
-                }
-
-                newActionAsset.Actions.Add(actionNode);
-                originalRootDic[node] = actionNode;
-            }
-
-            // 重建父子关系
-            foreach (var node in this.Actions)
-            {
-                xAction_Base newParentNode = originalRootDic[node];
+                // 脱离引用克隆
+                xAction_Base clone = a.Clone();
+                // 设置根资源
+                clone.SetActionAssetRoot(asset);
 
                 // 处理 ActionNode_Start
-                if (node is xAction_Start originalStart)
+                if (a is xAction_Start s)
                 {
-                    var newStart = newParentNode as xAction_Start;
-                    foreach (var originalChild in originalStart.childNodes)
+                    foreach (var child in s.childNodes)
                     {
-                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
-                        {
-                            newStart.childNodes.Add(newChild);
-                            // 设置父节点关系
-                            newChild.SetParentNode(newStart);
-                        }
+                        child.SetParentNode(s);
                     }
                 }
 
                 // 处理 ActionNode_Wait
-                else if (node is xAction_Wait originalWait)
+                else if (a is xAction_Wait w)
                 {
-                    var newWait = newParentNode as xAction_Wait;
-                    foreach (var originalChild in originalWait.childNodes)
+                    foreach (var child in w.childNodes)
                     {
-                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
-                        {
-                            newWait.childNodes.Add(newChild);
-                            // 设置父节点关系
-                            newChild.SetParentNode(newWait);
-                        }
+                        child.SetParentNode(w);
                     }
                 }
 
                 // 处理 ActionNode_Composite
-                else if (node is xAction_Composite originalComposite)
+                else if (a is xAction_Composite c)
                 {
-                    var newComposite = newParentNode as xAction_Composite;
-                    foreach (var originalChild in originalComposite.childNodes)
+                    foreach (var child in c.childNodes)
                     {
-                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
-                        {
-                            newComposite.childNodes.Add(newChild);
-                            // 设置父节点关系
-                            newChild.SetParentNode(newComposite);
-                        }
+                        child.SetParentNode(c);
                     }
                 }
 
                 // 处理 ActionNode_Branch
-                else if (node is xAction_Branch originalBranch)
+                else if (a is xAction_Branch b)
                 {
-                    var newBranch = newParentNode as xAction_Branch;
-
-                    if (originalBranch.childNode_true != null)
-                        if (originalRootDic.TryGetValue(originalBranch.childNode_true, out var new_true))
-                        {
-                            newBranch.childNode_true = new_true;
-                            // 设置父节点关系
-                            new_true.SetParentNode(newBranch);
-                        }
-                    if (originalBranch.childNode_false != null)
-                        if (originalRootDic.TryGetValue(originalBranch.childNode_false, out var new_false))
-                        {
-                            newBranch.childNode_false = new_false;
-                            // 设置父节点关系
-                            new_false.SetParentNode(newBranch);
-                        }
+                    if (b.childNode_true != null)
+                    {
+                        b.childNode_true.SetParentNode(b);
+                    }
+                    if (b.childNode_false != null)
+                    {
+                        b.childNode_false.SetParentNode(b);
+                    }
                 }
 
                 // 处理 ActionNode_Relay（如果存在）
-                else if (node is xAction_Relay originalRelay)
+                else if (a is xAction_Relay r)
                 {
-                    var newRelay = newParentNode as xAction_Relay;
-                    foreach (var originalChild in originalRelay.childNodes)
+                    foreach (var child in r.childNodes)
                     {
-                        if (originalRootDic.TryGetValue(originalChild, out var newChild))
-                        {
-                            newRelay.childNodes.Add(newChild);
-                            // 设置父节点关系
-                            newChild.SetParentNode(newRelay);
-                        }
+                        child.SetParentNode(r);
                     }
                 }
+
+                asset.Actions.Add(clone);
             }
 
-            if (saveAsset)
+            // 将当前的 Sticks 列表克隆到 asset.Sticks
+            asset.Sticks = new List<xStickData>();
+            foreach (var s in Sticks)
             {
-                SaveNodeRootAsset(newActionAsset, string.IsNullOrEmpty(clonepath) ? $"{util_Dashboard.GetPath_Temp()}/GraphNodeTempAsset.asset" : clonepath);
+                asset.Sticks.Add(s.Clone(false));
+            }
 
-                // 更新变量赋值数据
-                newActionAsset.Variables_Refresh();
+            // 将当前的 Labels 列表克隆到 asset.Labels
+            asset.Labels = new List<xLabelData>();
+            foreach (var l in Labels)
+            {
+                asset.Labels.Add(l.Clone(false));
+            }
 
+            // 将当前的 Decals 列表克隆到 asset.Decals
+            asset.Decals = new List<xDecalData>();
+            foreach (var d in Decals)
+            {
+                asset.Decals.Add(d.Clone(false));
+            }
+
+            // 将当前的 Variables 列表克隆到 asset.Variables
+            asset.Variables = new List<xVariableData>();
+            foreach (var v in Variables)
+            {
+                asset.Variables.Add(v.Clone(false));
+            }
+
+            // 将当前的 Groups 列表克隆到 asset.Groups
+            asset.Groups = new List<xGroupData>();
+            foreach (var g in Groups)
+            {
 #if UNITY_EDITOR
-                UnityEditor.AssetDatabase.SaveAssetIfDirty(newActionAsset);
+                asset.Groups.Add(g.Clone(false));
 #endif
             }
 
-            return newActionAsset;
+            // 将当前的 BlackboardVariable 列表克隆到 asset.BlackboardVariable
+            asset.BlackboardVariable = new List<Variable>();
+            foreach (var v in BlackboardVariable)
+            {
+                asset.BlackboardVariable.Add(v.Clone(false));
+            }
+            #endregion
+
+            return asset;
         }
         /// <summary>
         /// 保存为Tree资源到目标路径下
@@ -678,28 +601,28 @@ namespace SevenStrikeModules.XGraph
         public void SaveNodeRootAsset(xAction_Asset root, string path)
         {
 #if UNITY_EDITOR
-            // 提取根路径整理 - 去掉尾部的 /
-            string path_root = util_Dashboard.GetPath_Root();
-            path_root = path_root.Substring(0, path_root.Length - 1);
+            //// 提取根路径整理 - 去掉尾部的 /
+            //string path_root = util_Dashboard.GetPath_Root();
+            //path_root = path_root.Substring(0, path_root.Length - 1);
 
-            // 目标路径整理 - 去掉尾部的 /
-            string path_target = $"{util_Dashboard.GetPath_Temp()}";
-            path_target = path_target.Substring(0, path_target.Length - 1);
+            //// 目标路径整理 - 去掉尾部的 /
+            //string path_target = $"{util_Dashboard.GetPath_Temp()}";
+            //path_target = path_target.Substring(0, path_target.Length - 1);
 
-            // 判断是否存在目标路径，如果不存在就创建该路径的文件夹
-            if (!UnityEditor.AssetDatabase.AssetPathExists(path_target))
-            {
-                UnityEditor.AssetDatabase.CreateFolder(path_root, "Temp");
-                //AssetDatabase.SaveAssets();
-                UnityEditor.AssetDatabase.Refresh();
-            }
+            //// 判断是否存在目标路径，如果不存在就创建该路径的文件夹
+            //if (!UnityEditor.AssetDatabase.AssetPathExists(path_target))
+            //{
+            //    UnityEditor.AssetDatabase.CreateFolder(path_root, "Temp");
+            //    //AssetDatabase.SaveAssets();
+            //    UnityEditor.AssetDatabase.Refresh();
+            //}
 
-            // 保存为临时.asset 文件，供Unity资源系统进行操作
-            UnityEditor.AssetDatabase.CreateAsset(root, path);
-            foreach (var treenode in root.Actions)
-            {
-                UnityEditor.AssetDatabase.AddObjectToAsset(treenode, root);
-            }
+            //// 保存为临时.asset 文件，供Unity资源系统进行操作
+            //UnityEditor.AssetDatabase.CreateAsset(root, path);
+            //foreach (var treenode in root.Actions)
+            //{
+            //UnityEditor.AssetDatabase.AddObjectToAsset(treenode, root);
+            //}
 
             //AssetDatabase.SaveAssets();
 #endif
@@ -760,91 +683,75 @@ namespace SevenStrikeModules.XGraph
             child.SetParentNode(parent);
 
             #region 特化处理 - Start
-            xAction_Start start = parent as xAction_Start;
-            if (start)
+            if (parent is xAction_Start s)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(start, "Connect_StartNode");
-#endif
-                bool existChild = false;
-                foreach (var c in start.childNodes)
+                bool exist = false;
+                foreach (var item in s.childNodes)
                 {
-                    if (child.guid == c.guid)
-                        existChild = true;
+                    if (child.guid == item.guid)
+                        exist = true;
                 }
-                if (existChild)
+                if (exist)
                 {
                     Debug.Log("start 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                start.childNodes.Add(child);
+                s.childNodes.Add(child);
             }
             #endregion
 
             #region 特化处理 - Wait
-            xAction_Wait wait = parent as xAction_Wait;
-            if (wait)
+            if (parent is xAction_Wait w)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(wait, "Connect_WaitNode");
-#endif
-                bool existChild = false;
-                foreach (var c in wait.childNodes)
+                bool exist = false;
+                foreach (var item in w.childNodes)
                 {
-                    if (child.guid == c.guid)
-                        existChild = true;
+                    if (child.guid == item.guid)
+                        exist = true;
                 }
 
-                if (existChild)
+                if (exist)
                 {
                     Debug.Log("wait 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                wait.childNodes.Add(child);
+                w.childNodes.Add(child);
             }
             #endregion
 
             #region 特化处理 - Composite
-            xAction_Composite comp = parent as xAction_Composite;
-            if (comp)
+            if (parent is xAction_Composite c)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(comp, "Connect_CompositeNode");
-#endif
-                bool existChild = false;
-                foreach (var c in comp.childNodes)
+                bool exist = false;
+                foreach (var item in c.childNodes)
                 {
-                    if (child.guid == c.guid)
-                        existChild = true;
+                    if (child.guid == item.guid)
+                        exist = true;
                 }
-                if (existChild)
+                if (exist)
                 {
                     Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                comp.childNodes.Add(child);
+                c.childNodes.Add(child);
             }
             #endregion
 
             #region 特化处理 - Relay
-            xAction_Relay relay = parent as xAction_Relay;
-            if (relay)
+            if (parent is xAction_Relay r)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(relay, "Connect_RelayNode");
-#endif
-                bool existChild = false;
-                foreach (var c in relay.childNodes)
+                bool exist = false;
+                foreach (var item in r.childNodes)
                 {
-                    if (child.guid == c.guid)
-                        existChild = true;
+                    if (child.guid == item.guid)
+                        exist = true;
                 }
-                if (existChild)
+                if (exist)
                 {
                     //Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                relay.childNodes.Add(child);
+                r.childNodes.Add(child);
             }
             #endregion
         }
@@ -861,17 +768,13 @@ namespace SevenStrikeModules.XGraph
             child.SetParentNode(parent);
 
             #region 特化处理 - Branch
-            xAction_Branch branch = parent as xAction_Branch;
-            if (branch)
+            if (parent is xAction_Branch b)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(branch, "Connect_BranchNode");
-#endif
                 if (childmode == "开")
                 {
-                    if (branch.childNode_true != null)
+                    if (b.childNode_true != null)
                     {
-                        if (child.guid == branch.childNode_true.guid)
+                        if (child.guid == b.childNode_true.guid)
                         {
                             Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                             return;
@@ -879,14 +782,14 @@ namespace SevenStrikeModules.XGraph
                     }
                     else
                     {
-                        branch.childNode_true = child;
+                        b.childNode_true = child;
                     }
                 }
                 else if (childmode == "关")
                 {
-                    if (branch.childNode_false != null)
+                    if (b.childNode_false != null)
                     {
-                        if (child.guid == branch.childNode_false.guid)
+                        if (child.guid == b.childNode_false.guid)
                         {
                             Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                             return;
@@ -894,7 +797,7 @@ namespace SevenStrikeModules.XGraph
                     }
                     else
                     {
-                        branch.childNode_false = child;
+                        b.childNode_false = child;
                     }
                 }
             }
@@ -910,35 +813,23 @@ namespace SevenStrikeModules.XGraph
             //Debug.Log($"{parent.identifyName}       |  断开链接  ×  |      {c.identifyName}");
 
             #region 特化处理 - Start
-            xAction_Start start = parent as xAction_Start;
-            if (start)
+            if (parent is xAction_Start s)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(start, "RemoveConnect_StartNode");
-#endif
-                start.childNodes.Remove(child);
+                s.childNodes.Remove(child);
             }
             #endregion
 
             #region 特化处理 - Wait
-            xAction_Wait wait = parent as xAction_Wait;
-            if (wait)
+            if (parent is xAction_Wait w)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(wait, "RemoveConnect_WaitNode");
-#endif
-                wait.childNodes.Remove(child);
+                w.childNodes.Remove(child);
             }
             #endregion
 
             #region 特化处理 - Composite
-            xAction_Composite comp = parent as xAction_Composite;
-            if (comp)
+            if (parent is xAction_Composite c)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(comp, "RemoveConnect_CompositeNode");
-#endif
-                comp.childNodes.Remove(child);
+                c.childNodes.Remove(child);
             }
             #endregion
 
@@ -950,21 +841,17 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="child"></param>
-        public void ChildNode_Remove(xAction_Base parent, xAction_Base child, string childmode)
+        public void ChildNode_Remove(xAction_Base parent, xAction_Base child, string state)
         {
             //Debug.Log($"{parent.identifyName}       |  断开链接  ×  |      {child.identifyName}");
 
             #region 特化处理 - Branch
-            xAction_Branch branch = parent as xAction_Branch;
-            if (branch)
+            if (parent is xAction_Branch b)
             {
-#if UNITY_EDITOR
-                UnityEditor.Undo.RecordObject(branch, "RemoveConnect_BranchNode");
-#endif
-                if (childmode == "开")
-                    branch.childNode_true = null;
-                else if (childmode == "关")
-                    branch.childNode_false = null;
+                if (state == "开")
+                    b.childNode_true = null;
+                else if (state == "关")
+                    b.childNode_false = null;
             }
             #endregion
 

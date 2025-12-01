@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Reflection;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -153,30 +154,24 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
             Add(container);
 
-            #endregion
-
-            #region 行为节点自定义属性面板
-            bool isCustomEditor = (editorType != null && typeof(Editor).IsAssignableFrom(editorType)) ? true : false;
-            switch (isCustomEditor)
+            IMGUIContainer imguiContainer = new IMGUIContainer(() =>
             {
-                // 存在Editor解释文件，使用自定义界面样式
-                case true:
-                    editor = Editor.CreateEditor(target, editorType);
-                    if (editor is editor_xAction_Base actionEditor)
-                        container.Add(actionEditor.CreateGraphviewInespector());
-                    break;
-                // 不存在Editor解释文件，使用内置界面样式
-                case false:
-                    // 回退到默认编辑器
-                    editor = Editor.CreateEditor(target);
-                    IMGUIContainer imguiContainer = new IMGUIContainer(() =>
+                // 手动绘制 Inspector
+                if (target != null)
+                {
+                    EditorGUILayout.LabelField("Action Properties", EditorStyles.boldLabel);
+
+                    // 使用反射显示属性
+                    var fields = target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    foreach (var field in fields)
                     {
-                        editor.OnInspectorGUI();
-                    });
-                    container.Add(imguiContainer);
-                    break;
-            }
-            #endregion
+                        var value = field.GetValue(target);
+                        EditorGUILayout.LabelField(field.Name, value?.ToString() ?? "null");
+                    }
+                }
+            });
+            container.Add(imguiContainer);
+            #endregion           
         }
         /// <summary>
         /// 创建行为根资源的属性面板
@@ -198,7 +193,12 @@ namespace SevenStrikeModules.XGraph
             // 创建布局容器
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
             Add(container);
-
+            //editor = Editor.CreateEditor(target);
+            //IMGUIContainer imguiContainer = new IMGUIContainer(() =>
+            //{
+            //    editor.OnInspectorGUI();
+            //});
+            //container.Add(imguiContainer);
             #endregion
 
             #region 行为节点自定义属性面板
@@ -239,7 +239,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 变量类型标签
             string[] styles_sub = new string[] { "type" };

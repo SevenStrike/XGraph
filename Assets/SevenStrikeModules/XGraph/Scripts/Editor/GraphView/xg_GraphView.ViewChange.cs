@@ -175,7 +175,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
+                //Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
@@ -211,7 +211,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid To InternalVariableAction");
+                //Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid To InternalVariableAction");
                 string portName = edge?.input.portName;
                 node_child.ActionData.InternalVariableData_Bind(node_varInternal.VariableData, portName);
             }
@@ -240,7 +240,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
+                //Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_bb_var.VariableData, portName);
@@ -390,7 +390,7 @@ namespace SevenStrikeModules.XGraph
                 xNode_Relay relay_child = edge.input.node as xNode_Relay;
                 if (relay_child != null)
                 {
-                    Undo.RecordObject(relay_child.ActionData, "Remove RelayConnector");
+                    //Undo.RecordObject(relay_child.ActionData, "Remove RelayConnector");
                     relay_child.Disconnected();
                 }
                 #endregion

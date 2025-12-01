@@ -1282,7 +1282,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"行为节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos(n_base.ActionData.GetInfo(), $"{n_base.ActionData.GetPath()}");
+            xw_SetNodeInfo_Header(n_base.ActionData.GetInfo());
         }
         /// <summary>
         /// 选中节点：内部变量

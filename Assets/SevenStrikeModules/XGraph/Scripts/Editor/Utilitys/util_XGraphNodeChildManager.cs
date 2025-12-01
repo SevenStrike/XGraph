@@ -186,7 +186,7 @@ namespace SevenStrikeModules.XGraph
         {
             TargetAssetGuid = AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(asset)).ToString();
             //Debug.Log(TargetAssetGuid);
-            CloneNodeAsset = asset.Clone($"{util_Dashboard.GetPath_Temp()}NodeManagerClone.asset");
+            CloneNodeAsset = asset.Clone();
 
             // 标题显示为选中的行为资源文件名称
             util_XGraphEditorUtility.Element_Label_ValueSet(graphAssetTitle, CloneNodeAsset.name);
