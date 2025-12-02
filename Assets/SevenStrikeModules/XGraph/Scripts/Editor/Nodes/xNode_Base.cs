@@ -1442,5 +1442,94 @@ namespace SevenStrikeModules.XGraph
             }
         }
         #endregion
+
+        #region 绘制界面
+        /// <summary>
+        /// 绘制节点编辑器内的Inspector界面
+        /// </summary>
+        /// <returns></returns>
+        public virtual VisualElement CreateGraphviewInespector()
+        {
+            VisualElement rootElement = new VisualElement();
+
+            #region 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            titlegroup.RegisterCallback<PointerDownEvent>((evt) =>
+            {
+                //EditorGUIUtility.PingObject(baseScript);
+            });
+            #endregion
+
+            #region 标题附加 - 变量类型标签
+            string[] styles_sub = new string[] { "type" };
+            Label lab_sub = new Label("行为节点");
+            lab_sub.name = "sub";
+            for (int i = 0; i < styles_sub.Length; i++)
+            {
+                lab_sub.AddToClassList(styles_sub[i]);
+            }
+            titlegroup.Add(lab_sub);
+            #endregion
+
+            #region 同步节点名称改变
+            Label titlename = titlegroup.Q<Label>(name: "title");
+            ActionData.On_Node_TitleChanged += (name) =>
+            {
+                titlename.text = name;
+            };
+            #endregion
+
+            #region 同步节点图标改变
+            VisualElement titleIcon = titlegroup.Q<VisualElement>(name: "icon");
+            ActionData.On_Node_IconChanged += (tex) =>
+            {
+                titleIcon.style.backgroundImage = tex;
+            };
+            #endregion
+
+            #region 节点基础属性折叠器
+            Foldout fo_node = util_XGraphInspectorGUI.GUI_Foldout(rootElement, "节点基础属性", "basetype-base", new string[] { "foldout" });
+            #endregion
+
+            #region 节点GUID
+            TextField textField_guid = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>GUID： </b>", ActionData.guid, new string[1] { "field_text" });
+            textField_guid.RegisterCallback<BlurEvent>((evt) =>
+            {
+                TextField field = evt.target as TextField;
+                field.value = ActionData.guid;
+            });
+            #endregion
+
+            #region 节点路径
+            TextField textField_path = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>资源路径： </b>", ActionData.path, new string[1] { "field_text" });
+            textField_path.RegisterCallback<BlurEvent>((evt) =>
+            {
+                TextField field = evt.target as TextField;
+                //field.value = ActionData.path;
+                ActionData.path = field.value;
+            });
+            #endregion
+
+            #region 行为类型
+            TextField textField_actionNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>行为类型： </b>", ActionData.actionNodeType, new string[1] { "field_text" });
+            textField_actionNode_type.RegisterCallback<BlurEvent>((evt) =>
+            {
+                TextField field = evt.target as TextField;
+                field.value = ActionData.actionNodeType;
+            });
+            #endregion
+
+            #region 节点类型
+            TextField textField_visualNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>节点类型： </b>", ActionData.visualNodeType, new string[1] { "field_text" });
+            textField_visualNode_type.RegisterCallback<BlurEvent>((evt) =>
+            {
+                TextField field = evt.target as TextField;
+                field.value = ActionData.visualNodeType;
+            });
+            #endregion
+
+            return rootElement;
+        }
+        #endregion
     }
 }

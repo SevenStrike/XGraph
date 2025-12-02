@@ -1,7 +1,10 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using System.Data.SqlTypes;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -164,5 +167,15 @@ namespace SevenStrikeModules.XGraph
             base.OnUnselected();
         }
         #endregion
+
+        public override VisualElement CreateGraphviewInespector()
+        {
+            VisualElement v = base.CreateGraphviewInespector();
+
+            Button btn = new Button();
+            v.Add(btn);
+
+            return v;
+        }
     }
 }
