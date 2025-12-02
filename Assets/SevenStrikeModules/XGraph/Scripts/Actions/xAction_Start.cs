@@ -7,7 +7,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 子节点列表
         /// </summary>
-        public List<xAction_Base> childNodes = new List<xAction_Base>();
+        public List<string> childNodes = new List<string>();
 
         /// <summary>
         /// 行为节点执行方法

@@ -347,6 +347,9 @@ namespace SevenStrikeModules.XGraph
             #region Nodes
             // 用 targetAsset 中的 Actions 覆盖当前 Actions 数据列表
             Actions = new List<xAction_Base>();
+
+            // 先克隆所有节点
+            Dictionary<string, xAction_Base> guidToNodeMap = new Dictionary<string, xAction_Base>();
             foreach (var action in target.Actions)
             {
                 // 脱离引用克隆
@@ -354,58 +357,111 @@ namespace SevenStrikeModules.XGraph
                 // 设置根资源
                 clone.SetActionAssetRoot(this);
 
-                if (clone is xAction_Start s && s.childNodes != null)
-                {
-                    foreach (var node in s.childNodes)
-                    {
-                        // 设置父节点关系
-                        node.SetParentNode(s);
-                    }
-                }
-
-                if (clone is xAction_Wait w && w.childNodes != null)
-                {
-                    foreach (var node in w.childNodes)
-                    {
-                        // 设置父节点关系
-                        node.SetParentNode(w);
-                    }
-                }
-
-                if (clone is xAction_Composite c && c.childNodes != null)
-                {
-                    foreach (var node in c.childNodes)
-                    {
-                        // 设置父节点关系
-                        node.SetParentNode(c);
-                    }
-                }
-
-                if (clone is xAction_Relay r && r.childNodes != null)
-                {
-                    foreach (var node in r.childNodes)
-                    {
-                        // 设置父节点关系
-                        node.SetParentNode(r);
-                    }
-                }
-
-                if (clone is xAction_Branch b)
-                {
-                    if (b.childNode_true != null)
-                    {
-                        // 设置父节点关系
-                        b.childNode_true.SetParentNode(b);
-                    }
-                    if (b.childNode_false != null)
-                    {
-                        // 设置父节点关系
-                        b.childNode_false.SetParentNode(b);
-                    }
-                }
+                // 存储GUID映射
+                guidToNodeMap[action.guid] = clone;
 
                 Actions.Add(clone);
             }
+
+            // 重建子节点关系
+            foreach (var action in target.Actions)
+            {
+                var clone = guidToNodeMap[action.guid];
+
+                if (action is xAction_Start s && s.childNodes != null && s.childNodes.Count > 0)
+                {
+                    var cloneStart = clone as xAction_Start;
+                    if (cloneStart != null)
+                    {
+                        cloneStart.childNodes = new List<string>();
+                        foreach (var child in s.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneStart.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneStart);
+                            }
+                        }
+                    }
+                }
+
+                if (action is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
+                {
+                    var cloneWait = clone as xAction_Wait;
+                    if (cloneWait != null)
+                    {
+                        cloneWait.childNodes = new List<string>();
+                        foreach (var child in w.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneWait.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneWait);
+                            }
+                        }
+                    }
+                }
+
+                if (action is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
+                {
+                    var cloneComposite = clone as xAction_Composite;
+                    if (cloneComposite != null)
+                    {
+                        cloneComposite.childNodes = new List<string>();
+                        foreach (var child in c.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneComposite.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneComposite);
+                            }
+                        }
+                    }
+                }
+
+                if (action is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
+                {
+                    var cloneRelay = clone as xAction_Relay;
+                    if (cloneRelay != null)
+                    {
+                        cloneRelay.childNodes = new List<string>();
+                        foreach (var child in r.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneRelay.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneRelay);
+                            }
+                        }
+                    }
+                }
+
+                if (action is xAction_Branch b)
+                {
+                    var cloneBranch = clone as xAction_Branch;
+                    if (cloneBranch != null)
+                    {
+                        if (b.childNode_true != null && guidToNodeMap.TryGetValue(b.childNode_true, out var trueChildClone))
+                        {
+                            cloneBranch.childNode_true = trueChildClone.guid;
+                            // 设置父节点关系
+                            trueChildClone.SetParentNode(cloneBranch);
+                        }
+
+                        if (b.childNode_false != null && guidToNodeMap.TryGetValue(b.childNode_false, out var falseChildClone))
+                        {
+                            cloneBranch.childNode_false = falseChildClone.guid;
+                            // 设置父节点关系
+                            falseChildClone.SetParentNode(cloneBranch);
+                        }
+                    }
+                }
+            }
+
             // 用 targetAsset 中的 Decals 覆盖当前 Decals 数据列表
             Decals = new List<xDecalData>();
             foreach (var decal in target.Decals)
@@ -487,6 +543,8 @@ namespace SevenStrikeModules.XGraph
             #region Nodes
             // 将当前的 Actions 列表克隆到 asset.Actions
             asset.Actions = new List<xAction_Base>();
+            // 先克隆所有节点，建立GUID映射
+            Dictionary<string, xAction_Base> guidToNodeMap = new Dictionary<string, xAction_Base>();
             foreach (var a in Actions)
             {
                 // 脱离引用克隆
@@ -494,57 +552,107 @@ namespace SevenStrikeModules.XGraph
                 // 设置根资源
                 clone.SetActionAssetRoot(asset);
 
-                // 处理 ActionNode_Start
-                if (a is xAction_Start s)
-                {
-                    foreach (var child in s.childNodes)
-                    {
-                        child.SetParentNode(s);
-                    }
-                }
-
-                // 处理 ActionNode_Wait
-                else if (a is xAction_Wait w)
-                {
-                    foreach (var child in w.childNodes)
-                    {
-                        child.SetParentNode(w);
-                    }
-                }
-
-                // 处理 ActionNode_Composite
-                else if (a is xAction_Composite c)
-                {
-                    foreach (var child in c.childNodes)
-                    {
-                        child.SetParentNode(c);
-                    }
-                }
-
-                // 处理 ActionNode_Branch
-                else if (a is xAction_Branch b)
-                {
-                    if (b.childNode_true != null)
-                    {
-                        b.childNode_true.SetParentNode(b);
-                    }
-                    if (b.childNode_false != null)
-                    {
-                        b.childNode_false.SetParentNode(b);
-                    }
-                }
-
-                // 处理 ActionNode_Relay（如果存在）
-                else if (a is xAction_Relay r)
-                {
-                    foreach (var child in r.childNodes)
-                    {
-                        child.SetParentNode(r);
-                    }
-                }
+                // 存储GUID映射
+                guidToNodeMap[a.guid] = clone;
 
                 asset.Actions.Add(clone);
             }
+
+            // 重建子节点关系
+            foreach (var a in Actions)
+            {
+                var clone = guidToNodeMap[a.guid];
+
+                if (a is xAction_Start s && s.childNodes != null && s.childNodes.Count > 0)
+                {
+                    var cloneStart = clone as xAction_Start;
+                    if (cloneStart != null)
+                    {
+                        cloneStart.childNodes = new List<string>();
+                        foreach (var child in s.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneStart.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneStart);
+                            }
+                        }
+                    }
+                }
+                else if (a is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
+                {
+                    var cloneWait = clone as xAction_Wait;
+                    if (cloneWait != null)
+                    {
+                        cloneWait.childNodes = new List<string>();
+                        foreach (var child in w.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneWait.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneWait);
+                            }
+                        }
+                    }
+                }
+                else if (a is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
+                {
+                    var cloneComposite = clone as xAction_Composite;
+                    if (cloneComposite != null)
+                    {
+                        cloneComposite.childNodes = new List<string>();
+                        foreach (var child in c.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneComposite.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneComposite);
+                            }
+                        }
+                    }
+                }
+                else if (a is xAction_Branch b)
+                {
+                    var cloneBranch = clone as xAction_Branch;
+                    if (cloneBranch != null)
+                    {
+                        if (b.childNode_true != null && guidToNodeMap.TryGetValue(b.childNode_true, out var trueChildClone))
+                        {
+                            cloneBranch.childNode_true = trueChildClone.guid;
+                            // 设置父节点关系
+                            trueChildClone.SetParentNode(cloneBranch);
+                        }
+
+                        if (b.childNode_false != null && guidToNodeMap.TryGetValue(b.childNode_false, out var falseChildClone))
+                        {
+                            cloneBranch.childNode_false = falseChildClone.guid;
+                            // 设置父节点关系
+                            falseChildClone.SetParentNode(cloneBranch);
+                        }
+                    }
+                }
+                else if (a is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
+                {
+                    var cloneRelay = clone as xAction_Relay;
+                    if (cloneRelay != null)
+                    {
+                        cloneRelay.childNodes = new List<string>();
+                        foreach (var child in r.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneRelay.childNodes.Add(childClone.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneRelay);
+                            }
+                        }
+                    }
+                }
+            }
+
 
             // 将当前的 Sticks 列表克隆到 asset.Sticks
             asset.Sticks = new List<xStickData>();
@@ -632,9 +740,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public List<xAction_Base> GetChildrenNodes(xAction_Base parent)
+        public List<string> GetChildrenNodes(xAction_Base parent)
         {
-            List<xAction_Base> nodes = new List<xAction_Base>();
+            List<string> nodes = new List<string>();
 
             // 如果是 "ActionNode_Start" 节点，那么就收集 "ActionNode_Start" 节点下的 "childNodes"
             xAction_Start start = parent as xAction_Start;
@@ -688,7 +796,7 @@ namespace SevenStrikeModules.XGraph
                 bool exist = false;
                 foreach (var item in s.childNodes)
                 {
-                    if (child.guid == item.guid)
+                    if (child.guid == item)
                         exist = true;
                 }
                 if (exist)
@@ -696,7 +804,7 @@ namespace SevenStrikeModules.XGraph
                     Debug.Log("start 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                s.childNodes.Add(child);
+                s.childNodes.Add(child.guid);
             }
             #endregion
 
@@ -706,7 +814,7 @@ namespace SevenStrikeModules.XGraph
                 bool exist = false;
                 foreach (var item in w.childNodes)
                 {
-                    if (child.guid == item.guid)
+                    if (child.guid == item)
                         exist = true;
                 }
 
@@ -715,7 +823,7 @@ namespace SevenStrikeModules.XGraph
                     Debug.Log("wait 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                w.childNodes.Add(child);
+                w.childNodes.Add(child.guid);
             }
             #endregion
 
@@ -725,7 +833,7 @@ namespace SevenStrikeModules.XGraph
                 bool exist = false;
                 foreach (var item in c.childNodes)
                 {
-                    if (child.guid == item.guid)
+                    if (child.guid == item)
                         exist = true;
                 }
                 if (exist)
@@ -733,7 +841,7 @@ namespace SevenStrikeModules.XGraph
                     Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                c.childNodes.Add(child);
+                c.childNodes.Add(child.guid);
             }
             #endregion
 
@@ -743,7 +851,7 @@ namespace SevenStrikeModules.XGraph
                 bool exist = false;
                 foreach (var item in r.childNodes)
                 {
-                    if (child.guid == item.guid)
+                    if (child.guid == item)
                         exist = true;
                 }
                 if (exist)
@@ -751,7 +859,7 @@ namespace SevenStrikeModules.XGraph
                     //Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
                     return;
                 }
-                r.childNodes.Add(child);
+                r.childNodes.Add(child.guid);
             }
             #endregion
         }
@@ -774,7 +882,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     if (b.childNode_true != null)
                     {
-                        if (child.guid == b.childNode_true.guid)
+                        if (child.guid == b.childNode_true)
                         {
                             Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                             return;
@@ -782,14 +890,14 @@ namespace SevenStrikeModules.XGraph
                     }
                     else
                     {
-                        b.childNode_true = child;
+                        b.childNode_true = child.guid;
                     }
                 }
                 else if (childmode == "关")
                 {
                     if (b.childNode_false != null)
                     {
-                        if (child.guid == b.childNode_false.guid)
+                        if (child.guid == b.childNode_false)
                         {
                             Debug.Log("branch 节点已经存在因删除Relay后的重新添加的指定资源！忽略它！");
                             return;
@@ -797,7 +905,7 @@ namespace SevenStrikeModules.XGraph
                     }
                     else
                     {
-                        b.childNode_false = child;
+                        b.childNode_false = child.guid;
                     }
                 }
             }
@@ -815,21 +923,21 @@ namespace SevenStrikeModules.XGraph
             #region 特化处理 - Start
             if (parent is xAction_Start s)
             {
-                s.childNodes.Remove(child);
+                s.childNodes.Remove(child.guid);
             }
             #endregion
 
             #region 特化处理 - Wait
             if (parent is xAction_Wait w)
             {
-                w.childNodes.Remove(child);
+                w.childNodes.Remove(child.guid);
             }
             #endregion
 
             #region 特化处理 - Composite
             if (parent is xAction_Composite c)
             {
-                c.childNodes.Remove(child);
+                c.childNodes.Remove(child.guid);
             }
             #endregion
 

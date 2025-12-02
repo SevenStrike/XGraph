@@ -67,8 +67,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         /// <param name="element"></param>
         /// <param name="child"></param>
-        private void DrawBranchAction(VisualElement element, xAction_Base child, string status)
+        private void DrawBranchAction(VisualElement element, string guid, string status)
         {
+            xAction_Base child = actionScript.RootAsset.FindActionNode(guid);
+
             VisualElement container = new VisualElement();
             container.AddToClassList("list_container");
             element.Add(container);

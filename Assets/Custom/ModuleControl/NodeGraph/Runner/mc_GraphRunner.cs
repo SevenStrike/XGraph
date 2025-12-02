@@ -36,7 +36,7 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 当前正在执行的节点（手动模式下）
     /// </summary>
-    private xAction_Base currentManualNode;
+    private string currentManualNode;
     /// <summary>
     /// 手动执行模式下是否正在等待延时节点
     /// </summary>
@@ -44,7 +44,7 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 手动执行模式下的节点执行队列
     /// </summary>
-    private Queue<xAction_Base> manualExecutionQueue = new Queue<xAction_Base>();
+    private Queue<string> manualExecutionQueue = new Queue<string>();
     /// <summary>
     /// 手动执行完成回调
     /// </summary>
@@ -120,15 +120,17 @@ public class mc_GraphRunner : MonoBehaviour
         if (startNode != null)
         {
             isRunning = true;
-            manualExecutionQueue.Enqueue(startNode);
+            manualExecutionQueue.Enqueue(startNode.guid);
             util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", Logs);
         }
     }
     /// <summary>
     /// 执行手动模式下的单个节点
     /// </summary>
-    private IEnumerator Manual_ExecuteAction(xAction_Base node)
+    private IEnumerator Manual_ExecuteAction(string guid)
     {
+        xAction_Base node = SampleAsset.FindActionNode(guid);
+
         if (node == null || !isRunning) yield break;
 
         util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
@@ -144,7 +146,7 @@ public class mc_GraphRunner : MonoBehaviour
             node.Execute();
 
             // 获取子节点并加入队列
-            var children = Action_GetChildrenActions(node);
+            var children = Action_GetChildrenActions(node.guid);
             foreach (var child in children)
             {
                 if (child != null)
@@ -185,7 +187,7 @@ public class mc_GraphRunner : MonoBehaviour
         }
 
         // 等待完成后获取子节点
-        var children = Action_GetChildrenActions(waitNode);
+        var children = Action_GetChildrenActions(waitNode.guid);
         foreach (var child in children)
         {
             if (child != null)
@@ -311,7 +313,7 @@ public class mc_GraphRunner : MonoBehaviour
         util_Dashboard.LogMsg(xMessageType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", Logs);
 
         var startNode = SampleAsset.Actions.Find(n => n.isStartNode);
-        yield return Action_Execute(startNode);
+        yield return Action_Execute(startNode.guid);
 
         isRunning = false;
         util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", Logs);
@@ -319,8 +321,10 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 行为执行
     /// </summary>
-    IEnumerator Action_Execute(xAction_Base action)
+    IEnumerator Action_Execute(string guid)
     {
+        xAction_Base action = SampleAsset.FindActionNode(guid);
+
         // 检查执行条件
         if (action == null || !isRunning) yield break;
 
@@ -345,7 +349,7 @@ public class mc_GraphRunner : MonoBehaviour
         action.Execute();
 
         // 获取子节点
-        var childrens = Action_GetChildrenActions(action);
+        var childrens = Action_GetChildrenActions(action.guid);
 
         if (childrens.Count == 0)
             yield break;
@@ -389,7 +393,7 @@ public class mc_GraphRunner : MonoBehaviour
         if (!isRunning) yield break;
 
         // 执行子节点（必须包含！）
-        var children = Action_GetChildrenActions(waitNode);
+        var children = Action_GetChildrenActions(waitNode.guid);
         if (children.Count > 0)
         {
             yield return waitNode.isConcurrentExecution ? Action_Execute_Concurrent(children) : Action_Execute_Sequential(children);
@@ -398,7 +402,7 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 顺序执行子节点
     /// </summary>
-    private IEnumerator Action_Execute_Sequential(List<xAction_Base> children)
+    private IEnumerator Action_Execute_Sequential(List<string> children)
     {
         foreach (var child in children)
         {
@@ -409,7 +413,7 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 并发执行子节点
     /// </summary>
-    private IEnumerator Action_Execute_Concurrent(List<xAction_Base> children)
+    private IEnumerator Action_Execute_Concurrent(List<string> children)
     {
         int completedCount = 0;
         var runningCoroutines = new Coroutine[children.Count];
@@ -440,17 +444,19 @@ public class mc_GraphRunner : MonoBehaviour
     /// <summary>
     /// 带回调的执行方法
     /// </summary>
-    private IEnumerator Action_ExecuteWithCallback(xAction_Base node, Action callback)
+    private IEnumerator Action_ExecuteWithCallback(string guid, Action callback)
     {
-        yield return Action_Execute(node);
+        yield return Action_Execute(guid);
         callback?.Invoke();
     }
     /// <summary>
     /// 返回当前节点下的子节点列表
     /// </summary>
-    private List<xAction_Base> Action_GetChildrenActions(xAction_Base current)
+    private List<string> Action_GetChildrenActions(string guid)
     {
-        var list = new List<xAction_Base>();
+        xAction_Base current = SampleAsset.FindActionNode(guid);
+
+        var list = new List<string>();
 
         if (current is xAction_Start start && start.childNodes != null)
             list.AddRange(start.childNodes.FindAll(n => n != null));

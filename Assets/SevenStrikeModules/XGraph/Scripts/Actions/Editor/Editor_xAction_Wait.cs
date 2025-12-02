@@ -57,7 +57,7 @@ namespace SevenStrikeModules.XGraph
 
             for (int i = 0; i < actionScript.childNodes.Count; i++)
             {
-                xAction_Base child = actionScript.childNodes[i];
+                xAction_Base child = actionScript.RootAsset.FindActionNode(actionScript.childNodes[i]);
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
                 fold.Add(container);

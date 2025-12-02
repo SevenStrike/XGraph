@@ -9,11 +9,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 子节点 True
         /// </summary>
-        public xAction_Base childNode_true;
+        public string childNode_true;
         /// <summary>
         /// 子节点 False
         /// </summary>
-        public xAction_Base childNode_false;
+        public string childNode_false;
 
         /// <summary>
         /// 节点执行方法

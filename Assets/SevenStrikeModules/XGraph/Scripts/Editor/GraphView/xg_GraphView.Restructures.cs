@@ -177,7 +177,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch_node.childNode_true != null)
                             {
-                                xNode_Base n_true = FindNodeView(branch_node.childNode_true.guid);
+                                xNode_Base n_true = FindNodeView(branch_node.childNode_true);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_true.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
@@ -187,7 +187,7 @@ namespace SevenStrikeModules.XGraph
                         {
                             if (branch_node.childNode_false != null)
                             {
-                                xNode_Base n_false = FindNodeView(branch_node.childNode_false.guid);
+                                xNode_Base n_false = FindNodeView(branch_node.childNode_false);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_false.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
@@ -204,7 +204,7 @@ namespace SevenStrikeModules.XGraph
                     foreach (var child in children)
                     {
                         xNode_Base n_parent = FindNodeView(data.guid);
-                        xNode_Base n_child = FindNodeView(child.guid);
+                        xNode_Base n_child = FindNodeView(child);
 
                         foreach (var p in n_parent.Port_Outputs)
                         {
