@@ -726,6 +726,15 @@ namespace SevenStrikeModules.XGraph
         {
             return EditorWindow.GetWindow<xg_Window>();
         }
+        /// <summary>
+        /// 获取当前是否已经打开了窗口
+        /// </summary>
+        /// <returns></returns>
+        public static xg_Window GetExistingGraphviewWindow()
+        {
+            var windows = Resources.FindObjectsOfTypeAll<xg_Window>();
+            return windows.Length > 0 ? windows[0] : null;
+        }
         #endregion
 
         /// <summary>

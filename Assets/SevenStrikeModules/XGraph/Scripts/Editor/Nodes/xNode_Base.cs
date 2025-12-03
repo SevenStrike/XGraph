@@ -6,6 +6,7 @@ namespace SevenStrikeModules.XGraph
     using System.Text.RegularExpressions;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
 
@@ -1443,12 +1444,14 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
+        //-------------------------------------------------
+
         #region 绘制界面
         /// <summary>
         /// 绘制节点编辑器内的Inspector界面
         /// </summary>
         /// <returns></returns>
-        public virtual VisualElement CreateGraphviewInespector()
+        public virtual VisualElement NodeInspectorGUI()
         {
             VisualElement rootElement = new VisualElement();
 
@@ -1505,8 +1508,7 @@ namespace SevenStrikeModules.XGraph
             textField_path.RegisterCallback<BlurEvent>((evt) =>
             {
                 TextField field = evt.target as TextField;
-                //field.value = ActionData.path;
-                ActionData.path = field.value;
+                field.value = ActionData.path;
             });
             #endregion
 
@@ -1528,7 +1530,553 @@ namespace SevenStrikeModules.XGraph
             });
             #endregion
 
+            #region 节点颜色
+            ColorField themecolor = util_XGraphInspectorGUI.GUI_Field_Color(fo_node, "标记色", ActionData.themeColor, new string[] { "field_color" });
+            themecolor.RegisterValueChangedCallback(value =>
+            {
+                ActionData.themeSolution = "自定义";
+                ActionData.themeColor = themecolor.value;
+
+                if (ActionData.On_Node_ThemeColorChanged != null)
+                    ActionData.On_Node_ThemeColorChanged();
+            });
+            // 根据节点视图右键菜单更改主题颜色的操作被动更新颜色框值
+            ActionData.On_Node_ThemeColorChanged += () =>
+            {
+                themecolor.value = ActionData.themeColor;
+            };
+            #endregion
+
+            #region 通透样式
+            Toggle tog_transparentNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "通透样式：", ActionData.TransparentNode, new string[] { "field_bool" });
+            tog_transparentNode.RegisterValueChangedCallback((value) =>
+            {
+                //Undo.RecordObject(baseScript, "Change TransparentNode");
+                ActionData.TransparentNode = value.newValue;
+
+                if (ActionData.On_Node_TransparentChanged != null)
+                    ActionData.On_Node_TransparentChanged(value.newValue);
+            });
+            ActionData.On_Node_TransparentChanged += (value) =>
+            {
+                tog_transparentNode.value = value;
+            };
+            #endregion
+
+            #region 节点头像
+            ObjectField avatarobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "头像", ActionData.Avatar, new string[] { "field_object" });
+            avatarobj.RegisterValueChangedCallback(value =>
+            {
+                //Undo.RecordObject(baseScript, "Change Avatar");
+                if (avatarobj.value != null)
+                    ActionData.HasAvatar = true;
+                else
+                    ActionData.HasAvatar = false;
+                Texture2D tex = value.newValue as Texture2D;
+                ActionData.Avatar = tex;
+
+                // 调用创建头像组件方法
+                xg_Window win = util_XGraphEditorUtility.GetGraphviewWindow();
+                xNode_Base node = win.xw_graphView.FindNodeView(ActionData.guid);
+                node.CreateAvatarElement();
+
+                if (ActionData.On_Node_AvatarChanged != null)
+                    ActionData.On_Node_AvatarChanged(tex);
+            });
+            ActionData.On_Node_AvatarChanged += (tex) =>
+            {
+                avatarobj.value = tex;
+            };
+            #endregion
+
+            #region 节点图标
+            ObjectField iconobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "图标", ActionData.NodeIcon, new string[] { "field_object" });
+            iconobj.RegisterValueChangedCallback(value =>
+            {
+                //Undo.RecordObject(baseScript, "Change Avatar");
+                Texture2D tex = value.newValue as Texture2D;
+                ActionData.NodeIcon = tex;
+
+                if (ActionData.On_Node_IconChanged != null)
+                    ActionData.On_Node_IconChanged(tex);
+            });
+            ActionData.On_Node_IconChanged += (tex) =>
+            {
+                iconobj.value = tex;
+            };
+            #endregion
+
+            #region 节点尺寸
+            Vector2Field label_size = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "尺寸", ActionData.nodeGraphSize, new string[] { "field_vector2" });
+            ActionData.On_Node_SizeChanged += (size) =>
+            {
+                label_size.value = size;
+            };
+            label_size.RegisterCallback<BlurEvent>((evt) =>
+            {
+                Vector2Field field = evt.target as Vector2Field;
+                field.value = ActionData.nodeGraphSize;
+            });
+            #endregion
+
+            #region 节点位置
+            Vector2Field label_pos = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "位置", ActionData.nodeGraphPosition, new string[] { "field_vector2" });
+            ActionData.On_Node_Moved += (pos) =>
+            {
+                label_pos.value = pos;
+            };
+            label_pos.RegisterCallback<BlurEvent>((evt) =>
+            {
+                Vector2Field field = evt.target as Vector2Field;
+                field.value = ActionData.nodeGraphPosition;
+            });
+            #endregion
+
+            #region 节点并发模式
+            // 要忽略掉属性节点，因为属性节点不参与行为的流程执行逻辑
+            if (ActionData is not xAction_Property)
+            {
+                Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", ActionData.isConcurrentExecution, new string[] { "field_bool" });
+                tog_concurrent.RegisterValueChangedCallback((value) =>
+                {
+                    //Undo.RecordObject(ActionData, "Change ConcurrentMode");
+                    ActionData.isConcurrentExecution = value.newValue;
+
+                    if (ActionData.On_Node_ConcurrentChanged != null)
+                        ActionData.On_Node_ConcurrentChanged(value.newValue);
+                });
+                ActionData.On_Node_ConcurrentChanged += (value) =>
+                {
+                    tog_concurrent.value = value;
+                };
+            }
+            #endregion
+
+            #region 设置起始节点
+            // 要忽略掉属性节点，因为不能将属性节点作为起始节点
+            if (ActionData is not xAction_Property)
+            {
+                Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", ActionData.isStartNode, new string[] { "field_bool" });
+                tog_isStartNode.RegisterValueChangedCallback((value) =>
+                {
+                    //Undo.RecordObject(baseScript, "Change IsStartNode");
+                    ActionData.isStartNode = value.newValue;
+
+                    ActionData.RootAsset.SetStartNode(ActionData);
+                });
+                ActionData.On_Node_IsStartNode += (value) =>
+                {
+                    tog_isStartNode.value = value;
+                };
+            }
+            #endregion
+
+            #region 父行为
+            ins_Folder_ParentNode(rootElement);
+            #endregion
+
+            #region 子节点折叠器
+            ins_Folder_ChildActions(rootElement);
+            #endregion
+
+            #region Variables 折叠器         
+            ins_Folder_BlackBoardVariable(rootElement);
+            ActionData.On_Node_Variable_Binded += (value) =>
+            {
+                ins_Folder_BlackBoardVariable(rootElement);
+            };
+
+            #endregion
+
+            #region InternalVariables 折叠器           
+            ins_Folder_InternalVariable(rootElement);
+            ActionData.On_Node_Variable_Binded += (value) =>
+            {
+                ins_Folder_InternalVariable(rootElement);
+            };
+            #endregion
+
+            #region 属性参数折叠器
+            ins_Folder_Propertys(rootElement);
+            #endregion
+
+            #region 节点绑定的属性记录折叠器
+            ins_Folder_BindedPropertys(rootElement);
+            #endregion
+
+            #region 自定义扩展 折叠器
+            ins_Folder_Extensions(rootElement);
+            #endregion
+
             return rootElement;
+        }
+        #endregion
+
+        #region 折叠器
+        public virtual Foldout ins_Folder_ParentNode(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "父行为", "parent", new string[] { "foldout" });
+            fold.Clear();
+
+            if (!string.IsNullOrEmpty(ActionData.ParentNodeGuid))
+            {
+                xAction_Base parent = graphView.FindNodeView(ActionData.ParentNodeGuid).ActionData;
+                if (parent != null)
+                {
+                    VisualElement container = new VisualElement();
+                    container.AddToClassList("list_container");
+                    fold.Add(container);
+
+                    // 高亮父节点
+                    container.RegisterCallback<PointerEnterEvent>((evt) =>
+                    {
+                        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                        Node node = wnd.xw_graphView.FindNode(parent.guid);
+                        if (node is xNode_Base n_base)
+                        {
+                            n_base.Highlight();
+                        }
+                    });
+                    // 取消高亮父节点
+                    container.RegisterCallback<PointerLeaveEvent>((evt) =>
+                    {
+                        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                        Node node = wnd.xw_graphView.FindNode(parent.guid);
+                        if (node is xNode_Base n_base)
+                        {
+                            n_base.UnHighlight();
+                        }
+                    });
+
+                    VisualElement container_title = new VisualElement();
+                    container_title.AddToClassList("list_titlebg");
+                    container.Add(container_title);
+
+                    VisualElement container_icon = new VisualElement();
+                    container_icon.AddToClassList("list_item_icon");
+                    container_icon.style.backgroundImage = parent.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.icon)) : parent.NodeIcon;
+                    container_title.Add(container_icon);
+
+                    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
+                    util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.guid}</color>", new string[] { "list_item_label" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.actionNodeType}</color>", new string[] { "list_item_label" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.visualNodeType}</color>", new string[] { "list_item_label" });
+                }
+            }
+            return fold;
+        }
+        /// <summary>
+        /// 黑板变量组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public virtual Foldout ins_Folder_BlackBoardVariable(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"黑板变量（{ActionData.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
+            fold.Clear();
+            for (int i = 0; i < ActionData.VariableDatas.Count; i++)
+            {
+                Binder_Varialble con = ActionData.VariableDatas[i];
+
+                Variable vare = con.variable;
+
+                string var_value = "";
+
+                VisualElement container = new VisualElement();
+                container.AddToClassList("list_container");
+                fold.Add(container);
+                // 高亮黑板变量节点
+                container.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(con.VariableNodeGuid);
+                    if (node is xNode_Variable n_vare)
+                    {
+                        n_vare.Highlight();
+                    }
+                });
+                // 取消高亮黑板变量节点
+                container.RegisterCallback<PointerLeaveEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(con.VariableNodeGuid);
+                    if (node is xNode_Variable n_vare)
+                    {
+                        n_vare.UnHighlight();
+                    }
+                });
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg");
+                container.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/variable.png");
+                container_title.Add(container_icon);
+
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "list_item_marktext" });
+                switch (vare.type)
+                {
+                    case xVariableType.String:
+                        var_value = vare.GetValue<string>().ToString();
+                        break;
+                    case xVariableType.Float:
+                        var_value = vare.GetValue<float>().ToString();
+                        break;
+                    case xVariableType.Int:
+                        var_value = vare.GetValue<int>().ToString();
+                        break;
+                    case xVariableType.Bool:
+                        var_value = vare.GetValue<bool>().ToString();
+                        break;
+                    case xVariableType.Vector2:
+                        var_value = vare.GetValue<Vector2>().ToString();
+                        break;
+                    case xVariableType.Vector3:
+                        var_value = vare.GetValue<Vector3>().ToString();
+                        break;
+                    case xVariableType.Vector4:
+                        var_value = vare.GetValue<Vector4>().ToString();
+                        break;
+                    case xVariableType.Color:
+                        var_value = vare.GetValue<Color>().ToString();
+                        break;
+                }
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#e1e1e1>{con.VariableNodeGuid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#e1e1e1>{vare.guid}</color>", new string[] { "list_item_label" });
+
+            }
+
+            return fold;
+        }
+        /// <summary>
+        /// 内部变量组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public virtual Foldout ins_Folder_InternalVariable(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"内部变量（{ActionData.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
+            fold.Clear();
+            for (int i = 0; i < ActionData.InternalVariableDatas.Count; i++)
+            {
+                Binder_Varialble con = ActionData.InternalVariableDatas[i];
+
+                Variable vare = con.variable;
+
+                string var_value = "";
+
+
+                VisualElement container = new VisualElement();
+                container.AddToClassList("list_container");
+                fold.Add(container);
+
+                // 高亮内部变量节点
+                container.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(con.VariableNodeGuid);
+                    if (node is xNode_Base n_base)
+                    {
+                        n_base.Highlight();
+                    }
+                });
+                // 取消高亮内部变量节点
+                container.RegisterCallback<PointerLeaveEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(con.VariableNodeGuid);
+                    if (node is xNode_Base n_base)
+                    {
+                        n_base.UnHighlight();
+                    }
+                });
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg");
+                container.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/variable.png");
+                container_title.Add(container_icon);
+
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"变量：{vare.name}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, vare.type.ToString(), new string[] { "list_item_marktext" });
+                switch (vare.type)
+                {
+                    case xVariableType.String:
+                        var_value = vare.GetValue<string>().ToString();
+                        break;
+                    case xVariableType.Float:
+                        var_value = vare.GetValue<float>().ToString();
+                        break;
+                    case xVariableType.Int:
+                        var_value = vare.GetValue<int>().ToString();
+                        break;
+                    case xVariableType.Bool:
+                        var_value = vare.GetValue<bool>().ToString();
+                        break;
+                    case xVariableType.Vector2:
+                        var_value = vare.GetValue<Vector2>().ToString();
+                        break;
+                    case xVariableType.Vector3:
+                        var_value = vare.GetValue<Vector3>().ToString();
+                        break;
+                    case xVariableType.Vector4:
+                        var_value = vare.GetValue<Vector4>().ToString();
+                        break;
+                    case xVariableType.Color:
+                        var_value = vare.GetValue<Color>().ToString();
+                        break;
+                }
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N：</b><color=#e1e1e1>{con.VariableNodeGuid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V：</b><color=#e1e1e1>{vare.guid}</color>", new string[] { "list_item_label" });
+            }
+
+            return fold;
+        }
+        /// <summary>
+        /// 自定义派生类组件折叠容器
+        /// </summary>
+        /// <param name="fold"></param>
+        public virtual Foldout ins_Folder_Extensions(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "扩展", "extension", new string[] { "foldout" });
+            fold.Clear();
+            return fold;
+        }
+        /// <summary>
+        /// 子行为组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public virtual Foldout ins_Folder_ChildActions(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "子行为", "childs", new string[] { "foldout" });
+            fold.Clear();
+            return fold;
+        }
+        /// <summary>
+        /// 属性记录折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public virtual Foldout ins_Folder_BindedPropertys(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "属性绑定", "binded_propertys", new string[] { "foldout" });
+            fold.text = $"{fold.text}（{ActionData.binded_propertys.Count}）";
+            fold.Clear();
+
+            for (int i = 0; i < ActionData.binded_propertys.Count; i++)
+            {
+                Binder_Property prop = ActionData.binded_propertys[i];
+
+                VisualElement container = new VisualElement();
+                container.AddToClassList("list_container");
+                fold.Add(container);
+
+                // 高亮属性节点
+                container.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(prop.Property_GUID);
+                    if (node is xNode_Property n_prop)
+                    {
+                        n_prop.Highlight();
+                    }
+                });
+                // 取消高亮属性节点
+                container.RegisterCallback<PointerLeaveEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(prop.Property_GUID);
+                    if (node is xNode_Property n_prop)
+                    {
+                        n_prop.UnHighlight();
+                    }
+                });
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg");
+                container.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/property.png");
+                container_title.Add(container_icon);
+
+                string type = prop.Property_PortType.ToString();
+                string result_type = type.Substring(type.IndexOf("XGraph.") + "XGraph.".Length).Split(new char[] { '_' })[1];
+                util_XGraphInspectorGUI.GUI_Label(container_title, result_type, new string[] { "list_item_marktext" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"{prop.Property_PortName}   >>>   {prop.Action_PortName}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>属性节点：</b><color=#e1e1e1>{prop.Property_NodeName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>目标属性：</b><color=#e1e1e1>{prop.Property_PortName}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{prop.Property_GUID}</color>", new string[] { "list_item_label" });
+            }
+
+            return fold;
+        }
+        /// <summary>
+        /// 属性节点的属性项折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public virtual Foldout ins_Folder_Propertys(VisualElement root)
+        {
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "属性参数", "propertys", new string[] { "foldout" });
+            fold.Clear();
+
+            return fold;
+        }
+        #endregion
+
+        #region 辅助
+        /// <summary>
+        /// 是否存在变量绑定
+        /// </summary>
+        /// <returns></returns>
+        internal bool isVariableBinded()
+        {
+            return ActionData.VariableDatas.Count > 0 || ActionData.InternalVariableDatas.Count > 0 || ActionData.binded_propertys.Count > 0;
+        }
+        /// <summary>
+        /// 检查是否存在目标名称的变量或属性绑定
+        /// </summary>
+        /// <param name="bindname">绑定的字段名称（如"名称"、"激活"）</param>
+        /// <returns></returns>
+        internal bool isVariableBinded(string bindname)
+        {
+            // 检查黑板变量
+            foreach (var variableData in ActionData.VariableDatas)
+            {
+                if (variableData.TargetPortName == bindname)
+                    return true;
+            }
+
+            // 检查内部变量
+            foreach (var internalVariableData in ActionData.InternalVariableDatas)
+            {
+                if (internalVariableData.TargetPortName == bindname)
+                    return true;
+            }
+
+            // 检查属性绑定
+            foreach (var property in ActionData.binded_propertys)
+            {
+                if (property.Action_PortName == bindname)
+                    return true;
+            }
+
+            return false;
         }
         #endregion
     }

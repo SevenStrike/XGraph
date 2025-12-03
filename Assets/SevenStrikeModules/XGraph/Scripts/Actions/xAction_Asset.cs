@@ -380,7 +380,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneStart.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneStart);
+                                childClone.SetParentNode(cloneStart.guid);
                             }
                         }
                     }
@@ -398,7 +398,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneWait.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneWait);
+                                childClone.SetParentNode(cloneWait.guid);
                             }
                         }
                     }
@@ -416,7 +416,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneComposite.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneComposite);
+                                childClone.SetParentNode(cloneComposite.guid);
                             }
                         }
                     }
@@ -434,7 +434,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneRelay.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneRelay);
+                                childClone.SetParentNode(cloneRelay.guid);
                             }
                         }
                     }
@@ -449,14 +449,14 @@ namespace SevenStrikeModules.XGraph
                         {
                             cloneBranch.childNode_true = trueChildClone.guid;
                             // 设置父节点关系
-                            trueChildClone.SetParentNode(cloneBranch);
+                            trueChildClone.SetParentNode(cloneBranch.guid);
                         }
 
                         if (b.childNode_false != null && guidToNodeMap.TryGetValue(b.childNode_false, out var falseChildClone))
                         {
                             cloneBranch.childNode_false = falseChildClone.guid;
                             // 设置父节点关系
-                            falseChildClone.SetParentNode(cloneBranch);
+                            falseChildClone.SetParentNode(cloneBranch.guid);
                         }
                     }
                 }
@@ -575,7 +575,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneStart.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneStart);
+                                childClone.SetParentNode(cloneStart.guid);
                             }
                         }
                     }
@@ -592,7 +592,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneWait.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneWait);
+                                childClone.SetParentNode(cloneWait.guid);
                             }
                         }
                     }
@@ -609,7 +609,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneComposite.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneComposite);
+                                childClone.SetParentNode(cloneComposite.guid);
                             }
                         }
                     }
@@ -623,14 +623,14 @@ namespace SevenStrikeModules.XGraph
                         {
                             cloneBranch.childNode_true = trueChildClone.guid;
                             // 设置父节点关系
-                            trueChildClone.SetParentNode(cloneBranch);
+                            trueChildClone.SetParentNode(cloneBranch.guid);
                         }
 
                         if (b.childNode_false != null && guidToNodeMap.TryGetValue(b.childNode_false, out var falseChildClone))
                         {
                             cloneBranch.childNode_false = falseChildClone.guid;
                             // 设置父节点关系
-                            falseChildClone.SetParentNode(cloneBranch);
+                            falseChildClone.SetParentNode(cloneBranch.guid);
                         }
                     }
                 }
@@ -646,13 +646,12 @@ namespace SevenStrikeModules.XGraph
                             {
                                 cloneRelay.childNodes.Add(childClone.guid);
                                 // 设置父节点关系
-                                childClone.SetParentNode(cloneRelay);
+                                childClone.SetParentNode(cloneRelay.guid);
                             }
                         }
                     }
                 }
             }
-
 
             // 将当前的 Sticks 列表克隆到 asset.Sticks
             asset.Sticks = new List<xStickData>();
@@ -788,7 +787,7 @@ namespace SevenStrikeModules.XGraph
             //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
 
             // 设置父节点关系
-            child.SetParentNode(parent);
+            child.SetParentNode(parent.guid);
 
             #region 特化处理 - Start
             if (parent is xAction_Start s)
@@ -873,7 +872,7 @@ namespace SevenStrikeModules.XGraph
             //Debug.Log($"{parent.identifyName}       |  建立链接  √  |      {child.identifyName}");
 
             // 设置父节点关系
-            child.SetParentNode(parent);
+            child.SetParentNode(parent.guid);
 
             #region 特化处理 - Branch
             if (parent is xAction_Branch b)

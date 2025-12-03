@@ -396,8 +396,8 @@
                 #endregion
 
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
-                EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
-                EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
+                //EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
+                //EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
 
                 // 如果最后一次窗口尺寸值不为0则使用最后一次的窗口尺寸，否则就是用默认窗口尺寸，这里使用的 SourceTree 的原因是因为窗口尺寸这个变量不受克隆影响
                 xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1330, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
@@ -887,19 +887,13 @@
             {
                 EditorApplication.delayCall += () =>
                 {
-                    string path_source = EditorPrefs.GetString("XGraph->ActionTreePath_Source", "");
-                    string path_clone = EditorPrefs.GetString("XGraph->ActionTreePath_Clone", "");
+                    xg_Window win = util_XGraphEditorUtility.GetExistingGraphviewWindow();
 
-                    if (string.IsNullOrEmpty(path_source)) return;
+                    // 没有窗口打开，直接返回
+                    if (win == null)
+                        return;
 
-                    // 根据路径恢复加载节点方案资源
-                    var tree_source = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_source);
-                    var tree_clone = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_clone);
-                    if (tree_clone != null)
-                    {
-                        var window = GetWindow<xg_Window>();
-                        window.ReloadTreeFromPath(tree_source, tree_clone);
-                    }
+                    win.ReloadTreeFromPath(win.SourceTree, win.CloneTree);
                 };
             };
         }
@@ -2127,6 +2121,14 @@
         /// </summary>
         public void ActionTree_SaveAndReplace()
         {
+            // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
+            if (CloneTree != null && NodeEditorIsReady)
+            {
+                CloneTree.LastGraphWindowSize = new Vector2Int((int)position.size.x, (int)position.size.y);
+                CloneTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
+                CloneTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
+            }
+
             // 将调整好的克隆Tree替换回原始Tree
             SourceTree.Replace(CloneTree);
             xw_GraphInfo_LastSaveDateTime_Set(CloneTree.LastSaveDateTime);
@@ -2357,15 +2359,12 @@
         /// </summary>
         private void xw_DestroyGraphView()
         {
-            if (NodeEditorIsReady)
+            // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
+            if (SourceTree != null && NodeEditorIsReady)
             {
-                // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
-                if (SourceTree != null)
-                {
-                    SourceTree.LastGraphWindowSize = new Vector2Int((int)position.size.x, (int)position.size.y);
-                    SourceTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
-                    SourceTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
-                }
+                SourceTree.LastGraphWindowSize = new Vector2Int((int)position.size.x, (int)position.size.y);
+                SourceTree.LastGraphViewPosition = xw_graphView.GetCurrentViewPosition();
+                SourceTree.LastGraphViewZoom = xw_graphView.GetCurrentZoomLevel();
             }
 
             if (xw_toggle_BlackBoardViewDisplay.value)
@@ -2385,9 +2384,8 @@
             SourceTree.XGraph_BlackBoardViewDisplay = xw_toggle_BlackBoardViewDisplay.value;
             // 记录 InspectorViewer 开关状态到行为树根节点变量
             SourceTree.XGraph_DisplayNodeColor = xw_toggle_DisplayNodeColor.value;
-            // 记录 InspectorViewer 开关状态到行为树根节点变量
+            // 记录 InspectorViewer 开关状态到行为树根节点变量 
             SourceTree.XGraph_DisplayNodeFlow = xw_toggle_DisplayNodeFlow.value;
-
 
             xw_DeleteCloneTreeAsset();
         }
@@ -2399,19 +2397,7 @@
             // 删除临时的克隆Tree资源
             if (CloneTree != null)
             {
-#if UNITY_EDITOR
-                string clonePath = AssetDatabase.GetAssetPath(CloneTree);
-                if (!string.IsNullOrEmpty(clonePath))
-                {
-                    AssetDatabase.DeleteAsset(clonePath);
-                }
-                else
-                {
-                    // 如果是内存对象（未保存），直接销毁
-                    DestroyImmediate(CloneTree, true);
-                }
                 CloneTree = null;
-#endif
             }
         }
         /// <summary>

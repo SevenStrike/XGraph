@@ -371,59 +371,59 @@ namespace SevenStrikeModules.XGraph
             Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "父行为", "parent", new string[] { "foldout" });
             fold.Clear();
 
-            xAction_Base parent = baseScript.ParentNode;
+            //xAction_Base parent = baseScript.ParentNodeGuid;
 
-            if (parent != null)
-            {
-                VisualElement container = new VisualElement();
-                container.AddToClassList("list_container");
-                fold.Add(container);
+            //if (parent != null)
+            //{
+            //    VisualElement container = new VisualElement();
+            //    container.AddToClassList("list_container");
+            //    fold.Add(container);
 
-                // 高亮父节点
-                container.RegisterCallback<PointerEnterEvent>((evt) =>
-                {
-                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    Node node = wnd.xw_graphView.FindNode(parent.guid);
-                    if (node is xNode_Base n_base)
-                    {
-                        n_base.Highlight();
-                    }
-                });
-                // 取消高亮父节点
-                container.RegisterCallback<PointerLeaveEvent>((evt) =>
-                {
-                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    Node node = wnd.xw_graphView.FindNode(parent.guid);
-                    if (node is xNode_Base n_base)
-                    {
-                        n_base.UnHighlight();
-                    }
-                });
-                // 定位父节点
-                container.RegisterCallback<PointerDownEvent>((evt) =>
-                {
-                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    if (parent != null)
-                    {
-                        //EditorGUIUtility.PingObject(parent);
-                    }
-                });
+            //    // 高亮父节点
+            //    container.RegisterCallback<PointerEnterEvent>((evt) =>
+            //    {
+            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+            //        Node node = wnd.xw_graphView.FindNode(parent.guid);
+            //        if (node is xNode_Base n_base)
+            //        {
+            //            n_base.Highlight();
+            //        }
+            //    });
+            //    // 取消高亮父节点
+            //    container.RegisterCallback<PointerLeaveEvent>((evt) =>
+            //    {
+            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+            //        Node node = wnd.xw_graphView.FindNode(parent.guid);
+            //        if (node is xNode_Base n_base)
+            //        {
+            //            n_base.UnHighlight();
+            //        }
+            //    });
+            //    // 定位父节点
+            //    container.RegisterCallback<PointerDownEvent>((evt) =>
+            //    {
+            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+            //        if (parent != null)
+            //        {
+            //            //EditorGUIUtility.PingObject(parent);
+            //        }
+            //    });
 
-                VisualElement container_title = new VisualElement();
-                container_title.AddToClassList("list_titlebg");
-                container.Add(container_title);
+            //    VisualElement container_title = new VisualElement();
+            //    container_title.AddToClassList("list_titlebg");
+            //    container.Add(container_title);
 
-                VisualElement container_icon = new VisualElement();
-                container_icon.AddToClassList("list_item_icon");
-                container_icon.style.backgroundImage = parent.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.icon)) : parent.NodeIcon;
-                container_title.Add(container_icon);
+            //    VisualElement container_icon = new VisualElement();
+            //    container_icon.AddToClassList("list_item_icon");
+            //    container_icon.style.backgroundImage = parent.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.icon)) : parent.NodeIcon;
+            //    container_title.Add(container_icon);
 
-                util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
-                util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.guid}</color>", new string[] { "list_item_label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.actionNodeType}</color>", new string[] { "list_item_label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.visualNodeType}</color>", new string[] { "list_item_label" });
-            }
+            //    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
+            //    util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
+            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.guid}</color>", new string[] { "list_item_label" });
+            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.actionNodeType}</color>", new string[] { "list_item_label" });
+            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.visualNodeType}</color>", new string[] { "list_item_label" });
+            //}
 
             return fold;
         }

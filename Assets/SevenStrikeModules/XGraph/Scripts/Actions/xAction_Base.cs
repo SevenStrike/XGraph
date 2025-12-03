@@ -192,8 +192,7 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 父节点
-        [SerializeField] private xAction_Base _parentNode;
-        public xAction_Base ParentNode => _parentNode;
+        [SerializeField] public string ParentNodeGuid;
         #endregion
 
         #region 节点执行方法
@@ -212,9 +211,9 @@ namespace SevenStrikeModules.XGraph
         /// 设置父节点的方法
         /// </summary>
         /// <param name="parent"></param>
-        public void SetParentNode(xAction_Base parent)
+        public void SetParentNode(string guid)
         {
-            _parentNode = parent;
+            ParentNodeGuid = guid;
         }
         /// <summary>
         /// 设置行为根节点资源的方法
@@ -425,6 +424,11 @@ namespace SevenStrikeModules.XGraph
             {
                 T value = variable.GetValue<T>();
                 setter(value);
+                Debug.Log(123);
+            }
+            else
+            {
+                Debug.Log(999);
             }
         }
         /// <summary>
@@ -629,7 +633,7 @@ namespace SevenStrikeModules.XGraph
             // 复制基础字段
             clone.identifyName = this.identifyName;
             clone.content = this.content;
-            clone.guid = System.Guid.NewGuid().ToString(); // 新GUID
+            clone.guid = guid;
             clone.namespaces = this.namespaces;
             clone.classes = this.classes;
             clone.path = this.path;

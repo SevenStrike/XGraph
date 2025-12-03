@@ -155,30 +155,8 @@ namespace SevenStrikeModules.XGraph
             Add(container);
             #endregion
 
-            container.Add(n_base.CreateGraphviewInespector());
-
-            #region 行为节点自定义属性面板
-            //bool isCustomEditor = (editorType != null && typeof(Editor).IsAssignableFrom(editorType)) ? true : false;
-            //switch (isCustomEditor)
-            //{
-            //    // 存在Editor解释文件，使用自定义界面样式
-            //    case true:
-            //        editor = Editor.CreateEditor(target, editorType);
-            //        if (editor is editor_xAction_Base actionEditor)
-            //            container.Add(actionEditor.CreateGraphviewInespector());
-            //        break;
-            //    // 不存在Editor解释文件，使用内置界面样式
-            //    case false:
-            //        // 回退到默认编辑器
-            //        editor = Editor.CreateEditor(target);
-            //        IMGUIContainer imguiContainer = new IMGUIContainer(() =>
-            //        {
-            //            editor.OnInspectorGUI();
-            //        });
-            //        container.Add(imguiContainer);
-            //        break;
-            //}
-            #endregion
+            // 调用节点的InspectorGUI，以此支持在内置的Inspector面板上绘制节点属性
+            container.Add(n_base.NodeInspectorGUI());
         }
         /// <summary>
         /// 创建行为根资源的属性面板
