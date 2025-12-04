@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: mc-NodeGraph
   m_EditorClassIdentifier: 
   LastGraphWindowSize: {x: 1609, y: 1019}
-  LastGraphViewPosition: {x: 202, y: 136}
+  LastGraphViewPosition: {x: 303, y: 159}
   LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-12-04  -  23:59:25
+  LastSaveDateTime: 2025-12-05  -  00:12:07
   GraphNodesStruct: {fileID: 4900000, guid: 67ec120f3ab9b6c428246fcdc6b95eea, type: 3}
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
@@ -58,10 +58,10 @@ MonoBehaviour:
   XGraph_DisplayNodeColor: 0
   XGraph_DisplayNodeFlow: 0
   Actions:
-  - rid: 1468847584718880959
-  - rid: 1468847584718880960
-  - rid: 1468847584718880961
-  - rid: 1468847584718880962
+  - rid: 1468847584913391702
+  - rid: 1468847584913391703
+  - rid: 1468847584913391704
+  - rid: 1468847584913391705
   Variables: []
   Sticks: []
   Labels: []
@@ -96,7 +96,7 @@ MonoBehaviour:
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
         type: 7
         value: {r: 0, g: 0, b: 0, a: 0}
-    - rid: 1468847584718880959
+    - rid: 1468847584913391702
       type: {class: action_mc_module_initialize, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u6A21\u7EC4\u521D\u59CB\u5316"
@@ -125,8 +125,8 @@ MonoBehaviour:
         binded_propertys: []
         childNodes:
         - 1a58c69b2e2b1774fb15fa5a64c9df2a
-        activateAllModules: 0
-    - rid: 1468847584718880960
+        activateAllModules: 1
+    - rid: 1468847584913391703
       type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u7B49\u5F85"
@@ -156,7 +156,7 @@ MonoBehaviour:
         childNodes:
         - c096a9e828ca70c4a9862d4b8f66ca7d
         Time: 0
-    - rid: 1468847584718880961
+    - rid: 1468847584913391704
       type: {class: action_mc_property_mainlight, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u706F\u5149\u5C5E\u6027"
@@ -188,7 +188,7 @@ MonoBehaviour:
         - rid: 1468847580011561980
         - rid: 1468847580011561981
         Light: {fileID: 0}
-    - rid: 1468847584718880962
+    - rid: 1468847584913391705
       type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"

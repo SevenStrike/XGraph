@@ -11,6 +11,8 @@ namespace SevenStrikeModules.XGraph
     public class xAction_Base
     {
         [Header("- 节点 -")]
+        public class_ActionBased ActionBased;
+
         #region 节点参数
         /// <summary>
         /// 行为节点 - 名称

@@ -398,7 +398,7 @@
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
                 string path_source = AssetDatabase.GetAssetPath(wnd.SourceTree);
                 EditorPrefs.SetString("XGraph->ActionAssetPath", path_source);
-                Debug.Log($"临时保存资源路径：{path_source}");
+                //Debug.Log($"临时保存资源路径：{path_source}");
 
                 // 如果最后一次窗口尺寸值不为0则使用最后一次的窗口尺寸，否则就是用默认窗口尺寸，这里使用的 SourceTree 的原因是因为窗口尺寸这个变量不受克隆影响
                 xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1330, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
@@ -906,7 +906,7 @@
                         win.SourceTree = null;
 
                     string path_source = EditorPrefs.GetString("XGraph->ActionAssetPath");
-                    Debug.Log($"重新获取资源路径：{path_source}");
+                    //Debug.Log($"重新获取资源路径：{path_source}");
                     win.SourceTree = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_source);
                     win.CloneTree = win.SourceTree.Clone();
 
@@ -1019,7 +1019,7 @@
                 // 在进入游戏模式时，保存原始资源路径到 EditorPrefs
                 string path_source = AssetDatabase.GetAssetPath(SourceTree);
                 EditorPrefs.SetString("XGraph->ActionAssetPath", path_source);
-                Debug.Log($"运行前保存资源路径：{path_source}");
+                //Debug.Log($"运行前保存资源路径：{path_source}");
             }
             if (obj == PlayModeStateChange.ExitingPlayMode)
             {
@@ -1036,7 +1036,7 @@
                 }
 
                 string path_source = EditorPrefs.GetString("XGraph->ActionAssetPath");
-                Debug.Log($"停止运行后重新获取资源路径：{path_source}");
+                //Debug.Log($"停止运行后重新获取资源路径：{path_source}");
 
                 // 延迟加载，确保所有资源都已清理
                 EditorApplication.delayCall += () =>
@@ -1052,11 +1052,11 @@
                             win.CloneTree = win.SourceTree.Clone();
                             win.ReloadTreeFromPath(win.SourceTree, win.CloneTree);
 
-                            Debug.Log("停止游戏后资源重载完成");
+                            //Debug.Log("停止游戏后资源重载完成");
                         }
                         else
                         {
-                            Debug.LogError($"无法重新加载资源：{path_source}");
+                            util_Dashboard.LogMsg(xMessageType.警告, $"无法重新加载资源：{path_source}", "", true);
                         }
                     };
                 };
@@ -1933,7 +1933,7 @@
         /// <exception cref="NotImplementedException"></exception>
         private void xw_btn_Help_clicked()
         {
-            Debug.Log("打开教程网站！");
+            util_Dashboard.LogMsg(xMessageType.警告, $"正在打开教程网站！", "", true);
         }
         #endregion
 
@@ -2022,7 +2022,7 @@
         {
             if (evt.button == (int)MouseButton.LeftMouse && evt.clickCount == 2)
             {
-                Debug.Log("已拷贝行为资源路径到系统剪贴板！");
+                util_Dashboard.LogMsg(xMessageType.警告, $"已拷贝行为资源路径到系统剪贴板！", "", true);
                 GUIUtility.systemCopyBuffer = xw_GraphInfo_PathContent.text;
             }
         }
