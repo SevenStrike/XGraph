@@ -141,12 +141,12 @@ namespace SevenStrikeModules.XGraph
             if (target == null)
                 return;
 
-            #region  尝试查找是否有自定义 Editor
-            string asm = "Assembly-CSharp-Editor";
-            string name = target.GetType().Name;
-            string result = util_XGraphEditorUtility.HasString(name, "xAction") ? name : util_XGraphEditorUtility.ExtractString(name, 7);
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{result}, {asm}");
-            #endregion
+            //#region  尝试查找是否有自定义 Editor
+            //string asm = "Assembly-CSharp-Editor";
+            //string name = target.GetType().Name;
+            //string result = util_XGraphEditorUtility.HasString(name, "xAction") ? name : util_XGraphEditorUtility.ExtractString(name, 7);
+            //var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{result}, {asm}");
+            //#endregion
 
             #region 布局容器
             // 创建布局容器
