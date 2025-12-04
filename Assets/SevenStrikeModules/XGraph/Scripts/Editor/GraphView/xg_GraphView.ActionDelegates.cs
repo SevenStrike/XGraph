@@ -173,7 +173,7 @@ namespace SevenStrikeModules.XGraph
             {
                 foreach (var nodes in nodes)
                 {
-                    if (data.guid == nodes.viewDataKey)
+                    if (data.BaseArgs.guid == nodes.viewDataKey)
                     {
                         if (nodes is xNode_Base bs)
                         {

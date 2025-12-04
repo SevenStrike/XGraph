@@ -1,8 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -219,7 +217,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.BaseArgs.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 变量类型标签
             string[] styles_sub = new string[] { "type" };
@@ -232,17 +230,17 @@ namespace SevenStrikeModules.XGraph
             titlegroup.Add(lab_sub);
 
             // node_guid
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#e1e1e1>{data.guid}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#e1e1e1>{data.BaseArgs.guid}</color>", new string[1] { "labeltext" });
 
             // node_size
-            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#e1e1e1>X：{data.nodeGraphSize.x.ToString()}    Y：{data.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
+            Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#e1e1e1>X：{data.BaseArgs.nodeGraphSize.x.ToString()}    Y：{data.BaseArgs.nodeGraphSize.y.ToString()}</color>", new string[1] { "labeltext" });
             n_var_internal.ActionData.On_Node_SizeChanged += (size) =>
             {
                 label_size.text = $"<b>节点尺寸： </b> <color=#e1e1e1>X：{size.x}    Y：{size.y}</color>";
             };
 
             // node_pos
-            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#e1e1e1>X：{data.nodeGraphPosition.x.ToString()}    Y：{data.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
+            Label label_pos = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点位置： </b> <color=#e1e1e1>X：{data.BaseArgs.nodeGraphPosition.x.ToString()}    Y：{data.BaseArgs.nodeGraphPosition.y.ToString()}</color>", new string[1] { "labeltext" });
             n_var_internal.ActionData.On_Node_Moved += (pos) =>
             {
                 label_pos.text = $"<b>节点位置： </b> <color=#e1e1e1>X：{pos.x}    Y：{pos.y}</color>";
@@ -256,7 +254,7 @@ namespace SevenStrikeModules.XGraph
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_string.value = data.variable.GetValue<string>();
                         }
@@ -272,7 +270,7 @@ namespace SevenStrikeModules.XGraph
                     field_string.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_string.value = data.variable.GetValue<string>();
                         }
@@ -295,7 +293,7 @@ namespace SevenStrikeModules.XGraph
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_float.value = data.variable.GetValue<float>();
                         }
@@ -311,7 +309,7 @@ namespace SevenStrikeModules.XGraph
                     field_float.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_float.value = data.variable.GetValue<float>();
                         }
@@ -334,7 +332,7 @@ namespace SevenStrikeModules.XGraph
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_int.value = data.variable.GetValue<int>();
                         }
@@ -350,7 +348,7 @@ namespace SevenStrikeModules.XGraph
                     field_int.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_int.value = data.variable.GetValue<int>();
                         }
@@ -377,7 +375,7 @@ namespace SevenStrikeModules.XGraph
                     field_bool.RegisterValueChangedCallback((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_bool.value = data.variable.GetValue<bool>();
                         }
@@ -398,7 +396,7 @@ namespace SevenStrikeModules.XGraph
                     field_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_bool.value = data.variable.GetValue<bool>();
                         }
@@ -417,7 +415,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector2.value = data.variable.GetValue<Vector2>();
                         }
@@ -433,7 +431,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector2.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector2.value = data.variable.GetValue<Vector2>();
                         }
@@ -456,7 +454,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector3.value = data.variable.GetValue<Vector3>();
                         }
@@ -472,7 +470,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector3.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector3.value = data.variable.GetValue<Vector3>();
                         }
@@ -495,7 +493,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector4.value = data.variable.GetValue<Vector4>();
                         }
@@ -511,7 +509,7 @@ namespace SevenStrikeModules.XGraph
                     field_vector4.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_vector4.value = data.variable.GetValue<Vector4>();
                         }
@@ -534,7 +532,7 @@ namespace SevenStrikeModules.XGraph
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_color.value = data.variable.GetValue<Color>();
                         }
@@ -550,7 +548,7 @@ namespace SevenStrikeModules.XGraph
                     field_color.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         #region 如果该内部变量有链接黑板变量则不会更改黑板变量，而是用黑板变量覆盖当前属性框的值
-                        if (data.VariableDatas != null && data.VariableDatas.Count > 0)
+                        if (data.BaseArgs.VariableDatas != null && data.BaseArgs.VariableDatas.Count > 0)
                         {
                             field_color.value = data.variable.GetValue<Color>();
                         }
@@ -1247,7 +1245,7 @@ namespace SevenStrikeModules.XGraph
             string text = string.Empty;
             if (node is xNode_Base out_base)
             {
-                text = out_base.ActionData.identifyName;
+                text = out_base.ActionData.BaseArgs.identifyName;
             }
             if (node is xNode_Variable out_var)
             {
@@ -1265,7 +1263,7 @@ namespace SevenStrikeModules.XGraph
             Color col = Color.white;
             if (node is xNode_Base out_base)
             {
-                col = out_base.ActionData.themeColor;
+                col = out_base.ActionData.BaseArgs.themeColor;
             }
             return col;
         }
@@ -1279,10 +1277,10 @@ namespace SevenStrikeModules.XGraph
             Texture2D tex = null;
             if (node is xNode_Base out_base)
             {
-                if (out_base.ActionData.NodeIcon == null)
-                    tex = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(out_base.ActionData.icon));
+                if (out_base.ActionData.BaseArgs.NodeIcon == null)
+                    tex = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(out_base.ActionData.BaseArgs.icon));
                 else
-                    tex = out_base.ActionData.NodeIcon;
+                    tex = out_base.ActionData.BaseArgs.NodeIcon;
             }
             if (node is xNode_Variable out_var)
             {

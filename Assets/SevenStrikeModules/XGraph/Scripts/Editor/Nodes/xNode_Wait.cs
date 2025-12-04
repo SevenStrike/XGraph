@@ -194,7 +194,7 @@ namespace SevenStrikeModules.XGraph
 
             for (int i = 0; i < wait.childNodes.Count; i++)
             {
-                xAction_Base child = wait.RootAsset.FindActionNode(wait.childNodes[i]);
+                xAction_Base child = wait.BaseArgs.RootAsset.FindActionNode(wait.childNodes[i]);
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
@@ -203,7 +203,7 @@ namespace SevenStrikeModules.XGraph
                 container.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
                     xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    Node node = wnd.xw_graphView.FindNode(child.guid);
+                    Node node = wnd.xw_graphView.FindNode(child.BaseArgs.guid);
                     if (node is xNode_Base n_base)
                     {
                         n_base.Highlight();
@@ -213,7 +213,7 @@ namespace SevenStrikeModules.XGraph
                 container.RegisterCallback<PointerLeaveEvent>((evt) =>
                 {
                     xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    Node node = wnd.xw_graphView.FindNode(child.guid);
+                    Node node = wnd.xw_graphView.FindNode(child.BaseArgs.guid);
                     if (node is xNode_Base n_base)
                     {
                         n_base.UnHighlight();
@@ -226,14 +226,14 @@ namespace SevenStrikeModules.XGraph
 
                 VisualElement container_icon = new VisualElement();
                 container_icon.AddToClassList("list_item_icon");
-                container_icon.style.backgroundImage = child.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(child.icon)) : child.NodeIcon;
+                container_icon.style.backgroundImage = child.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(child.BaseArgs.icon)) : child.BaseArgs.NodeIcon;
                 container_title.Add(container_icon);
 
-                util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{child.identifyName}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{child.BaseArgs.identifyName}", new string[] { "labeltext", "list_item_title" });
                 util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{child.guid}</color>", new string[] { "list_item_label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{child.actionNodeType}</color>", new string[] { "list_item_label" });
-                util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{child.visualNodeType}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{child.BaseArgs.guid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{child.BaseArgs.actionNodeType}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{child.BaseArgs.visualNodeType}</color>", new string[] { "list_item_label" });
             }
 
             return fold;

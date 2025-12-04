@@ -118,10 +118,10 @@ namespace SevenStrikeModules.XGraph
             {
                 vm_mark.AddToClassList(styles_mark[i]);
             }
-            if (nodedata.NodeIcon == null)
-                vm_mark.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(nodedata.icon));
+            if (nodedata.BaseArgs.NodeIcon == null)
+                vm_mark.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(nodedata.BaseArgs.icon));
             else
-                vm_mark.style.backgroundImage = nodedata.NodeIcon;
+                vm_mark.style.backgroundImage = nodedata.BaseArgs.NodeIcon;
             vm_group.Add(vm_mark);
 
             // 标题

@@ -5,7 +5,6 @@ namespace SevenStrikeModules.XGraph
     using UnityEditor.UIElements;
     using UnityEngine;
     using UnityEngine.UIElements;
-    using UnityEngine.Windows;
 
     [CustomEditor(typeof(xAction_Base), true)]
     public class editor_xAction_Base : Editor
@@ -218,7 +217,7 @@ namespace SevenStrikeModules.XGraph
 
                 // 调用创建头像组件方法
                 xg_Window win = util_XGraphEditorUtility.GetGraphviewWindow();
-                xNode_Base node = win.xw_graphView.FindNodeView(baseScript.guid);
+                xNode_Base node = win.xw_graphView.FindNodeView(baseScript.BaseArgs.guid);
                 node.CreateAvatarElement();
 
                 if (baseScript.On_Node_AvatarChanged != null)
@@ -311,7 +310,7 @@ namespace SevenStrikeModules.XGraph
                             //Undo.RecordObject(baseScript, "Change IsStartNode");
                             sp_isStartNode.boolValue = value.newValue;
 
-                            baseScript.RootAsset.SetStartNode(baseScript);
+                            baseScript.BaseArgs.RootAsset.SetStartNode(baseScript);
                             serializedObject.ApplyModifiedProperties();
                         });
                 baseScript.On_Node_IsStartNode += (value) =>
@@ -371,60 +370,6 @@ namespace SevenStrikeModules.XGraph
             Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "父行为", "parent", new string[] { "foldout" });
             fold.Clear();
 
-            //xAction_Base parent = baseScript.ParentNodeGuid;
-
-            //if (parent != null)
-            //{
-            //    VisualElement container = new VisualElement();
-            //    container.AddToClassList("list_container");
-            //    fold.Add(container);
-
-            //    // 高亮父节点
-            //    container.RegisterCallback<PointerEnterEvent>((evt) =>
-            //    {
-            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-            //        Node node = wnd.xw_graphView.FindNode(parent.guid);
-            //        if (node is xNode_Base n_base)
-            //        {
-            //            n_base.Highlight();
-            //        }
-            //    });
-            //    // 取消高亮父节点
-            //    container.RegisterCallback<PointerLeaveEvent>((evt) =>
-            //    {
-            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-            //        Node node = wnd.xw_graphView.FindNode(parent.guid);
-            //        if (node is xNode_Base n_base)
-            //        {
-            //            n_base.UnHighlight();
-            //        }
-            //    });
-            //    // 定位父节点
-            //    container.RegisterCallback<PointerDownEvent>((evt) =>
-            //    {
-            //        xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-            //        if (parent != null)
-            //        {
-            //            //EditorGUIUtility.PingObject(parent);
-            //        }
-            //    });
-
-            //    VisualElement container_title = new VisualElement();
-            //    container_title.AddToClassList("list_titlebg");
-            //    container.Add(container_title);
-
-            //    VisualElement container_icon = new VisualElement();
-            //    container_icon.AddToClassList("list_item_icon");
-            //    container_icon.style.backgroundImage = parent.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.icon)) : parent.NodeIcon;
-            //    container_title.Add(container_icon);
-
-            //    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
-            //    util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
-            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.guid}</color>", new string[] { "list_item_label" });
-            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.actionNodeType}</color>", new string[] { "list_item_label" });
-            //    util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.visualNodeType}</color>", new string[] { "list_item_label" });
-            //}
-
             return fold;
         }
         /// <summary>
@@ -433,11 +378,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public virtual Foldout Folder_BlackBoardVariable(VisualElement root)
         {
-            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"黑板变量（{baseScript.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"黑板变量（{baseScript.BaseArgs.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
             fold.Clear();
-            for (int i = 0; i < baseScript.VariableDatas.Count; i++)
+            for (int i = 0; i < baseScript.BaseArgs.VariableDatas.Count; i++)
             {
-                Binder_Varialble con = baseScript.VariableDatas[i];
+                Binder_Varialble con = baseScript.BaseArgs.VariableDatas[i];
 
                 Variable vare = con.variable;
 
@@ -505,7 +450,7 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
@@ -522,11 +467,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public virtual Foldout Folder_InternalVariable(VisualElement root)
         {
-            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"内部变量（{baseScript.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"内部变量（{baseScript.BaseArgs.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
             fold.Clear();
-            for (int i = 0; i < baseScript.InternalVariableDatas.Count; i++)
+            for (int i = 0; i < baseScript.BaseArgs.InternalVariableDatas.Count; i++)
             {
-                Binder_Varialble con = baseScript.InternalVariableDatas[i];
+                Binder_Varialble con = baseScript.BaseArgs.InternalVariableDatas[i];
 
                 Variable vare = con.variable;
 
@@ -596,7 +541,7 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = baseScript.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
@@ -634,12 +579,12 @@ namespace SevenStrikeModules.XGraph
         public virtual Foldout Folder_BindedPropertys(VisualElement root)
         {
             Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "属性绑定", "binded_propertys", new string[] { "foldout" });
-            fold.text = $"{fold.text}（{baseScript.binded_propertys.Count}）";
+            fold.text = $"{fold.text}（{baseScript.BaseArgs.binded_propertys.Count}）";
             fold.Clear();
 
-            for (int i = 0; i < baseScript.binded_propertys.Count; i++)
+            for (int i = 0; i < baseScript.BaseArgs.binded_propertys.Count; i++)
             {
-                Binder_Property prop = baseScript.binded_propertys[i];
+                Binder_Property prop = baseScript.BaseArgs.binded_propertys[i];
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
@@ -707,7 +652,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         internal bool isVariableBinded()
         {
-            return baseScript.VariableDatas.Count > 0 || baseScript.InternalVariableDatas.Count > 0 || baseScript.binded_propertys.Count > 0;
+            return baseScript.BaseArgs.VariableDatas.Count > 0 || baseScript.BaseArgs.InternalVariableDatas.Count > 0 || baseScript.BaseArgs.binded_propertys.Count > 0;
         }
         /// <summary>
         /// 检查是否存在目标名称的变量或属性绑定
@@ -717,21 +662,21 @@ namespace SevenStrikeModules.XGraph
         internal bool isVariableBinded(string bindname)
         {
             // 检查黑板变量
-            foreach (var variableData in baseScript.VariableDatas)
+            foreach (var variableData in baseScript.BaseArgs.VariableDatas)
             {
                 if (variableData.TargetPortName == bindname)
                     return true;
             }
 
             // 检查内部变量
-            foreach (var internalVariableData in baseScript.InternalVariableDatas)
+            foreach (var internalVariableData in baseScript.BaseArgs.InternalVariableDatas)
             {
                 if (internalVariableData.TargetPortName == bindname)
                     return true;
             }
 
             // 检查属性绑定
-            foreach (var property in baseScript.binded_propertys)
+            foreach (var property in baseScript.BaseArgs.binded_propertys)
             {
                 if (property.Action_PortName == bindname)
                     return true;

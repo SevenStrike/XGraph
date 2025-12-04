@@ -1,17 +1,16 @@
-using UnityEngine;
-
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEngine;
+
     public class action_mc_mainlight_control : xAction_Composite
     {
-        [Header("- 扩展 -")]
         public bool lightEnable;
 
         public override void Execute()
         {
             base.Execute();
 
-            mc_GraphAsset asset = RootAsset as mc_GraphAsset;
+            mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
             {
                 asset.ModuleController.MainLight_Control(lightEnable);
@@ -35,7 +34,6 @@ namespace SevenStrikeModules.XGraph
         {
             lightEnable = state;
         }
-
 
         /// <summary>
         /// 克隆该节点时确保改脚本独立变量正确克隆

@@ -3,7 +3,6 @@ namespace SevenStrikeModules.XGraph
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -157,10 +156,10 @@ namespace SevenStrikeModules.XGraph
                 ActionData = data;
 
             #region 基础参数设置
-            this.icon = data.icon;
-            this.viewDataKey = data != null ? data.guid : "";
+            this.icon = data.BaseArgs.icon;
+            this.viewDataKey = data != null ? data.BaseArgs.guid : "";
             // 设置节点标题
-            this.title = this.nodeTitle = data != null ? data.identifyName : "";
+            this.title = this.nodeTitle = data != null ? data.BaseArgs.identifyName : "";
             #endregion
 
             // 设置节点的生成位置
@@ -175,7 +174,7 @@ namespace SevenStrikeModules.XGraph
             RegisterCallback<GeometryChangedEvent>(OnSizeChanged);
 
             // 注册黑板变量数值变化回调
-            ActionData.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
+            ActionData.BaseArgs.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
 
             // 注册节点重建的回调
             ActionData.On_Node_Restructure = null;
@@ -204,23 +203,23 @@ namespace SevenStrikeModules.XGraph
         {
             if (ExecutionIcon != null)
                 // 改变分割图标颜色
-                ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.themeColor;
+                ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.BaseArgs.themeColor;
 
             // 更新节点标记颜色
-            UpdateMarkColor(ActionData.themeColor);
+            UpdateMarkColor(ActionData.BaseArgs.themeColor);
 
             // 改变输入端连线颜色
             if (Port_Inputs != null)
             {
                 foreach (var x in Port_Inputs)
                 {
-                    x.Port.portColor = ActionData.themeColor;
-                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.themeColor);
+                    x.Port.portColor = ActionData.BaseArgs.themeColor;
+                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.BaseArgs.themeColor);
                     var edges = x.Port.connections.ToList();
                     // 遍历所有连线
                     foreach (var edge in edges)
                     {
-                        edge.edgeControl.inputColor = ActionData.themeColor;
+                        edge.edgeControl.inputColor = ActionData.BaseArgs.themeColor;
                     }
                 }
             }
@@ -230,14 +229,14 @@ namespace SevenStrikeModules.XGraph
             {
                 foreach (var x in Port_Outputs)
                 {
-                    x.Port.portColor = ActionData.themeColor;
-                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.themeColor);
+                    x.Port.portColor = ActionData.BaseArgs.themeColor;
+                    util_XGraphEditorUtility.Element_BorderColor_Set(x.PortDonut, ActionData.BaseArgs.themeColor);
 
                     var edges = x.Port.connections.ToList();
                     // 遍历所有连线
                     foreach (var edge in edges)
                     {
-                        edge.edgeControl.outputColor = ActionData.themeColor;
+                        edge.edgeControl.outputColor = ActionData.BaseArgs.themeColor;
                     }
                 }
             }
@@ -275,11 +274,11 @@ namespace SevenStrikeModules.XGraph
             base.SetPosition(newPos);
             if (ActionData != null)
             {
-                ActionData.nodeGraphPosition.x = newPos.xMin;
-                ActionData.nodeGraphPosition.y = newPos.yMin;
+                ActionData.BaseArgs.nodeGraphPosition.x = newPos.xMin;
+                ActionData.BaseArgs.nodeGraphPosition.y = newPos.yMin;
 
                 if (ActionData.On_Node_Moved != null)
-                    ActionData.On_Node_Moved(ActionData.nodeGraphPosition);
+                    ActionData.On_Node_Moved(ActionData.BaseArgs.nodeGraphPosition);
             }
 
             VisualElementDisplay(TitleLabel, true);
@@ -293,7 +292,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragUpdated(DragUpdatedEvent evt)
         {
-            if (ActionData.actionNodeType == "Relay")
+            if (ActionData.BaseArgs.actionNodeType == "Relay")
                 return;
 
             // 只关心贴图
@@ -326,7 +325,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void OnDragPerform(DragPerformEvent evt)
         {
-            if (ActionData.actionNodeType == "Relay")
+            if (ActionData.BaseArgs.actionNodeType == "Relay")
                 return;
             var tex = DragAndDrop.objectReferences[0] as Texture2D;
             if (tex == null) return;
@@ -416,7 +415,7 @@ namespace SevenStrikeModules.XGraph
         {
             foreach (var p in Port_Inputs)
             {
-                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Input, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
+                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Input, p.Capacity, p.Type, ActionData.BaseArgs.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.BaseArgs.themeColor);
                 p.PortDonut = p.Port.Q<VisualElement>("connector");
                 SetPortStyle(p, xPortType.In);
                 AppendElement(xNodeContainerType.InputContainer, p.Port);
@@ -431,7 +430,7 @@ namespace SevenStrikeModules.XGraph
             foreach (var p in Port_Outputs)
             {
                 // 绘制端口 - 输出
-                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Output, p.Capacity, p.Type, ActionData.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.themeColor);
+                p.Port = Port_Create(p.Name, Orientation.Horizontal, Direction.Output, p.Capacity, p.Type, ActionData.BaseArgs.themeSolution == "M 默认" ? Color.white * 0.7f : ActionData.BaseArgs.themeColor);
                 p.PortDonut = p.Port.Q<VisualElement>("connector");
                 SetPortStyle(p, xPortType.Out);
                 AppendElement(xNodeContainerType.OutputContainer, p.Port);
@@ -465,15 +464,15 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 如果指定了图标就不用根据名称指定的图标了
-            if (ActionData.NodeIcon != null)
-                NodeTitleIcon_Set(ActionData.NodeIcon);
+            if (ActionData.BaseArgs.NodeIcon != null)
+                NodeTitleIcon_Set(ActionData.BaseArgs.NodeIcon);
             else
                 NodeTitleIcon_Restore();
             NodeTitleIconLabel.RegisterCallback<PointerDownEvent>(ChangeTitleIcon);
             #endregion
 
             #region 用于显示节点名称
-            TitleLabel = new Label(ActionData.identifyName);
+            TitleLabel = new Label(ActionData.BaseArgs.identifyName);
             TitleLabel.AddToClassList("Title_Label");
             TitleLabel.RegisterCallback<PointerDownEvent>((evt) =>
             {
@@ -495,7 +494,7 @@ namespace SevenStrikeModules.XGraph
             {
                 multiline = false
             };
-            TitleInputField.value = ActionData.identifyName;
+            TitleInputField.value = ActionData.BaseArgs.identifyName;
             TitleInputField.AddToClassList("Title_TextField");
             TitleInputField.RegisterCallback<BlurEvent>(OnTitleInputFieldBlur);
             VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
@@ -521,9 +520,9 @@ namespace SevenStrikeModules.XGraph
             #region 应用配置文件的颜色到节点的标识颜色
             foreach (var colorData in graphView.NodeThemesList.Node)
             {
-                if (colorData.solution == ActionData.themeSolution)
+                if (colorData.solution == ActionData.BaseArgs.themeSolution)
                 {
-                    ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.themeSolution == "M 默认" ? Color.white : ActionData.themeColor;
+                    ExecutionIcon.style.unityBackgroundImageTintColor = ActionData.BaseArgs.themeSolution == "M 默认" ? Color.white : ActionData.BaseArgs.themeColor;
                 }
             }
             #endregion
@@ -549,7 +548,7 @@ namespace SevenStrikeModules.XGraph
             CreateIsStartNodeMark();
 
             #region 头像组件
-            if (ActionData.HasAvatar)
+            if (ActionData.BaseArgs.HasAvatar)
             {
                 RegisterAvatarClicked();
             }
@@ -570,7 +569,7 @@ namespace SevenStrikeModules.XGraph
 
             if (evt.clickCount == 2)
             {
-                OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", ActionData.NodeIcon);
+                OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", ActionData.BaseArgs.NodeIcon);
             }
 
             evt.StopPropagation();
@@ -584,10 +583,8 @@ namespace SevenStrikeModules.XGraph
         {
             //Undo.RecordObject(ActionData, "Change ActionNode Name");
 
-            if (TitleInputField.value != ActionData.identifyName)
-                TitleLabel.text = ActionData.identifyName = TitleInputField.value;
-
-            ActionData.path = Regex.Replace(ActionData.path, @" > .*?\.asset$", $" > {TitleInputField.value}.asset");
+            if (TitleInputField.value != ActionData.BaseArgs.identifyName)
+                TitleLabel.text = ActionData.BaseArgs.identifyName = TitleInputField.value;
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
@@ -742,7 +739,7 @@ namespace SevenStrikeModules.XGraph
                 if (ActionData != null)
                 {
                     //Undo.RecordObject(ActionData, "Change Node Size");
-                    ActionData.nodeGraphSize = newSize;
+                    ActionData.BaseArgs.nodeGraphSize = newSize;
 
                     // 如果需要，也可以标记资产为脏
                     if (graphView?.ActionTreeAsset != null)
@@ -751,7 +748,7 @@ namespace SevenStrikeModules.XGraph
                     }
 
                     if (ActionData.On_Node_SizeChanged != null)
-                        ActionData.On_Node_SizeChanged(ActionData.nodeGraphSize);
+                        ActionData.On_Node_SizeChanged(ActionData.BaseArgs.nodeGraphSize);
                 }
             }
         }
@@ -851,7 +848,7 @@ namespace SevenStrikeModules.XGraph
         }
         private void OnGraphViewEditorThemeColorChanged(Color color)
         {
-            StartNodeMark_Displayer(ActionData.isStartNode);
+            StartNodeMark_Displayer(ActionData.BaseArgs.isStartNode);
         }
         #endregion
 
@@ -871,7 +868,7 @@ namespace SevenStrikeModules.XGraph
                 // 双击头像以更换头像
                 if (evt.clickCount == 2)
                 {
-                    OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", ActionData.Avatar);
+                    OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", ActionData.BaseArgs.Avatar);
                     evt.StopPropagation();
                 }
             });
@@ -887,7 +884,7 @@ namespace SevenStrikeModules.XGraph
             AvatarIcon = new VisualElement();
             AvatarIcon.name = "AvatarIcon";
             AvatarIcon.pickingMode = PickingMode.Position;
-            AvatarIcon.style.backgroundImage = ActionData.Avatar;
+            AvatarIcon.style.backgroundImage = ActionData.BaseArgs.Avatar;
             AvatarIcon.AddToClassList("Avatar_Icon");
             AppendElement(xNodeContainerType.MainContainer, AvatarIcon);
         }
@@ -912,11 +909,11 @@ namespace SevenStrikeModules.XGraph
                 return;
 
             // 如果该节点设置了头像
-            if (ActionData.HasAvatar)
+            if (ActionData.BaseArgs.HasAvatar)
             {
                 // 头像组件的图片设置
-                if (ActionData.Avatar != null)
-                    AvatarIcon.style.backgroundImage = ActionData.Avatar;
+                if (ActionData.BaseArgs.Avatar != null)
+                    AvatarIcon.style.backgroundImage = ActionData.BaseArgs.Avatar;
                 else
                     AvatarIcon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png");
                 // 标题组件的缩进内边距
@@ -940,9 +937,9 @@ namespace SevenStrikeModules.XGraph
         {
             //Undo.RecordObject(ActionData, "Set ActionNode Avatar");
             // 头像状态开关 = 开
-            ActionData.HasAvatar = true;
+            ActionData.BaseArgs.HasAvatar = true;
             // 头像图像设置
-            ActionData.Avatar = tex;
+            ActionData.BaseArgs.Avatar = tex;
 
             CheckAvatarChanged();
 
@@ -957,9 +954,9 @@ namespace SevenStrikeModules.XGraph
         {
             //Undo.RecordObject(ActionData, "Remove ActionNode Avatar");
             // 头像状态开关 = 关
-            ActionData.HasAvatar = false;
+            ActionData.BaseArgs.HasAvatar = false;
             // 头像图像移除
-            ActionData.Avatar = null;
+            ActionData.BaseArgs.Avatar = null;
 
             CheckAvatarChanged();
 
@@ -992,10 +989,10 @@ namespace SevenStrikeModules.XGraph
         public void TransparentDisplay_Set(bool state)
         {
             //Undo.RecordObject(ActionData, $"Set NodeTransparentMode - {state}");
-            ActionData.TransparentNode = state;
+            ActionData.BaseArgs.TransparentNode = state;
             CheckTransparentDisplay(state);
 
-            graphView.Restructure_Graph(ActionData.RootAsset);
+            graphView.Restructure_Graph(ActionData.BaseArgs.RootAsset);
         }
         #endregion
 
@@ -1005,8 +1002,8 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeTitileICon_Check()
         {
-            if (ActionData.NodeIcon != null)
-                NodeTitleIcon_Set(ActionData.NodeIcon);
+            if (ActionData.BaseArgs.NodeIcon != null)
+                NodeTitleIcon_Set(ActionData.BaseArgs.NodeIcon);
             else
                 NodeTitleIcon_Restore();
         }
@@ -1018,7 +1015,7 @@ namespace SevenStrikeModules.XGraph
         {
             //Undo.RecordObject(ActionData, "Set ActionNode TitleIcon");
 
-            ActionData.NodeIcon = tex;
+            ActionData.BaseArgs.NodeIcon = tex;
             NodeTitleIconLabel.style.backgroundImage = tex;
         }
 
@@ -1081,7 +1078,7 @@ namespace SevenStrikeModules.XGraph
         {
             if (nodeMark == null)
                 return;
-            nodeMark.style.backgroundColor = ActionData.themeColor;
+            nodeMark.style.backgroundColor = ActionData.BaseArgs.themeColor;
 
             nodeMark.style.opacity = 1;
         }
@@ -1123,7 +1120,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void CheckExecutionModel()
         {
-            if (ActionData.isConcurrentExecution)
+            if (ActionData.BaseArgs.isConcurrentExecution)
                 SetConcurrent();
             else
                 SetSequential();
@@ -1256,7 +1253,7 @@ namespace SevenStrikeModules.XGraph
             Highlighter.pickingMode = PickingMode.Ignore;
             Highlighter.name = "HighlighterVisualler";
             Highlighter.AddToClassList("node_highlighter");
-            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.BaseArgs.themeColor);
             UnHighlight();
             AppendElement(xNodeContainerType.MainContainer, Highlighter);
             Highlighter.BringToFront();
@@ -1274,7 +1271,7 @@ namespace SevenStrikeModules.XGraph
                 Highlighter.style.borderTopLeftRadius = 13;
                 Highlighter.style.borderTopRightRadius = 13;
             }
-            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.themeColor);
+            util_XGraphEditorUtility.Element_BackgroundColor_Set(Highlighter, ActionData.BaseArgs.themeColor);
             util_XGraphEditorUtility.Element_Opacity_Set(Highlighter, 0.5f);
         }
         /// <summary>
@@ -1320,7 +1317,7 @@ namespace SevenStrikeModules.XGraph
             IsStartNodeText.BringToFront();
             #endregion
 
-            StartNodeMark_Displayer(ActionData.isStartNode);
+            StartNodeMark_Displayer(ActionData.BaseArgs.isStartNode);
         }
 
         /// <summary>
@@ -1353,7 +1350,7 @@ namespace SevenStrikeModules.XGraph
                 m_ObjectPickerIMGUI.style.display = DisplayStyle.Flex;
                 Add(m_ObjectPickerIMGUI);
             }
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionData.Avatar, false, typefilter, 0);
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(ActionData.BaseArgs.Avatar, false, typefilter, 0);
         }
 
         private void OnObjectPickerGUI()
@@ -1407,7 +1404,7 @@ namespace SevenStrikeModules.XGraph
             // 遍历VariableDatas，为每一项数据重新匹配到ActionTreeAsset.VariableCategory中对应的变量项
             foreach (var v in graphView.ActionTreeAsset.BlackboardVariable)
             {
-                foreach (var item in ActionData.VariableDatas)
+                foreach (var item in ActionData.BaseArgs.VariableDatas)
                 {
                     if (item.variable.guid == v.guid)
                     {
@@ -1456,7 +1453,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement rootElement = new VisualElement();
 
             #region 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.BaseArgs.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
             #endregion
 
             #region 标题附加 - 变量类型标签
@@ -1491,47 +1488,38 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点GUID
-            TextField textField_guid = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>GUID： </b>", ActionData.guid, new string[1] { "field_text" });
+            TextField textField_guid = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>GUID： </b>", ActionData.BaseArgs.guid, new string[1] { "field_text" });
             textField_guid.RegisterCallback<BlurEvent>((evt) =>
             {
                 TextField field = evt.target as TextField;
-                field.value = ActionData.guid;
-            });
-            #endregion
-
-            #region 节点路径
-            TextField textField_path = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>资源路径： </b>", ActionData.path, new string[1] { "field_text" });
-            textField_path.RegisterCallback<BlurEvent>((evt) =>
-            {
-                TextField field = evt.target as TextField;
-                field.value = ActionData.path;
+                field.value = ActionData.BaseArgs.guid;
             });
             #endregion
 
             #region 行为类型
-            TextField textField_actionNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>行为类型： </b>", ActionData.actionNodeType, new string[1] { "field_text" });
+            TextField textField_actionNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>行为类型： </b>", ActionData.BaseArgs.actionNodeType, new string[1] { "field_text" });
             textField_actionNode_type.RegisterCallback<BlurEvent>((evt) =>
             {
                 TextField field = evt.target as TextField;
-                field.value = ActionData.actionNodeType;
+                field.value = ActionData.BaseArgs.actionNodeType;
             });
             #endregion
 
             #region 节点类型
-            TextField textField_visualNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>节点类型： </b>", ActionData.visualNodeType, new string[1] { "field_text" });
+            TextField textField_visualNode_type = util_XGraphInspectorGUI.GUI_Field_String(fo_node, "<b>节点类型： </b>", ActionData.BaseArgs.visualNodeType, new string[1] { "field_text" });
             textField_visualNode_type.RegisterCallback<BlurEvent>((evt) =>
             {
                 TextField field = evt.target as TextField;
-                field.value = ActionData.visualNodeType;
+                field.value = ActionData.BaseArgs.visualNodeType;
             });
             #endregion
 
             #region 节点颜色
-            ColorField themecolor = util_XGraphInspectorGUI.GUI_Field_Color(fo_node, "标记色", ActionData.themeColor, new string[] { "field_color" });
+            ColorField themecolor = util_XGraphInspectorGUI.GUI_Field_Color(fo_node, "标记色", ActionData.BaseArgs.themeColor, new string[] { "field_color" });
             themecolor.RegisterValueChangedCallback(value =>
             {
-                ActionData.themeSolution = "自定义";
-                ActionData.themeColor = themecolor.value;
+                ActionData.BaseArgs.themeSolution = "自定义";
+                ActionData.BaseArgs.themeColor = themecolor.value;
 
                 if (ActionData.On_Node_ThemeColorChanged != null)
                     ActionData.On_Node_ThemeColorChanged();
@@ -1539,16 +1527,16 @@ namespace SevenStrikeModules.XGraph
             // 根据节点视图右键菜单更改主题颜色的操作被动更新颜色框值
             ActionData.On_Node_ThemeColorChanged += () =>
             {
-                themecolor.value = ActionData.themeColor;
+                themecolor.value = ActionData.BaseArgs.themeColor;
             };
             #endregion
 
             #region 通透样式
-            Toggle tog_transparentNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "通透样式：", ActionData.TransparentNode, new string[] { "field_bool" });
+            Toggle tog_transparentNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "通透样式：", ActionData.BaseArgs.TransparentNode, new string[] { "field_bool" });
             tog_transparentNode.RegisterValueChangedCallback((value) =>
             {
                 //Undo.RecordObject(baseScript, "Change TransparentNode");
-                ActionData.TransparentNode = value.newValue;
+                ActionData.BaseArgs.TransparentNode = value.newValue;
 
                 if (ActionData.On_Node_TransparentChanged != null)
                     ActionData.On_Node_TransparentChanged(value.newValue);
@@ -1560,20 +1548,20 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点头像
-            ObjectField avatarobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "头像", ActionData.Avatar, new string[] { "field_object" });
+            ObjectField avatarobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "头像", ActionData.BaseArgs.Avatar, new string[] { "field_object" });
             avatarobj.RegisterValueChangedCallback(value =>
             {
                 //Undo.RecordObject(baseScript, "Change Avatar");
                 if (avatarobj.value != null)
-                    ActionData.HasAvatar = true;
+                    ActionData.BaseArgs.HasAvatar = true;
                 else
-                    ActionData.HasAvatar = false;
+                    ActionData.BaseArgs.HasAvatar = false;
                 Texture2D tex = value.newValue as Texture2D;
-                ActionData.Avatar = tex;
+                ActionData.BaseArgs.Avatar = tex;
 
                 // 调用创建头像组件方法
                 xg_Window win = util_XGraphEditorUtility.GetGraphviewWindow();
-                xNode_Base node = win.xw_graphView.FindNodeView(ActionData.guid);
+                xNode_Base node = win.xw_graphView.FindNodeView(ActionData.BaseArgs.guid);
                 node.CreateAvatarElement();
 
                 if (ActionData.On_Node_AvatarChanged != null)
@@ -1586,12 +1574,12 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点图标
-            ObjectField iconobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "图标", ActionData.NodeIcon, new string[] { "field_object" });
+            ObjectField iconobj = util_XGraphInspectorGUI.GUI_Object<Texture2D>(fo_node, "图标", ActionData.BaseArgs.NodeIcon, new string[] { "field_object" });
             iconobj.RegisterValueChangedCallback(value =>
             {
                 //Undo.RecordObject(baseScript, "Change Avatar");
                 Texture2D tex = value.newValue as Texture2D;
-                ActionData.NodeIcon = tex;
+                ActionData.BaseArgs.NodeIcon = tex;
 
                 if (ActionData.On_Node_IconChanged != null)
                     ActionData.On_Node_IconChanged(tex);
@@ -1603,7 +1591,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 节点尺寸
-            Vector2Field label_size = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "尺寸", ActionData.nodeGraphSize, new string[] { "field_vector2" });
+            Vector2Field label_size = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "尺寸", ActionData.BaseArgs.nodeGraphSize, new string[] { "field_vector2" });
             ActionData.On_Node_SizeChanged += (size) =>
             {
                 label_size.value = size;
@@ -1611,12 +1599,12 @@ namespace SevenStrikeModules.XGraph
             label_size.RegisterCallback<BlurEvent>((evt) =>
             {
                 Vector2Field field = evt.target as Vector2Field;
-                field.value = ActionData.nodeGraphSize;
+                field.value = ActionData.BaseArgs.nodeGraphSize;
             });
             #endregion
 
             #region 节点位置
-            Vector2Field label_pos = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "位置", ActionData.nodeGraphPosition, new string[] { "field_vector2" });
+            Vector2Field label_pos = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_node, "位置", ActionData.BaseArgs.nodeGraphPosition, new string[] { "field_vector2" });
             ActionData.On_Node_Moved += (pos) =>
             {
                 label_pos.value = pos;
@@ -1624,7 +1612,7 @@ namespace SevenStrikeModules.XGraph
             label_pos.RegisterCallback<BlurEvent>((evt) =>
             {
                 Vector2Field field = evt.target as Vector2Field;
-                field.value = ActionData.nodeGraphPosition;
+                field.value = ActionData.BaseArgs.nodeGraphPosition;
             });
             #endregion
 
@@ -1632,11 +1620,11 @@ namespace SevenStrikeModules.XGraph
             // 要忽略掉属性节点，因为属性节点不参与行为的流程执行逻辑
             if (ActionData is not xAction_Property)
             {
-                Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", ActionData.isConcurrentExecution, new string[] { "field_bool" });
+                Toggle tog_concurrent = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "并发模式：", ActionData.BaseArgs.isConcurrentExecution, new string[] { "field_bool" });
                 tog_concurrent.RegisterValueChangedCallback((value) =>
                 {
                     //Undo.RecordObject(ActionData, "Change ConcurrentMode");
-                    ActionData.isConcurrentExecution = value.newValue;
+                    ActionData.BaseArgs.isConcurrentExecution = value.newValue;
 
                     if (ActionData.On_Node_ConcurrentChanged != null)
                         ActionData.On_Node_ConcurrentChanged(value.newValue);
@@ -1652,13 +1640,13 @@ namespace SevenStrikeModules.XGraph
             // 要忽略掉属性节点，因为不能将属性节点作为起始节点
             if (ActionData is not xAction_Property)
             {
-                Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", ActionData.isStartNode, new string[] { "field_bool" });
+                Toggle tog_isStartNode = util_XGraphInspectorGUI.GUI_Field_Bool(fo_node, "起始节点：", ActionData.BaseArgs.isStartNode, new string[] { "field_bool" });
                 tog_isStartNode.RegisterValueChangedCallback((value) =>
                 {
                     //Undo.RecordObject(baseScript, "Change IsStartNode");
-                    ActionData.isStartNode = value.newValue;
+                    ActionData.BaseArgs.isStartNode = value.newValue;
 
-                    ActionData.RootAsset.SetStartNode(ActionData);
+                    ActionData.BaseArgs.RootAsset.SetStartNode(ActionData);
                 });
                 ActionData.On_Node_IsStartNode += (value) =>
                 {
@@ -1714,9 +1702,9 @@ namespace SevenStrikeModules.XGraph
             Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "父行为", "parent", new string[] { "foldout" });
             fold.Clear();
 
-            if (!string.IsNullOrEmpty(ActionData.ParentNodeGuid))
+            if (!string.IsNullOrEmpty(ActionData.BaseArgs.ParentNodeGuid))
             {
-                xAction_Base parent = graphView.FindNodeView(ActionData.ParentNodeGuid).ActionData;
+                xAction_Base parent = graphView.FindNodeView(ActionData.BaseArgs.ParentNodeGuid).ActionData;
                 if (parent != null)
                 {
                     VisualElement container = new VisualElement();
@@ -1727,7 +1715,7 @@ namespace SevenStrikeModules.XGraph
                     container.RegisterCallback<PointerEnterEvent>((evt) =>
                     {
                         xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                        Node node = wnd.xw_graphView.FindNode(parent.guid);
+                        Node node = wnd.xw_graphView.FindNode(parent.BaseArgs.guid);
                         if (node is xNode_Base n_base)
                         {
                             n_base.Highlight();
@@ -1737,7 +1725,7 @@ namespace SevenStrikeModules.XGraph
                     container.RegisterCallback<PointerLeaveEvent>((evt) =>
                     {
                         xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                        Node node = wnd.xw_graphView.FindNode(parent.guid);
+                        Node node = wnd.xw_graphView.FindNode(parent.BaseArgs.guid);
                         if (node is xNode_Base n_base)
                         {
                             n_base.UnHighlight();
@@ -1750,14 +1738,14 @@ namespace SevenStrikeModules.XGraph
 
                     VisualElement container_icon = new VisualElement();
                     container_icon.AddToClassList("list_item_icon");
-                    container_icon.style.backgroundImage = parent.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.icon)) : parent.NodeIcon;
+                    container_icon.style.backgroundImage = parent.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.BaseArgs.icon)) : parent.BaseArgs.NodeIcon;
                     container_title.Add(container_icon);
 
-                    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
+                    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.BaseArgs.identifyName}", new string[] { "labeltext", "list_item_title" });
                     util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
-                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.guid}</color>", new string[] { "list_item_label" });
-                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.actionNodeType}</color>", new string[] { "list_item_label" });
-                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.visualNodeType}</color>", new string[] { "list_item_label" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.BaseArgs.guid}</color>", new string[] { "list_item_label" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.BaseArgs.actionNodeType}</color>", new string[] { "list_item_label" });
+                    util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{parent.BaseArgs.visualNodeType}</color>", new string[] { "list_item_label" });
                 }
             }
             return fold;
@@ -1768,11 +1756,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public virtual Foldout ins_Folder_BlackBoardVariable(VisualElement root)
         {
-            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"黑板变量（{ActionData.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"黑板变量（{ActionData.BaseArgs.VariableDatas.Count}）", "basetype-var", new string[] { "foldout" });
             fold.Clear();
-            for (int i = 0; i < ActionData.VariableDatas.Count; i++)
+            for (int i = 0; i < ActionData.BaseArgs.VariableDatas.Count; i++)
             {
-                Binder_Varialble con = ActionData.VariableDatas[i];
+                Binder_Varialble con = ActionData.BaseArgs.VariableDatas[i];
 
                 Variable vare = con.variable;
 
@@ -1840,7 +1828,7 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
@@ -1857,11 +1845,11 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public virtual Foldout ins_Folder_InternalVariable(VisualElement root)
         {
-            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"内部变量（{ActionData.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
+            Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, $"内部变量（{ActionData.BaseArgs.InternalVariableDatas.Count}）", "basetype-intvar", new string[] { "foldout" });
             fold.Clear();
-            for (int i = 0; i < ActionData.InternalVariableDatas.Count; i++)
+            for (int i = 0; i < ActionData.BaseArgs.InternalVariableDatas.Count; i++)
             {
-                Binder_Varialble con = ActionData.InternalVariableDatas[i];
+                Binder_Varialble con = ActionData.BaseArgs.InternalVariableDatas[i];
 
                 Variable vare = con.variable;
 
@@ -1931,7 +1919,7 @@ namespace SevenStrikeModules.XGraph
                         var_value = vare.GetValue<Color>().ToString();
                         break;
                 }
-                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                util_XGraphInspectorGUI.GUI_Label(container, var_value.ToString(), new string[] { "list_item_themevalue" }).style.color = ActionData.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
 
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>端口：</b><color=#e1e1e1>{con.TargetPortName}</color>", new string[] { "list_item_label" });
                 util_XGraphInspectorGUI.GUI_Label(container, $"<b>说明：</b><color=#e1e1e1>{vare.description}</color>".ToString(), new string[] { "list_item_label" });
@@ -1969,12 +1957,12 @@ namespace SevenStrikeModules.XGraph
         public virtual Foldout ins_Folder_BindedPropertys(VisualElement root)
         {
             Foldout fold = util_XGraphInspectorGUI.GUI_Foldout(root, "属性绑定", "binded_propertys", new string[] { "foldout" });
-            fold.text = $"{fold.text}（{ActionData.binded_propertys.Count}）";
+            fold.text = $"{fold.text}（{ActionData.BaseArgs.binded_propertys.Count}）";
             fold.Clear();
 
-            for (int i = 0; i < ActionData.binded_propertys.Count; i++)
+            for (int i = 0; i < ActionData.BaseArgs.binded_propertys.Count; i++)
             {
-                Binder_Property prop = ActionData.binded_propertys[i];
+                Binder_Property prop = ActionData.BaseArgs.binded_propertys[i];
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
@@ -2042,7 +2030,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         internal bool isVariableBinded()
         {
-            return ActionData.VariableDatas.Count > 0 || ActionData.InternalVariableDatas.Count > 0 || ActionData.binded_propertys.Count > 0;
+            return ActionData.BaseArgs.VariableDatas.Count > 0 || ActionData.BaseArgs.InternalVariableDatas.Count > 0 || ActionData.BaseArgs.binded_propertys.Count > 0;
         }
         /// <summary>
         /// 检查是否存在目标名称的变量或属性绑定
@@ -2052,21 +2040,21 @@ namespace SevenStrikeModules.XGraph
         internal bool isVariableBinded(string bindname)
         {
             // 检查黑板变量
-            foreach (var variableData in ActionData.VariableDatas)
+            foreach (var variableData in ActionData.BaseArgs.VariableDatas)
             {
                 if (variableData.TargetPortName == bindname)
                     return true;
             }
 
             // 检查内部变量
-            foreach (var internalVariableData in ActionData.InternalVariableDatas)
+            foreach (var internalVariableData in ActionData.BaseArgs.InternalVariableDatas)
             {
                 if (internalVariableData.TargetPortName == bindname)
                     return true;
             }
 
             // 检查属性绑定
-            foreach (var property in ActionData.binded_propertys)
+            foreach (var property in ActionData.BaseArgs.binded_propertys)
             {
                 if (property.Action_PortName == bindname)
                     return true;

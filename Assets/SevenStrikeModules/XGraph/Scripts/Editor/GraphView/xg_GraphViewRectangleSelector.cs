@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
-using UnityEngine;
-using UnityEngine.UIElements;
-
 namespace UnityEditor.Experimental.GraphView
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Reflection;
+    using UnityEngine;
+    using UnityEngine.UIElements;
+
     public class xg_GraphViewRectangleSelector : MouseManipulator
     {
         private readonly RectangleSelect m_Rectangle;

@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_property_mainlight : xAction_Property
     {
-        [Header("- 组件 / 对象 -")]
         [SerializeField] public Light Light;
 
 
@@ -49,7 +48,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.Propertys_Update();
 
-            mc_GraphAsset asset = RootAsset as mc_GraphAsset;
+            mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
             {
                 if (asset.ModuleController.sp_MainLight.light != null)

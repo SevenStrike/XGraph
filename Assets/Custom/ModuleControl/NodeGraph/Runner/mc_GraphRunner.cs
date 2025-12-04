@@ -1,520 +1,521 @@
-using SevenStrikeModules.XGraph;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
-
-public class mc_GraphRunner : MonoBehaviour
+namespace SevenStrikeModules.XGraph
 {
-    /// <summary>
-    /// 原始行为资源
-    /// </summary>
-    public mc_GraphAsset SampleAsset;
-    /// <summary>
-    /// 流程运行中
-    /// </summary>
-    private bool isRunning = false;
-    /// <summary>
-    /// 流程暂停中
-    /// </summary>
-    private bool isPaused = false;
-    /// <summary>
-    /// 显示调试信息
-    /// </summary>
-    public bool Logs = true;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-    /// <summary>
-    /// 自定义的目标脚本，用于赋值给行为资源中的目标脚本对象，利用此脚本可达成行为节点对目标脚本功能的调用
-    /// </summary>
-    public ModuleController TargetScript;
-
-    /// <summary>
-    /// 手动执行模式开关
-    /// </summary>
-    public bool ManualExecutionMode = false;
-    /// <summary>
-    /// 当前正在执行的节点（手动模式下）
-    /// </summary>
-    private string currentManualNode;
-    /// <summary>
-    /// 手动执行模式下是否正在等待延时节点
-    /// </summary>
-    private bool isWaitingForDelay = false;
-    /// <summary>
-    /// 手动执行模式下的节点执行队列
-    /// </summary>
-    private Queue<string> manualExecutionQueue = new Queue<string>();
-    /// <summary>
-    /// 手动执行完成回调
-    /// </summary>
-    public Action OnManual_StepComplete;
-    /// <summary>
-    /// 手动执行等待结束回调
-    /// </summary>
-    public Action OnManual_WaitComplete;
-
-    private void Start()
+    public class mc_GraphRunner : MonoBehaviour
     {
-        // 为每一个行为注册运行时变量值改变回调
-        RegisterVariableChangeWithAction();
+        /// <summary>
+        /// 原始行为资源
+        /// </summary>
+        public mc_GraphAsset SampleAsset;
+        /// <summary>
+        /// 流程运行中
+        /// </summary>
+        private bool isRunning = false;
+        /// <summary>
+        /// 流程暂停中
+        /// </summary>
+        private bool isPaused = false;
+        /// <summary>
+        /// 显示调试信息
+        /// </summary>
+        public bool Logs = true;
 
-        SampleAsset.ModuleController = TargetScript;
-    }
+        /// <summary>
+        /// 自定义的目标脚本，用于赋值给行为资源中的目标脚本对象，利用此脚本可达成行为节点对目标脚本功能的调用
+        /// </summary>
+        public ModuleController TargetScript;
 
-    private void OnDisable()
-    {
-        // 注销每一个行为运行时变量值改变回调
-        UnregisterVariableChangeWithAction();
+        /// <summary>
+        /// 手动执行模式开关
+        /// </summary>
+        public bool ManualExecutionMode = false;
+        /// <summary>
+        /// 当前正在执行的节点（手动模式下）
+        /// </summary>
+        private string currentManualNode;
+        /// <summary>
+        /// 手动执行模式下是否正在等待延时节点
+        /// </summary>
+        private bool isWaitingForDelay = false;
+        /// <summary>
+        /// 手动执行模式下的节点执行队列
+        /// </summary>
+        private Queue<string> manualExecutionQueue = new Queue<string>();
+        /// <summary>
+        /// 手动执行完成回调
+        /// </summary>
+        public Action OnManual_StepComplete;
+        /// <summary>
+        /// 手动执行等待结束回调
+        /// </summary>
+        public Action OnManual_WaitComplete;
 
-        // 清理手动执行模式
-        Manual_CleanupMode();
-    }
-
-    void Update()
-    {
-        // 手动模式下检查等待状态
-        if (ManualExecutionMode && isWaitingForDelay)
+        private void Start()
         {
-            // 可以在这里添加等待状态的UI提示等
-        }
-    }
+            // 为每一个行为注册运行时变量值改变回调
+            RegisterVariableChangeWithAction();
 
-    #region Runner 手动模式
-    /// <summary>
-    /// 手动执行下一步（仅在手动模式下有效）
-    /// </summary>
-    public void Manual_Action_Execution()
-    {
-        if (!ManualExecutionMode || !isRunning)
-        {
-            util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式未启用或流程未运行", "", Logs);
-            return;
+            SampleAsset.ModuleController = TargetScript;
         }
 
-        if (isWaitingForDelay)
+        private void OnDisable()
         {
-            util_Dashboard.LogMsg(xMessageType.警告, $"正在等待延时节点完成，请稍后再试", "", Logs);
-            return;
+            // 注销每一个行为运行时变量值改变回调
+            UnregisterVariableChangeWithAction();
+
+            // 清理手动执行模式
+            Manual_CleanupMode();
         }
 
-        if (manualExecutionQueue.Count == 0)
+        void Update()
         {
-            util_Dashboard.LogMsg(xMessageType.信息, $"流程执行完成", "", Logs);
-            isRunning = false;
-            OnManual_StepComplete?.Invoke();
-            return;
+            // 手动模式下检查等待状态
+            if (ManualExecutionMode && isWaitingForDelay)
+            {
+                // 可以在这里添加等待状态的UI提示等
+            }
         }
 
-        currentManualNode = manualExecutionQueue.Dequeue();
-        StartCoroutine(Manual_ExecuteAction(currentManualNode));
-    }
-    /// <summary>
-    /// 初始化手动执行模式
-    /// </summary>
-    private void Manual_InitializeMode()
-    {
-        Manual_CleanupMode();
-
-        var startNode = SampleAsset.Actions.Find(n => n.isStartNode);
-        if (startNode != null)
+        #region Runner 手动模式
+        /// <summary>
+        /// 手动执行下一步（仅在手动模式下有效）
+        /// </summary>
+        public void Manual_Action_Execution()
         {
-            isRunning = true;
-            manualExecutionQueue.Enqueue(startNode.guid);
-            util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", Logs);
+            if (!ManualExecutionMode || !isRunning)
+            {
+                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式未启用或流程未运行", "", Logs);
+                return;
+            }
+
+            if (isWaitingForDelay)
+            {
+                util_Dashboard.LogMsg(xMessageType.警告, $"正在等待延时节点完成，请稍后再试", "", Logs);
+                return;
+            }
+
+            if (manualExecutionQueue.Count == 0)
+            {
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程执行完成", "", Logs);
+                isRunning = false;
+                OnManual_StepComplete?.Invoke();
+                return;
+            }
+
+            currentManualNode = manualExecutionQueue.Dequeue();
+            StartCoroutine(Manual_ExecuteAction(currentManualNode));
         }
-    }
-    /// <summary>
-    /// 执行手动模式下的单个节点
-    /// </summary>
-    private IEnumerator Manual_ExecuteAction(string guid)
-    {
-        xAction_Base node = SampleAsset.FindActionNode(guid);
-
-        if (node == null || !isRunning) yield break;
-
-        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
-
-        // 特殊处理等待节点
-        if (node is xAction_Wait waitNode)
+        /// <summary>
+        /// 初始化手动执行模式
+        /// </summary>
+        private void Manual_InitializeMode()
         {
-            yield return Manual_HandleWait(waitNode);
+            Manual_CleanupMode();
+
+            var startNode = SampleAsset.Actions.Find(n => n.BaseArgs.isStartNode);
+            if (startNode != null)
+            {
+                isRunning = true;
+                manualExecutionQueue.Enqueue(startNode.BaseArgs.guid);
+                util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", Logs);
+            }
         }
-        else
+        /// <summary>
+        /// 执行手动模式下的单个节点
+        /// </summary>
+        private IEnumerator Manual_ExecuteAction(string guid)
         {
-            // 执行普通节点
-            node.Execute();
+            xAction_Base node = SampleAsset.FindActionNode(guid);
 
-            // 获取子节点并加入队列
-            var children = Action_GetChildrenActions(node.guid);
+            if (node == null || !isRunning) yield break;
+
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.BaseArgs.identifyName}  （{(node.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+
+            // 特殊处理等待节点
+            if (node is xAction_Wait waitNode)
+            {
+                yield return Manual_HandleWait(waitNode);
+            }
+            else
+            {
+                // 执行普通节点
+                node.Execute();
+
+                // 获取子节点并加入队列
+                var children = Action_GetChildrenActions(node.BaseArgs.guid);
+                foreach (var child in children)
+                {
+                    if (child != null)
+                        manualExecutionQueue.Enqueue(child);
+                }
+
+                OnManual_StepComplete?.Invoke();
+            }
+        }
+        /// <summary>
+        /// 手动模式下的等待节点处理
+        /// </summary>
+        private IEnumerator Manual_HandleWait(xAction_Wait waitNode)
+        {
+            isWaitingForDelay = true;
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.BaseArgs.identifyName}  {waitNode.Time}s", Logs);
+
+            // 执行等待节点
+            waitNode.Execute();
+
+            float elapsed = 0;
+            while (elapsed < waitNode.Time && isRunning)
+            {
+                // 处理暂停
+                while (isPaused && isRunning)
+                {
+                    yield return null;
+                }
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!isRunning)
+            {
+                isWaitingForDelay = false;
+                yield break;
+            }
+
+            // 等待完成后获取子节点
+            var children = Action_GetChildrenActions(waitNode.BaseArgs.guid);
             foreach (var child in children)
             {
                 if (child != null)
                     manualExecutionQueue.Enqueue(child);
             }
 
-            OnManual_StepComplete?.Invoke();
-        }
-    }
-    /// <summary>
-    /// 手动模式下的等待节点处理
-    /// </summary>
-    private IEnumerator Manual_HandleWait(xAction_Wait waitNode)
-    {
-        isWaitingForDelay = true;
-        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.identifyName}  {waitNode.Time}s", Logs);
-
-        // 执行等待节点
-        waitNode.Execute();
-
-        float elapsed = 0;
-        while (elapsed < waitNode.Time && isRunning)
-        {
-            // 处理暂停
-            while (isPaused && isRunning)
-            {
-                yield return null;
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        if (!isRunning)
-        {
             isWaitingForDelay = false;
-            yield break;
+            OnManual_WaitComplete?.Invoke();
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] 等待节点完成", "", Logs);
         }
-
-        // 等待完成后获取子节点
-        var children = Action_GetChildrenActions(waitNode.guid);
-        foreach (var child in children)
+        /// <summary>
+        /// 清理手动执行模式
+        /// </summary>
+        private void Manual_CleanupMode()
         {
-            if (child != null)
-                manualExecutionQueue.Enqueue(child);
+            manualExecutionQueue.Clear();
+            currentManualNode = null;
+            isWaitingForDelay = false;
+            StopAllCoroutines();
         }
+        #endregion
 
-        isWaitingForDelay = false;
-        OnManual_WaitComplete?.Invoke();
-        util_Dashboard.LogMsg(xMessageType.信息, $"[手动] 等待节点完成", "", Logs);
-    }
-    /// <summary>
-    /// 清理手动执行模式
-    /// </summary>
-    private void Manual_CleanupMode()
-    {
-        manualExecutionQueue.Clear();
-        currentManualNode = null;
-        isWaitingForDelay = false;
-        StopAllCoroutines();
-    }
-    #endregion
-
-    #region Runner 流程执行控制
-    /// <summary>
-    /// 验证是否存在起始节点
-    /// </summary>
-    private bool Runner_StartNodeValidate()
-    {
-        if (SampleAsset == null || SampleAsset.Actions.Count == 0)
+        #region Runner 流程执行控制
+        /// <summary>
+        /// 验证是否存在起始节点
+        /// </summary>
+        private bool Runner_StartNodeValidate()
         {
-            util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", Logs);
-            return false;
+            if (SampleAsset == null || SampleAsset.Actions.Count == 0)
+            {
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", Logs);
+                return false;
+            }
+
+            var start = SampleAsset.Actions.Find(n => n.BaseArgs.isStartNode);
+            if (start == null)
+            {
+                util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", Logs);
+                return false;
+            }
+
+            return true;
         }
-
-        var start = SampleAsset.Actions.Find(n => n.isStartNode);
-        if (start == null)
+        /// <summary>
+        /// 行为开始
+        /// </summary>
+        public void Runner_Start()
         {
-            util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", Logs);
-            return false;
+            if (!Runner_StartNodeValidate())
+            {
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程启动失败！", "", Logs);
+                return;
+            }
+
+            if (isRunning)
+            {
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程已经在执行中！", "", Logs);
+                return;
+            }
+
+            // 手动执行模式初始化
+            if (ManualExecutionMode)
+            {
+                Manual_InitializeMode();
+                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式已启动，等待手动执行指令", "", Logs);
+                return;
+            }
+
+            StopAllCoroutines();
+            StartCoroutine(Action_Flow());
         }
-
-        return true;
-    }
-    /// <summary>
-    /// 行为开始
-    /// </summary>
-    public void Runner_Start()
-    {
-        if (!Runner_StartNodeValidate())
+        /// <summary>
+        /// 行为停止
+        /// </summary>
+        public void Runner_Kill()
         {
-            util_Dashboard.LogMsg(xMessageType.错误, $"行为流程启动失败！", "", Logs);
-            return;
-        }
-
-        if (isRunning)
-        {
-            util_Dashboard.LogMsg(xMessageType.错误, $"行为流程已经在执行中！", "", Logs);
-            return;
-        }
-
-        // 手动执行模式初始化
-        if (ManualExecutionMode)
-        {
-            Manual_InitializeMode();
-            util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式已启动，等待手动执行指令", "", Logs);
-            return;
-        }
-
-        StopAllCoroutines();
-        StartCoroutine(Action_Flow());
-    }
-    /// <summary>
-    /// 行为停止
-    /// </summary>
-    public void Runner_Kill()
-    {
-        isRunning = false;
-        // 强制解除暂停
-        isPaused = false;
-
-        // 清理手动模式
-        if (ManualExecutionMode)
-        {
-            Manual_CleanupMode();
-        }
-
-        // 注销每一个行为运行时变量值改变回调
-        UnregisterVariableChangeWithAction();
-
-        util_Dashboard.LogMsg(xMessageType.信息, $"流程停止！", "", Logs);
-    }
-    /// <summary>
-    /// 行为暂停
-    /// </summary>
-    public void Runner_Pause()
-    {
-        if (isRunning)
-        {
-            isPaused = true;
-            util_Dashboard.LogMsg(xMessageType.信息, $"流程暂停！", "", Logs);
-        }
-    }
-    /// <summary>
-    /// 行为恢复
-    /// </summary>
-    public void Runner_Resume()
-    {
-        if (isRunning && isPaused)
-        {
+            isRunning = false;
+            // 强制解除暂停
             isPaused = false;
-            util_Dashboard.LogMsg(xMessageType.信息, $"流程继续！", "", Logs);
+
+            // 清理手动模式
+            if (ManualExecutionMode)
+            {
+                Manual_CleanupMode();
+            }
+
+            // 注销每一个行为运行时变量值改变回调
+            UnregisterVariableChangeWithAction();
+
+            util_Dashboard.LogMsg(xMessageType.信息, $"流程停止！", "", Logs);
         }
-    }
-    #endregion
-
-    #region Runner 行为逻辑
-    /// <summary>
-    /// 行为流程
-    /// </summary>
-    IEnumerator Action_Flow()
-    {
-        isRunning = true;
-        util_Dashboard.LogMsg(xMessageType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", Logs);
-
-        var startNode = SampleAsset.Actions.Find(n => n.isStartNode);
-        yield return Action_Execute(startNode.guid);
-
-        isRunning = false;
-        util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", Logs);
-    }
-    /// <summary>
-    /// 行为执行
-    /// </summary>
-    IEnumerator Action_Execute(string guid)
-    {
-        xAction_Base action = SampleAsset.FindActionNode(guid);
-
-        // 检查执行条件
-        if (action == null || !isRunning) yield break;
-
-        // 处理暂停状态（双重检查）
-        while (isPaused && isRunning)
+        /// <summary>
+        /// 行为暂停
+        /// </summary>
+        public void Runner_Pause()
         {
-            util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
-
-            // 每0.1秒检查一次，防止暂停时性能开销大
-            yield return new WaitForSeconds(0.1f);
+            if (isRunning)
+            {
+                isPaused = true;
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程暂停！", "", Logs);
+            }
         }
-
-        // 处理特殊节点类型
-        if (action is xAction_Wait waitNode)
+        /// <summary>
+        /// 行为恢复
+        /// </summary>
+        public void Runner_Resume()
         {
-            yield return Action_HandlePausableWait(waitNode);
-            yield break;
+            if (isRunning && isPaused)
+            {
+                isPaused = false;
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程继续！", "", Logs);
+            }
         }
+        #endregion
 
-        util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.identifyName}  （{(action.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
-        // 执行当前节点
-        action.Execute();
-
-        // 获取子节点
-        var childrens = Action_GetChildrenActions(action.guid);
-
-        if (childrens.Count == 0)
-            yield break;
-
-        bool v = action is xAction_Branch;
-
-        // 根据模式执行子节点
-        if (action.isConcurrentExecution && !v)
+        #region Runner 行为逻辑
+        /// <summary>
+        /// 行为流程
+        /// </summary>
+        IEnumerator Action_Flow()
         {
-            yield return Action_Execute_Concurrent(childrens);
+            isRunning = true;
+            util_Dashboard.LogMsg(xMessageType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", Logs);
+
+            var startNode = SampleAsset.Actions.Find(n => n.BaseArgs.isStartNode);
+            yield return Action_Execute(startNode.BaseArgs.guid);
+
+            isRunning = false;
+            util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", Logs);
         }
-        else
+        /// <summary>
+        /// 行为执行
+        /// </summary>
+        IEnumerator Action_Execute(string guid)
         {
-            yield return Action_Execute_Sequential(childrens);
-        }
-    }
-    private IEnumerator Action_HandlePausableWait(xAction_Wait waitNode)
-    {
-        // 初始检查
-        if (!isRunning || waitNode == null) yield break;
+            xAction_Base action = SampleAsset.FindActionNode(guid);
 
-        // 执行等待前逻辑
-        waitNode.Execute();
-        util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            // 检查执行条件
+            if (action == null || !isRunning) yield break;
 
-        // 可中断的等待实现
-        float elapsed = 0;
-        while (elapsed < waitNode.Time && isRunning) // 持续检查运行状态
-        {
-            // 处理暂停
+            // 处理暂停状态（双重检查）
             while (isPaused && isRunning)
             {
-                yield return null;
+                util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.BaseArgs.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+
+                // 每0.1秒检查一次，防止暂停时性能开销大
+                yield return new WaitForSeconds(0.1f);
             }
 
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        // 最终状态检查
-        if (!isRunning) yield break;
-
-        // 执行子节点（必须包含！）
-        var children = Action_GetChildrenActions(waitNode.guid);
-        if (children.Count > 0)
-        {
-            yield return waitNode.isConcurrentExecution ? Action_Execute_Concurrent(children) : Action_Execute_Sequential(children);
-        }
-    }
-    /// <summary>
-    /// 顺序执行子节点
-    /// </summary>
-    private IEnumerator Action_Execute_Sequential(List<string> children)
-    {
-        foreach (var child in children)
-        {
-            if (!isRunning) yield break;
-            yield return Action_Execute(child);
-        }
-    }
-    /// <summary>
-    /// 并发执行子节点
-    /// </summary>
-    private IEnumerator Action_Execute_Concurrent(List<string> children)
-    {
-        int completedCount = 0;
-        var runningCoroutines = new Coroutine[children.Count];
-
-        // 启动所有协程
-        for (int i = 0; i < children.Count; i++)
-        {
-            runningCoroutines[i] = StartCoroutine(
-                Action_ExecuteWithCallback(children[i], () => completedCount++)
-            );
-        }
-
-        // 等待所有完成
-        while (completedCount < children.Count && isRunning)
-        {
-            yield return null;
-        }
-
-        // 清理未完成的协程
-        if (completedCount < children.Count)
-        {
-            foreach (var coroutine in runningCoroutines)
+            // 处理特殊节点类型
+            if (action is xAction_Wait waitNode)
             {
-                if (coroutine != null) StopCoroutine(coroutine);
+                yield return Action_HandlePausableWait(waitNode);
+                yield break;
             }
-        }
-    }
-    /// <summary>
-    /// 带回调的执行方法
-    /// </summary>
-    private IEnumerator Action_ExecuteWithCallback(string guid, Action callback)
-    {
-        yield return Action_Execute(guid);
-        callback?.Invoke();
-    }
-    /// <summary>
-    /// 返回当前节点下的子节点列表
-    /// </summary>
-    private List<string> Action_GetChildrenActions(string guid)
-    {
-        xAction_Base current = SampleAsset.FindActionNode(guid);
 
-        var list = new List<string>();
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.BaseArgs.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            // 执行当前节点
+            action.Execute();
 
-        if (current is xAction_Start start && start.childNodes != null)
-            list.AddRange(start.childNodes.FindAll(n => n != null));
-        else if (current is xAction_Wait wait)
-            list.AddRange(wait.childNodes.FindAll(n => n != null));
-        else if (current is xAction_Composite composite)
-            list.AddRange(composite.childNodes.FindAll(n => n != null));
-        else if (current is xAction_Relay relay)
-            list.AddRange(relay.childNodes.FindAll(n => n != null));
-        else if (current is xAction_Branch branch)
-        {
-            if (branch.PredicateState)
+            // 获取子节点
+            var childrens = Action_GetChildrenActions(action.BaseArgs.guid);
+
+            if (childrens.Count == 0)
+                yield break;
+
+            bool v = action is xAction_Branch;
+
+            // 根据模式执行子节点
+            if (action.BaseArgs.isConcurrentExecution && !v)
             {
-                list.Add(branch.childNode_true);
+                yield return Action_Execute_Concurrent(childrens);
             }
             else
             {
-                list.Add(branch.childNode_false);
+                yield return Action_Execute_Sequential(childrens);
             }
         }
-        return list;
-    }
-    #endregion
-
-    #region 辅助
-    /// <summary>
-    /// 设置节点资源
-    /// </summary>
-    /// <param name="asset"></param>
-    public void SetActionAsset(xAction_Asset asset)
-    {
-        // 转换后赋值
-        SampleAsset = asset as mc_GraphAsset;
-        // 将目标控制脚本赋值
-        SampleAsset.ModuleController = TargetScript;
-    }
-    #endregion
-
-    #region 为每一个继承ActionBase的对象注册变量数值变化回调
-    /// <summary>
-    /// 为每一个行为注册运行时变量值改变回调
-    /// </summary>
-    public void RegisterVariableChangeWithAction()
-    {
-        foreach (var action in SampleAsset.Actions)
+        private IEnumerator Action_HandlePausableWait(xAction_Wait waitNode)
         {
-            action.RegisterVariableValueChanged();
+            // 初始检查
+            if (!isRunning || waitNode == null) yield break;
+
+            // 执行等待前逻辑
+            waitNode.Execute();
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.BaseArgs.identifyName}  {waitNode.Time}s  （{(waitNode.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+
+            // 可中断的等待实现
+            float elapsed = 0;
+            while (elapsed < waitNode.Time && isRunning) // 持续检查运行状态
+            {
+                // 处理暂停
+                while (isPaused && isRunning)
+                {
+                    yield return null;
+                }
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // 最终状态检查
+            if (!isRunning) yield break;
+
+            // 执行子节点（必须包含！）
+            var children = Action_GetChildrenActions(waitNode.BaseArgs.guid);
+            if (children.Count > 0)
+            {
+                yield return waitNode.BaseArgs.isConcurrentExecution ? Action_Execute_Concurrent(children) : Action_Execute_Sequential(children);
+            }
         }
-    }
-    /// <summary>
-    /// 注销每一个行为运行时变量值改变回调
-    /// </summary>
-    public void UnregisterVariableChangeWithAction()
-    {
-        foreach (var action in SampleAsset.Actions)
+        /// <summary>
+        /// 顺序执行子节点
+        /// </summary>
+        private IEnumerator Action_Execute_Sequential(List<string> children)
         {
-            action.UnregisterVariableValueChanged();
+            foreach (var child in children)
+            {
+                if (!isRunning) yield break;
+                yield return Action_Execute(child);
+            }
         }
+        /// <summary>
+        /// 并发执行子节点
+        /// </summary>
+        private IEnumerator Action_Execute_Concurrent(List<string> children)
+        {
+            int completedCount = 0;
+            var runningCoroutines = new Coroutine[children.Count];
+
+            // 启动所有协程
+            for (int i = 0; i < children.Count; i++)
+            {
+                runningCoroutines[i] = StartCoroutine(
+                    Action_ExecuteWithCallback(children[i], () => completedCount++)
+                );
+            }
+
+            // 等待所有完成
+            while (completedCount < children.Count && isRunning)
+            {
+                yield return null;
+            }
+
+            // 清理未完成的协程
+            if (completedCount < children.Count)
+            {
+                foreach (var coroutine in runningCoroutines)
+                {
+                    if (coroutine != null) StopCoroutine(coroutine);
+                }
+            }
+        }
+        /// <summary>
+        /// 带回调的执行方法
+        /// </summary>
+        private IEnumerator Action_ExecuteWithCallback(string guid, Action callback)
+        {
+            yield return Action_Execute(guid);
+            callback?.Invoke();
+        }
+        /// <summary>
+        /// 返回当前节点下的子节点列表
+        /// </summary>
+        private List<string> Action_GetChildrenActions(string guid)
+        {
+            xAction_Base current = SampleAsset.FindActionNode(guid);
+
+            var list = new List<string>();
+
+            if (current is xAction_Start start && start.childNodes != null)
+                list.AddRange(start.childNodes.FindAll(n => n != null));
+            else if (current is xAction_Wait wait)
+                list.AddRange(wait.childNodes.FindAll(n => n != null));
+            else if (current is xAction_Composite composite)
+                list.AddRange(composite.childNodes.FindAll(n => n != null));
+            else if (current is xAction_Relay relay)
+                list.AddRange(relay.childNodes.FindAll(n => n != null));
+            else if (current is xAction_Branch branch)
+            {
+                if (branch.PredicateState)
+                {
+                    list.Add(branch.childNode_true);
+                }
+                else
+                {
+                    list.Add(branch.childNode_false);
+                }
+            }
+            return list;
+        }
+        #endregion
+
+        #region 辅助
+        /// <summary>
+        /// 设置节点资源
+        /// </summary>
+        /// <param name="asset"></param>
+        public void SetActionAsset(xAction_Asset asset)
+        {
+            // 转换后赋值
+            SampleAsset = asset as mc_GraphAsset;
+            // 将目标控制脚本赋值
+            SampleAsset.ModuleController = TargetScript;
+        }
+        #endregion
+
+        #region 为每一个继承ActionBase的对象注册变量数值变化回调
+        /// <summary>
+        /// 为每一个行为注册运行时变量值改变回调
+        /// </summary>
+        public void RegisterVariableChangeWithAction()
+        {
+            foreach (var action in SampleAsset.Actions)
+            {
+                action.RegisterVariableValueChanged();
+            }
+        }
+        /// <summary>
+        /// 注销每一个行为运行时变量值改变回调
+        /// </summary>
+        public void UnregisterVariableChangeWithAction()
+        {
+            foreach (var action in SampleAsset.Actions)
+            {
+                action.UnregisterVariableValueChanged();
+            }
+        }
+        #endregion
     }
-    #endregion
 }

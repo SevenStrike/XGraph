@@ -130,12 +130,12 @@ namespace SevenStrikeModules.XGraph
                 {
                     data.SetActionAssetRoot(ActionTreeAsset);
 
-                    xNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                    xNode_Base vNode_Base = Node_MakeAction(data.BaseArgs.nodeGraphPosition, data);
                     vNode_Base.RefreshExpandedState();
 
                     // 检查头像设置情况
                     vNode_Base.CheckAvatarChanged();
-                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
+                    vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.BaseArgs.TransparentNode);
                 }
             }
             // 根据根节点的数据列表  -  重建  -  行为节点
@@ -145,21 +145,21 @@ namespace SevenStrikeModules.XGraph
                 {
                     data.SetActionAssetRoot(ActionTreeAsset);
 
-                    if (data.actionNodeType == "Relay")
+                    if (data.BaseArgs.actionNodeType == "Relay")
                     {
-                        xNode_Relay vNode_Relay = Node_MakeRelay(data.nodeGraphPosition, data);
+                        xNode_Relay vNode_Relay = Node_MakeRelay(data.BaseArgs.nodeGraphPosition, data);
                         vNode_Relay.Draw();
-                        vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.TransparentNode);
+                        vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.BaseArgs.TransparentNode);
                         vNode_Relay.RefreshExpandedState();
                     }
                     else
                     {
-                        xNode_Base vNode_Base = Node_MakeAction(data.nodeGraphPosition, data);
+                        xNode_Base vNode_Base = Node_MakeAction(data.BaseArgs.nodeGraphPosition, data);
                         vNode_Base.RefreshExpandedState();
 
                         // 检查头像设置情况
                         vNode_Base.CheckAvatarChanged();
-                        vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.TransparentNode);
+                        vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.BaseArgs.TransparentNode);
                     }
                 }
             }
@@ -168,7 +168,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (data is xAction_Branch branch_node)
                 {
-                    xNode_Base n_branch = FindNodeView(branch_node.guid);
+                    xNode_Base n_branch = FindNodeView(branch_node.BaseArgs.guid);
 
                     foreach (var port in n_branch.Port_Outputs)
                     {
@@ -202,7 +202,7 @@ namespace SevenStrikeModules.XGraph
                     // child 为每一个子数据节点
                     foreach (var child in children)
                     {
-                        xNode_Base n_parent = FindNodeView(data.guid);
+                        xNode_Base n_parent = FindNodeView(data.BaseArgs.guid);
                         xNode_Base n_child = FindNodeView(child);
 
                         foreach (var p in n_parent.Port_Outputs)
@@ -226,7 +226,7 @@ namespace SevenStrikeModules.XGraph
             foreach (var data in actions)
             {
                 // 获取延展节点
-                xNode_Base n_parent = FindNodeView(data.guid);
+                xNode_Base n_parent = FindNodeView(data.BaseArgs.guid);
                 // 如果是延展节点那么需要执行输入端口是否为空的检查以切换节点中的图标显示
                 if (n_parent is xNode_Relay relay)
                 {
@@ -254,10 +254,10 @@ namespace SevenStrikeModules.XGraph
                 if (data is xAction_Base base_node)
                 {
                     // 找到当前行为的节点
-                    xNode_Base n_base = FindNodeView(base_node.guid);
+                    xNode_Base n_base = FindNodeView(base_node.BaseArgs.guid);
 
                     // 遍历当前行为节点的行为数据的属性记录列表
-                    foreach (var prop in data.binded_propertys)
+                    foreach (var prop in data.BaseArgs.binded_propertys)
                     {
                         // 找到对应记录中的Guid的属性节点
                         xNode_Property n_property = FindNodeView(prop.Property_GUID) as xNode_Property;
@@ -401,7 +401,7 @@ namespace SevenStrikeModules.XGraph
                     Node action = null;
                     foreach (var node in nodes)
                     {
-                        if (node is xNode_Base node_action && node_action.ActionData.guid == guid)
+                        if (node is xNode_Base node_action && node_action.ActionData.BaseArgs.guid == guid)
                         {
                             action = node;
                             break;
@@ -488,15 +488,15 @@ namespace SevenStrikeModules.XGraph
             // 根据行为树根节点的数据列表 - 重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
             foreach (var action in datas_action)
             {
-                if (action.VariableDatas != null && action.VariableDatas.Count > 0)
+                if (action.BaseArgs.VariableDatas != null && action.BaseArgs.VariableDatas.Count > 0)
                 {
                     // 父节点
-                    xNode_Base n_parent = FindNodeView(action.guid);
+                    xNode_Base n_parent = FindNodeView(action.BaseArgs.guid);
 
                     // 使用倒序循环，避免删除时索引问题
-                    for (int i = action.VariableDatas.Count - 1; i >= 0; i--)
+                    for (int i = action.BaseArgs.VariableDatas.Count - 1; i >= 0; i--)
                     {
-                        var item = action.VariableDatas[i];
+                        var item = action.BaseArgs.VariableDatas[i];
 
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
                         xNode_Variable n_var = FindNode(item.VariableNodeGuid) as xNode_Variable;
@@ -517,13 +517,13 @@ namespace SevenStrikeModules.XGraph
                             else
                             {
                                 // 端口不存在，移除无效记录
-                                action.VariableDatas.RemoveAt(i);
+                                action.BaseArgs.VariableDatas.RemoveAt(i);
                             }
                         }
                         else
                         {
                             // 变量节点不存在，移除无效记录
-                            action.VariableDatas.RemoveAt(i);
+                            action.BaseArgs.VariableDatas.RemoveAt(i);
                         }
                     }
                 }
@@ -539,16 +539,16 @@ namespace SevenStrikeModules.XGraph
             foreach (var action in datas_action)
             {
                 // 首先确保内部变量列表不为空
-                if (action.InternalVariableDatas != null && action.InternalVariableDatas.Count > 0)
+                if (action.BaseArgs.InternalVariableDatas != null && action.BaseArgs.InternalVariableDatas.Count > 0)
                 {
                     // 获得父节点
-                    xNode_Base n_parent = FindNodeView(action.guid);
+                    xNode_Base n_parent = FindNodeView(action.BaseArgs.guid);
 
                     // 使用倒序循环，避免删除时索引问题
-                    for (int i = action.InternalVariableDatas.Count - 1; i >= 0; i--)
+                    for (int i = action.BaseArgs.InternalVariableDatas.Count - 1; i >= 0; i--)
                     {
                         // 获取列表其中一项
-                        var item = action.InternalVariableDatas[i];
+                        var item = action.BaseArgs.InternalVariableDatas[i];
 
                         // 在节点图内找到目标 - 内部变量节点 - 与 - 行为节点 - 的 - 匹配端口 - 连接
                         xNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
@@ -584,15 +584,15 @@ namespace SevenStrikeModules.XGraph
                             else
                             {
                                 // 端口不存在，移除无效记录
-                                Debug.LogWarning($"移除无效的内部变量引用（端口不存在）: 行为={action.guid}, 变量节点={item.VariableNodeGuid}");
-                                action.InternalVariableDatas.RemoveAt(i);
+                                Debug.LogWarning($"移除无效的内部变量引用（端口不存在）: 行为={action.BaseArgs.guid}, 变量节点={item.VariableNodeGuid}");
+                                action.BaseArgs.InternalVariableDatas.RemoveAt(i);
                             }
                         }
                         else
                         {
                             // 变量节点不存在，移除无效记录
-                            Debug.LogWarning($"移除无效的内部变量引用（节点不存在）: 行为={action.guid}, 变量节点={item.VariableNodeGuid}");
-                            action.InternalVariableDatas.RemoveAt(i);
+                            Debug.LogWarning($"移除无效的内部变量引用（节点不存在）: 行为={action.BaseArgs.guid}, 变量节点={item.VariableNodeGuid}");
+                            action.BaseArgs.InternalVariableDatas.RemoveAt(i);
                         }
                     }
                 }

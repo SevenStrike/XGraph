@@ -10,7 +10,6 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public List<string> childNodes = new List<string>();
 
-        [Header("- 扩展 -")]
         /// <summary>
         /// 等待时间
         /// </summary>

@@ -10,110 +10,7 @@ namespace SevenStrikeModules.XGraph
     [Serializable]
     public class xAction_Base
     {
-        [Header("- 节点 -")]
-        public class_ActionBased ActionBased;
-
-        #region 节点参数
-        /// <summary>
-        /// 行为节点 - 名称
-        /// </summary>
-        [SerializeField] public string identifyName;
-        /// <summary>
-        /// 行为节点 - 内容表述
-        /// </summary>
-        [SerializeField] public string content;
-        /// <summary>
-        /// 行为节点 - guid_self
-        /// </summary>
-        [SerializeField] public string guid;
-        /// <summary>
-        /// 行为节点 - guid_self
-        /// </summary>
-        [SerializeField] public string namespaces;
-        /// <summary>
-        /// 行为节点 - guid_self
-        /// </summary>
-        [SerializeField] public string classes;
-        /// <summary>
-        /// 行为节点 - 相对路径
-        /// </summary>
-        [SerializeField] public string path;
-        /// <summary>
-        /// 行为节点 - 类型
-        /// </summary>
-        [SerializeField] public string actionNodeType;
-        /// <summary>
-        /// 行为节点 - 图标
-        /// </summary>
-        [SerializeField] public string icon;
-        /// <summary>
-        /// 行为节点 - 类型
-        /// </summary>
-        [SerializeField] public string visualNodeType = "None";
-        /// <summary>
-        /// 行为节点 - 在GraphView里的位置记录
-        /// </summary>
-        [SerializeField] public Vector2 nodeGraphPosition;
-        /// <summary>
-        /// 行为节点 - 在GraphView里的尺寸记录
-        /// </summary>
-        [SerializeField] public Vector2 nodeGraphSize;
-        /// <summary>
-        /// 行为节点 - 在GraphView里的颜色标记方案名称
-        /// </summary>
-        [SerializeField] public string themeSolution = "M 默认";
-        /// <summary>
-        /// 行为节点 - 在GraphView里的颜色标记
-        /// </summary>
-        [SerializeField] public Color themeColor = Color.clear;
-        /// <summary>
-        /// 并发执行开关
-        /// </summary>
-        [SerializeField] public bool isConcurrentExecution = false;
-        /// <summary>
-        /// 设定头像状态
-        /// </summary>
-        [SerializeField] public bool HasAvatar = false;
-        /// <summary>
-        /// 透明背景节点模式
-        /// </summary>
-        [SerializeField] public bool TransparentNode = false;
-        /// <summary>
-        /// 头像图像
-        /// </summary>
-        [SerializeField] public Texture2D Avatar;
-        /// <summary>
-        /// 标题图标
-        /// </summary>
-        [SerializeField] public Texture2D NodeIcon;
-        /// <summary>
-        /// 行为根节点
-        /// </summary>
-        [SerializeField] public xAction_Asset RootAsset;
-        /// <summary>
-        /// 起始节点
-        /// </summary>
-        [SerializeField] public bool isStartNode;
-        /// <summary>
-        /// 父节点
-        /// </summary>
-        [SerializeField] public string ParentNodeGuid;
-        #endregion
-
-        #region 节点数据接驳器
-        /// <summary>
-        /// 变量Guids接驳列表
-        /// </summary>
-        [SerializeField] public List<Binder_Varialble> VariableDatas = new List<Binder_Varialble>();
-        /// <summary>
-        /// 内部变量Guids接驳列表
-        /// </summary>
-        [SerializeField] public List<Binder_Varialble> InternalVariableDatas = new List<Binder_Varialble>();
-        /// <summary>
-        /// 绑定的属性列表
-        /// </summary>
-        [SerializeField] public List<Binder_Property> binded_propertys = new List<Binder_Property>();
-        #endregion
+        [SerializeReference] public class_ActionBaseArgs BaseArgs;
 
         #region 回调
         /// <summary>
@@ -196,6 +93,17 @@ namespace SevenStrikeModules.XGraph
 #endif
         #endregion
 
+        /// <summary>
+        /// 构造函数初始化
+        /// </summary>
+        public xAction_Base()
+        {
+            if (BaseArgs == null)
+            {
+                BaseArgs = new class_ActionBaseArgs();
+            }
+        }
+
         #region 节点执行方法
         /// <summary>
         /// 行为节点执行方法
@@ -214,7 +122,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="parent"></param>
         public void SetParentNode(string guid)
         {
-            ParentNodeGuid = guid;
+            BaseArgs.ParentNodeGuid = guid;
         }
         /// <summary>
         /// 设置行为根节点资源的方法
@@ -222,7 +130,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public void SetActionAssetRoot(xAction_Asset root)
         {
-            RootAsset = root;
+            BaseArgs.RootAsset = root;
         }
         #endregion
 
@@ -232,14 +140,14 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void RegisterVariableValueChanged()
         {
-            RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
+            BaseArgs.RootAsset.On_VariablesValue_Changed += On_VariablesValue_Changed;
         }
         /// <summary>
         /// 注销运行时变量值改变回调
         /// </summary>
         public void UnregisterVariableValueChanged()
         {
-            RootAsset.On_VariablesValue_Changed -= On_VariablesValue_Changed;
+            BaseArgs.RootAsset.On_VariablesValue_Changed -= On_VariablesValue_Changed;
         }
         /// <summary>
         /// 行为节点的变量值（如果存在）改变时
@@ -257,7 +165,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public string GetInfo()
         {
-            return $"{namespaces}.{classes}{actionNodeType.ToString()}   /   {visualNodeType.ToString()}   /   {identifyName}";
+            return $"{BaseArgs.namespaces}.{BaseArgs.classes}{BaseArgs.actionNodeType.ToString()}   /   {BaseArgs.visualNodeType.ToString()}   /   {BaseArgs.identifyName}";
         }
         #endregion
 
@@ -272,7 +180,7 @@ namespace SevenStrikeModules.XGraph
             Variable vare = null;
 
             // 先从绑定的黑板变量数据列表中找
-            foreach (var data in VariableDatas)
+            foreach (var data in BaseArgs.VariableDatas)
             {
                 if (portName == data.TargetPortName)
                 {
@@ -292,7 +200,7 @@ namespace SevenStrikeModules.XGraph
         {
             Variable vare = null;
 
-            foreach (var data in InternalVariableDatas)
+            foreach (var data in BaseArgs.InternalVariableDatas)
             {
                 if (portName == data.TargetPortName)
                 {
@@ -312,15 +220,15 @@ namespace SevenStrikeModules.XGraph
         {
             Variable vare = null;
 
-            if (binded_propertys.Count <= 0)
+            if (BaseArgs.binded_propertys.Count <= 0)
                 return null;
 
-            foreach (var property in binded_propertys)
+            foreach (var property in BaseArgs.binded_propertys)
             {
                 if (portName == property.Action_PortName)
                 {
                     // 获取属性节点
-                    xAction_Property prop = RootAsset.FindActionNode(property.Property_GUID) as xAction_Property;
+                    xAction_Property prop = BaseArgs.RootAsset.FindActionNode(property.Property_GUID) as xAction_Property;
                     // 属性节点更新
                     if (prop != null)
                     {
@@ -351,7 +259,7 @@ namespace SevenStrikeModules.XGraph
             bool exist = false;
 
             // 先从绑定的黑板变量数据列表中找
-            foreach (var item in VariableDatas)
+            foreach (var item in BaseArgs.VariableDatas)
             {
                 if (portName == item.TargetPortName)
                 {
@@ -362,7 +270,7 @@ namespace SevenStrikeModules.XGraph
                     // 如果能找到存在的变量指定记录
                     if (vare != null)
                     {
-                        foreach (var cd in RootAsset.BlackboardVariable)
+                        foreach (var cd in BaseArgs.RootAsset.BlackboardVariable)
                         {
                             if (cd.guid == vare.guid)
                             {
@@ -376,7 +284,7 @@ namespace SevenStrikeModules.XGraph
             // 再从绑定的内部变量数据列表中找
             if (!exist)
             {
-                foreach (var item in InternalVariableDatas)
+                foreach (var item in BaseArgs.InternalVariableDatas)
                 {
                     if (portName == item.TargetPortName)
                     {
@@ -386,16 +294,16 @@ namespace SevenStrikeModules.XGraph
                         // 如果能找到存在的变量指定记录
                         if (vare != null)
                         {
-                            xAction_Base ac = RootAsset.FindActionNode(targetNode);
+                            xAction_Base ac = BaseArgs.RootAsset.FindActionNode(targetNode);
                             if (ac != null)
                             {
                                 if (ac is xAction_Variable va)
                                 {
                                     // 如果已经指定了黑板变量，则修改匹配的黑板变量值
-                                    if (va.VariableDatas != null && va.VariableDatas.Count > 0)
+                                    if (va.BaseArgs.VariableDatas != null && va.BaseArgs.VariableDatas.Count > 0)
                                     {
-                                        Binder_Varialble con = va.VariableDatas[0];
-                                        foreach (var cd in RootAsset.BlackboardVariable)
+                                        Binder_Varialble con = va.BaseArgs.VariableDatas[0];
+                                        foreach (var cd in BaseArgs.RootAsset.BlackboardVariable)
                                         {
                                             if (cd.guid == con.variable.guid)
                                             {
@@ -449,7 +357,7 @@ namespace SevenStrikeModules.XGraph
             bool exist = false;
 
             // 先从绑定的黑板变量数据列表中找
-            foreach (var item in VariableDatas)
+            foreach (var item in BaseArgs.VariableDatas)
             {
                 if (portName == item.TargetPortName)
                 {
@@ -461,7 +369,7 @@ namespace SevenStrikeModules.XGraph
             // 再从绑定的内部变量数据列表中找
             if (!exist)
             {
-                foreach (var item in InternalVariableDatas)
+                foreach (var item in BaseArgs.InternalVariableDatas)
                 {
                     if (portName == item.TargetPortName)
                     {
@@ -484,7 +392,7 @@ namespace SevenStrikeModules.XGraph
         {
             #region 检查节点的变量链接信息列表中是否存在重复的项
             bool isExistConenctor = false;
-            foreach (var item in VariableDatas)
+            foreach (var item in BaseArgs.VariableDatas)
             {
                 if (item.VariableNodeGuid == data.guid_n && item.TargetPortName == portName)
                 {
@@ -498,7 +406,7 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-                VariableDatas.Add(new Binder_Varialble(data.guid_n, portName, data.variable));
+                BaseArgs.VariableDatas.Add(new Binder_Varialble(data.guid_n, portName, data.variable));
             }
 
             if (On_Node_Variable_Binded != null)
@@ -512,7 +420,7 @@ namespace SevenStrikeModules.XGraph
         public void VariableData_Unbind(string guid, string portName)
         {
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
-            VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+            BaseArgs.VariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
             if (On_Node_Variable_Unbinded != null)
                 On_Node_Variable_Unbinded();
         }
@@ -528,9 +436,9 @@ namespace SevenStrikeModules.XGraph
         {
             #region 检查节点的变量链接信息列表中是否存在重复的项
             bool isExistConenctor = false;
-            foreach (var item in InternalVariableDatas)
+            foreach (var item in BaseArgs.InternalVariableDatas)
             {
-                if (item.VariableNodeGuid == data.guid && item.TargetPortName == portName)
+                if (item.VariableNodeGuid == data.BaseArgs.guid && item.TargetPortName == portName)
                 {
                     isExistConenctor = true;
                 }
@@ -542,9 +450,9 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-                Binder_Varialble con = new Binder_Varialble(data.guid, portName, data.variable);
-                con.variable.name = data.identifyName;
-                InternalVariableDatas.Add(con);
+                Binder_Varialble con = new Binder_Varialble(data.BaseArgs.guid, portName, data.variable);
+                con.variable.name = data.BaseArgs.identifyName;
+                BaseArgs.InternalVariableDatas.Add(con);
             }
 
             if (On_Node_Variable_Binded != null)
@@ -558,7 +466,7 @@ namespace SevenStrikeModules.XGraph
         public void InternalVariableData_Unbind(string guid, string portName)
         {
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
-            InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
+            BaseArgs.InternalVariableDatas.RemoveAll(item => item.VariableNodeGuid == guid && item.TargetPortName == portName);
 
             if (On_Node_Variable_Unbinded != null)
                 On_Node_Variable_Unbinded();
@@ -575,9 +483,9 @@ namespace SevenStrikeModules.XGraph
         {
             #region 检查节点的变量链接信息列表中是否存在重复的项
             bool isExistConenctor = false;
-            foreach (var p in binded_propertys)
+            foreach (var p in BaseArgs.binded_propertys)
             {
-                if (p.Property_GUID == prop.guid &&
+                if (p.Property_GUID == prop.BaseArgs.guid &&
                     p.Property_PortName == property_port_name &&
                     p.Property_PortType == property_port_type &&
                     p.Action_PortName == action_port_name &&
@@ -594,13 +502,13 @@ namespace SevenStrikeModules.XGraph
             else
             {
                 Binder_Property con = new Binder_Property(
-                    prop.identifyName,
-                    prop.guid,
+                    prop.BaseArgs.identifyName,
+                    prop.BaseArgs.guid,
                     property_port_name,
                     property_port_type,
                     action_port_name,
                     action_port_type);
-                binded_propertys.Add(con);
+                BaseArgs.binded_propertys.Add(con);
             }
 
             if (On_Node_Property_Binded != null)
@@ -614,7 +522,7 @@ namespace SevenStrikeModules.XGraph
         public void Property_Unbind(string guid, string property_port_name, string property_port_type, string action_port_name, string action_port_type)
         {
             // 如果在变量链接信息列表中找到指定的guid和名称的变量链接信息列表项则删除
-            binded_propertys.RemoveAll(item =>
+            BaseArgs.binded_propertys.RemoveAll(item =>
             {
                 return item.Property_GUID == guid &&
                 item.Property_PortName == property_port_name &&
@@ -635,66 +543,17 @@ namespace SevenStrikeModules.XGraph
         public virtual xAction_Base Clone()
         {
             // 创建新实例
-            xAction_Base clone = Activator.CreateInstance(this.GetType()) as xAction_Base;
+            xAction_Base action_base = Activator.CreateInstance(this.GetType()) as xAction_Base;
 
-            // 复制基础字段
-            clone.identifyName = this.identifyName;
-            clone.content = this.content;
-            clone.guid = guid;
-            clone.namespaces = this.namespaces;
-            clone.classes = this.classes;
-            clone.path = this.path;
-            clone.actionNodeType = this.actionNodeType;
-            clone.icon = this.icon;
-            clone.visualNodeType = this.visualNodeType;
-            clone.nodeGraphPosition = this.nodeGraphPosition;
-            clone.nodeGraphSize = this.nodeGraphSize;
-            clone.themeSolution = this.themeSolution;
-            clone.themeColor = this.themeColor;
-            clone.isConcurrentExecution = this.isConcurrentExecution;
-            clone.HasAvatar = this.HasAvatar;
-            clone.TransparentNode = this.TransparentNode;
-            clone.Avatar = this.Avatar;
-            clone.NodeIcon = this.NodeIcon;
-            clone.RootAsset = this.RootAsset;
-            clone.isStartNode = this.isStartNode;
-
-            // 深复制列表
-            clone.VariableDatas = new List<Binder_Varialble>();
-            foreach (var item in this.VariableDatas)
+            // 确保 BaseArgs 被初始化
+            if (action_base.BaseArgs == null)
             {
-                clone.VariableDatas.Add(new Binder_Varialble(
-                    item.VariableNodeGuid,
-                    item.TargetPortName,
-                    item.variable?.Clone(false)
-                ));
+                action_base.BaseArgs = new class_ActionBaseArgs();
             }
 
-            clone.InternalVariableDatas = new List<Binder_Varialble>();
-            foreach (var item in this.InternalVariableDatas)
-            {
-                clone.InternalVariableDatas.Add(new Binder_Varialble(
-                    item.VariableNodeGuid,
-                    item.TargetPortName,
-                    item.variable?.Clone(false)
-                ));
-            }
-
-            clone.binded_propertys = new List<Binder_Property>();
-            foreach (var item in this.binded_propertys)
-            {
-                Binder_Property prop = new Binder_Property();
-                prop.Property_GUID = item.Property_GUID;
-                prop.Property_PortType = item.Property_PortType;
-                prop.Property_PortName = item.Property_PortName;
-                prop.Property_NodeName = item.Property_NodeName;
-                prop.Action_PortType = item.Action_PortType;
-                prop.Action_PortName = item.Action_PortName;
-
-                clone.binded_propertys.Add(prop);
-            }
-
-            return clone;
+            // 克隆 BaseArgs
+            action_base.BaseArgs = this.BaseArgs.Clone();
+            return action_base;
         }
     }
 }

@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
     using System.IO;
     using System.Text.RegularExpressions;
     using UnityEditor;
-    using UnityEditor.Overlays;
     using UnityEngine;
     using UnityEngine.UIElements;
     using ObjectField = UnityEditor.UIElements.ObjectField;

@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.TextCore.Text;
     using UnityEngine.UIElements;
 
     public class util_XGraphNodeChildManager : EditorWindow
@@ -240,19 +239,19 @@ namespace SevenStrikeModules.XGraph
             // 获取 type 标签
             Button btn_del = element.Q<Button>("btn_del");
 
-            mark.style.opacity = (action.isStartNode ? 1 : 0);
+            mark.style.opacity = (action.BaseArgs.isStartNode ? 1 : 0);
 
             // 设置 icon 图像
             if (icon != null)
-                icon.style.backgroundImage = action.NodeIcon != null ? action.NodeIcon : AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(action.icon));
+                icon.style.backgroundImage = action.BaseArgs.NodeIcon != null ? action.BaseArgs.NodeIcon : AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(action.BaseArgs.icon));
 
             // 设置 title 标签
             if (lab_title != null)
-                lab_title.text = action.identifyName;
+                lab_title.text = action.BaseArgs.identifyName;
 
             // 设置 type 标签
             if (lab_node_type != null)
-                lab_node_type.text = action.actionNodeType;
+                lab_node_type.text = action.BaseArgs.actionNodeType;
 
             // 设置 type 标签
             if (lab_act_type != null)
@@ -278,7 +277,7 @@ namespace SevenStrikeModules.XGraph
             // 注册删除节点按钮事件
             btn_del.clicked += () =>
             {
-                if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.identifyName}' 吗？", "删除", "取消"))
+                if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.BaseArgs.identifyName}' 吗？", "删除", "取消"))
                 {
                     CloneNodeAsset.Remove(action);
                     AssetDatabase.SaveAssets();

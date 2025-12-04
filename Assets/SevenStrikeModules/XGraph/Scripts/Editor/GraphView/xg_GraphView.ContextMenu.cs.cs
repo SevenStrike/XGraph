@@ -60,7 +60,7 @@ namespace SevenStrikeModules.XGraph
                     }
                     xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base.First();
                     var defaultColor = Color.gray;
-                    defaultColor = node.ActionData.themeColor;
+                    defaultColor = node.ActionData.BaseArgs.themeColor;
                     defaultColor.a = 1.0f;
                     #endregion
 
@@ -73,10 +73,10 @@ namespace SevenStrikeModules.XGraph
                                 //Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
                                 // 将主题方案名称赋值
-                                node.ActionData.themeSolution = "自定义";
+                                node.ActionData.BaseArgs.themeSolution = "自定义";
 
                                 // 将主题方案名称赋值
-                                node.ActionData.themeColor = pickedColor;
+                                node.ActionData.BaseArgs.themeColor = pickedColor;
 
                                 // 调用节点主题色改变回调
                                 if (node.ActionData.On_Node_ThemeColorChanged != null)
@@ -102,10 +102,10 @@ namespace SevenStrikeModules.XGraph
                                 //Undo.RecordObject(node.ActionData, "Change NodeThemeColor");
 
                                 // 将主题方案名称赋值
-                                node.ActionData.themeSolution = dat.solution;
+                                node.ActionData.BaseArgs.themeSolution = dat.solution;
 
                                 // 根据主题方案名称的对应颜色Hex转换为Color赋值给主题色变量
-                                node.ActionData.themeColor = util_XGraphEditorUtility.Color_From_HexString(dat.nodecolor);
+                                node.ActionData.BaseArgs.themeColor = util_XGraphEditorUtility.Color_From_HexString(dat.nodecolor);
 
                                 // 调用节点主题色改变回调
                                 if (node.ActionData.On_Node_ThemeColorChanged != null)
@@ -127,7 +127,7 @@ namespace SevenStrikeModules.XGraph
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
                                 xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
-                                node.ActionData.isConcurrentExecution = false;
+                                node.ActionData.BaseArgs.isConcurrentExecution = false;
 
                                 if (node.ActionData.On_Node_ConcurrentChanged != null)
                                     node.ActionData.On_Node_ConcurrentChanged(false);
@@ -142,7 +142,7 @@ namespace SevenStrikeModules.XGraph
                             for (int s = 0; s < CurrentSelectedNodes_Base.Count; s++)
                             {
                                 xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
-                                node.ActionData.isConcurrentExecution = true;
+                                node.ActionData.BaseArgs.isConcurrentExecution = true;
 
                                 if (node.ActionData.On_Node_ConcurrentChanged != null)
                                     node.ActionData.On_Node_ConcurrentChanged(true);
@@ -168,9 +168,9 @@ namespace SevenStrikeModules.XGraph
                 }
 
                 // 设置节点头像
-                if (nodebase.ActionData.actionNodeType != "Relay")
+                if (nodebase.ActionData.BaseArgs.actionNodeType != "Relay")
                 {
-                    if (nodebase.ActionData.HasAvatar)
+                    if (nodebase.ActionData.BaseArgs.HasAvatar)
                     {
                         evt.menu.AppendSeparator();
                         evt.menu.AppendAction($"R 头像/R 清空头像", (action) =>
@@ -188,7 +188,7 @@ namespace SevenStrikeModules.XGraph
                         });
                         evt.menu.AppendAction($"R 头像/W 替换头像", (action) =>
                         {
-                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionData.Avatar);
+                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionData.BaseArgs.Avatar);
                             evt.StopPropagation();
                         });
                     }
@@ -197,14 +197,14 @@ namespace SevenStrikeModules.XGraph
                         evt.menu.AppendSeparator();
                         evt.menu.AppendAction($"R 头像/R 设置头像", (action) =>
                         {
-                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionData.Avatar);
+                            OpenObjectPickerForTextures("AvatarSet", "t:Texture2D", nodebase.ActionData.BaseArgs.Avatar);
                             evt.StopPropagation();
                         });
                     }
                     evt.menu.AppendSeparator();
                     evt.menu.AppendAction($"B 图标/B 设置标题图标", (action) =>
                     {
-                        OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionData.NodeIcon);
+                        OpenObjectPickerForTextures("TitleIconSet", "t:Texture2D", nodebase.ActionData.BaseArgs.NodeIcon);
                         evt.StopPropagation();
                     });
                     evt.menu.AppendAction($"B 图标/W 恢复原生图标", (action) =>
@@ -215,7 +215,7 @@ namespace SevenStrikeModules.XGraph
                             {
                                 xNode_Base node = (xNode_Base)CurrentSelectedNodes_Base[s];
                                 //Undo.RecordObject(node.ActionData, "Restore ActionNodeTitleIcon");
-                                node.ActionData.NodeIcon = null;
+                                node.ActionData.BaseArgs.NodeIcon = null;
 
                                 if (node.ActionData.On_Node_IconChanged != null)
                                     node.ActionData.On_Node_IconChanged(null);
@@ -535,7 +535,7 @@ namespace SevenStrikeModules.XGraph
                     {
                         if (node is xNode_Base n_base)
                         {
-                            if (n_base.ActionData.actionNodeType != "Relay")
+                            if (n_base.ActionData.BaseArgs.actionNodeType != "Relay")
                             {
                                 if (SetTextureMode == "AvatarSet")
                                 {

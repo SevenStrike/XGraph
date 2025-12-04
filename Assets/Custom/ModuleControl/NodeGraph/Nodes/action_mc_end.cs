@@ -1,10 +1,9 @@
-using UnityEngine;
-
 namespace SevenStrikeModules.XGraph
 {
+    using UnityEngine;
+
     public class action_mc_end : xAction_End
     {
-        [Header("- 扩展 -")]
         [SerializeField] public bool activateAllModules;
 
         public override void Execute()
@@ -12,7 +11,7 @@ namespace SevenStrikeModules.XGraph
             base.Execute();
 
 
-            mc_GraphAsset asset = RootAsset as mc_GraphAsset;
+            mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
                 asset.ModuleController.Modules_Active(activateAllModules, true);
         }

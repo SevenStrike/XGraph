@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_module_initialize : xAction_Start
     {
-        [Header("- 扩展 -")]
         [SerializeField] public bool activateAllModules;
 
         /// <summary>
@@ -14,7 +13,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.Execute();
 
-            mc_GraphAsset asset = RootAsset as mc_GraphAsset;
+            mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
                 asset.ModuleController.Modules_Active(activateAllModules, true);
         }

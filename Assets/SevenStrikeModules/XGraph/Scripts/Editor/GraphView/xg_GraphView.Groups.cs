@@ -156,7 +156,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (n is xNode_Base node)
                 {
-                    nodes_guid.Add(node.ActionData.guid);
+                    nodes_guid.Add(node.ActionData.BaseArgs.guid);
                 }
                 else if (n is xNode_Variable vare)
                 {
@@ -240,7 +240,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (node is xNode_Base bs)
                 {
-                    if (bs.ActionData.actionNodeType != "Relay" && bs.ActionData.HasAvatar)
+                    if (bs.ActionData.BaseArgs.actionNodeType != "Relay" && bs.ActionData.BaseArgs.HasAvatar)
                     {
                         hasmark = true;
                         break;
@@ -395,7 +395,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is xNode_Base node)
                 {
                     // 获取移入的节点的guid
-                    guid = node.ActionData.guid;
+                    guid = node.ActionData.BaseArgs.guid;
 
                     // 注册委托 - 节点头像设置
                     node.ActionData.On_Node_AvatarChanged += ((n) =>
@@ -450,7 +450,7 @@ namespace SevenStrikeModules.XGraph
                 if (item is xNode_Base node)
                 {
                     // 获取移出的节点的guid
-                    guid = node.ActionData.guid;
+                    guid = node.ActionData.BaseArgs.guid;
 
                     // 清空委托 - 节点头像移除
                     node.ActionData.On_Node_AvatarChanged = null;

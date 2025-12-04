@@ -66,7 +66,7 @@ namespace SevenStrikeModules.XGraph
 
                 tog_clicker.RegisterCallback<PointerDownEvent>(ToggleClicker);
 
-                ActionData.RootAsset.On_VariablesValue_Changed += () =>
+                ActionData.BaseArgs.RootAsset.On_VariablesValue_Changed += () =>
                 {
                     Toggle_Check(VariableData.variable.GetValue<bool>());
                 };
@@ -79,8 +79,8 @@ namespace SevenStrikeModules.XGraph
                 // 指定可调整大小
                 capabilities |= Capabilities.Resizable;
 
-                style.width = data.nodeGraphSize.x;
-                style.height = data.nodeGraphSize.y;
+                style.width = data.BaseArgs.nodeGraphSize.x;
+                style.height = data.BaseArgs.nodeGraphSize.y;
             }
 
             // 动态获取变量类型
@@ -355,9 +355,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_String(BlurEvent evt)
         {
             TextField field = evt.target as TextField;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<string>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<string>();
                 return;
             }
 
@@ -380,9 +380,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Float(BlurEvent evt)
         {
             FloatField field = evt.target as FloatField;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<float>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<float>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Float Variable");
@@ -404,9 +404,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Int(BlurEvent evt)
         {
             IntegerField field = evt.target as IntegerField;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<int>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<int>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Int Variable");
@@ -428,9 +428,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector2(BlurEvent evt)
         {
             Vector2Field field = evt.target as Vector2Field;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector2>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<Vector2>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Vector2 Variable");
@@ -452,9 +452,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector3(BlurEvent evt)
         {
             Vector3Field field = evt.target as Vector3Field;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector3>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<Vector3>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Vector3 Variable");
@@ -476,9 +476,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Vector4(BlurEvent evt)
         {
             Vector4Field field = evt.target as Vector4Field;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<Vector4>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<Vector4>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Vector4 Variable");
@@ -500,9 +500,9 @@ namespace SevenStrikeModules.XGraph
         private void VariableDataChanged_Color(ChangeEvent<Color> evt)
         {
             ColorField field = evt.target as ColorField;
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.VariableDatas.First().variable.GetValue<Color>();
+                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<Color>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Color Variable");
@@ -546,7 +546,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void SyncChangeVariableName(BlurEvent evt)
         {
-            VariableData.variable.name = VariableData.identifyName;
+            VariableData.variable.name = VariableData.BaseArgs.identifyName;
 
             // Inspector 面板显示属性
             graphView.gv_GraphWindow.xw_InspectorView.InspectorViewer(this);
@@ -573,9 +573,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void ToggleClicker(PointerDownEvent evt)
         {
-            if (VariableData.VariableDatas.Count > 0)
+            if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                Toggle_Check(VariableData.VariableDatas.First().variable.GetValue<bool>());
+                Toggle_Check(VariableData.BaseArgs.VariableDatas.First().variable.GetValue<bool>());
                 return;
             }
             //Undo.RecordObject(VariableData, "Changed Toggle State");

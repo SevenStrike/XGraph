@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
-    using UnityEngine;
 
     public partial class xg_GraphView
     {
@@ -425,7 +424,7 @@ namespace SevenStrikeModules.XGraph
                     port.Disconnect(edge);
 
                     // 从行为节点解绑 ”内部变量节点数据“
-                    node_child.ActionData.InternalVariableData_Unbind(node_var_internal.VariableData.guid, portName);
+                    node_child.ActionData.InternalVariableData_Unbind(node_var_internal.VariableData.BaseArgs.guid, portName);
                 }
                 #endregion
 
@@ -446,7 +445,7 @@ namespace SevenStrikeModules.XGraph
                     if (node_child is xNode_Base && node_parent is not xNode_Variable_Internal && edge.input.portType != typeof(xAction_Base) && edge.output.portType != typeof(xAction_Base))
                     {
                         // node_property.PropertyData : 目标属性节点的属性数据
-                        string property_guid = node_Property.property.guid;
+                        string property_guid = node_Property.property.BaseArgs.guid;
                         // "属性节点" 端口的 -- 名称
                         string property_port_name = edge.output.portName;
                         // "属性节点" 端口的 -- 类型

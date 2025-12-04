@@ -137,9 +137,9 @@ namespace SevenStrikeModules.XGraph
 
                 VisualElement container_title = new VisualElement();
                 container_title.AddToClassList("list_titlebg_actionasset");
-                if (action.isStartNode)
+                if (action.BaseArgs.isStartNode)
                 {
-                    Color themecol = action.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                    Color themecol = action.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
                     container_title.style.backgroundColor = new StyleColor(new Color(themecol.r, themecol.g, themecol.b, 0.3f));
 
                     // 当Graphview编辑器的主题色改变时
@@ -155,31 +155,31 @@ namespace SevenStrikeModules.XGraph
                 container_icon.pickingMode = PickingMode.Ignore;
                 container_icon.AddToClassList("list_item_icon");
                 //container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{action.icon}.png") : action.NodeIcon;
-                container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(action.icon)) : action.NodeIcon;
+                container_icon.style.backgroundImage = action.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(action.BaseArgs.icon)) : action.BaseArgs.NodeIcon;
                 container_title.Add(container_icon);
-                container_icon.style.unityBackgroundImageTintColor = action.themeColor;
+                container_icon.style.unityBackgroundImageTintColor = action.BaseArgs.themeColor;
 
                 // 行为节点名称
-                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{action.identifyName}", new string[] { "labeltext", "list_item_title" });
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{action.BaseArgs.identifyName}", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
 
                 // 行为执行模式图标
                 VisualElement container_concurrent_icon = new VisualElement();
                 container_concurrent_icon.pickingMode = PickingMode.Ignore;
                 container_concurrent_icon.AddToClassList("llist_concurrent_icon_actionasset");
-                string mode = action.isConcurrentExecution ? "concurrent" : "sepline";
+                string mode = action.BaseArgs.isConcurrentExecution ? "concurrent" : "sepline";
                 container_concurrent_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{mode}.png");
                 container_title.Add(container_concurrent_icon);
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
+                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.BaseArgs.guid);
                     act_node.Highlight();
                 });
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.guid);
+                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.BaseArgs.guid);
                     act_node.UnHighlight();
                 });
             }

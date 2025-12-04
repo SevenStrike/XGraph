@@ -1357,7 +1357,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"内部变量节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.guid}", $"值：{n_vare_internal.VariableData.variable.GetValue()}");
+            xw_SetNodeInfos($"{n_vare_internal.VariableData.variable.name}  /  {n_vare_internal.VariableData.variable.GetActiveType()}  /  {n_vare_internal.VariableData.BaseArgs.guid}", $"值：{n_vare_internal.VariableData.variable.GetValue()}");
         }
         /// <summary>
         /// 选中节点：属性
@@ -2377,13 +2377,13 @@
             // 检测并刷新所有视觉节点的位置
             foreach (var dataNode in CloneTree.Actions)
             {
-                var visualNode = xw_graphView.GetNodeByGuid(dataNode.guid) as xNode_Base;
+                var visualNode = xw_graphView.GetNodeByGuid(dataNode.BaseArgs.guid) as xNode_Base;
                 if (visualNode != null)
                 {
                     // 如果该节点位置有变化则刷新该节点位置
-                    if (visualNode.GetPosition().position != dataNode.nodeGraphPosition)
+                    if (visualNode.GetPosition().position != dataNode.BaseArgs.nodeGraphPosition)
                     {
-                        visualNode.SetPosition(new Rect(dataNode.nodeGraphPosition, visualNode.GetPosition().size));
+                        visualNode.SetPosition(new Rect(dataNode.BaseArgs.nodeGraphPosition, visualNode.GetPosition().size));
                     }
                 }
             }

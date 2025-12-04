@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_module_activate : xAction_Composite
     {
-        [Header("- 扩展 -")]
         /// <summary>
         /// 是否激活模组
         /// </summary>
@@ -21,7 +20,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.Execute();
 
-            mc_GraphAsset asset = RootAsset as mc_GraphAsset;
+            mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
                 asset.ModuleController.Module_Active(activateName, activateState);
         }

@@ -67,22 +67,22 @@ namespace SevenStrikeModules.XGraph
 
                     // 克隆出新的节点
                     NodeCreateArgs_Action args = new NodeCreateArgs_Action();
-                    args.visualName = action.identifyName;
-                    args.prefixNamespace = action.namespaces;
-                    args.prefixClass = action.classes;
-                    args.actionNodeType = action.actionNodeType;
-                    args.iconName = action.icon;
-                    args.nodeIcon = action.NodeIcon;
-                    args.visualNodeType = action.visualNodeType;
-                    args.hasAvatar = action.HasAvatar;
-                    args.avatar = action.Avatar;
-                    args.themeSolution = action.themeSolution;
-                    args.themeColor = action.themeColor;
-                    args.transparentNode = action.TransparentNode;
-                    args.content = action.content;
-                    args.position = action.nodeGraphPosition + new Vector2(81, 46.5f);
-                    args.size = action.nodeGraphSize;
-                    args.isConcurrentExecution = action.isConcurrentExecution;
+                    args.visualName = action.BaseArgs.identifyName;
+                    args.prefixNamespace = action.BaseArgs.namespaces;
+                    args.prefixClass = action.BaseArgs.classes;
+                    args.actionNodeType = action.BaseArgs.actionNodeType;
+                    args.iconName = action.BaseArgs.icon;
+                    args.nodeIcon = action.BaseArgs.NodeIcon;
+                    args.visualNodeType = action.BaseArgs.visualNodeType;
+                    args.hasAvatar = action.BaseArgs.HasAvatar;
+                    args.avatar = action.BaseArgs.Avatar;
+                    args.themeSolution = action.BaseArgs.themeSolution;
+                    args.themeColor = action.BaseArgs.themeColor;
+                    args.transparentNode = action.BaseArgs.TransparentNode;
+                    args.content = action.BaseArgs.content;
+                    args.position = action.BaseArgs.nodeGraphPosition + new Vector2(81, 46.5f);
+                    args.size = action.BaseArgs.nodeGraphSize;
+                    args.isConcurrentExecution = action.BaseArgs.isConcurrentExecution;
 
                     // 为变量类型节点数据特化处理，需要初始化类型 Variable
                     if (action is xAction_Variable avnode)
@@ -91,35 +91,35 @@ namespace SevenStrikeModules.XGraph
                         {
                             case xVariableType.String:
                                 string val_String = avnode.variable.GetValue<string>();
-                                args.variable = new Variable_String(avnode.identifyName, val_String);
+                                args.variable = new Variable_String(avnode.BaseArgs.identifyName, val_String);
                                 break;
                             case xVariableType.Float:
                                 float val_Float = avnode.variable.GetValue<float>();
-                                args.variable = new Variable_Float(avnode.identifyName, val_Float);
+                                args.variable = new Variable_Float(avnode.BaseArgs.identifyName, val_Float);
                                 break;
                             case xVariableType.Int:
                                 int val_Int = avnode.variable.GetValue<int>();
-                                args.variable = new Variable_Int(avnode.identifyName, val_Int);
+                                args.variable = new Variable_Int(avnode.BaseArgs.identifyName, val_Int);
                                 break;
                             case xVariableType.Bool:
                                 bool val_Bool = avnode.variable.GetValue<bool>();
-                                args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
+                                args.variable = new Variable_Bool(avnode.BaseArgs.identifyName, val_Bool);
                                 break;
                             case xVariableType.Vector2:
                                 Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
-                                args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
+                                args.variable = new Variable_Vector2(avnode.BaseArgs.identifyName, val_Vector2);
                                 break;
                             case xVariableType.Vector3:
                                 Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
-                                args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
+                                args.variable = new Variable_Vector3(avnode.BaseArgs.identifyName, val_Vector3);
                                 break;
                             case xVariableType.Vector4:
                                 Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
-                                args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
+                                args.variable = new Variable_Vector4(avnode.BaseArgs.identifyName, val_Vector4);
                                 break;
                             case xVariableType.Color:
                                 Color val_Color = avnode.variable.GetValue<Color>();
-                                args.variable = new Variable_Color(avnode.identifyName, val_Color);
+                                args.variable = new Variable_Color(avnode.BaseArgs.identifyName, val_Color);
                                 break;
                         }
                     }
@@ -287,26 +287,26 @@ namespace SevenStrikeModules.XGraph
                     {
                         xAction_Base action = node_base.ActionData;
 
-                        if (action.actionNodeType == "Relay")
+                        if (action.BaseArgs.actionNodeType == "Relay")
                             continue;
 
                         // 从拷贝的节点中创建出新的节点数据
                         NodeCreateArgs_Action args = new NodeCreateArgs_Action();
-                        args.visualName = action.identifyName;
-                        args.prefixNamespace = action.namespaces;
-                        args.prefixClass = action.classes;
-                        args.actionNodeType = action.actionNodeType;
-                        args.iconName = action.icon;
-                        args.nodeIcon = action.NodeIcon;
-                        args.visualNodeType = action.visualNodeType;
-                        args.hasAvatar = action.HasAvatar;
-                        args.avatar = action.Avatar;
-                        args.themeSolution = action.themeSolution;
-                        args.themeColor = action.themeColor;
-                        args.transparentNode = action.TransparentNode;
-                        args.content = action.content;
+                        args.visualName = action.BaseArgs.identifyName;
+                        args.prefixNamespace = action.BaseArgs.namespaces;
+                        args.prefixClass = action.BaseArgs.classes;
+                        args.actionNodeType = action.BaseArgs.actionNodeType;
+                        args.iconName = action.BaseArgs.icon;
+                        args.nodeIcon = action.BaseArgs.NodeIcon;
+                        args.visualNodeType = action.BaseArgs.visualNodeType;
+                        args.hasAvatar = action.BaseArgs.HasAvatar;
+                        args.avatar = action.BaseArgs.Avatar;
+                        args.themeSolution = action.BaseArgs.themeSolution;
+                        args.themeColor = action.BaseArgs.themeColor;
+                        args.transparentNode = action.BaseArgs.TransparentNode;
+                        args.content = action.BaseArgs.content;
                         args.position = realpos;
-                        args.size = action.nodeGraphSize;
+                        args.size = action.BaseArgs.nodeGraphSize;
 
                         // 为变量类型节点数据特化处理，需要初始化类型 Variable
                         if (action is xAction_Variable avnode)
@@ -315,35 +315,35 @@ namespace SevenStrikeModules.XGraph
                             {
                                 case xVariableType.String:
                                     string val_String = avnode.variable.GetValue<string>();
-                                    args.variable = new Variable_String(avnode.identifyName, val_String);
+                                    args.variable = new Variable_String(avnode.BaseArgs.identifyName, val_String);
                                     break;
                                 case xVariableType.Float:
                                     float val_Float = avnode.variable.GetValue<float>();
-                                    args.variable = new Variable_Float(avnode.identifyName, val_Float);
+                                    args.variable = new Variable_Float(avnode.BaseArgs.identifyName, val_Float);
                                     break;
                                 case xVariableType.Int:
                                     int val_Int = avnode.variable.GetValue<int>();
-                                    args.variable = new Variable_Int(avnode.identifyName, val_Int);
+                                    args.variable = new Variable_Int(avnode.BaseArgs.identifyName, val_Int);
                                     break;
                                 case xVariableType.Bool:
                                     bool val_Bool = avnode.variable.GetValue<bool>();
-                                    args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
+                                    args.variable = new Variable_Bool(avnode.BaseArgs.identifyName, val_Bool);
                                     break;
                                 case xVariableType.Vector2:
                                     Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
-                                    args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
+                                    args.variable = new Variable_Vector2(avnode.BaseArgs.identifyName, val_Vector2);
                                     break;
                                 case xVariableType.Vector3:
                                     Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
-                                    args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
+                                    args.variable = new Variable_Vector3(avnode.BaseArgs.identifyName, val_Vector3);
                                     break;
                                 case xVariableType.Vector4:
                                     Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
-                                    args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
+                                    args.variable = new Variable_Vector4(avnode.BaseArgs.identifyName, val_Vector4);
                                     break;
                                 case xVariableType.Color:
                                     Color val_Color = avnode.variable.GetValue<Color>();
-                                    args.variable = new Variable_Color(avnode.identifyName, val_Color);
+                                    args.variable = new Variable_Color(avnode.BaseArgs.identifyName, val_Color);
                                     break;
                             }
                         }
@@ -614,12 +614,12 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public xNode_Base Node_MakeAction(Vector2 pos, xAction_Base data = null)
         {
-            if (data.visualNodeType == "None")
+            if (data.BaseArgs.visualNodeType == "None")
                 return null;
 
             #region 根据枚举类型创建 NodeView
             // 根据枚举名称获取 NodeView 节点类
-            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.{data.visualNodeType}");
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.{data.BaseArgs.visualNodeType}");
             // 创建 NodeView 类型的实例为 visualNode 基类
             xNode_Base node = Activator.CreateInstance(type_nodeview) as xNode_Base;
             #endregion
@@ -802,12 +802,12 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public xNode_Relay Node_MakeRelay(Vector2 pos, xAction_Base data = null)
         {
-            if (data.visualNodeType == "None")
+            if (data.BaseArgs.visualNodeType == "None")
                 return null;
 
             #region 根据枚举类型创建 NodeView
             // 根据枚举名称获取 NodeView 节点类
-            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.{data.visualNodeType}");
+            Type type_nodeview = Type.GetType($"SevenStrikeModules.XGraph.{data.BaseArgs.visualNodeType}");
             // 创建 NodeView 类型的实例为 visualNode 基类
             xNode_Relay relay = Activator.CreateInstance(type_nodeview) as xNode_Relay;
             #endregion

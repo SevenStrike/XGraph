@@ -418,9 +418,9 @@ namespace SevenStrikeModules.XGraph
             // 应用配置文件的颜色到节点的标识颜色
             foreach (var colorData in NodeThemesList.Node)
             {
-                if (colorData.solution == node.ActionData.themeSolution)
+                if (colorData.solution == node.ActionData.BaseArgs.themeSolution)
                 {
-                    node.ActionData.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
+                    node.ActionData.BaseArgs.themeColor = util_XGraphEditorUtility.Color_From_HexString(colorData.nodecolor);
                 }
             }
 
@@ -592,7 +592,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 if (n is xNode_Base node)
                 {
-                    if (node.ActionData.actionNodeType != "Stick")
+                    if (node.ActionData.BaseArgs.actionNodeType != "Stick")
                         g_node_actions.Add(node);
                 }
                 if (n is xNode_Variable vare)
