@@ -1,12 +1,15 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
 
     public class graph_mc_end : xNode_Base
     {
+        action_mc_end end;
+
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
             base.Initialize(graphView, pos, data);
@@ -15,8 +18,12 @@ namespace SevenStrikeModules.XGraph
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
             // 加入行为端口
             port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
+            // 加入变量端口
+            port_in.Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));
             InputPort_Set(port_in);
             #endregion
+
+            end = ActionData as action_mc_end;
         }
 
         #region 节点绘制
@@ -47,13 +54,16 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 重写
+        #region 重写 - 回调
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
+
+            // 根据获取的目标端口的变量节点值来更新节点变量
+            end.Set_ModulesInitialized("激活所有模组");
         }
         /// <summary>
         /// 当克隆节点时
@@ -159,6 +169,91 @@ namespace SevenStrikeModules.XGraph
         public override void OnUnselected()
         {
             base.OnUnselected();
+        }
+        #endregion
+
+        #region 重写 - 绘制Inspector
+        /// <summary>
+        /// 节点的Inspector属性界面绘制
+        /// </summary>
+        /// <returns></returns>
+        public override VisualElement InspectorGUI()
+        {
+            VisualElement InspectorElement = base.InspectorGUI();
+
+            return InspectorElement;
+        }
+        /// <summary>
+        /// 节点父行为容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_ParentNode(VisualElement root)
+        {
+            return base.ins_Folder_ParentNode(root);
+        }
+        /// <summary>
+        /// 子行为折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public override Foldout ins_Folder_ChildActions(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 属性节点的属性项折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_Propertys(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 自定义组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public override Foldout ins_Folder_Extensions(VisualElement root)
+        {
+            Foldout fold = base.ins_Folder_Extensions(root);
+
+            #region  启动时所有模组的激活开关
+            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "激活所有模组", end.activateAllModules, new string[] { "field_bool" });
+            toggle.RegisterValueChangedCallback((value) =>
+            {
+                // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
+                if (isVariableBinded("激活所有模组"))
+                {
+                    toggle.value = end.activateAllModules;
+                    end.Set_ModulesInitialized("激活所有模组");
+                }
+                // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
+                else
+                {
+                    end.Set_ModulesInitialized(value.newValue);
+                }
+            });
+            #endregion
+
+            // 当节点绑定变量时，将变量值同步到控件值
+            end.On_Node_Variable_Binded += ((vare) =>
+            {
+                toggle.value = end.activateAllModules;
+            });
+
+            // 克隆节点后刷新控件值为克隆后的最新值
+            end.On_Node_Duplicated += (clone, source) =>
+            {
+                // 克隆父物体的行为数据
+                action_mc_end s_clone = clone as action_mc_end;
+                // 克隆后的行为数据
+                action_mc_end s_source = source as action_mc_end;
+                s_clone.activateAllModules = s_source.activateAllModules;
+
+                toggle.value = end.activateAllModules;
+            };
+
+            return fold;
         }
         #endregion
     }

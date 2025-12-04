@@ -1,8 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
-    using System.Linq;
-    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -54,7 +52,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量图标主题
         /// </summary>
-        public VariableThemesGroup VariableThemeList;
+        public VariableThemesData VariableThemes;
         #endregion
 
         /// <summary>
@@ -64,7 +62,7 @@ namespace SevenStrikeModules.XGraph
         {
             // 读取菜单结构列表内容
             string theme = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Themes_Variable.json").text;
-            VariableThemeList = JsonConvert.DeserializeObject<VariableThemesGroup>(theme);
+            VariableThemes = JsonUtility.FromJson<VariableThemesData>(theme);
 
             // 指定样式
             util_XGraphEditorUtility.ElementStyle_Add(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_ListViewItem.uss");
@@ -404,7 +402,7 @@ namespace SevenStrikeModules.XGraph
             var_label_des.text = variable.description;
 
             // 变量图标的颜色根据变量类型来定（通过 json 配置对应主题色）
-            foreach (var theme in VariableThemeList.VariableThemes)
+            foreach (var theme in VariableThemes.VariableThemes)
             {
                 if (theme.type == variable.type.ToString())
                 {
@@ -632,7 +630,7 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(Variable variable)
         {
             Color node_color = Color.white;
-            foreach (var theme in VariableThemeList.VariableThemes)
+            foreach (var theme in VariableThemes.VariableThemes)
             {
                 if (theme.type == variable.type.ToString())
                 {
@@ -649,7 +647,7 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(xVariableType type)
         {
             Color node_color = Color.white;
-            foreach (var theme in VariableThemeList.VariableThemes)
+            foreach (var theme in VariableThemes.VariableThemes)
             {
                 if (theme.type == type.ToString())
                 {
@@ -667,13 +665,13 @@ namespace SevenStrikeModules.XGraph
             // 同步修改 Variables 列表中匹配的项的变量名称
             foreach (var node in graphWindow.CloneTree.Variables)
             {
-                if (node.varguid == variable.guid)
+                if (node.guid_v == variable.guid)
                 {
                     node.name = variable.name;
                     node.description = variable.description;
 
                     // 注意：同时通过匹配到的 node 节点数据的guid找到节点并修改节点的显示名称！
-                    xNode_Variable varNode = graphWindow.xw_graphView.FindNode(node.guid) as xNode_Variable;
+                    xNode_Variable varNode = graphWindow.xw_graphView.FindNode(node.guid_n) as xNode_Variable;
                     if (varNode != null)
                     {
                         // 设置 Variable 节点的标题名称
@@ -726,16 +724,28 @@ namespace SevenStrikeModules.XGraph
         /// <param name="enumerable"></param>
         private void SelectionChanged(IEnumerable<object> enumerable)
         {
-            // 当选择了变量时让 InspectorView显示变量值
-            if (enumerable.Count() > 0)
+            // 不使用 LINQ 的 Count() 方法
+            int itemCount = 0;
+            List<object> items = new List<object>();
+            foreach (var item in enumerable)
             {
-                foreach (var obj in enumerable)
+                items.Add(item);
+                itemCount++;
+            }
+
+            // 当选择了变量时让 InspectorView显示变量值
+            if (itemCount > 0)
+            {
+                foreach (var obj in items)
                 {
                     Variable vare = obj as Variable;
-                    util_XGraphEditorUtility.Element_Label_ValueSet(graphWindow.xw_label_InspectorView_Container_Title, $"黑板变量");
-                    graphWindow.xw_InspectorView.InspectorViewer(vare);
-                    graphWindow.xw_isSelectedVariable = true;
-                    graphWindow.xw_graphView.ClearSelection();
+                    if (vare != null)
+                    {
+                        util_XGraphEditorUtility.Element_Label_ValueSet(graphWindow.xw_label_InspectorView_Container_Title, $"黑板变量");
+                        graphWindow.xw_InspectorView.InspectorViewer(vare);
+                        graphWindow.xw_isSelectedVariable = true;
+                        graphWindow.xw_graphView.ClearSelection();
+                    }
                 }
             }
             // 当取消选择变量时让 InspectorView显示当前行为树根节点变量
@@ -776,12 +786,6 @@ namespace SevenStrikeModules.XGraph
 
                 evt.StopPropagation();
             }
-            if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
-            {
-                graphWindow.ActionTree_SaveAndReplace();
-                evt.StopPropagation();
-            }
-
         }
 
         /// <summary>
@@ -797,7 +801,7 @@ namespace SevenStrikeModules.XGraph
             {
                 if (v.type == type)
                 {
-                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as xNode_Variable);
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid_n) as xNode_Variable);
                 }
             }
             return list;
@@ -813,9 +817,9 @@ namespace SevenStrikeModules.XGraph
             List<xNode_Variable> list = new List<xNode_Variable>();
             foreach (var v in graphWindow.CloneTree.Variables)
             {
-                if (v.varguid == guid)
+                if (v.guid_v == guid)
                 {
-                    list.Add(graphWindow.xw_graphView.FindNode(v.guid) as xNode_Variable);
+                    list.Add(graphWindow.xw_graphView.FindNode(v.guid_n) as xNode_Variable);
                 }
             }
             return list;

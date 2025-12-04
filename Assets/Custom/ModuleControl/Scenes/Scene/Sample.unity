@@ -11752,7 +11752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 602bdf3665d4b3f498b1ff845c6d0343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SampleAsset: {fileID: 11400000, guid: 2ec037053a0453f429732e6fe57fac02, type: 2}
+  SampleAsset: {fileID: 11400000, guid: a5e25493adf33e74a8aef658a368ae97, type: 2}
   Logs: 1
   TargetScript: {fileID: 1444357495}
   ManualExecutionMode: 0
@@ -13813,7 +13813,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1922873101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14776,7 +14776,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 0.663727, b: 0.46099997, a: 1}
   m_Intensity: 3.27
-  m_Range: 2
+  m_Range: 3
   m_SpotAngle: 156.02028
   m_InnerSpotAngle: 135.49127
   m_CookieSize: 10

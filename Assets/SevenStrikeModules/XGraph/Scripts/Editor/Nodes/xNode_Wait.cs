@@ -6,9 +6,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class graph_mc_module_initialize : xNode_Base
+    public class xNode_Wait : xNode_Base
     {
-        action_mc_module_initialize initializer;
+        xAction_Wait wait;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
@@ -16,17 +16,19 @@ namespace SevenStrikeModules.XGraph
 
             #region 端口设置
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
+            // 加入行为端口
+            port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
             // 加入变量端口
-            port_in.Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));
+            port_in.Add(new xGraph_NodePort("时间", typeof(Variable_Float), Port.Capacity.Single));
             InputPort_Set(port_in);
 
-            List<xGraph_NodePort> ports_out = new List<xGraph_NodePort>();
+            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
             // 加入行为端口
-            ports_out.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Multi));
-            OutputPort_Set(ports_out);
+            port_out.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Multi));
+            OutputPort_Set(port_out);
             #endregion
 
-            initializer = ActionData as action_mc_module_initialize;
+            wait = data as xAction_Wait;
         }
 
         #region 节点绘制
@@ -53,9 +55,6 @@ namespace SevenStrikeModules.XGraph
             // 绘制扩展容器
             Draw_Extension();
 
-            // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
-            inputContainer.style.paddingTop = 25;
-
             return this;
         }
         #endregion
@@ -68,8 +67,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            // 根据获取的目标端口的变量节点值来更新节点变量
-            initializer.Set_ModulesInitialized("激活所有模组");
+            wait.SetWaitTime("时间");
         }
         /// <summary>
         /// 当克隆节点时
@@ -183,7 +181,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public override Foldout ins_Folder_ParentNode(VisualElement root)
         {
-            return null;
+            return base.ins_Folder_ParentNode(root);
         }
         /// <summary>
         /// 子行为折叠容器
@@ -192,11 +190,11 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_ChildActions(VisualElement root)
         {
             Foldout fold = base.ins_Folder_ChildActions(root);
-            fold.text = $"{fold.text}（{initializer.childNodes.Count}）";
+            fold.text = $"{fold.text}（{wait.childNodes.Count}）";
 
-            for (int i = 0; i < initializer.childNodes.Count; i++)
+            for (int i = 0; i < wait.childNodes.Count; i++)
             {
-                xAction_Base child = initializer.RootAsset.FindActionNode(initializer.childNodes[i]);
+                xAction_Base child = wait.RootAsset.FindActionNode(wait.childNodes[i]);
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
@@ -257,40 +255,38 @@ namespace SevenStrikeModules.XGraph
         {
             Foldout fold = base.ins_Folder_Extensions(root);
 
-            #region  启动时所有模组的激活开关
-            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "激活所有模组", initializer.activateAllModules, new string[] { "field_bool" });
-            toggle.RegisterValueChangedCallback((value) =>
+            #region 等待时间
+            FloatField field_time = util_XGraphInspectorGUI.GUI_Field_Float(fold, "时间", wait.Time, new string[] { "field_float" });
+            field_time.RegisterCallback<ChangeEvent<float>>((evt) =>
             {
-                // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (isVariableBinded("激活所有模组"))
+                if (isVariableBinded("时间"))
                 {
-                    toggle.value = initializer.activateAllModules;
-                    initializer.Set_ModulesInitialized("激活所有模组");
+                    field_time.value = wait.Time;
+                    wait.SetWaitTime("时间");
                 }
-                // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
                 else
                 {
-                    initializer.Set_ModulesInitialized(value.newValue);
+                    wait.SetWaitTime(field_time.value);
                 }
             });
             #endregion
 
-            // 当节点绑定变量时，将变量值同步到控件值
-            initializer.On_Node_Variable_Binded += ((vare) =>
+            // 当根行为资源绑定变量时
+            wait.On_Node_Variable_Binded += (var) =>
             {
-                toggle.value = initializer.activateAllModules;
-            });
+                field_time.value = wait.Time;
+            };
 
             // 克隆节点后刷新控件值为克隆后的最新值
-            initializer.On_Node_Duplicated += (clone, source) =>
+            wait.On_Node_Duplicated += (clone, source) =>
             {
                 // 克隆父物体的行为数据
-                action_mc_module_initialize s_clone = clone as action_mc_module_initialize;
+                xAction_Wait s_source = (xAction_Wait)source;
                 // 克隆后的行为数据
-                action_mc_module_initialize s_source = source as action_mc_module_initialize;
-                s_clone.activateAllModules = s_source.activateAllModules;
+                xAction_Wait s_clone = (xAction_Wait)clone;
+                s_clone.Time = s_source.Time;
 
-                toggle.value = initializer.activateAllModules;
+                field_time.value = wait.Time;
             };
 
             return fold;

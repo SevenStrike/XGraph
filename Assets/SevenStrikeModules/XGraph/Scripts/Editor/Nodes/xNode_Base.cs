@@ -1444,23 +1444,19 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        //-------------------------------------------------
+        //------------------------------------------------- inspector 界面
 
         #region 绘制界面
         /// <summary>
         /// 绘制节点编辑器内的Inspector界面
         /// </summary>
         /// <returns></returns>
-        public virtual VisualElement NodeInspectorGUI()
+        public virtual VisualElement InspectorGUI()
         {
             VisualElement rootElement = new VisualElement();
 
             #region 标题
             VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
-            titlegroup.RegisterCallback<PointerDownEvent>((evt) =>
-            {
-                //EditorGUIUtility.PingObject(baseScript);
-            });
             #endregion
 
             #region 标题附加 - 变量类型标签

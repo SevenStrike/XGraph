@@ -4,6 +4,7 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_property_mainlight : xAction_Property
     {
+        [Header("- 组件 / 对象 -")]
         [SerializeField] public Light Light;
 
 

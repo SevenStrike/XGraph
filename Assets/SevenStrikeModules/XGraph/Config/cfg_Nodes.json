@@ -14,6 +14,14 @@
                     "visualNodeType": "xNode_Branch"
                 },
                 {
+                    "name": "等待",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Wait",
+                    "icon": "f0d551b2dfd5763439898ac3b72cf76a",
+                    "visualNodeType": "xNode_Wait"
+                },
+                {
                     "name": "延展",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
                     "prefixClass": "xAction_",

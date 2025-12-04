@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a66d9447c87e74d87cc60da0fe3d68, type: 3}
   m_Name: mc-NodeGraph
   m_EditorClassIdentifier: 
-  LastGraphWindowSize: {x: 1485, y: 995}
-  LastGraphViewPosition: {x: -34, y: 215}
+  LastGraphWindowSize: {x: 1609, y: 1019}
+  LastGraphViewPosition: {x: 202, y: 136}
   LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-12-03  -  20:54:59
+  LastSaveDateTime: 2025-12-04  -  23:59:25
   GraphNodesStruct: {fileID: 4900000, guid: 67ec120f3ab9b6c428246fcdc6b95eea, type: 3}
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
@@ -47,18 +47,21 @@ MonoBehaviour:
     top: 10
     bottom: 0
     left: 0
-    right: 14
+    right: 12
     anc_Top: 1
     anc_Bottom: 0
     anc_Left: 0
     anc_Right: 1
-    size: {x: 336, y: 826}
+    size: {x: 344, y: 840}
   XGraph_InspectorViewDisplay: 1
-  XGraph_BlackBoardViewDisplay: 0
+  XGraph_BlackBoardViewDisplay: 1
   XGraph_DisplayNodeColor: 0
   XGraph_DisplayNodeFlow: 0
   Actions:
-  - rid: 1468847553517715851
+  - rid: 1468847584718880959
+  - rid: 1468847584718880960
+  - rid: 1468847584718880961
+  - rid: 1468847584718880962
   Variables: []
   Sticks: []
   Labels: []
@@ -69,19 +72,43 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1468847553517715851
+    - rid: 1468847580011561979
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u5F3A\u5EA6"
+        guid: 7a498f1ac901a554380c4fc1e6ddebe9
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u5F3A\u5EA6"
+        type: 1
+        value: 0
+    - rid: 1468847580011561980
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u8303\u56F4"
+        guid: 194123e1fa26048418dccea11910dd32
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u8303\u56F4"
+        type: 1
+        value: 0
+    - rid: 1468847580011561981
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u989C\u8272"
+        guid: 047b147372bc5e94f933c3f37dba88f0
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
+        type: 7
+        value: {r: 0, g: 0, b: 0, a: 0}
+    - rid: 1468847584718880959
       type: {class: action_mc_module_initialize, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u6A21\u7EC4\u521D\u59CB\u5316"
         content: 
-        guid: 476cf63bf6e598347a65c3e7b17934bf
+        guid: bca28f362dc3f7a4c84c06d2dac7f131
         namespaces: SevenStrikeModules.XGraph
         classes: action_mc_
         path: 
         actionNodeType: module_initialize
         icon: 392aaff70f0ba134c99baa862febcd71
         visualNodeType: graph_mc_module_initialize
-        nodeGraphPosition: {x: 503, y: 147}
+        nodeGraphPosition: {x: 235, y: 142}
         nodeGraphSize: {x: 170, y: 86}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -91,10 +118,103 @@ MonoBehaviour:
         Avatar: {fileID: 0}
         NodeIcon: {fileID: 0}
         RootAsset: {fileID: 11400000}
-        isStartNode: 0
+        isStartNode: 1
+        ParentNodeGuid: 
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
+        childNodes:
+        - 1a58c69b2e2b1774fb15fa5a64c9df2a
+        activateAllModules: 0
+    - rid: 1468847584718880960
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        content: 
+        guid: 1a58c69b2e2b1774fb15fa5a64c9df2a
+        namespaces: SevenStrikeModules.XGraph
+        classes: xAction_
+        path: 
+        actionNodeType: Wait
+        icon: f0d551b2dfd5763439898ac3b72cf76a
+        visualNodeType: xNode_Wait
+        nodeGraphPosition: {x: 505, y: 218}
+        nodeGraphSize: {x: 166, y: 100}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: bca28f362dc3f7a4c84c06d2dac7f131
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
+        childNodes:
+        - c096a9e828ca70c4a9862d4b8f66ca7d
+        Time: 0
+    - rid: 1468847584718880961
+      type: {class: action_mc_property_mainlight, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u706F\u5149\u5C5E\u6027"
+        content: 
+        guid: 4fd40f1507abcab44be1243a9be29081
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        path: 
+        actionNodeType: property_mainlight
+        icon: aebbed90eb11e364fbf2831156f5e6e9
+        visualNodeType: graph_mc_property_mainlight
+        nodeGraphPosition: {x: 239, y: 283}
+        nodeGraphSize: {x: 166, y: 156}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
         ParentNodeGuid: 
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
+        PropertyVariables:
+        - rid: 1468847580011561979
+        - rid: 1468847580011561980
+        - rid: 1468847580011561981
+        Light: {fileID: 0}
+    - rid: 1468847584718880962
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        content: 
+        guid: c096a9e828ca70c4a9862d4b8f66ca7d
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        path: 
+        actionNodeType: module_activate
+        icon: 4318583132bab364a8f9b989966915b9
+        visualNodeType: graph_mc_module_activate
+        nodeGraphPosition: {x: 602, y: 362}
+        nodeGraphSize: {x: 166, y: 135}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: 1a58c69b2e2b1774fb15fa5a64c9df2a
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
         childNodes: []
-        activateAllModules: 1
+        activateState: 1
+        activateName: Module_A

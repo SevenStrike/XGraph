@@ -285,7 +285,7 @@ namespace SevenStrikeModules.XGraph
                     }
 
                     // node_property.PropertyData : 目标属性节点的属性数据
-                    xAction_Property propertyData = node_property.PropertyData;
+                    xAction_Property propertyData = node_property.property;
                     // "属性节点" 端口的 -- 名称
                     string property_port_name = port_property.portName;
                     // "属性节点" 端口的 -- 类型
@@ -408,7 +408,7 @@ namespace SevenStrikeModules.XGraph
                     port.Disconnect(edge);
 
                     // 从行为节点解绑 ”黑板变量数据“
-                    node_child.ActionData.VariableData_Unbind(node_var.VariableData.guid, portName);
+                    node_child.ActionData.VariableData_Unbind(node_var.VariableData.guid_n, portName);
                 }
                 #endregion
 
@@ -446,7 +446,7 @@ namespace SevenStrikeModules.XGraph
                     if (node_child is xNode_Base && node_parent is not xNode_Variable_Internal && edge.input.portType != typeof(xAction_Base) && edge.output.portType != typeof(xAction_Base))
                     {
                         // node_property.PropertyData : 目标属性节点的属性数据
-                        string property_guid = node_Property.PropertyData.guid;
+                        string property_guid = node_Property.property.guid;
                         // "属性节点" 端口的 -- 名称
                         string property_port_name = edge.output.portName;
                         // "属性节点" 端口的 -- 类型

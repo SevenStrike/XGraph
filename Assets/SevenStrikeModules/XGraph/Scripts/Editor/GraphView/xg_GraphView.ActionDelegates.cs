@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -140,34 +139,11 @@ namespace SevenStrikeModules.XGraph
                 Node_Selectall();
                 evt.StopPropagation();
             }
-            if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
-            {
-                CollectGroupsPosition();
-                gv_GraphWindow.ActionTree_SaveAndReplace();
-                gv_GraphWindow.RestructureGraphViews();
-                evt.StopPropagation();
-            }
-            if (evt.keyCode == KeyCode.O && (evt.ctrlKey || evt.commandKey))
-            {
-                gv_GraphWindow.ActionTree_Open();
-                evt.StopPropagation();
-            }
-            if (evt.keyCode == KeyCode.R && (evt.ctrlKey || evt.commandKey))
-            {
-                gv_GraphWindow.RestructureGraphViews();
-                evt.StopPropagation();
-            }
             if (evt.keyCode == KeyCode.G && (evt.ctrlKey || evt.commandKey))
             {
                 MakeGroup("节点编组", gv_NodeCreatedPosition);
                 evt.StopPropagation();
             }
-            if (evt.keyCode == KeyCode.Escape)
-            {
-                gv_GraphWindow.Close();
-                evt.StopPropagation();
-            }
-            //evt.StopPropagation();
         }
         /// <summary>
         /// 注册XGraphWindow的 节点颜色标记开关状态委托
@@ -211,5 +187,39 @@ namespace SevenStrikeModules.XGraph
             }
             NodeColorDisplay = state;
         }
+
+        #region 全局操作
+        /// <summary>
+        /// GraphView 事件 - 保存节点工程
+        /// </summary>
+        public void keyEvent_Save()
+        {
+            CollectGroupsPosition();
+            gv_GraphWindow.ActionTree_SaveAndReplace();
+            gv_GraphWindow.RestructureGraphViews();
+        }
+        /// <summary>
+        /// GraphView 事件 - 打开节点工程
+        /// </summary>
+        public void keyEvent_Open()
+        {
+            gv_GraphWindow.ActionTree_Open();
+        }
+        /// <summary>
+        /// GraphView 事件 - 重建节点工程
+        /// </summary>
+        public void keyEvent_Restructure()
+        {
+            gv_GraphWindow.RestructureGraphViews();
+        }
+        /// <summary>
+        /// GraphView 事件 - 关闭节点工程
+        /// </summary>
+        public void keyEvent_Close()
+        {
+            gv_GraphWindow.Close();
+        }
+        #endregion
+
     }
 }

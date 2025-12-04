@@ -274,7 +274,7 @@ namespace SevenStrikeModules.XGraph
             #region  确认当前有点击的物体是否是Decal节点
             if (evt.target is xNode_Decal decal)
             {
-                if (decal.DecalData.HasTexture)
+                if (decal.DecalData.texture_exist)
                 {
                     evt.menu.AppendSeparator();
                     evt.menu.AppendAction($"R 清空贴图", (action) =>
@@ -290,7 +290,7 @@ namespace SevenStrikeModules.XGraph
                     });
                     evt.menu.AppendAction($"W 替换贴图", (action) =>
                     {
-                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.DecalData.DecalTexture);
+                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.DecalData.texture_decal);
                         evt.StopPropagation();
                     });
                     evt.menu.AppendAction($"F 实际尺寸", (action) =>
@@ -331,7 +331,7 @@ namespace SevenStrikeModules.XGraph
                 {
                     evt.menu.AppendAction($"R 设置贴图", (action) =>
                     {
-                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.DecalData.DecalTexture);
+                        OpenObjectPickerForTextures("DecalTexSet", "t:Texture2D", decal.DecalData.texture_decal);
                         evt.StopPropagation();
                     });
                 }
@@ -520,8 +520,8 @@ namespace SevenStrikeModules.XGraph
                     {
                         if (decal != null)
                         {
-                            decal.DecalData.HasTexture = true;
-                            decal.DecalData.DecalTexture = selectedTexture;
+                            decal.DecalData.texture_exist = true;
+                            decal.DecalData.texture_decal = selectedTexture;
                             decal.CheckDecalTextureChanged();
                         }
                     }

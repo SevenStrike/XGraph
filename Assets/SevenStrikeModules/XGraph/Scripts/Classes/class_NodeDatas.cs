@@ -35,8 +35,8 @@ namespace SevenStrikeModules.XGraph
         /// 节点贴图透明度
         /// </summary>
         [SerializeField] public float opacity = 1;
-        [SerializeField] public bool HasTexture;
-        [SerializeField] public Texture2D DecalTexture;
+        [SerializeField] public bool texture_exist;
+        [SerializeField] public Texture2D texture_decal;
         /// <summary>
         /// 贴图缩放
         /// </summary>
@@ -62,8 +62,8 @@ namespace SevenStrikeModules.XGraph
             this.size = size;
             this.color = color;
             this.opacity = opacity;
-            this.HasTexture = hastex;
-            this.DecalTexture = tex;
+            this.texture_exist = hastex;
+            this.texture_decal = tex;
         }
         /// <summary>
         /// 贴纸克隆
@@ -79,8 +79,8 @@ namespace SevenStrikeModules.XGraph
             clone.position = position;
             clone.size = size;
             clone.color = color;
-            clone.HasTexture = HasTexture;
-            clone.DecalTexture = DecalTexture;
+            clone.texture_exist = texture_exist;
+            clone.texture_decal = texture_decal;
             clone.scale = scale;
             clone.opacity = opacity;
             return clone;
@@ -354,11 +354,11 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 变量节点识别ID码
         /// </summary>
-        [SerializeField] public string guid;
+        [SerializeField] public string guid_n;
         /// <summary>
         /// 变量原始识别ID码
         /// </summary>
-        [SerializeField] public string varguid;
+        [SerializeField] public string guid_v;
         /// <summary>
         /// 变量节点显示类型
         /// </summary>
@@ -370,7 +370,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 透明背景节点模式
         /// </summary>
-        [SerializeField] public bool TransparentNode = false;
+        [SerializeField] public bool transparent = false;
         /// <summary>
         /// 节点位置
         /// </summary>
@@ -398,10 +398,10 @@ namespace SevenStrikeModules.XGraph
             this.name = name;
             this.description = description;
             this.type = type;
-            this.guid = guid;
+            this.guid_n = guid;
             this.position = pos;
             this.size = size;
-            this.varguid = varguid;
+            this.guid_v = varguid;
             this.variable = variable;
         }
         /// <summary>
@@ -416,13 +416,13 @@ namespace SevenStrikeModules.XGraph
             clone.description = this.description;
             clone.type = this.type;
 #if UNITY_EDITOR
-            clone.guid = guid_create ? GUID.Generate().ToString() : guid;
+            clone.guid_n = guid_create ? GUID.Generate().ToString() : guid_n;
 #endif
             clone.position = position;
-            clone.varguid = varguid;
+            clone.guid_v = guid_v;
             clone.size = size;
-            clone.TransparentNode = TransparentNode;
-            clone.variable = variable;
+            clone.transparent = transparent;
+            clone.variable = variable.Clone(false);
             return clone;
         }
     }
@@ -460,7 +460,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 透明背景节点模式
         /// </summary>
-        [SerializeField] public bool TransparentNode = false;
+        [SerializeField] public bool transparent = false;
         /// <summary>
         /// 节点位置
         /// </summary>
@@ -511,7 +511,7 @@ namespace SevenStrikeModules.XGraph
             clone.position = position;
             clone.varguid = varguid;
             clone.size = size;
-            clone.TransparentNode = TransparentNode;
+            clone.transparent = transparent;
             clone.variable = variable;
             return clone;
         }

@@ -216,7 +216,7 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>
                 {
-                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
+                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.guid_v);
                     foreach (var node in var_nodes)
                     {
                         node.Highlight();
@@ -225,7 +225,7 @@ namespace SevenStrikeModules.XGraph
 
                 container_title.RegisterCallback<PointerOutEvent>((evt) =>
                 {
-                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.varguid);
+                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.guid_v);
                     foreach (var node in var_nodes)
                     {
                         node.UnHighlight();
@@ -347,7 +347,7 @@ namespace SevenStrikeModules.XGraph
                 container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png");
                 container_title.Add(container_icon);
 
-                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{(decal.DecalTexture == null ? "暂未指定" : decal.DecalTexture.name)} ", new string[] { "labeltext", "list_item_title" });
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{(decal.texture_decal == null ? "暂未指定" : decal.texture_decal.name)} ", new string[] { "labeltext", "list_item_title" });
                 label_title.pickingMode = PickingMode.Ignore;
 
                 container_title.RegisterCallback<PointerEnterEvent>((evt) =>

@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -35,7 +34,20 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void Node_Duplicate()
         {
-            var selectedNodes = selection.OfType<Node>().ToList();
+            // ---------------------------Linq 方法 （不推荐）
+            //var selectedNodes = selection.OfType<Node>().ToList();
+            //if (selectedNodes.Count == 0) return;
+
+            // 收集所有选中的 Node 类型元素
+            List<Node> selectedNodes = new List<Node>();
+            foreach (var element in selection)
+            {
+                if (element is Node node)
+                {
+                    selectedNodes.Add(node);
+                }
+            }
+
             if (selectedNodes.Count == 0) return;
 
             ClearSelection(); // 清空当前选择（可选）
@@ -159,9 +171,9 @@ namespace SevenStrikeModules.XGraph
                     args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
                     args.size = data.size;
                     args.opacity = data.opacity;
-                    args.hasTexture = data.HasTexture;
+                    args.hasTexture = data.texture_exist;
                     args.color = data.color;
-                    args.decalTexture = data.DecalTexture;
+                    args.decalTexture = data.texture_decal;
                     args.scale = data.scale;
                     Node decalNode = CreateNode(args);
 
@@ -177,7 +189,7 @@ namespace SevenStrikeModules.XGraph
                     args.description = data.description;
                     args.type = data.type;
                     args.position = data.position + new Vector2(data.size.x / 2, data.size.y / 2);
-                    args.varguid = data.varguid;
+                    args.varguid = data.guid_v;
                     args.size = data.size;
                     args.variable = data.variable;
 
@@ -205,7 +217,19 @@ namespace SevenStrikeModules.XGraph
             // 先清空拷贝缓冲列表
             gv_CopiedNodeList.Clear();
 
-            var selectedNodes = selection.OfType<Node>().ToList();
+            // ---------------------------Linq 方法 （不推荐）
+            //var selectedNodes = selection.OfType<Node>().ToList();
+
+            // 获取所有选中的 Node 类型元素
+            List<Node> selectedNodes = new List<Node>();
+            foreach (var element in selection)
+            {
+                if (element is Node node)
+                {
+                    selectedNodes.Add(node);
+                }
+            }
+
             if (selectedNodes.Count == 0) return;
 
             // 特化处理 - Action
@@ -334,8 +358,8 @@ namespace SevenStrikeModules.XGraph
                         args.size = data.size;
                         args.opacity = data.opacity;
                         args.color = data.color;
-                        args.hasTexture = data.HasTexture;
-                        args.decalTexture = data.DecalTexture;
+                        args.hasTexture = data.texture_exist;
+                        args.decalTexture = data.texture_decal;
                         args.position = realpos;
                         args.scale = data.scale;
                         AddToSelection(CreateNode(args));
@@ -349,7 +373,7 @@ namespace SevenStrikeModules.XGraph
                         args.description = data.description;
                         args.type = data.type;
                         args.position = realpos;
-                        args.varguid = data.varguid;
+                        args.varguid = data.guid_v;
                         args.size = data.size;
                         args.variable = data.variable;
                         AddToSelection(CreateNode(args));
@@ -393,8 +417,26 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void Node_Delete()
         {
+            // ---------------------------Linq 方法（不推荐）
+            //// 获取当前选择的所有节点
+            //var selectedNodes = selection.OfType<Node>().ToList();
+
+            //// 如果没有选中的节点，直接返回
+            //if (selectedNodes.Count == 0)
+            //{
+            //    Debug.LogWarning("没有选中的节点！");
+            //    return;
+            //}
+
             // 获取当前选择的所有节点
-            var selectedNodes = selection.OfType<Node>().ToList();
+            List<Node> selectedNodes = new List<Node>();
+            foreach (var element in selection)
+            {
+                if (element is Node node)
+                {
+                    selectedNodes.Add(node);
+                }
+            }
 
             // 如果没有选中的节点，直接返回
             if (selectedNodes.Count == 0)
@@ -410,10 +452,22 @@ namespace SevenStrikeModules.XGraph
             // 遍历所有选中的节点
             foreach (var node in selectedNodes)
             {
+                // ---------------------------Linq 方法（不推荐）
+                //// 移除节点的所有连线
+                //var edgesToRemove = edges.ToList()
+                //    .Where(edge => edge.input.node == node || edge.output.node == node)
+                //    .ToList();
+
                 // 移除节点的所有连线
-                var edgesToRemove = edges.ToList()
-                    .Where(edge => edge.input.node == node || edge.output.node == node)
-                    .ToList();
+                List<Edge> edgesToRemove = new List<Edge>();
+                foreach (Edge edge in edges)
+                {
+                    if (edge.input.node == node || edge.output.node == node)
+                    {
+                        edgesToRemove.Add(edge);
+                    }
+                }
+
                 foreach (var edge in edgesToRemove)
                 {
                     // 移除连线
@@ -455,10 +509,22 @@ namespace SevenStrikeModules.XGraph
             var graphViewChange = new GraphViewChange();
             graphViewChange.elementsToRemove = new List<GraphElement>();
 
+            // ---------------------------Linq 方法（不推荐）
+            //// 移除节点的所有连线
+            //var edgesToRemove = edges.ToList()
+            //    .Where(edge => edge.input.node == node || edge.output.node == node)
+            //    .ToList();
+
             // 移除节点的所有连线
-            var edgesToRemove = edges.ToList()
-                .Where(edge => edge.input.node == node || edge.output.node == node)
-                .ToList();
+            List<Edge> edgesToRemove = new List<Edge>();
+            foreach (Edge edge in edges)
+            {
+                if (edge.input.node == node || edge.output.node == node)
+                {
+                    edgesToRemove.Add(edge);
+                }
+            }
+
             foreach (var edge in edgesToRemove)
             {
                 // 移除连线
@@ -485,8 +551,25 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void Node_Clear()
         {
+            // ---------------------------Linq 方法（不推荐）
+            //// 删除所有节点
+            //foreach (var node in nodes.ToList())
+            //{
+            //    if (node is xNode_Base b)
+            //        b.DuplicateAction_Remove();
+            //    if (node is xNode_Variable v)
+            //        v.DuplicateAction_Remove();
+            //    RemoveElement(node);
+            //}
+
             // 删除所有节点
-            foreach (var node in nodes.ToList())
+            List<Node> nodesList = new List<Node>();
+            foreach (var element in nodes)
+            {
+                nodesList.Add(element);
+            }
+
+            foreach (var node in nodesList)
             {
                 if (node is xNode_Base b)
                     b.DuplicateAction_Remove();
@@ -503,8 +586,21 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void EdgesClear()
         {
+            // ---------------------------Linq 方法（不推荐）
+            //// 删除所有连线
+            //foreach (var edge in edges.ToList())
+            //{
+            //    RemoveElement(edge);
+            //}
+
             // 删除所有连线
-            foreach (var edge in edges.ToList())
+            List<Edge> edgesList = new List<Edge>();
+            foreach (var edge in edges)
+            {
+                edgesList.Add(edge);
+            }
+
+            foreach (var edge in edgesList)
             {
                 RemoveElement(edge);
             }

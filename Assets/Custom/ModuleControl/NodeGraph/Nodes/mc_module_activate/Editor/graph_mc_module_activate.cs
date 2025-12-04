@@ -69,8 +69,8 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            active.Set_ActivateModuleName("名称");
-            active.Set_ActivateModuleState("激活");
+            active.Set_ActivateModuleName_withPort("名称");
+            active.Set_ActivateModuleState_withPort("激活");
         }
         /// <summary>
         /// 当克隆节点时
@@ -171,9 +171,9 @@ namespace SevenStrikeModules.XGraph
         /// 节点的Inspector属性界面绘制
         /// </summary>
         /// <returns></returns>
-        public override VisualElement NodeInspectorGUI()
+        public override VisualElement InspectorGUI()
         {
-            VisualElement InspectorElement = base.NodeInspectorGUI();
+            VisualElement InspectorElement = base.InspectorGUI();
 
             return InspectorElement;
         }
@@ -223,15 +223,6 @@ namespace SevenStrikeModules.XGraph
                     }
                 });
 
-                container.RegisterCallback<PointerDownEvent>((evt) =>
-                {
-                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                    if (child != null)
-                    {
-                        //EditorGUIUtility.PingObject(child);
-                    }
-                });
-
                 VisualElement container_title = new VisualElement();
                 container_title.AddToClassList("list_titlebg");
                 container.Add(container_title);
@@ -275,15 +266,13 @@ namespace SevenStrikeModules.XGraph
                 if (isVariableBinded("名称"))
                 {
                     field_name.value = active.activateName;
-                    Debug.Log(1);
+                    active.Set_ActivateModuleName_withPort("名称");
                 }
                 // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
                 else
                 {
-                    active.activateName = field_name.value;
-                    Debug.Log(2);
+                    active.Set_ActivateModuleName(field_name.value);
                 }
-                active.Set_ActivateModuleName("名称");
             });
             #endregion
 
@@ -295,13 +284,13 @@ namespace SevenStrikeModules.XGraph
                 if (isVariableBinded("激活"))
                 {
                     field_state.value = active.activateState;
+                    active.Set_ActivateModuleState_withPort("激活");
                 }
                 // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
                 else
                 {
-                    active.activateState = v.newValue;
+                    active.Set_ActivateModuleState(v.newValue);
                 }
-                active.Set_ActivateModuleState("激活");
             });
             #endregion
 

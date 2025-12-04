@@ -135,6 +135,57 @@ namespace SevenStrikeModules.XGraph
 
     [Serializable]
     /// <summary>
+    /// 变量类型 - 字符串
+    /// </summary>
+    public class Variable_String : Variable
+    {
+        public string value;
+
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public Variable_String(string name, string value = "") : base(name, xVariableType.String)
+        {
+            this.value = value;
+        }
+
+        public override object GetValue()
+        {
+            return value;
+        }
+
+        public override T GetValue<T>()
+        {
+            // 直接强制转换，调用者知道正确的T类型
+            return (T)(object)value;
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is string stringValue)
+                this.value = stringValue;
+            else
+                throw new InvalidCastException($"Cannot set String from {value?.GetType()}");
+        }
+
+        public override void SetValue<T>(T value)
+        {
+            if (typeof(T) == typeof(string) && value is string stringValue)
+                this.value = stringValue;
+            else
+                throw new InvalidCastException($"Cannot set String from {typeof(T)}");
+        }
+
+        public override Variable Clone(bool guid_create)
+        {
+            var clone = new Variable_String(name, value);
+            CloneVars(clone, guid_create);
+            return clone;
+        }
+    }
+
+    [Serializable]
+    /// <summary>
     /// 变量类型 - 整数
     /// </summary>
     public class Variable_Int : Variable
@@ -230,57 +281,6 @@ namespace SevenStrikeModules.XGraph
         public override Variable Clone(bool guid_create)
         {
             var clone = new Variable_Float(name, value);
-            CloneVars(clone, guid_create);
-            return clone;
-        }
-    }
-
-    [Serializable]
-    /// <summary>
-    /// 变量类型 - 字符串
-    /// </summary>
-    public class Variable_String : Variable
-    {
-        public string value;
-
-        /// <summary>
-        /// 构造器
-        /// </summary>
-        public Variable_String(string name, string value = "") : base(name, xVariableType.String)
-        {
-            this.value = value;
-        }
-
-        public override object GetValue()
-        {
-            return value;
-        }
-
-        public override T GetValue<T>()
-        {
-            // 直接强制转换，调用者知道正确的T类型
-            return (T)(object)value;
-        }
-
-        public override void SetValue(object value)
-        {
-            if (value is string stringValue)
-                this.value = stringValue;
-            else
-                throw new InvalidCastException($"Cannot set String from {value?.GetType()}");
-        }
-
-        public override void SetValue<T>(T value)
-        {
-            if (typeof(T) == typeof(string) && value is string stringValue)
-                this.value = stringValue;
-            else
-                throw new InvalidCastException($"Cannot set String from {typeof(T)}");
-        }
-
-        public override Variable Clone(bool guid_create)
-        {
-            var clone = new Variable_String(name, value);
             CloneVars(clone, guid_create);
             return clone;
         }

@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
@@ -21,9 +22,9 @@ namespace SevenStrikeModules.XGraph
         private Editor editor;
 
         /// <summary>
-        /// 初始化样式
+        /// 初始化
         /// </summary>
-        public void InitializeStyle()
+        public void Initialize()
         {
             util_XGraphInspectorGUI.InitializeStyle(this, $"{util_Dashboard.GetPath_GUI_Uss()}uss_Inspector.uss");
         }
@@ -156,7 +157,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 调用节点的InspectorGUI，以此支持在内置的Inspector面板上绘制节点属性
-            container.Add(n_base.NodeInspectorGUI());
+            container.Add(n_base.InspectorGUI());
         }
         /// <summary>
         /// 创建行为根资源的属性面板
@@ -586,7 +587,7 @@ namespace SevenStrikeModules.XGraph
 
             // 标题
             Color themeColor = Color.clear;
-            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemes.VariableThemes)
             {
                 if (theme.type == data.type.ToString())
                 {
@@ -611,10 +612,10 @@ namespace SevenStrikeModules.XGraph
             util_XGraphInspectorGUI.GUI_Label(container, data.description, new string[1] { "description" });
 
             // node_guid
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#e1e1e1>{data.guid}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-N： </b><color=#e1e1e1>{data.guid_n}</color>", new string[1] { "labeltext" });
 
             // var_guid
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#e1e1e1>{data.varguid}</color>", new string[1] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>GUID-V： </b><color=#e1e1e1>{data.guid_v}</color>", new string[1] { "labeltext" });
 
             // node_pos
             Label label_size = util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点尺寸： </b> <color=#e1e1e1>X：{data.size.x.ToString()}    Y：{data.size.y.ToString()}</color>", new string[1] { "labeltext" });
@@ -638,14 +639,14 @@ namespace SevenStrikeModules.XGraph
                     field_string.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_string.value);
-                        SetBlackBoardVariableValue(field_string.value, data.varguid);
+                        SetBlackBoardVariableValue(field_string.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
                     });
                     field_string.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_string.value);
-                        SetBlackBoardVariableValue(field_string.value, data.varguid);
+                        SetBlackBoardVariableValue(field_string.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_string.value}");
                     });
@@ -655,14 +656,14 @@ namespace SevenStrikeModules.XGraph
                     field_float.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_float.value);
-                        SetBlackBoardVariableValue(field_float.value, data.varguid);
+                        SetBlackBoardVariableValue(field_float.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
                     });
                     field_float.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_float.value);
-                        SetBlackBoardVariableValue(field_float.value, data.varguid);
+                        SetBlackBoardVariableValue(field_float.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_float.value}");
                     });
@@ -672,14 +673,14 @@ namespace SevenStrikeModules.XGraph
                     field_int.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_int.value);
-                        SetBlackBoardVariableValue(field_int.value, data.varguid);
+                        SetBlackBoardVariableValue(field_int.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
                     });
                     field_int.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_int.value);
-                        SetBlackBoardVariableValue(field_int.value, data.varguid);
+                        SetBlackBoardVariableValue(field_int.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_int.value}");
                     });
@@ -689,14 +690,14 @@ namespace SevenStrikeModules.XGraph
                     field_bool.RegisterValueChangedCallback((value) =>
                     {
                         data.variable.SetValue(field_bool.value);
-                        SetBlackBoardVariableValue(field_bool.value, data.varguid);
+                        SetBlackBoardVariableValue(field_bool.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
                     });
                     field_bool.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_bool.value);
-                        SetBlackBoardVariableValue(field_bool.value, data.varguid);
+                        SetBlackBoardVariableValue(field_bool.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_bool.value}");
                     });
@@ -706,14 +707,14 @@ namespace SevenStrikeModules.XGraph
                     field_vector2.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_vector2.value);
-                        SetBlackBoardVariableValue(field_vector2.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector2.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
                     });
                     field_vector2.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_vector2.value);
-                        SetBlackBoardVariableValue(field_vector2.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector2.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector2.value}");
                     });
@@ -723,14 +724,14 @@ namespace SevenStrikeModules.XGraph
                     field_vector3.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_vector3.value);
-                        SetBlackBoardVariableValue(field_vector3.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector3.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
                     });
                     field_vector3.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_vector3.value);
-                        SetBlackBoardVariableValue(field_vector3.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector3.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector3.value}");
                     });
@@ -740,14 +741,14 @@ namespace SevenStrikeModules.XGraph
                     field_vector4.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_vector4.value);
-                        SetBlackBoardVariableValue(field_vector4.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector4.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
                     });
                     field_vector4.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_vector4.value);
-                        SetBlackBoardVariableValue(field_vector4.value, data.varguid);
+                        SetBlackBoardVariableValue(field_vector4.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_vector4.value}");
                     });
@@ -757,14 +758,14 @@ namespace SevenStrikeModules.XGraph
                     field_color.RegisterCallback<BlurEvent>((value) =>
                     {
                         data.variable.SetValue(field_color.value);
-                        SetBlackBoardVariableValue(field_color.value, data.varguid);
+                        SetBlackBoardVariableValue(field_color.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
                     });
                     field_color.RegisterCallback<DetachFromPanelEvent>(evt =>
                     {
                         data.variable.SetValue(field_color.value);
-                        SetBlackBoardVariableValue(field_color.value, data.varguid);
+                        SetBlackBoardVariableValue(field_color.value, data.guid_v);
                         graphwindow.CloneTree.Variables_Refresh();
                         graphwindow.xw_SetNodeInfo_Footer($"{data.variable.GetActiveType()}  /  {field_color.value}");
                     });
@@ -787,13 +788,13 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png"), data.DecalTexture ? data.DecalTexture.name : "Unset", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png"), data.texture_decal ? data.texture_decal.name : "Unset", new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 贴图链接
             Button btn_decaltex_ping = util_XGraphInspectorGUI.GUI_Button(titlegroup, null, new string[] { "iconbutton" });
             btn_decaltex_ping.clicked += (() =>
             {
-                EditorGUIUtility.PingObject(data.DecalTexture);
+                EditorGUIUtility.PingObject(data.texture_decal);
             });
 
             // node_guid
@@ -821,13 +822,13 @@ namespace SevenStrikeModules.XGraph
             };
 
             // node_realsize
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#e1e1e1>X：{(data.DecalTexture ? data.DecalTexture.width.ToString() : " - ")}    Y：{(data.DecalTexture ? data.DecalTexture.height.ToString() : "-")}</color>", new string[] { "labeltext" });
+            util_XGraphInspectorGUI.GUI_Label(container, $"<b>实际尺寸： </b> <color=#e1e1e1>X：{(data.texture_decal ? data.texture_decal.width.ToString() : " - ")}    Y：{(data.texture_decal ? data.texture_decal.height.ToString() : "-")}</color>", new string[] { "labeltext" });
 
             // texture_bg
             VisualElement tex_bg = util_XGraphInspectorGUI.GUI_Texture(container, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal_bg.png"), new string[] { "texture_bg" });
 
             // texture
-            VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.DecalTexture ? data.DecalTexture : null, new string[] { "texture" });
+            VisualElement tex = util_XGraphInspectorGUI.GUI_Texture(container, data.texture_decal ? data.texture_decal : null, new string[] { "texture" });
             // 延迟播放动画
             EditorApplication.delayCall += () =>
             {
@@ -836,7 +837,7 @@ namespace SevenStrikeModules.XGraph
 
             tex.RegisterCallback<MouseDownEvent>((evt) =>
             {
-                EditorGUIUtility.PingObject(data.DecalTexture ? data.DecalTexture : null);
+                EditorGUIUtility.PingObject(data.texture_decal ? data.texture_decal : null);
             });
             tex_bg.Add(tex);
         }
@@ -987,7 +988,7 @@ namespace SevenStrikeModules.XGraph
 
             // 标题
             Color themeColor = Color.clear;
-            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+            foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemes.VariableThemes)
             {
                 if (theme.type == vare.type.ToString())
                 {
@@ -1160,7 +1161,7 @@ namespace SevenStrikeModules.XGraph
             Color themeColor = Color.white;
             if (n_out is xNode_Variable n_var)
             {
-                foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+                foreach (var theme in graphwindow.xw_BlackBoardView.VariableThemes.VariableThemes)
                 {
                     if (theme.type == n_var.VariableData.type.ToString())
                     {

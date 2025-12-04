@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Linq;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
     using UnityEngine;

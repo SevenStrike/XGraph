@@ -396,8 +396,9 @@
                 #endregion
 
                 // 用于记录资源的原始路径，便于重新编译 & 运行状态切换 资源重载的保险操作
-                //EditorPrefs.SetString("XGraph->ActionTreePath_Source", AssetDatabase.GetAssetPath(wnd.SourceTree));
-                //EditorPrefs.SetString("XGraph->ActionTreePath_Clone", AssetDatabase.GetAssetPath(wnd.CloneTree));
+                string path_source = AssetDatabase.GetAssetPath(wnd.SourceTree);
+                EditorPrefs.SetString("XGraph->ActionAssetPath", path_source);
+                Debug.Log($"临时保存资源路径：{path_source}");
 
                 // 如果最后一次窗口尺寸值不为0则使用最后一次的窗口尺寸，否则就是用默认窗口尺寸，这里使用的 SourceTree 的原因是因为窗口尺寸这个变量不受克隆影响
                 xw_CenterEditorWindow(wnd.SourceTree.LastGraphWindowSize == Vector2Int.zero ? new Vector2Int(1330, 800) : wnd.SourceTree.LastGraphWindowSize, wnd);
@@ -516,7 +517,7 @@
             // 在布局中找到 InspectorViewer 组件
             xw_InspectorView = root.Q<xg_InspectorView>("InspectorView");
             xw_InspectorView.SendToBack();
-            xw_InspectorView.InitializeStyle();
+            xw_InspectorView.Initialize();
             xw_InspectorView.graphwindow = this;
 
             // 添加拖动支持
@@ -703,11 +704,11 @@
             {
                 VisualElement dot = dotElements[i];
                 string dotparentName = dot.parent.name;
-                for (int s = 0; s < xw_BlackBoardView.VariableThemeList.VariableThemes.Count; s++)
+                for (int s = 0; s < xw_BlackBoardView.VariableThemes.VariableThemes.Count; s++)
                 {
-                    if (dotparentName == $"param_type_{xw_BlackBoardView.VariableThemeList.VariableThemes[s].type}")
+                    if (dotparentName == $"param_type_{xw_BlackBoardView.VariableThemes.VariableThemes[s].type}")
                     {
-                        dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemeList.VariableThemes[s].color);
+                        dot.style.backgroundColor = util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemes.VariableThemes[s].color);
                     }
                 }
             }
@@ -839,7 +840,10 @@
             // 鼠标位置
             xw_label_GraphMousePos_x = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_x");
             xw_label_GraphMousePos_y = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_y");
-            #endregion          
+            #endregion
+
+            // 在整个窗口根元素上注册全局快捷键
+            rootVisualElement.RegisterCallback<KeyDownEvent>(GraphViewGlobalKeyDownEvents, TrickleDown.TrickleDown);
         }
 
         /// <summary>
@@ -861,11 +865,16 @@
 
             EditorApplication.update -= OnWindowResizingUpdate;
             EditorApplication.update += OnWindowResizingUpdate;
+
+            // 编辑器内运行 & 停止时资源的重载
+            EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
         }
 
         private void OnDisable()
         {
             EditorApplication.update -= OnWindowResizingUpdate;
+            // 编辑器内运行 & 停止时资源的重载
+            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
         }
 
         private void OnDestroy()
@@ -892,6 +901,14 @@
                     // 没有窗口打开，直接返回
                     if (win == null)
                         return;
+
+                    if (win.SourceTree != null)
+                        win.SourceTree = null;
+
+                    string path_source = EditorPrefs.GetString("XGraph->ActionAssetPath");
+                    Debug.Log($"重新获取资源路径：{path_source}");
+                    win.SourceTree = AssetDatabase.LoadAssetAtPath<xAction_Asset>(path_source);
+                    win.CloneTree = win.SourceTree.Clone();
 
                     win.ReloadTreeFromPath(win.SourceTree, win.CloneTree);
                 };
@@ -991,6 +1008,59 @@
                     #endregion
                 };
             };
+        }
+        #endregion
+
+        #region 编辑器内运行 & 停止的资源重载操作
+        private void EditorApplication_playModeStateChanged(PlayModeStateChange obj)
+        {
+            if (obj == PlayModeStateChange.EnteredPlayMode)
+            {
+                // 在进入游戏模式时，保存原始资源路径到 EditorPrefs
+                string path_source = AssetDatabase.GetAssetPath(SourceTree);
+                EditorPrefs.SetString("XGraph->ActionAssetPath", path_source);
+                Debug.Log($"运行前保存资源路径：{path_source}");
+            }
+            if (obj == PlayModeStateChange.ExitingPlayMode)
+            {
+                // 在退出游戏模式时，尝试重新加载资源
+                xg_Window win = util_XGraphEditorUtility.GetExistingGraphviewWindow();
+
+                if (win == null)
+                    return;
+
+                // 清理旧引用，避免内存泄漏
+                if (win.SourceTree != null)
+                {
+                    win.SourceTree = null;
+                }
+
+                string path_source = EditorPrefs.GetString("XGraph->ActionAssetPath");
+                Debug.Log($"停止运行后重新获取资源路径：{path_source}");
+
+                // 延迟加载，确保所有资源都已清理
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.delayCall += () =>
+                    {
+                        // 重新加载资源
+                        var sourceTree = util_XGraphEditorUtility.AssetLoad<xAction_Asset>(path_source);
+
+                        if (sourceTree != null)
+                        {
+                            win.SourceTree = sourceTree;
+                            win.CloneTree = win.SourceTree.Clone();
+                            win.ReloadTreeFromPath(win.SourceTree, win.CloneTree);
+
+                            Debug.Log("停止游戏后资源重载完成");
+                        }
+                        else
+                        {
+                            Debug.LogError($"无法重新加载资源：{path_source}");
+                        }
+                    };
+                };
+            }
         }
         #endregion
 
@@ -1331,7 +1401,7 @@
             // 加载 Inspector 面板标题文字
             InspectorViewAction_SetTitle($"贴图节点");
             // 显示当前选中的节点的类型信息
-            xw_SetNodeInfos($"{n_decal.DecalData.guid}  /   {n_decal.DecalData.position.ToString()}  /   {n_decal.DecalData.size.ToString()}", $"{n_decal.DecalData.DecalTexture}");
+            xw_SetNodeInfos($"{n_decal.DecalData.guid}  /   {n_decal.DecalData.position.ToString()}  /   {n_decal.DecalData.size.ToString()}", $"{n_decal.DecalData.texture_decal}");
         }
         #endregion
 
@@ -1726,11 +1796,11 @@
             Label label = evt.target as Label;
 
             #region 鼠标悬停样式           
-            for (int s = 0; s < xw_BlackBoardView.VariableThemeList.VariableThemes.Count; s++)
+            for (int s = 0; s < xw_BlackBoardView.VariableThemes.VariableThemes.Count; s++)
             {
-                if ((string)label.userData == xw_BlackBoardView.VariableThemeList.VariableThemes[s].type)
+                if ((string)label.userData == xw_BlackBoardView.VariableThemes.VariableThemes[s].type)
                 {
-                    util_XGraphEditorUtility.Element_BackgroundColor_Set(label, util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemeList.VariableThemes[s].color));
+                    util_XGraphEditorUtility.Element_BackgroundColor_Set(label, util_XGraphEditorUtility.Color_From_HexString(xw_BlackBoardView.VariableThemes.VariableThemes[s].color));
                     util_XGraphEditorUtility.Element_Color_Set(label, Color.black);
                 }
             }
@@ -2406,13 +2476,13 @@
         private void xw_SetFlowNames()
         {
             // 小标题文字显示 
-            if (xw_label_graphTitle != null)
+            if (xw_label_graphTitle != null && SourceTree != null)
                 xw_label_graphTitle.text = SourceTree.name;
             // 小标题鼠标悬停显示资源路径
-            if (xw_label_graphTitle != null)
+            if (xw_label_graphTitle != null && SourceTree != null)
                 xw_label_graphTitle.tooltip = AssetDatabase.GetAssetPath(SourceTree);
             // 水印文字显示
-            if (xw_label_graphMarkText != null)
+            if (xw_label_graphMarkText != null && SourceTree != null)
                 xw_label_graphMarkText.text = SourceTree.name;
         }
         /// <summary>
@@ -2456,6 +2526,36 @@
 
             // 更新窗口位置和大小
             window.position = windowRect;
+        }
+        #endregion
+
+        #region 快捷按键操作
+        /// <summary>
+        /// 全局快捷按键操作
+        /// </summary>
+        /// <param name="evt"></param>
+        private void GraphViewGlobalKeyDownEvents(KeyDownEvent evt)
+        {
+            if (evt.keyCode == KeyCode.S && (evt.ctrlKey || evt.commandKey))
+            {
+                xw_graphView.keyEvent_Save();
+                evt.StopPropagation();
+            }
+            if (evt.keyCode == KeyCode.O && (evt.ctrlKey || evt.commandKey))
+            {
+                xw_graphView.keyEvent_Open();
+                evt.StopPropagation();
+            }
+            if (evt.keyCode == KeyCode.R && (evt.ctrlKey || evt.commandKey))
+            {
+                xw_graphView.keyEvent_Restructure();
+                evt.StopPropagation();
+            }
+            if (evt.keyCode == KeyCode.Escape)
+            {
+                xw_graphView.keyEvent_Close();
+                evt.StopPropagation();
+            }
         }
         #endregion
     }

@@ -173,7 +173,7 @@ namespace SevenStrikeModules.XGraph
         public void SetNativeSize()
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Change Decal Position");
-            DecalData.size = new Vector2(DecalData.DecalTexture.width, DecalData.DecalTexture.height);
+            DecalData.size = new Vector2(DecalData.texture_decal.width, DecalData.texture_decal.height);
             style.width = DecalData.size.x;
             style.height = DecalData.size.y;
 
@@ -410,8 +410,8 @@ namespace SevenStrikeModules.XGraph
             DecalTextureElement.style.scale = new StyleScale(DecalData.scale);
             DecalTextureElement.style.unityBackgroundImageTintColor = DecalData.color;
             DecalTextureElement.pickingMode = PickingMode.Position;
-            if (DecalData.DecalTexture != null)
-                DecalTextureElement.style.backgroundImage = DecalData.DecalTexture;
+            if (DecalData.texture_decal != null)
+                DecalTextureElement.style.backgroundImage = DecalData.texture_decal;
             else
                 DecalTextureElement.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Avatars/Missing.png"); ;
             DecalTextureElement.AddToClassList("DecalTexture");
@@ -557,7 +557,7 @@ namespace SevenStrikeModules.XGraph
                 return;
 
             // 如果该节点设置了贴图
-            if (DecalData.HasTexture)
+            if (DecalData.texture_exist)
             {
                 NodeDecalTexture_IsSet();
             }
@@ -584,9 +584,9 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public void NodeDecalTexture_IsSet()
         {
-            if (DecalData.DecalTexture != null)
+            if (DecalData.texture_decal != null)
             {
-                DecalTextureElement.style.backgroundImage = DecalData.DecalTexture;
+                DecalTextureElement.style.backgroundImage = DecalData.texture_decal;
                 DecalTextureElement.style.borderTopWidth = 0;
                 DecalTextureElement.style.borderBottomWidth = 0;
                 DecalTextureElement.style.borderLeftWidth = 0;
@@ -604,9 +604,9 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Set DecalData Texture");
             // 贴图状态开关 = 开
-            DecalData.HasTexture = true;
+            DecalData.texture_exist = true;
             // 贴图图像设置
-            DecalData.DecalTexture = tex;
+            DecalData.texture_decal = tex;
 
             CheckDecalTextureChanged();
         }
@@ -619,9 +619,9 @@ namespace SevenStrikeModules.XGraph
         {
             Undo.RecordObject(graphView.ActionTreeAsset, "Remove DecalData Texture");
             // 贴图状态开关 = 开
-            DecalData.HasTexture = false;
+            DecalData.texture_exist = false;
             // 贴图图像设置
-            DecalData.DecalTexture = null;
+            DecalData.texture_decal = null;
 
             CheckDecalTextureChanged();
         }
@@ -859,7 +859,7 @@ namespace SevenStrikeModules.XGraph
                 Add(m_ObjectPickerIMGUI);
             }
 
-            EditorGUIUtility.ShowObjectPicker<Texture2D>(DecalData.DecalTexture, false, typefilter, 0);
+            EditorGUIUtility.ShowObjectPicker<Texture2D>(DecalData.texture_decal, false, typefilter, 0);
         }
 
         private void OnObjectPickerGUI()

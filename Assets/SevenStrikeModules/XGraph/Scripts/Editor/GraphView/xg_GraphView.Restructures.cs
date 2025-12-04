@@ -2,10 +2,9 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEngine;
 
     public partial class xg_GraphView
     {
@@ -19,7 +18,7 @@ namespace SevenStrikeModules.XGraph
             ActionTreeAsset = actiontree;
 
             if (ActionTreeAsset.GraphNodesStruct != null)
-                CustomSearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(ActionTreeAsset.GraphNodesStruct.text);
+                CustomSearchStructures = JsonUtility.FromJson<searchBox_NodesRoot>(ActionTreeAsset.GraphNodesStruct.text);
 
             graphViewChanged -= OnGraphViewChanged;
 
@@ -334,10 +333,10 @@ namespace SevenStrikeModules.XGraph
         {
             foreach (var data in datas_var)
             {
-                data.name = ActionTreeAsset.Variable_GetVarSource(data.varguid).name;
+                data.name = ActionTreeAsset.Variable_GetVarSource(data.guid_v).name;
                 xNode_Variable vNode_Variable = Node_MakeVariable(data.position, data);
                 vNode_Variable.Draw();
-                vNode_Variable.CheckTransparentDisplay(vNode_Variable.VariableData.TransparentNode);
+                vNode_Variable.CheckTransparentDisplay(vNode_Variable.VariableData.transparent);
                 vNode_Variable.RefreshExpandedState();
             }
         }
@@ -361,37 +360,117 @@ namespace SevenStrikeModules.XGraph
                 // 遍历编组中的节点GUID，找到对应的节点并添加到编组中
                 foreach (string guid in groupData.guids)
                 {
+                    // ---------------------------Linq 方法（不推荐）
+                    //// 查找 - 行为节点
+                    //var action = nodes.ToList().FirstOrDefault(n => n is xNode_Base node_action && node_action.ActionData.guid == guid);
+                    //if (action != null)
+                    //{
+                    //    group.AddElement(action);
+                    //    continue;
+                    //}
+                    // ---------------------------Linq 方法（不推荐）
+                    //// 查找 - 黑板变量节点
+                    //var stick = nodes.ToList().FirstOrDefault(n => n is xNode_Stick node_stick && node_stick.StickData.guid == guid);
+                    //if (stick != null)
+                    //{
+                    //    group.AddElement(stick);
+                    //}
+                    // ---------------------------Linq 方法（不推荐）
+                    //// 查找 - 标签节点
+                    //var label = nodes.ToList().FirstOrDefault(n => n is xNode_Label node_label && node_label.LabelData.guid == guid);
+                    //if (label != null)
+                    //{
+                    //    group.AddElement(label);
+                    //}
+                    // ---------------------------Linq 方法（不推荐）
+                    //// 查找 - 贴图节点
+                    //var decal = nodes.ToList().FirstOrDefault(n => n is xNode_Decal node_decal && node_decal.DecalData.guid == guid);
+                    //if (decal != null)
+                    //{
+                    //    group.AddElement(decal);
+                    //}
+                    // ---------------------------Linq 方法（不推荐）
+                    //// 查找 - 黑板变量节点
+                    //var vare = nodes.ToList().FirstOrDefault(n => n is xNode_Variable node_var && node_var.VariableData.guid_n == guid);
+                    //if (vare != null)
+                    //{
+                    //    group.AddElement(vare);
+                    //}
+
                     // 查找 - 行为节点
-                    var action = nodes.ToList().FirstOrDefault(n => n is xNode_Base node_action && node_action.ActionData.guid == guid);
+                    Node action = null;
+                    foreach (var node in nodes)
+                    {
+                        if (node is xNode_Base node_action && node_action.ActionData.guid == guid)
+                        {
+                            action = node;
+                            break;
+                        }
+                    }
                     if (action != null)
                     {
                         group.AddElement(action);
                         continue;
                     }
 
-                    // 查找 - 黑板变量节点
-                    var stick = nodes.ToList().FirstOrDefault(n => n is xNode_Stick node_stick && node_stick.StickData.guid == guid);
+                    // 查找 - 便签节点
+                    Node stick = null;
+                    foreach (var node in nodes)
+                    {
+                        if (node is xNode_Stick node_stick && node_stick.StickData.guid == guid)
+                        {
+                            stick = node;
+                            break;
+                        }
+                    }
                     if (stick != null)
                     {
                         group.AddElement(stick);
+                        continue;
                     }
 
                     // 查找 - 标签节点
-                    var label = nodes.ToList().FirstOrDefault(n => n is xNode_Label node_label && node_label.LabelData.guid == guid);
+                    Node label = null;
+                    foreach (var node in nodes)
+                    {
+                        if (node is xNode_Label node_label && node_label.LabelData.guid == guid)
+                        {
+                            label = node;
+                            break;
+                        }
+                    }
                     if (label != null)
                     {
                         group.AddElement(label);
+                        continue;
                     }
 
                     // 查找 - 贴图节点
-                    var decal = nodes.ToList().FirstOrDefault(n => n is xNode_Decal node_decal && node_decal.DecalData.guid == guid);
+                    Node decal = null;
+                    foreach (var node in nodes)
+                    {
+                        if (node is xNode_Decal node_decal && node_decal.DecalData.guid == guid)
+                        {
+                            decal = node;
+                            break;
+                        }
+                    }
                     if (decal != null)
                     {
                         group.AddElement(decal);
+                        continue;
                     }
 
                     // 查找 - 黑板变量节点
-                    var vare = nodes.ToList().FirstOrDefault(n => n is xNode_Variable node_var && node_var.VariableData.guid == guid);
+                    Node vare = null;
+                    foreach (var node in nodes)
+                    {
+                        if (node is xNode_Variable node_var && node_var.VariableData.guid_n == guid)
+                        {
+                            vare = node;
+                            break;
+                        }
+                    }
                     if (vare != null)
                     {
                         group.AddElement(vare);
@@ -406,7 +485,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="datas_action"></param>
         public void Restructure_VariableConnector(List<xAction_Base> datas_action)
         {
-            // 根据行为树根节点的数据列表  -  重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
+            // 根据行为树根节点的数据列表 - 重建与每个行为数据中指定的 VariableGuid 所对应的Variable节点连线
             foreach (var action in datas_action)
             {
                 if (action.VariableDatas != null && action.VariableDatas.Count > 0)
@@ -414,7 +493,8 @@ namespace SevenStrikeModules.XGraph
                     // 父节点
                     xNode_Base n_parent = FindNodeView(action.guid);
 
-                    for (int i = 0; i < action.VariableDatas.Count; i++)
+                    // 使用倒序循环，避免删除时索引问题
+                    for (int i = action.VariableDatas.Count - 1; i >= 0; i--)
                     {
                         var item = action.VariableDatas[i];
 
@@ -432,13 +512,18 @@ namespace SevenStrikeModules.XGraph
                             {
                                 util_AnimatedEdge edge = n_var.OutputPort.Port.ConnectTo<util_AnimatedEdge>(port_parent);
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
-
                                 AddElement(edge);
+                            }
+                            else
+                            {
+                                // 端口不存在，移除无效记录
+                                action.VariableDatas.RemoveAt(i);
                             }
                         }
                         else
                         {
-                            action.VariableDatas.Remove(item);
+                            // 变量节点不存在，移除无效记录
+                            action.VariableDatas.RemoveAt(i);
                         }
                     }
                 }
@@ -459,13 +544,13 @@ namespace SevenStrikeModules.XGraph
                     // 获得父节点
                     xNode_Base n_parent = FindNodeView(action.guid);
 
-                    // 循环遍历内部变量列表
-                    for (int i = 0; i < action.InternalVariableDatas.Count; i++)
+                    // 使用倒序循环，避免删除时索引问题
+                    for (int i = action.InternalVariableDatas.Count - 1; i >= 0; i--)
                     {
                         // 获取列表其中一项
                         var item = action.InternalVariableDatas[i];
 
-                        // 在节点图内找到目标  -  内部变量节点  -  与  -  行为节点  -  的  -  匹配端口  -  连接
+                        // 在节点图内找到目标 - 内部变量节点 - 与 - 行为节点 - 的 - 匹配端口 - 连接
                         xNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
                         if (n_var != null)
                         {
@@ -481,14 +566,33 @@ namespace SevenStrikeModules.XGraph
 
                             if (n_var != null && port_parent != null)
                             {
-                                util_AnimatedEdge edge = n_var.Port_Outputs.First().Port.ConnectTo<util_AnimatedEdge>(port_parent);
-                                edge.OnUnSelectedEdge += OnUnSelectedEdge;
-                                AddElement(edge);
+                                // 不使用 LINQ 的 First()
+                                Port outputPort = null;
+                                foreach (var port in n_var.Port_Outputs)
+                                {
+                                    outputPort = port.Port;
+                                    break;
+                                }
+
+                                if (outputPort != null)
+                                {
+                                    util_AnimatedEdge edge = outputPort.ConnectTo<util_AnimatedEdge>(port_parent);
+                                    edge.OnUnSelectedEdge += OnUnSelectedEdge;
+                                    AddElement(edge);
+                                }
+                            }
+                            else
+                            {
+                                // 端口不存在，移除无效记录
+                                Debug.LogWarning($"移除无效的内部变量引用（端口不存在）: 行为={action.guid}, 变量节点={item.VariableNodeGuid}");
+                                action.InternalVariableDatas.RemoveAt(i);
                             }
                         }
                         else
                         {
-                            action.InternalVariableDatas.Remove(item);
+                            // 变量节点不存在，移除无效记录
+                            Debug.LogWarning($"移除无效的内部变量引用（节点不存在）: 行为={action.guid}, 变量节点={item.VariableNodeGuid}");
+                            action.InternalVariableDatas.RemoveAt(i);
                         }
                     }
                 }

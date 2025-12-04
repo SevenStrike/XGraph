@@ -84,7 +84,7 @@ namespace SevenStrikeModules.XGraph
                 VariableData = data;
 
             #region 基础参数设置
-            this.viewDataKey = data != null ? data.guid : "";
+            this.viewDataKey = data != null ? data.guid_n : "";
             // 设置节点标题
             this.title = this.nodeTitle = data.name;
             #endregion
@@ -364,7 +364,7 @@ namespace SevenStrikeModules.XGraph
         public void TransparentDisplay_Set(bool state)
         {
             Undo.RecordObject(graphView.ActionTreeAsset, $"Set NodeTransparentMode - {state}");
-            VariableData.TransparentNode = state;
+            VariableData.transparent = state;
             CheckTransparentDisplay(state);
         }
         #endregion        
@@ -453,7 +453,7 @@ namespace SevenStrikeModules.XGraph
         public Color GetVariableThemeColor(xVariableType type)
         {
             Color node_color = Color.white;
-            foreach (var theme in graphView.gv_GraphWindow.xw_BlackBoardView.VariableThemeList.VariableThemes)
+            foreach (var theme in graphView.gv_GraphWindow.xw_BlackBoardView.VariableThemes.VariableThemes)
             {
                 if (theme.type == type.ToString())
                 {

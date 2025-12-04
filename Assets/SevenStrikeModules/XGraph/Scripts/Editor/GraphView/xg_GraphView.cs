@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -264,7 +263,7 @@ namespace SevenStrikeModules.XGraph
             #region 注册事件委托
             RegisterCallback<PointerMoveEvent>(Action_PointerMove);
             // 注册处理快捷键
-            RegisterCallback<KeyDownEvent>(Action_KeyDown);
+            RegisterCallback<KeyDownEvent>(Action_KeyDown, TrickleDown.TrickleDown);
             // 注册鼠标点击事件
             RegisterCallback<PointerDownEvent>(Action_PointerDown, TrickleDown.TrickleDown);
             #endregion
@@ -301,7 +300,7 @@ namespace SevenStrikeModules.XGraph
         public void ClearGraphViewContents(bool DisplayActionTreeInspector = true)
         {
             // 清空克隆体的内容
-            ActionTreeAsset.Clear();
+            ActionTreeAsset.ClearDatas();
 
             // 清空GraphView的所有节点
             Node_Clear();
@@ -728,13 +727,36 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public override EventPropagation DeleteSelection()
         {
+            // ---------------------------Linq 方法 （不推荐）
+            //// 1. 获取所有待删除元素
+            //var selectionCopy = selection.ToList();
+
+            //// 2. 单独处理Group的删除
+            //foreach (var item in selectionCopy.OfType<Group>().ToList())
+            //{
+            //    DeleteGroup(item);
+            //}
+
             // 1. 获取所有待删除元素
-            var selectionCopy = selection.ToList();
+            var selectionCopy = new List<ISelectable>();
+            foreach (var item in selection)
+            {
+                selectionCopy.Add(item);
+            }
 
             // 2. 单独处理Group的删除
-            foreach (var item in selectionCopy.OfType<Group>().ToList())
+            List<Group> groupsToDelete = new List<Group>();
+            foreach (var item in selectionCopy)
             {
-                DeleteGroup(item);
+                if (item is Group group)
+                {
+                    groupsToDelete.Add(group);
+                }
+            }
+
+            foreach (var group in groupsToDelete)
+            {
+                DeleteGroup(group);
             }
 
             // 3. 处理其他元素的删除

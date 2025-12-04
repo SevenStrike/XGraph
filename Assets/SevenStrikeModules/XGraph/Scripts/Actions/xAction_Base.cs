@@ -2,8 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using UnityEditor;
 #if UNITY_EDITOR
     using UnityEditor.Experimental.GraphView;
 #endif
@@ -12,6 +10,7 @@ namespace SevenStrikeModules.XGraph
     [Serializable]
     public class xAction_Base
     {
+        [Header("- 节点 -")]
         #region 节点参数
         /// <summary>
         /// 行为节点 - 名称
@@ -93,6 +92,10 @@ namespace SevenStrikeModules.XGraph
         /// 起始节点
         /// </summary>
         [SerializeField] public bool isStartNode;
+        /// <summary>
+        /// 父节点
+        /// </summary>
+        [SerializeField] public string ParentNodeGuid;
         #endregion
 
         #region 节点数据接驳器
@@ -189,10 +192,6 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action<Edge> On_Node_RemovedEdge;
 #endif
-        #endregion
-
-        #region 父节点
-        [SerializeField] public string ParentNodeGuid;
         #endregion
 
         #region 节点执行方法
@@ -311,6 +310,9 @@ namespace SevenStrikeModules.XGraph
         {
             Variable vare = null;
 
+            if (binded_propertys.Count <= 0)
+                return null;
+
             foreach (var property in binded_propertys)
             {
                 if (portName == property.Action_PortName)
@@ -318,9 +320,12 @@ namespace SevenStrikeModules.XGraph
                     // 获取属性节点
                     xAction_Property prop = RootAsset.FindActionNode(property.Property_GUID) as xAction_Property;
                     // 属性节点更新
-                    prop.Propertys_Update();
-                    // 获取属性节点的指定端口名称的属性变量值
-                    vare = prop.Propertys_Get(property.Property_PortName);
+                    if (prop != null)
+                    {
+                        prop.Propertys_Update();
+                        // 获取属性节点的指定端口名称的属性变量值
+                        vare = prop.Propertys_Get(property.Property_PortName);
+                    }
                     break;
                 }
             }
@@ -387,7 +392,7 @@ namespace SevenStrikeModules.XGraph
                                     // 如果已经指定了黑板变量，则修改匹配的黑板变量值
                                     if (va.VariableDatas != null && va.VariableDatas.Count > 0)
                                     {
-                                        Binder_Varialble con = va.VariableDatas.First();
+                                        Binder_Varialble con = va.VariableDatas[0];
                                         foreach (var cd in RootAsset.BlackboardVariable)
                                         {
                                             if (cd.guid == con.variable.guid)
@@ -414,7 +419,7 @@ namespace SevenStrikeModules.XGraph
         /// <typeparam name="T">参数类型</typeparam>
         /// <param name="portName">端口名称</param>
         /// <param name="setter">设置目标字段的委托</param>
-        public void PortValue_Set<T>(string portName, Action<T> setter)
+        public bool PortValue_Set<T>(string portName, Action<T> setter)
         {
             // 按优先级查找变量：属性变量 → 黑板变量 → 内部变量
             Variable variable = PropertysDatas_Get(portName) ?? VariableDatas_Get(portName) ?? InternalVariableDatas_Get(portName);
@@ -424,11 +429,11 @@ namespace SevenStrikeModules.XGraph
             {
                 T value = variable.GetValue<T>();
                 setter(value);
-                Debug.Log(123);
+                return true;
             }
             else
             {
-                Debug.Log(999);
+                return false;
             }
         }
         /// <summary>
@@ -479,7 +484,7 @@ namespace SevenStrikeModules.XGraph
             bool isExistConenctor = false;
             foreach (var item in VariableDatas)
             {
-                if (item.VariableNodeGuid == data.guid && item.TargetPortName == portName)
+                if (item.VariableNodeGuid == data.guid_n && item.TargetPortName == portName)
                 {
                     isExistConenctor = true;
                 }
@@ -491,7 +496,7 @@ namespace SevenStrikeModules.XGraph
                 return;
             else
             {
-                VariableDatas.Add(new Binder_Varialble(data.guid, portName, data.variable));
+                VariableDatas.Add(new Binder_Varialble(data.guid_n, portName, data.variable));
             }
 
             if (On_Node_Variable_Binded != null)

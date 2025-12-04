@@ -2,7 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -148,12 +147,12 @@ namespace SevenStrikeModules.XGraph
             graphView.SearchStructures_Json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Nodes.json");
 
             // 序列化解析到类
-            graphView.SearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.SearchStructures_Json.text);
+            graphView.SearchStructures = JsonUtility.FromJson<searchBox_NodesRoot>(graphView.SearchStructures_Json.text);
 
             if (graphView.ActionTreeAsset.GraphNodesStruct != null)
             {
                 // 序列化解析到类（获取行为资源文件中的 GraphStructureAsset 专属节点结构，用于叠加到基础节点列表中）
-                graphView.CustomSearchStructures = JsonConvert.DeserializeObject<searchBox_NodesRoot>(graphView.ActionTreeAsset.GraphNodesStruct.text);
+                graphView.CustomSearchStructures = JsonUtility.FromJson<searchBox_NodesRoot>(graphView.ActionTreeAsset.GraphNodesStruct.text);
             }
 
             // 合并节点结构列表（基础节点 + 自定义节点）

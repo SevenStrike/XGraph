@@ -46,14 +46,6 @@
                     "visualNodeType": "graph_mc_end"
                 },
                 {
-                    "name": "间隔等待",
-                    "prefixNamespace": "SevenStrikeModules.XGraph",
-                    "prefixClass": "action_mc_",
-                    "actionNodeType": "wait",
-                    "icon": "f0d551b2dfd5763439898ac3b72cf76a",
-                    "visualNodeType": "graph_mc_wait"
-                },
-                {
                     "name": "灯光属性",
                     "prefixNamespace": "SevenStrikeModules.XGraph",
                     "prefixClass": "action_mc_",

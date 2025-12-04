@@ -4,6 +4,7 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_modules_activate : xAction_Composite
     {
+        [Header("- 扩展 -")]
         /// <summary>
         /// 是否激活所有模组
         /// </summary>
@@ -25,9 +26,32 @@ namespace SevenStrikeModules.XGraph
         /// 设置模块的激活状态
         /// </summary>
         /// <param name="portName"></param>
-        public void Set_ActivateModuleState(string portName)
+        public void Set_ActivateModulesState(string portName)
         {
             PortValue_Set<bool>(portName, value => activateState = value);
+        }
+
+        /// <summary>
+        /// 设置模块的激活状态
+        /// </summary>
+        /// <param name="state"></param>
+        public void Set_ActivateModulesState(bool state)
+        {
+            activateState = state;
+        }
+
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            action_mc_modules_activate clone = base.Clone() as action_mc_modules_activate;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.activateState = this.activateState;
+            }
+
+            return clone;
         }
     }
 }

@@ -2,8 +2,6 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using UnityEditor.VersionControl;
     using UnityEngine;
 
     public class xAction_Asset : ScriptableObject
@@ -104,7 +102,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 变量节点列表
         /// </summary>
-        [SerializeField] public List<xVariableData> Variables = new List<xVariableData>();
+        [SerializeReference] public List<xVariableData> Variables = new List<xVariableData>();
         /// <summary>
         /// 便签列表
         /// </summary>
@@ -124,7 +122,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 黑板变量列表
         /// </summary>
-        [SerializeField] public List<Variable> BlackboardVariable = new List<Variable>();
+        [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
         #endregion
 
         #region 回调
@@ -174,7 +172,7 @@ namespace SevenStrikeModules.XGraph
                     if (actionType != null && typeof(xAction_Base).IsAssignableFrom(actionType))
                     {
                         action = Activator.CreateInstance(actionType) as xAction_Base;
-                        Debug.Log($"成功创建特定类型: {fullTypeName}");
+                        //Debug.Log($"成功创建特定类型: {fullTypeName}");
                     }
                     else
                     {
@@ -283,7 +281,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 从列表中清空所有数据节点
         /// </summary>
-        public void Clear()
+        public void ClearDatas()
         {
             // 清空资源列表
             Actions.Clear();
@@ -307,10 +305,9 @@ namespace SevenStrikeModules.XGraph
             if (target == null) return;
 
             // 清空当前原始资源的所有子节点
-            Clear();
-            // 更新所有使用到的变量值（当前资源 - 更新）
-            this.Variables_Refresh();
-            // 更新所有使用到的变量值（目标资源 - 更新）
+            ClearDatas();
+
+            // 更新所有使用到的变量值（target 目标资源 - 更新）
             target.Variables_Refresh();
 
             #region Graphs
@@ -347,7 +344,6 @@ namespace SevenStrikeModules.XGraph
             #region Nodes
             // 用 targetAsset 中的 Actions 覆盖当前 Actions 数据列表
             Actions = new List<xAction_Base>();
-
             // 先克隆所有节点
             Dictionary<string, xAction_Base> guidToNodeMap = new Dictionary<string, xAction_Base>();
             foreach (var action in target.Actions)
@@ -362,7 +358,6 @@ namespace SevenStrikeModules.XGraph
 
                 Actions.Add(clone);
             }
-
             // 重建子节点关系
             foreach (var action in target.Actions)
             {
@@ -461,7 +456,6 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-
             // 用 targetAsset 中的 Decals 覆盖当前 Decals 数据列表
             Decals = new List<xDecalData>();
             foreach (var decal in target.Decals)
@@ -1178,7 +1172,7 @@ namespace SevenStrikeModules.XGraph
                 foreach (var bb_variable in BlackboardVariable)
                 {
                     // 匹配黑板变量
-                    if (vare.varguid == bb_variable.guid)
+                    if (vare.guid_v == bb_variable.guid)
                     {
                         vare.variable.name = bb_variable.name;
                         vare.description = bb_variable.description;

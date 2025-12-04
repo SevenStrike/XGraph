@@ -1,17 +1,20 @@
 namespace SevenStrikeModules.XGraph
 {
     using System.Collections.Generic;
+    using UnityEngine;
 
-    public abstract class xAction_Wait : xAction_Base
+    public class xAction_Wait : xAction_Base
     {
-        /// <summary>
-        /// 等待时间
-        /// </summary>
-        public float Time;
         /// <summary>
         /// 子节点列表
         /// </summary>
         public List<string> childNodes = new List<string>();
+
+        [Header("- 扩展 -")]
+        /// <summary>
+        /// 等待时间
+        /// </summary>
+        public float Time;
 
         /// <summary>
         /// 行为节点执行方法
@@ -36,7 +39,7 @@ namespace SevenStrikeModules.XGraph
         }
         #endregion
 
-        #region 辅助
+        #region 赋值
         /// <summary>
         /// 设置等待时间
         /// </summary>
@@ -45,6 +48,33 @@ namespace SevenStrikeModules.XGraph
         {
             PortValue_Set<float>(portName, value => Time = value);
         }
+
+        /// <summary>
+        /// 设置等待时间
+        /// </summary>
+        /// <param name="time"></param>
+        public void SetWaitTime(float time)
+        {
+            Time = time;
+        }
         #endregion
+
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            xAction_Wait clone = base.Clone() as xAction_Wait;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.Time = this.Time;
+            }
+
+            return clone;
+        }
     }
 }

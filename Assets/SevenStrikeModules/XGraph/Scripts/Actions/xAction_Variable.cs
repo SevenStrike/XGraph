@@ -4,8 +4,8 @@ namespace SevenStrikeModules.XGraph
 
     public class xAction_Variable : xAction_Base
     {
-        [SerializeReference]
-        public Variable variable;
+        [Header("- 变量 -")]
+        [SerializeReference] public Variable variable;
 
         public Variable Initialized(string name, xVariableType type)
         {
@@ -95,6 +95,51 @@ namespace SevenStrikeModules.XGraph
         public override void Execute()
         {
 
+        }
+
+        /// <summary>
+        /// 为变量类型行为数据特化克隆方法，将变量先克隆一份然后根据类型赋新值以脱离引用
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            xAction_Variable clone = base.Clone() as xAction_Variable;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.variable = this.variable.Clone(false);
+                switch (this.variable.type)
+                {
+                    case xVariableType.String:
+                        clone.variable.SetValue(this.variable.GetValue<string>());
+                        break;
+                    case xVariableType.Float:
+                        clone.variable.SetValue(this.variable.GetValue<float>());
+                        break;
+                    case xVariableType.Int:
+                        clone.variable.SetValue(this.variable.GetValue<int>());
+                        break;
+                    case xVariableType.Bool:
+                        clone.variable.SetValue(this.variable.GetValue<bool>());
+                        break;
+                    case xVariableType.Vector2:
+                        clone.variable.SetValue(this.variable.GetValue<Vector2>());
+                        break;
+                    case xVariableType.Vector3:
+                        clone.variable.SetValue(this.variable.GetValue<Vector3>());
+                        break;
+                    case xVariableType.Vector4:
+                        clone.variable.SetValue(this.variable.GetValue<Vector4>());
+                        break;
+                    case xVariableType.Color:
+                        clone.variable.SetValue(this.variable.GetValue<Color>());
+                        break;
+                }
+            }
+
+            return clone;
         }
     }
 }

@@ -3,7 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class xAction_Property : xAction_Base
+    public class xAction_Property : xAction_Base
     {
         [SerializeReference] public List<Variable> PropertyVariables = new List<Variable>();
 
@@ -56,6 +56,24 @@ namespace SevenStrikeModules.XGraph
         public virtual void Propertys_Update()
         {
 
+        }
+
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            xAction_Property clone = base.Clone() as xAction_Property;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.PropertyVariables = this.PropertyVariables;
+            }
+
+            return clone;
         }
     }
 }

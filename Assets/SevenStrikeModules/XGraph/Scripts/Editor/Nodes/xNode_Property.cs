@@ -1,24 +1,23 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.UIElements;
 
     public class xNode_Property : xNode_Base
     {
-        public xAction_Property PropertyData;
+        public xAction_Property property;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
             base.Initialize(graphView, pos, data);
 
-            xAction_Property property = PropertyData = data as xAction_Property;
+            property = data as xAction_Property;
 
             // 当Graphview编辑器的主题色改变时
             graphView.gv_GraphWindow.OnThemeColorChanged += OnGraphViewEditorThemeColorChanged;
 
             // 每次初始化时先清空，避免重复注册
-            PropertyData.On_InternalVariableValue_Changed = null;
+            property.On_InternalVariableValue_Changed = null;
         }
 
         #region 节点绘制

@@ -160,7 +160,7 @@ namespace SevenStrikeModules.XGraph
                 }
                 else if (n is xNode_Variable vare)
                 {
-                    nodes_guid.Add(vare.VariableData.guid);
+                    nodes_guid.Add(vare.VariableData.guid_n);
                 }
                 else if (n is xNode_Stick stick)
                 {
@@ -340,7 +340,7 @@ namespace SevenStrikeModules.XGraph
         /// <summary>
         /// 收集所有编组的位置信息
         /// </summary>
-        private void CollectGroupsPosition()
+        public void CollectGroupsPosition()
         {
             foreach (var g in ActionTreeAsset.Groups)
             {
@@ -407,7 +407,7 @@ namespace SevenStrikeModules.XGraph
                 else if (item is xNode_Variable vare)
                 {
                     // 获取移入的节点的guid
-                    guid = vare.VariableData.guid;
+                    guid = vare.VariableData.guid_n;
                 }
                 else if (item is xNode_Stick stick)
                 {
@@ -458,7 +458,7 @@ namespace SevenStrikeModules.XGraph
                 else if (item is xNode_Variable vare)
                 {
                     // 获取移出的节点的guid
-                    guid = vare.VariableData.guid;
+                    guid = vare.VariableData.guid_n;
                 }
                 else if (item is xNode_Stick stick)
                 {
