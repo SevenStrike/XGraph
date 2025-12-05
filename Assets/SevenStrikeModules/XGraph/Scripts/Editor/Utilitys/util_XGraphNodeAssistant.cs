@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
     using System.IO;
     using System.Text.RegularExpressions;
     using UnityEditor;
-    using UnityEditor.Overlays;
     using UnityEngine;
     using UnityEngine.UIElements;
     using ObjectField = UnityEditor.UIElements.ObjectField;
@@ -293,20 +292,18 @@ namespace SevenStrikeModules.XGraph
                 OutputPort_Set(port_out);
                 #endregion";
             }
-            else
+            if (xtype == "xAction_Start")
             {
-                if (xtype == "xAction_Start")
-                {
-                    content = @$" #region 端口设置
+                content = @$" #region 端口设置
                     List<xGraph_NodePort> ports_out = new List<xGraph_NodePort>();
                     // 加入行为端口
                     ports_out.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Multi));
                     OutputPort_Set(ports_out);
                     #endregion";
-                }
-                else if (xtype == "xAction_Composite" || xtype == "xAction_Wait")
-                {
-                    content = @$"   #region 端口设置
+            }
+            if (xtype == "xAction_Composite" || xtype == "xAction_Wait")
+            {
+                content = @$"   #region 端口设置
                     List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
                     // 加入行为端口
                     port_in.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Single));
@@ -317,17 +314,17 @@ namespace SevenStrikeModules.XGraph
                     port_out.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Multi));
                     OutputPort_Set(port_out);
                     #endregion";
-                }
-                else if (xtype == "xAction_End")
-                {
-                    content = @$"  #region 端口设置
+            }
+            if (xtype == "xAction_End")
+            {
+                content = @$"  #region 端口设置
                     List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
                     // 加入行为端口
                     port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
                     InputPort_Set(port_in);
                     #endregion";
-                }
             }
+
             return content;
         }
         private string CreateStartNodePortOffset()
@@ -404,6 +401,9 @@ namespace SevenStrikeModules.XGraph
         }
         private string CreatePropertyNodeAction()
         {
+            if (xtype != "xAction_Property")
+                return null;
+
             string content = "";
             content = $@"
 
