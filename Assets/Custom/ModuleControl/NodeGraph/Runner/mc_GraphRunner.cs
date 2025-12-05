@@ -133,7 +133,7 @@ namespace SevenStrikeModules.XGraph
 
             if (node == null || !isRunning) yield break;
 
-            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.BaseArgs.identifyName}  （{(node.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
 
             // 特殊处理等待节点
             if (node is xAction_Wait waitNode)
@@ -162,7 +162,7 @@ namespace SevenStrikeModules.XGraph
         private IEnumerator Manual_HandleWait(xAction_Wait waitNode)
         {
             isWaitingForDelay = true;
-            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.BaseArgs.identifyName}  {waitNode.Time}s", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.identifyName}  {waitNode.Time}s", Logs);
 
             // 执行等待节点
             waitNode.Execute();
@@ -331,7 +331,7 @@ namespace SevenStrikeModules.XGraph
             // 处理暂停状态（双重检查）
             while (isPaused && isRunning)
             {
-                util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.BaseArgs.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
 
                 // 每0.1秒检查一次，防止暂停时性能开销大
                 yield return new WaitForSeconds(0.1f);
@@ -344,7 +344,7 @@ namespace SevenStrikeModules.XGraph
                 yield break;
             }
 
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.BaseArgs.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
             // 执行当前节点
             action.Execute();
 
@@ -373,7 +373,7 @@ namespace SevenStrikeModules.XGraph
 
             // 执行等待前逻辑
             waitNode.Execute();
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.BaseArgs.identifyName}  {waitNode.Time}s  （{(waitNode.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
 
             // 可中断的等待实现
             float elapsed = 0;

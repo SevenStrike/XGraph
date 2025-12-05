@@ -546,7 +546,7 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void SyncChangeVariableName(BlurEvent evt)
         {
-            VariableData.variable.name = VariableData.BaseArgs.identifyName;
+            VariableData.variable.name = VariableData.identifyName;
 
             // Inspector 面板显示属性
             graphView.gv_GraphWindow.xw_InspectorView.InspectorViewer(this);

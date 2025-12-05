@@ -1,6 +1,7 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
+    using System.Collections.Generic;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.UIElements;
@@ -168,39 +169,332 @@ namespace SevenStrikeModules.XGraph
             if (target == null)
                 return;
 
-            #region  尝试查找是否有自定义 Editor
-            string asm = "Assembly-CSharp-Editor";
-            var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{target.GetType().Name}, {asm}");
-            #endregion
-
             #region 布局容器
             // 创建布局容器
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
             Add(container);
             #endregion
 
-            #region 行为节点自定义属性面板
-            bool isCustomEditor = (editorType != null && typeof(Editor).IsAssignableFrom(editorType)) ? true : false;
-            switch (isCustomEditor)
+            #region 绘制界面
+            VisualElement assetgui = new VisualElement();
+
+            #region 标题
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(assetgui, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/Icon.png"), target.name.Substring(0, target.name.Length - 10), new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            #endregion
+
+            #region 标题附加 - 变量类型标签
+            string[] styles_sub = new string[] { "type" };
+            Label lab_sub = new Label("行为资源");
+            lab_sub.name = "sub";
+            for (int i = 0; i < styles_sub.Length; i++)
             {
-                // 存在Editor解释文件，使用自定义界面样式
-                case true:
-                    editor = Editor.CreateEditor(target, editorType);
-                    if (editor is editor_xAction_Asset actionEditor)
-                        container.Add(actionEditor.CreateGraphviewInespector());
-                    break;
-                // 不存在Editor解释文件，使用内置界面样式
-                case false:
-                    // 回退到默认编辑器
-                    editor = Editor.CreateEditor(target);
-                    IMGUIContainer imguiContainer = new IMGUIContainer(() =>
+                lab_sub.AddToClassList(styles_sub[i]);
+            }
+            titlegroup.Add(lab_sub);
+            #endregion
+
+            #region 视口属性折叠器
+            Foldout fo_graphview = util_XGraphInspectorGUI.GUI_Foldout(assetgui, "资源基础属性", "actionasset-base", new string[] { "foldout" });
+            #endregion         
+
+            #region 节点尺寸
+            Vector2Field label_size = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_graphview, "上次窗口尺寸", target.LastGraphWindowSize, new string[] { "field_vector2" });
+            target.On_GraphviewSize_Changed += (size) =>
+            {
+                label_size.value = size;
+            };
+            #endregion
+
+            #region Graphview视口位置
+            Vector2Field label_pos = util_XGraphInspectorGUI.GUI_Field_Vector2(fo_graphview, "上次视口位置", target.LastGraphViewPosition, new string[] { "field_vector2" });
+            target.On_GraphviewPos_Changed += (pos) =>
+            {
+                label_pos.value = pos;
+            };
+            #endregion
+
+            #region Graphview视口缩放
+            FloatField label_zoom = util_XGraphInspectorGUI.GUI_Field_Float(fo_graphview, "上次视口缩放", target.LastGraphViewZoom, new string[] { "field_float" });
+            target.On_GraphviewZoom_Changed += (zoom) =>
+            {
+                label_zoom.value = zoom;
+            };
+            #endregion
+
+            #region Graph图标上一次保存时间
+            TextField label_save = util_XGraphInspectorGUI.GUI_Field_String(fo_graphview, "上次保存时间", target.LastSaveDateTime, new string[] { "field_text" });
+            target.On_GraphviewLastSave_Changed += (date) =>
+            {
+                label_save.value = date;
+            };
+            #endregion
+
+            #region 行为节点折叠器
+            Foldout fo_actions = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"行为（{target.Actions.Count}）", "actionasset-actions", new string[] { "foldout" });
+            for (int i = 0; i < target.Actions.Count; i++)
+            {
+                xAction_Base action = target.Actions[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_actions.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                if (action.BaseArgs.isStartNode)
+                {
+                    Color themecol = action.BaseArgs.RootAsset.GraphviewGridBackgroundThemes.themecolor;
+                    container_title.style.backgroundColor = new StyleColor(new Color(themecol.r, themecol.g, themecol.b, 0.3f));
+
+                    // 当Graphview编辑器的主题色改变时
+                    util_XGraphEditorUtility.GetGraphviewWindow().OnThemeColorChanged += (color) =>
                     {
-                        editor.OnInspectorGUI();
-                    });
-                    container.Add(imguiContainer);
-                    break;
+                        container_title.style.backgroundColor = new StyleColor(new Color(color.r, color.g, color.b, 0.3f));
+                    };
+                }
+                con.Add(container_title);
+
+                // 行为节点图标
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("list_item_icon");
+                //container_icon.style.backgroundImage = action.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{action.icon}.png") : action.NodeIcon;
+                container_icon.style.backgroundImage = action.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(action.BaseArgs.icon)) : action.BaseArgs.NodeIcon;
+                container_title.Add(container_icon);
+                container_icon.style.unityBackgroundImageTintColor = action.BaseArgs.themeColor;
+
+                // 行为节点名称
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{action.identifyName}", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                // 行为执行模式图标
+                VisualElement container_concurrent_icon = new VisualElement();
+                container_concurrent_icon.pickingMode = PickingMode.Ignore;
+                container_concurrent_icon.AddToClassList("llist_concurrent_icon_actionasset");
+                string mode = action.BaseArgs.isConcurrentExecution ? "concurrent" : "sepline";
+                container_concurrent_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/{mode}.png");
+                container_title.Add(container_concurrent_icon);
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.BaseArgs.guid);
+                    act_node.Highlight();
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    xNode_Base act_node = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNodeView(action.BaseArgs.guid);
+                    act_node.UnHighlight();
+                });
             }
             #endregion
+
+            #region 变量节点折叠器
+            Foldout fo_bbvar = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"变量（{target.Variables.Count}）", "actionasset-bbvar", new string[] { "foldout" });
+            for (int i = 0; i < target.Variables.Count; i++)
+            {
+                xVariableData vare = target.Variables[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_bbvar.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                con.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("llist_variable_icon_actionasset");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/sepline.png");
+                container_title.Add(container_icon);
+                container_icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.GetVariableThemeColor(vare.type);
+
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{vare.name}", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.guid_v);
+                    foreach (var node in var_nodes)
+                    {
+                        node.Highlight();
+                    }
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    List<xNode_Variable> var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_BlackBoardView.FindVariableNodes(vare.guid_v);
+                    foreach (var node in var_nodes)
+                    {
+                        node.UnHighlight();
+                    }
+                });
+            }
+            #endregion
+
+            #region 便签节点折叠器
+            Foldout fo_sticks = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"便签（{target.Sticks.Count}）", "actionasset-sticks", new string[] { "foldout" });
+            for (int i = 0; i < target.Sticks.Count; i++)
+            {
+                xStickData stick = target.Sticks[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_sticks.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                con.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/stick.png");
+                container_title.Add(container_icon);
+
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{stick.name}", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
+                    if (var_nodes is xNode_Stick sk)
+                        sk.Highlight();
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(stick.guid);
+                    if (var_nodes is xNode_Stick sk)
+                        sk.UnHighlight();
+                });
+            }
+            #endregion
+
+            #region 标签节点折叠器
+            Foldout fo_labels = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"标签（{target.Labels.Count}）", "actionasset-labels", new string[] { "foldout" });
+            for (int i = 0; i < target.Labels.Count; i++)
+            {
+                xLabelData label = target.Labels[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_labels.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                con.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/stick.png");
+                container_title.Add(container_icon);
+
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{label.content}", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(label.guid);
+                    if (var_nodes is xNode_Label sk)
+                        sk.Highlight();
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(label.guid);
+                    if (var_nodes is xNode_Label sk)
+                        sk.UnHighlight();
+                });
+            }
+            #endregion
+
+            #region 贴图节点折叠器
+            Foldout fo_decals = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"贴图（{target.Decals.Count}）", "actionasset-decals", new string[] { "foldout" });
+            for (int i = 0; i < target.Decals.Count; i++)
+            {
+                xDecalData decal = target.Decals[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_decals.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                con.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png");
+                container_title.Add(container_icon);
+
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{(decal.texture_decal == null ? "暂未指定" : decal.texture_decal.name)} ", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
+                    if (var_nodes is xNode_Decal dc)
+                        dc.Highlight();
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    Node var_nodes = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView.FindNode(decal.guid);
+                    if (var_nodes is xNode_Decal dc)
+                        dc.UnHighlight();
+                });
+            }
+            #endregion
+
+            #region 编组节点折叠器
+            Foldout fo_group = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"编组（{target.Groups.Count}）", "actionasset-groups", new string[] { "foldout" });
+            for (int i = 0; i < target.Groups.Count; i++)
+            {
+                xGroupData group = target.Groups[i];
+
+                VisualElement con = new VisualElement();
+                con.pickingMode = PickingMode.Ignore;
+                con.AddToClassList("list_container_actionasset");
+                fo_group.Add(con);
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg_actionasset");
+                con.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.pickingMode = PickingMode.Ignore;
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/GraphIcon/decal.png");
+                container_title.Add(container_icon);
+
+                Label label_title = util_XGraphInspectorGUI.GUI_Label(container_title, $"{group.name} ", new string[] { "labeltext", "list_item_title" });
+                label_title.pickingMode = PickingMode.Ignore;
+
+                container_title.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_GraphView graph = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView;
+                    graph.Group_Highlight(group.group, util_XGraphEditorUtility.Color_From_HexString(graph.FindGroupTheme(group.solution).title_bg_color));
+                });
+
+                container_title.RegisterCallback<PointerOutEvent>((evt) =>
+                {
+                    xg_GraphView graph = util_XGraphEditorUtility.GetGraphviewWindow().xw_graphView;
+                    graph.Group_UnHighlight(group.group);
+                });
+            }
+            #endregion
+            #endregion
+
+            container.Add(assetgui);
         }
         /// <summary>
         /// 创建内部变量节点的属性面板
@@ -217,7 +511,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[1] { "container" });
 
             // 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.BaseArgs.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(container, n_var_internal.ActionData, data.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
 
             // 标题附加 - 变量类型标签
             string[] styles_sub = new string[] { "type" };
@@ -1245,7 +1539,7 @@ namespace SevenStrikeModules.XGraph
             string text = string.Empty;
             if (node is xNode_Base out_base)
             {
-                text = out_base.ActionData.BaseArgs.identifyName;
+                text = out_base.ActionData.identifyName;
             }
             if (node is xNode_Variable out_var)
             {

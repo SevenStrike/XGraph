@@ -1,7 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
     using System;
-    using System.Collections.Generic;
 #if UNITY_EDITOR
     using UnityEditor.Experimental.GraphView;
 #endif
@@ -10,6 +9,10 @@ namespace SevenStrikeModules.XGraph
     [Serializable]
     public class xAction_Base
     {
+        /// <summary>
+        /// 行为数据 - 名称
+        /// </summary>
+        [SerializeField] public string identifyName;
         [SerializeReference] public class_ActionBaseArgs BaseArgs;
 
         #region 回调
@@ -165,7 +168,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public string GetInfo()
         {
-            return $"{BaseArgs.namespaces}.{BaseArgs.classes}{BaseArgs.actionNodeType.ToString()}   /   {BaseArgs.visualNodeType.ToString()}   /   {BaseArgs.identifyName}";
+            return $"{BaseArgs.namespaces}.{BaseArgs.classes}{BaseArgs.actionNodeType.ToString()}   /   {BaseArgs.visualNodeType.ToString()}   /   {identifyName}";
         }
         #endregion
 
@@ -451,7 +454,7 @@ namespace SevenStrikeModules.XGraph
             else
             {
                 Binder_Varialble con = new Binder_Varialble(data.BaseArgs.guid, portName, data.variable);
-                con.variable.name = data.BaseArgs.identifyName;
+                con.variable.name = data.identifyName;
                 BaseArgs.InternalVariableDatas.Add(con);
             }
 
@@ -502,7 +505,7 @@ namespace SevenStrikeModules.XGraph
             else
             {
                 Binder_Property con = new Binder_Property(
-                    prop.BaseArgs.identifyName,
+                    prop.identifyName,
                     prop.BaseArgs.guid,
                     property_port_name,
                     property_port_type,
@@ -544,6 +547,8 @@ namespace SevenStrikeModules.XGraph
         {
             // 创建新实例
             xAction_Base action_base = Activator.CreateInstance(this.GetType()) as xAction_Base;
+            // 先克隆名称
+            action_base.identifyName = identifyName;
 
             // 确保 BaseArgs 被初始化
             if (action_base.BaseArgs == null)

@@ -159,7 +159,7 @@ namespace SevenStrikeModules.XGraph
             this.icon = data.BaseArgs.icon;
             this.viewDataKey = data != null ? data.BaseArgs.guid : "";
             // 设置节点标题
-            this.title = this.nodeTitle = data != null ? data.BaseArgs.identifyName : "";
+            this.title = this.nodeTitle = data != null ? data.identifyName : "";
             #endregion
 
             // 设置节点的生成位置
@@ -472,7 +472,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             #region 用于显示节点名称
-            TitleLabel = new Label(ActionData.BaseArgs.identifyName);
+            TitleLabel = new Label(ActionData.identifyName);
             TitleLabel.AddToClassList("Title_Label");
             TitleLabel.RegisterCallback<PointerDownEvent>((evt) =>
             {
@@ -494,7 +494,7 @@ namespace SevenStrikeModules.XGraph
             {
                 multiline = false
             };
-            TitleInputField.value = ActionData.BaseArgs.identifyName;
+            TitleInputField.value = ActionData.identifyName;
             TitleInputField.AddToClassList("Title_TextField");
             TitleInputField.RegisterCallback<BlurEvent>(OnTitleInputFieldBlur);
             VisualElement input = TitleInputField.Q<VisualElement>("unity-text-input");
@@ -583,8 +583,8 @@ namespace SevenStrikeModules.XGraph
         {
             //Undo.RecordObject(ActionData, "Change ActionNode Name");
 
-            if (TitleInputField.value != ActionData.BaseArgs.identifyName)
-                TitleLabel.text = ActionData.BaseArgs.identifyName = TitleInputField.value;
+            if (TitleInputField.value != ActionData.identifyName)
+                TitleLabel.text = ActionData.identifyName = TitleInputField.value;
 
             VisualElementDisplay(TitleLabel, true);
             VisualElementDisplay(TitleInputField, false);
@@ -1453,7 +1453,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement rootElement = new VisualElement();
 
             #region 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.BaseArgs.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(rootElement, ActionData, ActionData.identifyName, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
             #endregion
 
             #region 标题附加 - 变量类型标签
@@ -1741,7 +1741,7 @@ namespace SevenStrikeModules.XGraph
                     container_icon.style.backgroundImage = parent.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(parent.BaseArgs.icon)) : parent.BaseArgs.NodeIcon;
                     container_title.Add(container_icon);
 
-                    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.BaseArgs.identifyName}", new string[] { "labeltext", "list_item_title" });
+                    util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{parent.identifyName}", new string[] { "labeltext", "list_item_title" });
                     util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
                     util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{parent.BaseArgs.guid}</color>", new string[] { "list_item_label" });
                     util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{parent.BaseArgs.actionNodeType}</color>", new string[] { "list_item_label" });

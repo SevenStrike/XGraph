@@ -67,7 +67,7 @@ namespace SevenStrikeModules.XGraph
 
                     // 克隆出新的节点
                     NodeCreateArgs_Action args = new NodeCreateArgs_Action();
-                    args.visualName = action.BaseArgs.identifyName;
+                    args.visualName = action.identifyName;
                     args.prefixNamespace = action.BaseArgs.namespaces;
                     args.prefixClass = action.BaseArgs.classes;
                     args.actionNodeType = action.BaseArgs.actionNodeType;
@@ -91,35 +91,35 @@ namespace SevenStrikeModules.XGraph
                         {
                             case xVariableType.String:
                                 string val_String = avnode.variable.GetValue<string>();
-                                args.variable = new Variable_String(avnode.BaseArgs.identifyName, val_String);
+                                args.variable = new Variable_String(avnode.identifyName, val_String);
                                 break;
                             case xVariableType.Float:
                                 float val_Float = avnode.variable.GetValue<float>();
-                                args.variable = new Variable_Float(avnode.BaseArgs.identifyName, val_Float);
+                                args.variable = new Variable_Float(avnode.identifyName, val_Float);
                                 break;
                             case xVariableType.Int:
                                 int val_Int = avnode.variable.GetValue<int>();
-                                args.variable = new Variable_Int(avnode.BaseArgs.identifyName, val_Int);
+                                args.variable = new Variable_Int(avnode.identifyName, val_Int);
                                 break;
                             case xVariableType.Bool:
                                 bool val_Bool = avnode.variable.GetValue<bool>();
-                                args.variable = new Variable_Bool(avnode.BaseArgs.identifyName, val_Bool);
+                                args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
                                 break;
                             case xVariableType.Vector2:
                                 Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
-                                args.variable = new Variable_Vector2(avnode.BaseArgs.identifyName, val_Vector2);
+                                args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
                                 break;
                             case xVariableType.Vector3:
                                 Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
-                                args.variable = new Variable_Vector3(avnode.BaseArgs.identifyName, val_Vector3);
+                                args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
                                 break;
                             case xVariableType.Vector4:
                                 Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
-                                args.variable = new Variable_Vector4(avnode.BaseArgs.identifyName, val_Vector4);
+                                args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
                                 break;
                             case xVariableType.Color:
                                 Color val_Color = avnode.variable.GetValue<Color>();
-                                args.variable = new Variable_Color(avnode.BaseArgs.identifyName, val_Color);
+                                args.variable = new Variable_Color(avnode.identifyName, val_Color);
                                 break;
                         }
                     }
@@ -292,7 +292,7 @@ namespace SevenStrikeModules.XGraph
 
                         // 从拷贝的节点中创建出新的节点数据
                         NodeCreateArgs_Action args = new NodeCreateArgs_Action();
-                        args.visualName = action.BaseArgs.identifyName;
+                        args.visualName = action.identifyName;
                         args.prefixNamespace = action.BaseArgs.namespaces;
                         args.prefixClass = action.BaseArgs.classes;
                         args.actionNodeType = action.BaseArgs.actionNodeType;
@@ -315,35 +315,35 @@ namespace SevenStrikeModules.XGraph
                             {
                                 case xVariableType.String:
                                     string val_String = avnode.variable.GetValue<string>();
-                                    args.variable = new Variable_String(avnode.BaseArgs.identifyName, val_String);
+                                    args.variable = new Variable_String(avnode.identifyName, val_String);
                                     break;
                                 case xVariableType.Float:
                                     float val_Float = avnode.variable.GetValue<float>();
-                                    args.variable = new Variable_Float(avnode.BaseArgs.identifyName, val_Float);
+                                    args.variable = new Variable_Float(avnode.identifyName, val_Float);
                                     break;
                                 case xVariableType.Int:
                                     int val_Int = avnode.variable.GetValue<int>();
-                                    args.variable = new Variable_Int(avnode.BaseArgs.identifyName, val_Int);
+                                    args.variable = new Variable_Int(avnode.identifyName, val_Int);
                                     break;
                                 case xVariableType.Bool:
                                     bool val_Bool = avnode.variable.GetValue<bool>();
-                                    args.variable = new Variable_Bool(avnode.BaseArgs.identifyName, val_Bool);
+                                    args.variable = new Variable_Bool(avnode.identifyName, val_Bool);
                                     break;
                                 case xVariableType.Vector2:
                                     Vector2 val_Vector2 = avnode.variable.GetValue<Vector2>();
-                                    args.variable = new Variable_Vector2(avnode.BaseArgs.identifyName, val_Vector2);
+                                    args.variable = new Variable_Vector2(avnode.identifyName, val_Vector2);
                                     break;
                                 case xVariableType.Vector3:
                                     Vector3 val_Vector3 = avnode.variable.GetValue<Vector3>();
-                                    args.variable = new Variable_Vector3(avnode.BaseArgs.identifyName, val_Vector3);
+                                    args.variable = new Variable_Vector3(avnode.identifyName, val_Vector3);
                                     break;
                                 case xVariableType.Vector4:
                                     Vector4 val_Vector4 = avnode.variable.GetValue<Vector4>();
-                                    args.variable = new Variable_Vector4(avnode.BaseArgs.identifyName, val_Vector4);
+                                    args.variable = new Variable_Vector4(avnode.identifyName, val_Vector4);
                                     break;
                                 case xVariableType.Color:
                                     Color val_Color = avnode.variable.GetValue<Color>();
-                                    args.variable = new Variable_Color(avnode.BaseArgs.identifyName, val_Color);
+                                    args.variable = new Variable_Color(avnode.identifyName, val_Color);
                                     break;
                             }
                         }

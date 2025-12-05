@@ -247,7 +247,7 @@ namespace SevenStrikeModules.XGraph
 
             // 设置 title 标签
             if (lab_title != null)
-                lab_title.text = action.BaseArgs.identifyName;
+                lab_title.text = action.identifyName;
 
             // 设置 type 标签
             if (lab_node_type != null)
@@ -277,7 +277,7 @@ namespace SevenStrikeModules.XGraph
             // 注册删除节点按钮事件
             btn_del.clicked += () =>
             {
-                if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.BaseArgs.identifyName}' 吗？", "删除", "取消"))
+                if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.identifyName}' 吗？", "删除", "取消"))
                 {
                     CloneNodeAsset.Remove(action);
                     AssetDatabase.SaveAssets();

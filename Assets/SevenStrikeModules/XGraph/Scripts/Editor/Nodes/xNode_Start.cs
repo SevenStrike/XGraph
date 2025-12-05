@@ -6,9 +6,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class graph_mc_module_activate : xNode_Base
+    public class xNode_Start : xNode_Base
     {
-        action_mc_module_activate active;
+        internal xAction_Start start;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
@@ -18,10 +18,6 @@ namespace SevenStrikeModules.XGraph
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
             // 加入行为端口
             port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("名称", typeof(Variable_String), Port.Capacity.Single));
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("激活", typeof(Variable_Bool), Port.Capacity.Single));
             InputPort_Set(port_in);
 
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
@@ -30,7 +26,7 @@ namespace SevenStrikeModules.XGraph
             OutputPort_Set(port_out);
             #endregion
 
-            active = data as action_mc_module_activate;
+            start = data as xAction_Start;
         }
 
         #region 节点绘制
@@ -57,6 +53,9 @@ namespace SevenStrikeModules.XGraph
             // 绘制扩展容器
             Draw_Extension();
 
+            // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
+            inputContainer.style.paddingTop = 25;
+
             return this;
         }
         #endregion
@@ -68,9 +67,6 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
-
-            active.Set_ActivateModuleName_withPort("名称");
-            active.Set_ActivateModuleState_withPort("激活");
         }
         /// <summary>
         /// 当克隆节点时
@@ -184,7 +180,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public override Foldout ins_Folder_ParentNode(VisualElement root)
         {
-            return base.ins_Folder_ParentNode(root);
+            return null;
         }
         /// <summary>
         /// 子行为折叠容器
@@ -193,11 +189,11 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_ChildActions(VisualElement root)
         {
             Foldout fold = base.ins_Folder_ChildActions(root);
-            fold.text = $"{fold.text}（{active.childNodes.Count}）";
+            fold.text = $"{fold.text}（{start.childNodes.Count}）";
 
-            for (int i = 0; i < active.childNodes.Count; i++)
+            for (int i = 0; i < start.childNodes.Count; i++)
             {
-                xAction_Base child = active.BaseArgs.RootAsset.FindActionNode(active.childNodes[i]);
+                xAction_Base child = start.BaseArgs.RootAsset.FindActionNode(start.childNodes[i]);
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");
@@ -249,73 +245,6 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_Propertys(VisualElement root)
         {
             return null;
-        }
-        /// <summary>
-        /// 自定义组件折叠容器
-        /// </summary>
-        /// <param name="root"></param>
-        public override Foldout ins_Folder_Extensions(VisualElement root)
-        {
-            Foldout fold = base.ins_Folder_Extensions(root);
-
-            #region 模组名称
-            TextField field_name = util_XGraphInspectorGUI.GUI_Field_String(fold, "名称", active.activateName, new string[] { "field_text" });
-            field_name.RegisterCallback<ChangeEvent<string>>((evt) =>
-            {
-                // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (isVariableBinded("名称"))
-                {
-                    field_name.value = active.activateName;
-                    active.Set_ActivateModuleName_withPort("名称");
-                }
-                // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
-                else
-                {
-                    active.Set_ActivateModuleName(field_name.value);
-                }
-            });
-            #endregion
-
-            #region 模组激活
-            Toggle field_state = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "激活", active.activateState, new string[] { "field_bool" });
-            field_state.RegisterValueChangedCallback((v) =>
-            {
-                // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (isVariableBinded("激活"))
-                {
-                    field_state.value = active.activateState;
-                    active.Set_ActivateModuleState_withPort("激活");
-                }
-                // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
-                else
-                {
-                    active.Set_ActivateModuleState(v.newValue);
-                }
-            });
-            #endregion
-
-            // 当节点绑定变量时，将变量值同步到控件值
-            active.On_Node_Variable_Binded += (vare) =>
-            {
-                field_name.value = active.activateName;
-                field_state.value = active.activateState;
-            };
-
-            // 克隆节点后刷新控件值为克隆后的最新值
-            active.On_Node_Duplicated += (clone, source) =>
-            {
-                // 克隆父物体的行为数据
-                action_mc_module_activate s_source = (action_mc_module_activate)source;
-                // 克隆后的行为数据
-                action_mc_module_activate s_clone = (action_mc_module_activate)clone;
-                s_clone.activateName = s_source.activateName;
-                s_clone.activateState = s_source.activateState;
-
-                field_name.value = active.activateName;
-                field_state.value = active.activateState;
-            };
-
-            return fold;
         }
         #endregion
     }

@@ -12,10 +12,6 @@ namespace SevenStrikeModules.XGraph
     {
         #region 节点参数
         /// <summary>
-        /// 行为节点 - 名称
-        /// </summary>
-        [SerializeField] public string identifyName;
-        /// <summary>
         /// 行为节点 - 内容表述
         /// </summary>
         [SerializeField] public string content;
@@ -116,8 +112,8 @@ namespace SevenStrikeModules.XGraph
         {
             // 创建新实例
             class_ActionBaseArgs clone = new class_ActionBaseArgs();
-            // 复制基础字段
-            clone.identifyName = this.identifyName;
+            //// 复制基础字段
+            //clone.identifyName = this.identifyName;
             clone.content = this.content;
             clone.guid = guid;
             clone.namespaces = this.namespaces;

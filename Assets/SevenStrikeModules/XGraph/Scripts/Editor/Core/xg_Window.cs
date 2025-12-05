@@ -423,6 +423,7 @@
             return false;
         }
 
+
         /// <summary>
         /// 编辑器界面创建逻辑
         /// </summary>
@@ -923,89 +924,92 @@
         {
             if (tree_source == null) return;
 
-            xw_graphView.UnregisterGroupEvent();
-            xw_graphView.OnDuplicateNodes = null;
-
-            // 清理旧数据 
-            xw_graphView.Node_Clear();
-            xw_graphView.EdgesClear();
-            xw_graphView.Groups_Clear();
-
-            #region 恢复上一次退出 GraphView 时记录的内视图位置以及缩放等级
-            xw_graphView.SetViewPosition(tree_source.LastGraphViewPosition, tree_source.LastGraphViewZoom);
-            #endregion
-
-            #region 移动式属性面板的状态恢复
-            // 获取最后一次的移动式属性面板开关状态
-            bool remote_toggle = CloneTree.XGraph_InspectorViewDisplay;
-            // 设置 InspectorViewer Remote 容器可见性
-            util_XGraphEditorUtility.Element_Dispaly_Set(xw_InspectorView_Container, remote_toggle);
-            // 设置移动式属性视图容器可见性按钮开关状态
-            xw_toggle_InspectorViewDisplay.value = remote_toggle;
-            if (remote_toggle)
-                // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
-                xw_InspectorView.InspectorViewer(tree_clone);
-
-            xg_ResizableElement element_inspector = (xg_ResizableElement)xw_InspectorView_Container;
-            // 加载 RemoteInspector 变换信息
-            Element_Transform_Load(CloneTree.Last_GraphView_InspectorPanel_TransformData, element_inspector);
-
-            // 加载 BlackBoard 面板标题文字
-            InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
-            #endregion
-
-            #region 黑板变量面板的状态恢复
-            // 获取最后一次的移动式变量面板开关状态
-            bool blackboard_toggle = CloneTree.XGraph_BlackBoardViewDisplay;
-            // 设置 InspectorViewer Remote 容器可见性
-            util_XGraphEditorUtility.Element_Dispaly_Set(xw_BlackBoardView_Container, blackboard_toggle);
-            // 设置黑板变量视图容器可见性按钮开关状态
-            xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
-
-            // 刷新 BlackBoard 显示
-            xw_BlackBoard_UpdateTitleInfo();
-            // 刷新 BlackBoard 属性列表
-            xw_BlackBoard_VariablesRestructure();
-
-            xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
-            // 加载 BlackBoard 面板位置
-            Element_Transform_Load(CloneTree.Last_GraphView_BlackboardPanel_TransformData, element_blackboard);
-
-            // 加载 BlackBoard 面板标题文字
-            BlackBoardViewAction_SetTitle($"{SourceTree.name} 变量黑板");
-            #endregion
-
-            xw_graphView.RegisterGroupEvent();
-
-            // 重新加载行为树资源
-            SourceTree = tree_source;
-            CloneTree = tree_clone;
-
-            // 延迟重建可视化行为树结构
             EditorApplication.delayCall += () =>
             {
+                xw_graphView.UnregisterGroupEvent();
+                xw_graphView.OnDuplicateNodes = null;
+
+                // 清理旧数据 
+                xw_graphView.Node_Clear();
+                xw_graphView.EdgesClear();
+                xw_graphView.Groups_Clear();
+
+                #region 恢复上一次退出 GraphView 时记录的内视图位置以及缩放等级
+                xw_graphView.SetViewPosition(tree_source.LastGraphViewPosition, tree_source.LastGraphViewZoom);
+                #endregion
+
+                #region 移动式属性面板的状态恢复
+                // 获取最后一次的移动式属性面板开关状态
+                bool remote_toggle = CloneTree.XGraph_InspectorViewDisplay;
+                // 设置 InspectorViewer Remote 容器可见性
+                util_XGraphEditorUtility.Element_Dispaly_Set(xw_InspectorView_Container, remote_toggle);
+                // 设置移动式属性视图容器可见性按钮开关状态
+                xw_toggle_InspectorViewDisplay.value = remote_toggle;
+                if (remote_toggle)
+                    // 当取消选中任意视觉节点时让行为树根节点的Inspector属性显示
+                    xw_InspectorView.InspectorViewer(tree_clone);
+
+                xg_ResizableElement element_inspector = (xg_ResizableElement)xw_InspectorView_Container;
+                // 加载 RemoteInspector 变换信息
+                Element_Transform_Load(CloneTree.Last_GraphView_InspectorPanel_TransformData, element_inspector);
+
+                // 加载 BlackBoard 面板标题文字
+                InspectorViewAction_SetTitle($"{SourceTree.name} 行为根节点属性");
+                #endregion
+
+                #region 黑板变量面板的状态恢复
+                // 获取最后一次的移动式变量面板开关状态
+                bool blackboard_toggle = CloneTree.XGraph_BlackBoardViewDisplay;
+                // 设置 InspectorViewer Remote 容器可见性
+                util_XGraphEditorUtility.Element_Dispaly_Set(xw_BlackBoardView_Container, blackboard_toggle);
+                // 设置黑板变量视图容器可见性按钮开关状态
+                xw_toggle_BlackBoardViewDisplay.value = blackboard_toggle;
+
+                // 刷新 BlackBoard 显示
+                xw_BlackBoard_UpdateTitleInfo();
+                // 刷新 BlackBoard 属性列表
+                xw_BlackBoard_VariablesRestructure();
+
+                xg_ResizableElement element_blackboard = (xg_ResizableElement)xw_BlackBoardView_Container;
+                // 加载 BlackBoard 面板位置
+                Element_Transform_Load(CloneTree.Last_GraphView_BlackboardPanel_TransformData, element_blackboard);
+
+                // 加载 BlackBoard 面板标题文字
+                BlackBoardViewAction_SetTitle($"{SourceTree.name} 变量黑板");
+                #endregion
+
+                xw_graphView.RegisterGroupEvent();
+
+                // 重新加载行为树资源
+                SourceTree = tree_source;
+                CloneTree = tree_clone;
+
+                // 延迟重建可视化行为树结构
                 EditorApplication.delayCall += () =>
                 {
-                    element_inspector.SnapToNearestQuadrant();
+                    EditorApplication.delayCall += () =>
+                    {
+                        element_inspector.SnapToNearestQuadrant();
 
-                    xw_graphView.Restructure_Graph(CloneTree);
+                        xw_graphView.Restructure_Graph(CloneTree);
 
-                    /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
-                     *  而 xw_graphView?.Restructure_Graph(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
-                     */
-                    #region Node节点颜色标记的状态恢复
-                    // 获取最后一次的节点颜色标记开关状态
-                    bool nodeColor_toggle = CloneTree.XGraph_DisplayNodeColor;
-                    // 设置节点颜色标记可见性按钮开关状态
-                    xw_toggle_DisplayNodeColor.value = nodeColor_toggle;
-                    #endregion
+                        /*  以下逻辑必须保证先让 xw_graphView 的ActionTree不为空才行否则会报错，
+                         *  而 xw_graphView?.Restructure_Graph(CloneTree); 正是将 CloneTree 赋值到  xw_graphView 中的 ActionTreeAsset 的逻辑根源
+                         */
+                        #region Node节点颜色标记的状态恢复
+                        // 获取最后一次的节点颜色标记开关状态
+                        bool nodeColor_toggle = CloneTree.XGraph_DisplayNodeColor;
+                        // 设置节点颜色标记可见性按钮开关状态
+                        xw_toggle_DisplayNodeColor.value = nodeColor_toggle;
+                        #endregion
 
-                    #region Node节点数据流连线的状态恢复
-                    // 获取最后一次的节点数据流连线开关状态
-                    bool nodeanimateEdge_toggle = CloneTree.XGraph_DisplayNodeFlow;
-                    // 设置节点数据流连线可见性按钮开关状态
-                    xw_toggle_DisplayNodeFlow.value = nodeanimateEdge_toggle;
-                    #endregion
+                        #region Node节点数据流连线的状态恢复
+                        // 获取最后一次的节点数据流连线开关状态
+                        bool nodeanimateEdge_toggle = CloneTree.XGraph_DisplayNodeFlow;
+                        // 设置节点数据流连线可见性按钮开关状态
+                        xw_toggle_DisplayNodeFlow.value = nodeanimateEdge_toggle;
+                        #endregion
+                    };
                 };
             };
         }

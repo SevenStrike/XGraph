@@ -203,7 +203,7 @@ namespace SevenStrikeModules.XGraph
             action.BaseArgs.icon = args.iconName;
             action.BaseArgs.NodeIcon = args.nodeIcon;
             action.BaseArgs.visualNodeType = args.visualNodeType;
-            action.BaseArgs.identifyName = args.visualName;
+            action.identifyName = args.visualName;
             action.BaseArgs.namespaces = args.prefixNamespace;
             action.BaseArgs.classes = args.prefixClass;
             action.BaseArgs.HasAvatar = args.hasAvatar;
@@ -1257,7 +1257,7 @@ namespace SevenStrikeModules.XGraph
                                 string originalGUID = vare.variable.guid;
                                 vare.variable = data.variable.Clone(false);
                                 vare.variable.guid = originalGUID;
-                                vare.variable.name = action.BaseArgs.identifyName;
+                                vare.variable.name = action.identifyName;
                             }
                         }
                     }
@@ -1271,8 +1271,8 @@ namespace SevenStrikeModules.XGraph
                 foreach (var data in action.BaseArgs.InternalVariableDatas)
                 {
                     xAction_Variable internalVar = FindActionNode(data.VariableNodeGuid) as xAction_Variable;
-                    internalVar.variable.name = internalVar.BaseArgs.identifyName;
-                    data.variable.name = internalVar.BaseArgs.identifyName;
+                    internalVar.variable.name = internalVar.identifyName;
+                    data.variable.name = internalVar.identifyName;
                     switch (data.variable.type)
                     {
                         case xVariableType.String:
