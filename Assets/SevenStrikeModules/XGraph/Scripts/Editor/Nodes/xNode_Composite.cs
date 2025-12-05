@@ -6,9 +6,9 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class xNode_Start : xNode_Base
+    public class xNode_Composite : xNode_Base
     {
-        internal xAction_Start start;
+        internal xAction_Composite composite;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
@@ -16,6 +16,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 端口 - 输入
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
+            port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输入）
             InputPort_Set(port_in);
             #endregion
 
@@ -25,7 +26,7 @@ namespace SevenStrikeModules.XGraph
             OutputPort_Set(port_out);
             #endregion
 
-            start = data as xAction_Start;
+            composite = data as xAction_Composite;
         }
 
         #region 节点绘制
@@ -52,23 +53,11 @@ namespace SevenStrikeModules.XGraph
             // 绘制扩展容器
             Draw_Extension();
 
-            // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
-            inputContainer.style.paddingTop = 25;
-
             return this;
         }
         #endregion
 
         #region 重写 - 绘制Inspector
-        /// <summary>
-        /// 节点父行为容器
-        /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
-        public override Foldout ins_Folder_ParentNode(VisualElement root)
-        {
-            return null;
-        }
         /// <summary>
         /// 子行为折叠容器
         /// </summary>
@@ -76,11 +65,11 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_ChildActions(VisualElement root)
         {
             Foldout fold = base.ins_Folder_ChildActions(root);
-            fold.text = $"{fold.text}（{start.childNodes.Count}）";
+            fold.text = $"{fold.text}（{composite.childNodes.Count}）";
 
-            for (int i = 0; i < start.childNodes.Count; i++)
+            for (int i = 0; i < composite.childNodes.Count; i++)
             {
-                xAction_Base child = start.BaseArgs.RootAsset.FindActionNode(start.childNodes[i]);
+                xAction_Base child = composite.BaseArgs.RootAsset.FindActionNode(composite.childNodes[i]);
 
                 VisualElement container = new VisualElement();
                 container.AddToClassList("list_container");

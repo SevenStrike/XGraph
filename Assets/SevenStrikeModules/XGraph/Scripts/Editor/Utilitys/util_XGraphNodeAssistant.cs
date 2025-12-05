@@ -403,6 +403,9 @@ namespace SevenStrikeModules.XGraph
         }
         private string CreatePropertyNodeAction()
         {
+            if (xtype != "xAction_Property")
+                return null;
+
             string content = "";
             content = $@"
 

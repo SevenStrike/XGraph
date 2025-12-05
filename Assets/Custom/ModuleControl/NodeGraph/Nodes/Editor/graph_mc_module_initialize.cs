@@ -1,7 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System.Collections.Generic;
-    using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -14,12 +12,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.Initialize(graphView, pos, data);
 
-            #region 端口设置
-            List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));
-            InputPort_Set(port_in);
-            #endregion
+            InputPort_Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));// 加入变量端口（输入）
 
             initializer = start as action_mc_module_initialize;
         }
@@ -27,31 +20,7 @@ namespace SevenStrikeModules.XGraph
         #region 节点绘制
         public override xNode_Base Draw()
         {
-            // 绘制主容器
-            Draw_Main();
-
-            // 绘制标题容器
-            Draw_Title();
-
-            // 绘制标题按钮容器
-            Draw_TitleButton();
-
-            // 绘制顶部容器
-            Draw_Top();
-
-            // 绘制输入节点容器
-            Draw_Input();
-
-            // 绘制输出节点容器
-            Draw_Output();
-
-            // 绘制扩展容器
-            Draw_Extension();
-
-            // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
-            inputContainer.style.paddingTop = 25;
-
-            return this;
+            return base.Draw();
         }
         #endregion
 

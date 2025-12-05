@@ -1,15 +1,21 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.UIElements;
 
     public class xNode_Property : xNode_Base
     {
-        public xAction_Property property;
+        internal xAction_Property property;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
             base.Initialize(graphView, pos, data);
+
+            #region 端口 - 输出
+            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
+            OutputPort_Set(port_out);
+            #endregion
 
             property = data as xAction_Property;
 
@@ -91,25 +97,80 @@ namespace SevenStrikeModules.XGraph
             // Inspector 面板显示属性
             graphView.gv_GraphWindow.xw_InspectorView.InspectorViewer(this);
         }
-        public void VariableNodeFieldValueUpdate()
-        {
-
-        }
         #endregion
 
-        #region 重写
+        #region 重写 - 回调
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
-            VariableNodeFieldValueUpdate();
         }
+        #endregion
 
+        #region 重写 - 逻辑
+        /// <summary>
+        /// 此方法重写目的：属性节点不需要“节点执行模式（顺序/并发）的图标组件”
+        /// </summary>
         public override void ExecutionModeMark()
         {
             //base.ExecutionModeMark();
+        }
+        #endregion
+
+        #region 重写 - 绘制Inspector
+        /// <summary>
+        /// 子行为折叠容器
+        /// </summary>
+        /// <param name="fold"></param>
+        public override Foldout ins_Folder_ChildActions(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 黑板变量折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_BlackBoardVariable(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 内部变量折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_InternalVariable(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 属性记录折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_BindedPropertys(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 节点父行为容器
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public override Foldout ins_Folder_ParentNode(VisualElement root)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 自定义组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public override Foldout ins_Folder_Extensions(VisualElement root)
+        {
+            return null;
         }
         #endregion
     }

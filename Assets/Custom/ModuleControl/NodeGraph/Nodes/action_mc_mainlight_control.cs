@@ -1,10 +1,13 @@
+using UnityEngine;
+
 namespace SevenStrikeModules.XGraph
 {
-    using UnityEngine;
-
     public class action_mc_mainlight_control : xAction_Composite
     {
-        public bool lightEnable;
+        /// <summary>
+        /// 是否开启主灯
+        /// </summary>
+        [SerializeField] public bool lightEnable;
 
         public override void Execute()
         {

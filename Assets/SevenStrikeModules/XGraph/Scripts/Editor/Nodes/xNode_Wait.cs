@@ -8,23 +8,22 @@ namespace SevenStrikeModules.XGraph
 
     public class xNode_Wait : xNode_Base
     {
-        xAction_Wait wait;
+        internal xAction_Wait wait;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
             base.Initialize(graphView, pos, data);
 
-            #region 端口设置
+            #region 端口 - 输入
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
-            // 加入行为端口
-            port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
-            // 加入变量端口
-            port_in.Add(new xGraph_NodePort("时间", typeof(Variable_Float), Port.Capacity.Single));
+            port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输入）
+            port_in.Add(new xGraph_NodePort("时间", typeof(Variable_Float), Port.Capacity.Single));// 加入变量端口（输入）
             InputPort_Set(port_in);
+            #endregion
 
+            #region 端口 - 输出
             List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-            // 加入行为端口
-            port_out.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Multi));
+            port_out.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Multi));// 加入行为端口（输出）
             OutputPort_Set(port_out);
             #endregion
 
@@ -69,120 +68,9 @@ namespace SevenStrikeModules.XGraph
 
             wait.SetWaitTime("时间");
         }
-        /// <summary>
-        /// 当克隆节点时
-        /// </summary>
-        /// <param name="list"></param>
-        public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
-        {
-            base.On_Nodes_Duplicated(list);
-        }
-        /// <summary>
-        /// 当节点重建时
-        /// </summary>
-        public override void On_Node_Restructure()
-        {
-            base.On_Node_Restructure();
-        }
-        /// <summary>
-        /// 当节点连线时
-        /// </summary>
-        /// <param name="edge"></param>
-        public override void On_Node_CreateEdge(Edge edge)
-        {
-            base.On_Node_CreateEdge(edge);
-        }
-        /// <summary>
-        /// 当节点移除连线时
-        /// </summary>
-        /// <param name="edge"></param>
-        public override void On_Node_RemovedEdge(Edge edge)
-        {
-            base.On_Node_RemovedEdge(edge);
-        }
-        /// <summary>
-        /// 当节点头像改变时
-        /// </summary>
-        /// <param name="tex"></param>
-        public override void On_Node_AvatarChanged(Texture2D tex)
-        {
-            base.On_Node_AvatarChanged(tex);
-        }
-        /// <summary>
-        /// 当节点执行模式改变时
-        /// </summary>
-        /// <param name="state"></param>
-        public override void On_Node_ConcurrentChanged(bool state)
-        {
-            base.On_Node_ConcurrentChanged(state);
-        }
-        /// <summary>
-        /// 当改变节点图标时
-        /// </summary>
-        /// <param name="tex"></param>
-        public override void On_Node_IconChanged(Texture2D tex)
-        {
-            base.On_Node_IconChanged(tex);
-        }
-        /// <summary>
-        /// 当改变节点颜色主题时
-        /// </summary>
-        public override void On_Node_ThemeColorChanged()
-        {
-            base.On_Node_ThemeColorChanged();
-        }
-        /// <summary>
-        /// 当改变节点通透模式时
-        /// </summary>
-        /// <param name="state"></param>
-        public override void On_Node_TransparentChanged(bool state)
-        {
-            base.On_Node_TransparentChanged(state);
-        }
-        /// <summary>
-        /// 当改变节点尺寸时
-        /// </summary>
-        /// <param name="evt"></param>
-        public override void OnSizeChanged(GeometryChangedEvent evt)
-        {
-            base.OnSizeChanged(evt);
-        }
-        /// <summary>
-        /// 当选中节点时
-        /// </summary>
-        public override void OnSelected()
-        {
-            base.OnSelected();
-        }
-        /// <summary>
-        /// 当取消选中节点时
-        /// </summary>
-        public override void OnUnselected()
-        {
-            base.OnUnselected();
-        }
         #endregion
 
         #region 重写 - 绘制Inspector
-        /// <summary>
-        /// 节点的Inspector属性界面绘制
-        /// </summary>
-        /// <returns></returns>
-        public override VisualElement InspectorGUI()
-        {
-            VisualElement InspectorElement = base.InspectorGUI();
-
-            return InspectorElement;
-        }
-        /// <summary>
-        /// 节点父行为容器
-        /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
-        public override Foldout ins_Folder_ParentNode(VisualElement root)
-        {
-            return base.ins_Folder_ParentNode(root);
-        }
         /// <summary>
         /// 子行为折叠容器
         /// </summary>

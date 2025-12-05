@@ -4,8 +4,10 @@ namespace SevenStrikeModules.XGraph
 
     public class action_mc_property_mainlight : xAction_Property
     {
+        /// <summary>
+        /// 目标光源
+        /// </summary>
         [SerializeField] public Light Light;
-
 
         /// <summary>
         /// 行为节点执行方法
@@ -73,6 +75,24 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            action_mc_property_mainlight clone = base.Clone() as action_mc_property_mainlight;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.Light = this.Light;
+            }
+
+            return clone;
         }
     }
 }

@@ -1,6 +1,5 @@
 namespace SevenStrikeModules.XGraph
 {
-    using System;
     using System.Collections.Generic;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
@@ -142,13 +141,6 @@ namespace SevenStrikeModules.XGraph
             if (target == null)
                 return;
 
-            //#region  尝试查找是否有自定义 Editor
-            //string asm = "Assembly-CSharp-Editor";
-            //string name = target.GetType().Name;
-            //string result = util_XGraphEditorUtility.HasString(name, "xAction") ? name : util_XGraphEditorUtility.ExtractString(name, 7);
-            //var editorType = Type.GetType($"SevenStrikeModules.XGraph.editor_{result}, {asm}");
-            //#endregion
-
             #region 布局容器
             // 创建布局容器
             VisualElement container = util_XGraphInspectorGUI.GUI_Container(this, new string[] { "container" });
@@ -156,7 +148,7 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             // 调用节点的InspectorGUI，以此支持在内置的Inspector面板上绘制节点属性
-            container.Add(n_base.InspectorGUI());
+            container.Add(n_base.DrawInspectorGUI());
         }
         /// <summary>
         /// 创建行为根资源的属性面板

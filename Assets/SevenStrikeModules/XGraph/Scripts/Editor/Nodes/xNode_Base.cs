@@ -344,10 +344,28 @@ namespace SevenStrikeModules.XGraph
             return this;
         }
 
+        /// <summary>
+        /// 增加输入端口
+        /// </summary>
+        /// <param name="port"></param>
+        public void InputPort_Add(xGraph_NodePort port)
+        {
+            Port_Inputs.Add(port);
+        }
+
         public virtual xNode_Base OutputPort_Set(List<xGraph_NodePort> portInfos)
         {
             Port_Outputs = portInfos;
             return this;
+        }
+
+        /// <summary>
+        /// 增加输出端口
+        /// </summary>
+        /// <param name="port"></param>
+        public void OutputPort_Add(xGraph_NodePort port)
+        {
+            Port_Outputs.Add(port);
         }
 
         /// <summary>
@@ -1448,7 +1466,7 @@ namespace SevenStrikeModules.XGraph
         /// 绘制节点编辑器内的Inspector界面
         /// </summary>
         /// <returns></returns>
-        public virtual VisualElement InspectorGUI()
+        public virtual VisualElement DrawInspectorGUI()
         {
             VisualElement rootElement = new VisualElement();
 
