@@ -28,7 +28,7 @@ namespace SevenStrikeModules.XGraph
             Variable vare = Variable_Get("对象");
             if (vare != null)
                 Msg = vare.GetValue().ToString();
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{identifyName}  {Msg}  （{(BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", true);
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{identifyName}  {Msg}  （{(BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", BaseArgs.RootAsset.LogEnabled);
         }
 
         /// <summary>

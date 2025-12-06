@@ -19,10 +19,6 @@ namespace SevenStrikeModules.XGraph
         /// 流程暂停中
         /// </summary>
         private bool isPaused = false;
-        /// <summary>
-        /// 显示调试信息
-        /// </summary>
-        public bool Logs = true;
 
         /// <summary>
         /// 自定义的目标脚本，用于赋值给行为资源中的目标脚本对象，利用此脚本可达成行为节点对目标脚本功能的调用
@@ -88,19 +84,19 @@ namespace SevenStrikeModules.XGraph
         {
             if (!ManualExecutionMode || !isRunning)
             {
-                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式未启用或流程未运行", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式未启用或流程未运行", "", SampleAsset.LogEnabled);
                 return;
             }
 
             if (isWaitingForDelay)
             {
-                util_Dashboard.LogMsg(xMessageType.警告, $"正在等待延时节点完成，请稍后再试", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"正在等待延时节点完成，请稍后再试", "", SampleAsset.LogEnabled);
                 return;
             }
 
             if (manualExecutionQueue.Count == 0)
             {
-                util_Dashboard.LogMsg(xMessageType.信息, $"流程执行完成", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程执行完成", "", SampleAsset.LogEnabled);
                 isRunning = false;
                 OnManual_StepComplete?.Invoke();
                 return;
@@ -121,7 +117,7 @@ namespace SevenStrikeModules.XGraph
             {
                 isRunning = true;
                 manualExecutionQueue.Enqueue(startNode.BaseArgs.guid);
-                util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.信息, $"手动执行模式已初始化，准备执行第一个节点", "", SampleAsset.LogEnabled);
             }
         }
         /// <summary>
@@ -133,7 +129,7 @@ namespace SevenStrikeModules.XGraph
 
             if (node == null || !isRunning) yield break;
 
-            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> ：", $"{node.identifyName}  （{(node.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", SampleAsset.LogEnabled);
 
             // 特殊处理等待节点
             if (node is xAction_Wait waitNode)
@@ -162,7 +158,7 @@ namespace SevenStrikeModules.XGraph
         private IEnumerator Manual_HandleWait(xAction_Wait waitNode)
         {
             isWaitingForDelay = true;
-            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.identifyName}  {waitNode.Time}s", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] ---> 等待节点：", $"{waitNode.identifyName}  {waitNode.Time}s", SampleAsset.LogEnabled);
 
             // 执行等待节点
             waitNode.Execute();
@@ -196,7 +192,7 @@ namespace SevenStrikeModules.XGraph
 
             isWaitingForDelay = false;
             OnManual_WaitComplete?.Invoke();
-            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] 等待节点完成", "", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"[手动] 等待节点完成", "", SampleAsset.LogEnabled);
         }
         /// <summary>
         /// 清理手动执行模式
@@ -218,14 +214,14 @@ namespace SevenStrikeModules.XGraph
         {
             if (SampleAsset == null || SampleAsset.Actions.Count == 0)
             {
-                util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为资源列表是空的！", "", SampleAsset.LogEnabled);
                 return false;
             }
 
             var start = SampleAsset.Actions.Find(n => n.BaseArgs.isStartNode);
             if (start == null)
             {
-                util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"未能找到指定的起始节点！", "", SampleAsset.LogEnabled);
                 return false;
             }
 
@@ -238,13 +234,13 @@ namespace SevenStrikeModules.XGraph
         {
             if (!Runner_StartNodeValidate())
             {
-                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程启动失败！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程启动失败！", "", SampleAsset.LogEnabled);
                 return;
             }
 
             if (isRunning)
             {
-                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程已经在执行中！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.错误, $"行为流程已经在执行中！", "", SampleAsset.LogEnabled);
                 return;
             }
 
@@ -252,7 +248,7 @@ namespace SevenStrikeModules.XGraph
             if (ManualExecutionMode)
             {
                 Manual_InitializeMode();
-                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式已启动，等待手动执行指令", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"手动执行模式已启动，等待手动执行指令", "", SampleAsset.LogEnabled);
                 return;
             }
 
@@ -277,7 +273,7 @@ namespace SevenStrikeModules.XGraph
             // 注销每一个行为运行时变量值改变回调
             UnregisterVariableChangeWithAction();
 
-            util_Dashboard.LogMsg(xMessageType.信息, $"流程停止！", "", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"流程停止！", "", SampleAsset.LogEnabled);
         }
         /// <summary>
         /// 行为暂停
@@ -287,7 +283,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning)
             {
                 isPaused = true;
-                util_Dashboard.LogMsg(xMessageType.信息, $"流程暂停！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程暂停！", "", SampleAsset.LogEnabled);
             }
         }
         /// <summary>
@@ -298,7 +294,7 @@ namespace SevenStrikeModules.XGraph
             if (isRunning && isPaused)
             {
                 isPaused = false;
-                util_Dashboard.LogMsg(xMessageType.信息, $"流程继续！", "", Logs);
+                util_Dashboard.LogMsg(xMessageType.信息, $"流程继续！", "", SampleAsset.LogEnabled);
             }
         }
         #endregion
@@ -310,13 +306,13 @@ namespace SevenStrikeModules.XGraph
         IEnumerator Action_Flow()
         {
             isRunning = true;
-            util_Dashboard.LogMsg(xMessageType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", Logs);
+            util_Dashboard.LogMsg(xMessageType.警告, $"开始执行流程：", SampleAsset.name, "00ff9d", SampleAsset.LogEnabled);
 
             var startNode = SampleAsset.Actions.Find(n => n.BaseArgs.isStartNode);
             yield return Action_Execute(startNode.BaseArgs.guid);
 
             isRunning = false;
-            util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", Logs);
+            util_Dashboard.LogMsg(xMessageType.警告, $"流程执行完成：", SampleAsset.name, "00ff9d", SampleAsset.LogEnabled);
         }
         /// <summary>
         /// 行为执行
@@ -331,7 +327,7 @@ namespace SevenStrikeModules.XGraph
             // 处理暂停状态（双重检查）
             while (isPaused && isRunning)
             {
-                util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"执行暂停中：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", SampleAsset.LogEnabled);
 
                 // 每0.1秒检查一次，防止暂停时性能开销大
                 yield return new WaitForSeconds(0.1f);
@@ -344,7 +340,7 @@ namespace SevenStrikeModules.XGraph
                 yield break;
             }
 
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{action.identifyName}  （{(action.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", SampleAsset.LogEnabled);
             // 执行当前节点
             action.Execute();
 
@@ -373,7 +369,7 @@ namespace SevenStrikeModules.XGraph
 
             // 执行等待前逻辑
             waitNode.Execute();
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", Logs);
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{waitNode.identifyName}  {waitNode.Time}s  （{(waitNode.BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", SampleAsset.LogEnabled);
 
             // 可中断的等待实现
             float elapsed = 0;

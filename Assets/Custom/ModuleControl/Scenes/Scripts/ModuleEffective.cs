@@ -81,7 +81,13 @@ public class ModuleEffective : MonoBehaviour
         if (fastmode)
             smoothValue = state ? 1 : 0;
         if (!fastmode)
+        {
             StartCoroutine(FlashLine(state));
+        }
+        else
+        {
+            SetLineOpacity(0f);
+        }
 
         if (!fastmode)
             StartCoroutine(PulseEmissive(state));
@@ -145,22 +151,27 @@ public class ModuleEffective : MonoBehaviour
     /// </summary>
     private IEnumerator FlashLine(bool state = true)
     {
-        // 第一次闪烁：0 → 1 → 0
-        SetLineOpacity(1f);
-        yield return new WaitForSeconds(0.045f);
-        SetLineOpacity(0f);
-        yield return new WaitForSeconds(0.045f);
-
-        // 第二次闪烁：0 → 0.35
-        SetLineOpacity(0.35f);
-        yield return new WaitForSeconds(0.045f);
-        SetLineOpacity(0f);
-        yield return new WaitForSeconds(0.045f);
-
-        if (state)
-            SetLineOpacity(1);
-        else
+        if (!state)
+        {
             SetLineOpacity(0f);
+            yield return null;
+        }
+        else
+        {
+            // 第一次闪烁：0 → 1 → 0
+            SetLineOpacity(1f);
+            yield return new WaitForSeconds(0.045f);
+            SetLineOpacity(0f);
+            yield return new WaitForSeconds(0.045f);
+
+            // 第二次闪烁：0 → 0.35
+            SetLineOpacity(0.35f);
+            yield return new WaitForSeconds(0.045f);
+            SetLineOpacity(0f);
+            yield return new WaitForSeconds(0.045f);
+
+            SetLineOpacity(1);
+        }
     }
     /// <summary>
     /// 自发光脉动

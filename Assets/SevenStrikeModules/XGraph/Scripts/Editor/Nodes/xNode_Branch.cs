@@ -1,5 +1,6 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System.Collections.Generic;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
     using UnityEngine;
@@ -13,12 +14,18 @@ namespace SevenStrikeModules.XGraph
         {
             base.Initialize(graphView, pos, data);
 
-            #region 端口设置
-            // 加入行为端口
-            Port_Inputs.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
-            Port_Inputs.Add(new xGraph_NodePort("条件", typeof(Variable_Bool), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("开", typeof(xAction_Base), Port.Capacity.Single));
-            Port_Outputs.Add(new xGraph_NodePort("关", typeof(xAction_Base), Port.Capacity.Single));
+            #region 端口 - 输入
+            List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
+            port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输入）
+            port_in.Add(new xGraph_NodePort("条件", typeof(Variable_Bool), Port.Capacity.Single));// 加入变量端口（输入）
+            InputPort_Set(port_in);
+            #endregion
+
+            #region 端口 - 输出
+            List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
+            port_out.Add(new xGraph_NodePort("开", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输出）
+            port_out.Add(new xGraph_NodePort("关", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输出）
+            OutputPort_Set(port_out);
             #endregion          
 
             branch = data as xAction_Branch;
@@ -93,50 +100,62 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_ChildActions(VisualElement root)
         {
             Foldout fold = base.ins_Folder_ChildActions(root);
-            fold.text = $"{fold.text}";
 
-            xAction_Base child_true = branch.BaseArgs.RootAsset.FindActionNode(branch.childNode_true);
-
-            VisualElement container = new VisualElement();
-            container.AddToClassList("list_container");
-            fold.Add(container);
-
-            container.RegisterCallback<PointerEnterEvent>((evt) =>
-            {
-                xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                Node node = wnd.xw_graphView.FindNode(child_true.BaseArgs.guid);
-                if (node is xNode_Base n_base)
-                {
-                    n_base.Highlight();
-                }
-            });
-
-            container.RegisterCallback<PointerLeaveEvent>((evt) =>
-            {
-                xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
-                Node node = wnd.xw_graphView.FindNode(child_true.BaseArgs.guid);
-                if (node is xNode_Base n_base)
-                {
-                    n_base.UnHighlight();
-                }
-            });
-
-            VisualElement container_title = new VisualElement();
-            container_title.AddToClassList("list_titlebg");
-            container.Add(container_title);
-
-            VisualElement container_icon = new VisualElement();
-            container_icon.AddToClassList("list_item_icon");
-            container_icon.style.backgroundImage = child_true.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(child_true.BaseArgs.icon)) : child_true.BaseArgs.NodeIcon;
-            container_title.Add(container_icon);
-
-            util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{child_true.identifyName}", new string[] { "labeltext", "list_item_title" });
-            util_XGraphInspectorGUI.GUI_Label(container_title, "行为", new string[] { "list_item_marktext" });
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{child_true.BaseArgs.guid}</color>", new string[] { "list_item_label" });
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{child_true.BaseArgs.actionNodeType}</color>", new string[] { "list_item_label" });
-            util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{child_true.BaseArgs.visualNodeType}</color>", new string[] { "list_item_label" });
+            BranchChildDraw(fold, branch.childNode_true, "开路行为");
+            BranchChildDraw(fold, branch.childNode_false, "闭路行为");
 
             return fold;
+        }
+        /// <summary>
+        /// 绘制分支节点信息面板
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="child"></param>
+        private void BranchChildDraw(VisualElement root, string guid, string des)
+        {
+            xAction_Base child_true = branch.BaseArgs.RootAsset.FindActionNode(guid);
+
+            if (child_true != null)
+            {
+                VisualElement container = new VisualElement();
+                container.AddToClassList("list_container");
+                root.Add(container);
+
+                container.RegisterCallback<PointerEnterEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(child_true.BaseArgs.guid);
+                    if (node is xNode_Base n_base)
+                    {
+                        n_base.Highlight();
+                    }
+                });
+
+                container.RegisterCallback<PointerLeaveEvent>((evt) =>
+                {
+                    xg_Window wnd = util_XGraphEditorUtility.GetGraphviewWindow();
+                    Node node = wnd.xw_graphView.FindNode(child_true.BaseArgs.guid);
+                    if (node is xNode_Base n_base)
+                    {
+                        n_base.UnHighlight();
+                    }
+                });
+
+                VisualElement container_title = new VisualElement();
+                container_title.AddToClassList("list_titlebg");
+                container.Add(container_title);
+
+                VisualElement container_icon = new VisualElement();
+                container_icon.AddToClassList("list_item_icon");
+                container_icon.style.backgroundImage = child_true.BaseArgs.NodeIcon == null ? util_XGraphEditorUtility.AssetLoad<Texture2D>(AssetDatabase.GUIDToAssetPath(child_true.BaseArgs.icon)) : child_true.BaseArgs.NodeIcon;
+                container_title.Add(container_icon);
+
+                util_XGraphInspectorGUI.GUI_Label(container_title, $"目标：{child_true.identifyName}", new string[] { "labeltext", "list_item_title" });
+                util_XGraphInspectorGUI.GUI_Label(container_title, des, new string[] { "list_item_marktext" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>Guid：</b><color=#e1e1e1>{child_true.BaseArgs.guid}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>行为类型：</b><color=#e1e1e1>{child_true.BaseArgs.actionNodeType}</color>", new string[] { "list_item_label" });
+                util_XGraphInspectorGUI.GUI_Label(container, $"<b>节点类型：</b><color=#e1e1e1>{child_true.BaseArgs.visualNodeType}</color>", new string[] { "list_item_label" });
+            }
         }
         /// <summary>
         /// 属性节点的属性项折叠容器
@@ -153,7 +172,43 @@ namespace SevenStrikeModules.XGraph
         /// <param name="root"></param>
         public override Foldout ins_Folder_Extensions(VisualElement root)
         {
-            return null;
+            Foldout fold = base.ins_Folder_Extensions(root);
+
+            #region 条件
+            Toggle toggle_childselector = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "条件", branch.PredicateState, new string[] { "field_float" });
+            toggle_childselector.RegisterCallback<ChangeEvent<bool>>((evt) =>
+            {
+                if (isVariableBinded("条件"))
+                {
+                    toggle_childselector.value = branch.PredicateState;
+                    branch.SetPredicateState("条件");
+                }
+                else
+                {
+                    branch.SetPredicateState(toggle_childselector.value);
+                }
+            });
+            #endregion
+
+            // 当根行为资源绑定变量时
+            branch.On_Node_Variable_Binded += (var) =>
+            {
+                toggle_childselector.value = branch.PredicateState;
+            };
+
+            // 克隆节点后刷新控件值为克隆后的最新值
+            branch.On_Node_Duplicated += (clone, source) =>
+            {
+                // 克隆父物体的行为数据
+                xAction_Branch s_source = (xAction_Branch)source;
+                // 克隆后的行为数据
+                xAction_Branch s_clone = (xAction_Branch)clone;
+                s_clone.PredicateState = s_source.PredicateState;
+
+                toggle_childselector.value = branch.PredicateState;
+            };
+
+            return fold;
         }
         #endregion
     }

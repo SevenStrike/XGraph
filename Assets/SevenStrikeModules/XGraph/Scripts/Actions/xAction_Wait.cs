@@ -26,7 +26,6 @@ namespace SevenStrikeModules.XGraph
                 On_Node_Excute();
         }
 
-        #region 回调
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>
@@ -36,9 +35,7 @@ namespace SevenStrikeModules.XGraph
 
             SetWaitTime("时间");
         }
-        #endregion
 
-        #region 赋值
         /// <summary>
         /// 设置等待时间
         /// </summary>
@@ -56,7 +53,6 @@ namespace SevenStrikeModules.XGraph
         {
             Time = time;
         }
-        #endregion
 
         /// <summary>
         /// 克隆该节点时确保改脚本独立变量正确克隆

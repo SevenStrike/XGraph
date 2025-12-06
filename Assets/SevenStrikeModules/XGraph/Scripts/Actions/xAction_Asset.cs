@@ -92,6 +92,10 @@ namespace SevenStrikeModules.XGraph
         /// 记录的节点编辑器 节点连线数据流效果开关
         /// </summary>
         [SerializeField] public bool XGraph_DisplayNodeFlow;
+        /// <summary>
+        /// 节点执行日志打印开关
+        /// </summary>
+        [SerializeField] public bool LogEnabled;
         #endregion
 
         #region 节点数据列表
@@ -325,6 +329,8 @@ namespace SevenStrikeModules.XGraph
             LastGraphViewZoom = target.LastGraphViewZoom;
             // 最后一次保存日期与时间
             LastSaveDateTime = target.LastSaveDateTime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            // 节点执行日志打印开关
+            LogEnabled = target.LogEnabled;
             // 背景主题配置参数（脱离引用克隆）
             GraphviewGridBackgroundThemes = target.GraphviewGridBackgroundThemes.Clone();
             // 选择框主题配置参数（脱离引用克隆）
@@ -531,6 +537,8 @@ namespace SevenStrikeModules.XGraph
             asset.LastGraphViewZoom = LastGraphViewZoom;
             // 最后一次保存日期与时间
             asset.LastSaveDateTime = LastSaveDateTime;
+            // 节点执行日志打印开关
+            asset.LogEnabled = LogEnabled;
             // 开关参数 - 黑板
             asset.XGraph_BlackBoardViewDisplay = XGraph_BlackBoardViewDisplay;
             // 开关参数 - 属性

@@ -1,19 +1,22 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+    using UnityEngine;
+
     public class xAction_Branch : xAction_Base
     {
         /// <summary>
         /// 条件状态
         /// </summary>
-        public bool PredicateState;
+        [SerializeField] public bool PredicateState;
         /// <summary>
         /// 子节点 True
         /// </summary>
-        public string childNode_true;
+        [SerializeField] public string childNode_true;
         /// <summary>
         /// 子节点 False
         /// </summary>
-        public string childNode_false;
+        [SerializeField] public string childNode_false;
 
         /// <summary>
         /// 节点执行方法
@@ -24,7 +27,6 @@ namespace SevenStrikeModules.XGraph
                 On_Node_Excute();
         }
 
-        #region 回调
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>
@@ -34,9 +36,7 @@ namespace SevenStrikeModules.XGraph
 
             SetPredicateState("条件");
         }
-        #endregion
 
-        #region 辅助
         /// <summary>
         /// 设置条件判断状态
         /// </summary>
@@ -45,6 +45,34 @@ namespace SevenStrikeModules.XGraph
         {
             PortValue_Set<bool>(portName, value => PredicateState = value);
         }
-        #endregion
+
+        /// <summary>
+        /// 设置条件判断状态
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetPredicateState(bool state)
+        {
+            PredicateState = state;
+        }
+
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {
+            // 调用基类的Clone方法
+            xAction_Branch clone = base.Clone() as xAction_Branch;
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {
+                clone.PredicateState = this.PredicateState;
+                clone.childNode_true = this.childNode_true;
+                clone.childNode_false = this.childNode_false;
+            }
+
+            return clone;
+        }
     }
 }

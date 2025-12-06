@@ -32,10 +32,6 @@ namespace SevenStrikeModules.XGraph
         /// 手动执行节点流程开关
         /// </summary>
         public KeyCode key_RunnerMode = KeyCode.M;
-        /// <summary>
-        /// 显示调试信息
-        /// </summary>
-        public bool Logs = true;
 
         private void Start()
         {
@@ -65,7 +61,7 @@ namespace SevenStrikeModules.XGraph
             if (Input.GetKeyDown(key_RunnerMode))
             {
                 GraphRunner.ManualExecutionMode = !GraphRunner.ManualExecutionMode;
-                util_Dashboard.LogMsg(xMessageType.警告, $"节点流程执行控制器", $"手动执行模式: {(GraphRunner.ManualExecutionMode ? "开启" : "关闭")}", "00ff9d", Logs);
+                util_Dashboard.LogMsg(xMessageType.警告, $"节点流程执行控制器", $"手动执行模式: {(GraphRunner.ManualExecutionMode ? "开启" : "关闭")}", "00ff9d", GraphRunner.SampleAsset.LogEnabled);
             }
 
             if (Input.GetKeyDown(key_ActionManualStep))
@@ -76,12 +72,12 @@ namespace SevenStrikeModules.XGraph
 
         private void OnManual_StepComplete()
         {
-            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "手动步骤执行完成，可以执行下一步", Logs);
+            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "手动步骤执行完成，可以执行下一步", GraphRunner.SampleAsset.LogEnabled);
         }
 
         private void OnManual_WaitComplete()
         {
-            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "等待节点完成，可以继续执行", Logs);
+            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "等待节点完成，可以继续执行", GraphRunner.SampleAsset.LogEnabled);
         }
     }
 }

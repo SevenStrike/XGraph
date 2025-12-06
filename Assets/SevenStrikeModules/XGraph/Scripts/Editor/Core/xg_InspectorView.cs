@@ -221,6 +221,14 @@ namespace SevenStrikeModules.XGraph
             };
             #endregion
 
+            #region Graph节点日志调试开关
+            Toggle tog_log = util_XGraphInspectorGUI.GUI_Field_Bool(fo_graphview, "节点执行日志开关", target.LogEnabled, new string[] { "field_text" });
+            tog_log.RegisterValueChangedCallback((state) =>
+            {
+                target.LogEnabled = state.newValue;
+            });
+            #endregion
+
             #region 行为节点折叠器
             Foldout fo_actions = util_XGraphInspectorGUI.GUI_Foldout(assetgui, $"行为（{target.Actions.Count}）", "actionasset-actions", new string[] { "foldout" });
             for (int i = 0; i < target.Actions.Count; i++)
