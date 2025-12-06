@@ -104,10 +104,8 @@ namespace SevenStrikeModules.XGraph
             warnText = root.Q<Label>("warnText");
 
             btn_save = root.Q<Button>("btn_save");
-            btn_fixed = root.Q<Button>("btn_fixed");
 
             btn_save.clicked += Btn_save_clicked;
-            btn_fixed.clicked += Btn_fixed_clicked;
 
             IsSelectedAssetCheck(false);
 
@@ -122,28 +120,6 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 按钮回调
-        private void Btn_fixed_clicked()
-        {
-            if (CloneNodeAsset == null)
-                return;
-
-            if (!util_XGraphEditorUtility.DialogMsg("XGraph", "确认要进行清理修复吗？此操作不可逆，请谨慎操作！", "清理", "暂不"))
-                return;
-
-            int x = AssetDatabase.RemoveScriptableObjectsWithMissingScript(AssetDatabase.GetAssetPath(CloneNodeAsset));
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            if (x > 0)
-            {
-                util_XGraphEditorUtility.DialogMsg("XGraph", $"已清理掉 {x} 个丢失脚本的无效资源！", "明白");
-            }
-            else
-            {
-                util_XGraphEditorUtility.DialogMsg("XGraph", $"未发现丢失脚本的无效资源！跳过！", "明白");
-            }
-        }
-
         private void Btn_save_clicked()
         {
             if (CloneNodeAsset == null || string.IsNullOrEmpty(TargetAssetGuid))

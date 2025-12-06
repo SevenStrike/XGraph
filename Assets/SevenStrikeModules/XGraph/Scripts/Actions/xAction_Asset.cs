@@ -363,11 +363,11 @@ namespace SevenStrikeModules.XGraph
                 Actions.Add(clone);
             }
             // 重建子节点关系
-            foreach (var action in target.Actions)
+            foreach (var a in target.Actions)
             {
-                var clone = guidToNodeMap[action.BaseArgs.guid];
+                var clone = guidToNodeMap[a.BaseArgs.guid];
 
-                if (action is xAction_Start s && s.childNodes != null && s.childNodes.Count > 0)
+                if (a is xAction_Start s && s.childNodes != null && s.childNodes.Count > 0)
                 {
                     var cloneStart = clone as xAction_Start;
                     if (cloneStart != null)
@@ -384,8 +384,7 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-
-                if (action is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
+                if (a is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
                 {
                     var cloneWait = clone as xAction_Wait;
                     if (cloneWait != null)
@@ -402,8 +401,7 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-
-                if (action is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
+                if (a is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
                 {
                     var cloneComposite = clone as xAction_Composite;
                     if (cloneComposite != null)
@@ -420,8 +418,24 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-
-                if (action is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
+                if (a is xAction_Debug d && d.childNodes != null && d.childNodes.Count > 0)
+                {
+                    var cloneDebug = clone as xAction_Debug;
+                    if (cloneDebug != null)
+                    {
+                        cloneDebug.childNodes = new List<string>();
+                        foreach (var child in d.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneDebug.childNodes.Add(childClone.BaseArgs.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneDebug.BaseArgs.guid);
+                            }
+                        }
+                    }
+                }
+                if (a is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
                 {
                     var cloneRelay = clone as xAction_Relay;
                     if (cloneRelay != null)
@@ -438,8 +452,7 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-
-                if (action is xAction_Branch b)
+                if (a is xAction_Branch b)
                 {
                     var cloneBranch = clone as xAction_Branch;
                     if (cloneBranch != null)
@@ -578,7 +591,7 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-                else if (a is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
+                if (a is xAction_Wait w && w.childNodes != null && w.childNodes.Count > 0)
                 {
                     var cloneWait = clone as xAction_Wait;
                     if (cloneWait != null)
@@ -595,7 +608,7 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-                else if (a is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
+                if (a is xAction_Composite c && c.childNodes != null && c.childNodes.Count > 0)
                 {
                     var cloneComposite = clone as xAction_Composite;
                     if (cloneComposite != null)
@@ -612,7 +625,41 @@ namespace SevenStrikeModules.XGraph
                         }
                     }
                 }
-                else if (a is xAction_Branch b)
+                if (a is xAction_Debug d && d.childNodes != null && d.childNodes.Count > 0)
+                {
+                    var cloneDebug = clone as xAction_Debug;
+                    if (cloneDebug != null)
+                    {
+                        cloneDebug.childNodes = new List<string>();
+                        foreach (var child in d.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneDebug.childNodes.Add(childClone.BaseArgs.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneDebug.BaseArgs.guid);
+                            }
+                        }
+                    }
+                }
+                if (a is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
+                {
+                    var cloneRelay = clone as xAction_Relay;
+                    if (cloneRelay != null)
+                    {
+                        cloneRelay.childNodes = new List<string>();
+                        foreach (var child in r.childNodes)
+                        {
+                            if (guidToNodeMap.TryGetValue(child, out var childClone))
+                            {
+                                cloneRelay.childNodes.Add(childClone.BaseArgs.guid);
+                                // 设置父节点关系
+                                childClone.SetParentNode(cloneRelay.BaseArgs.guid);
+                            }
+                        }
+                    }
+                }
+                if (a is xAction_Branch b)
                 {
                     var cloneBranch = clone as xAction_Branch;
                     if (cloneBranch != null)
@@ -629,23 +676,6 @@ namespace SevenStrikeModules.XGraph
                             cloneBranch.childNode_false = falseChildClone.BaseArgs.guid;
                             // 设置父节点关系
                             falseChildClone.SetParentNode(cloneBranch.BaseArgs.guid);
-                        }
-                    }
-                }
-                else if (a is xAction_Relay r && r.childNodes != null && r.childNodes.Count > 0)
-                {
-                    var cloneRelay = clone as xAction_Relay;
-                    if (cloneRelay != null)
-                    {
-                        cloneRelay.childNodes = new List<string>();
-                        foreach (var child in r.childNodes)
-                        {
-                            if (guidToNodeMap.TryGetValue(child, out var childClone))
-                            {
-                                cloneRelay.childNodes.Add(childClone.BaseArgs.guid);
-                                // 设置父节点关系
-                                childClone.SetParentNode(cloneRelay.BaseArgs.guid);
-                            }
                         }
                     }
                 }
@@ -762,6 +792,13 @@ namespace SevenStrikeModules.XGraph
                 nodes = comp.childNodes;
             }
 
+            // 如果是 "ActionNode_Debug" 节点，那么就收集 "ActionNode_Debug" 节点下的 "childNodes"
+            xAction_Debug debug = parent as xAction_Debug;
+            if (debug != null && debug.childNodes != null)
+            {
+                nodes = debug.childNodes;
+            }
+
             // 如果是 "ActionNode_Branch" 节点，那么就收集 "ActionNode_Branch" 节点下的 "childNodes"
             xAction_Branch branch = parent as xAction_Branch;
             if (branch != null)
@@ -770,6 +807,13 @@ namespace SevenStrikeModules.XGraph
                     nodes.Add(branch.childNode_true);
                 if (branch.childNode_false != null)
                     nodes.Add(branch.childNode_false);
+            }
+
+            // 如果是 "ActionNode_Relay" 节点，那么就收集 "ActionNode_Relay" 节点下的 "childNodes"
+            xAction_Relay relay = parent as xAction_Relay;
+            if (relay != null && relay.childNodes != null)
+            {
+                nodes = relay.childNodes;
             }
 
             // 返回的列表就是 "GraphView组件" 那边需要根据这子资源列表才能知道跟哪些子节点重建节点之间的连线
@@ -839,6 +883,24 @@ namespace SevenStrikeModules.XGraph
                     return;
                 }
                 c.childNodes.Add(child.BaseArgs.guid);
+            }
+            #endregion
+
+            #region 特化处理 - Debug
+            if (parent is xAction_Debug d)
+            {
+                bool exist = false;
+                foreach (var item in d.childNodes)
+                {
+                    if (child.BaseArgs.guid == item)
+                        exist = true;
+                }
+                if (exist)
+                {
+                    Debug.Log("comp 节点已经存在添加的指定资源！忽略它！");
+                    return;
+                }
+                d.childNodes.Add(child.BaseArgs.guid);
             }
             #endregion
 
@@ -935,6 +997,20 @@ namespace SevenStrikeModules.XGraph
             if (parent is xAction_Composite c)
             {
                 c.childNodes.Remove(child.BaseArgs.guid);
+            }
+            #endregion
+
+            #region 特化处理 - Debug
+            if (parent is xAction_Debug d)
+            {
+                d.childNodes.Remove(child.BaseArgs.guid);
+            }
+            #endregion
+
+            #region 特化处理 - Relay
+            if (parent is xAction_Relay r)
+            {
+                r.childNodes.Remove(child.BaseArgs.guid);
             }
             #endregion
 

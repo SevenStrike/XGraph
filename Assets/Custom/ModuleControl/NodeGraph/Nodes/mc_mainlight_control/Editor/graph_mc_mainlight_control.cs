@@ -4,17 +4,18 @@ namespace SevenStrikeModules.XGraph
     using UnityEngine;
     using UnityEngine.UIElements;
 
-    public class graph_mc_end : xNode_End
+    public class graph_mc_mainlight_control : xNode_Composite
     {
-        action_mc_end mcend;
+        action_mc_mainlight_control mainlight_control;
 
         public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
         {
             base.Initialize(graphView, pos, data);
 
-            InputPort_Add(new xGraph_NodePort("激活所有模组", typeof(Variable_Bool), Port.Capacity.Single));// 加入变量端口（输入）
+            // 加入变量端口
+            InputPort_Add(new xGraph_NodePort("开关", typeof(Variable_Bool), Port.Capacity.Single));// 加入变量端口（输入）
 
-            mcend = end as action_mc_end;
+            mainlight_control = base.composite as action_mc_mainlight_control;
         }
 
         #region 节点绘制
@@ -32,8 +33,7 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            // 根据获取的目标端口的变量节点值来更新节点变量
-            mcend.Set_ModulesInitialized("激活所有模组");
+            mainlight_control.Set_LightEnabled("开关");
         }
         #endregion
 
@@ -47,39 +47,39 @@ namespace SevenStrikeModules.XGraph
             Foldout fold = base.ins_Folder_Extensions(root);
 
             #region  启动时所有模组的激活开关
-            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "激活所有模组", mcend.activateAllModules, new string[] { "field_bool" });
+            Toggle toggle = util_XGraphInspectorGUI.GUI_Field_Bool(fold, "开关", mainlight_control.lightEnable, new string[] { "field_bool" });
             toggle.RegisterValueChangedCallback((value) =>
             {
                 // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
-                if (isVariableBinded("激活所有模组"))
+                if (isVariableBinded("开关"))
                 {
-                    toggle.value = mcend.activateAllModules;
-                    mcend.Set_ModulesInitialized("激活所有模组");
+                    toggle.value = mainlight_control.lightEnable;
+                    mainlight_control.Set_LightEnabled("开关");
                 }
                 // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
                 else
                 {
-                    mcend.Set_ModulesInitialized(value.newValue);
+                    mainlight_control.Set_LightEnabled(value.newValue);
                 }
             });
             #endregion
 
             // 当节点绑定变量时，将变量值同步到控件值
-            end.On_Node_Variable_Binded += ((vare) =>
+            mainlight_control.On_Node_Variable_Binded += ((vare) =>
             {
-                toggle.value = mcend.activateAllModules;
+                toggle.value = mainlight_control.lightEnable;
             });
 
             // 克隆节点后刷新控件值为克隆后的最新值
-            end.On_Node_Duplicated += (clone, source) =>
+            mainlight_control.On_Node_Duplicated += (clone, source) =>
             {
                 // 克隆父物体的行为数据
-                action_mc_end s_clone = clone as action_mc_end;
+                action_mc_mainlight_control s_clone = clone as action_mc_mainlight_control;
                 // 克隆后的行为数据
-                action_mc_end s_source = source as action_mc_end;
-                s_clone.activateAllModules = s_source.activateAllModules;
+                action_mc_mainlight_control s_source = source as action_mc_mainlight_control;
+                s_clone.lightEnable = s_source.lightEnable;
 
-                toggle.value = mcend.activateAllModules;
+                toggle.value = mainlight_control.lightEnable;
             };
 
             return fold;

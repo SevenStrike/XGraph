@@ -28,6 +28,14 @@
                     "actionNodeType": "Relay",
                     "icon": "5b1a4c4fab62dfb4aaee07e7171a1251",
                     "visualNodeType": "xNode_Relay"
+                },
+                {
+                    "name": "调试",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "xAction_",
+                    "actionNodeType": "Debug",
+                    "icon": "27ad0086ea940654182c96ed2888eca4",
+                    "visualNodeType": "xNode_Debug"
                 }
             ]
         },

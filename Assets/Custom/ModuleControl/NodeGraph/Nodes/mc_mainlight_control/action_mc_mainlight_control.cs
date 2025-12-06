@@ -2,12 +2,12 @@ namespace SevenStrikeModules.XGraph
 {
     using UnityEngine;
 
-    public class action_mc_modules_activate : xAction_Composite
+    public class action_mc_mainlight_control : xAction_Composite
     {
         /// <summary>
-        /// 是否激活所有模组
+        /// 是否开启主灯
         /// </summary>
-        [SerializeField] public bool activateState;
+        [SerializeField] public bool lightEnable;
 
         /// <summary>
         /// 节点执行
@@ -18,36 +18,42 @@ namespace SevenStrikeModules.XGraph
 
             mc_GraphAsset asset = BaseArgs.RootAsset as mc_GraphAsset;
             if (asset != null)
-                asset.ModuleController.Modules_Active(activateState);
+            {
+                asset.ModuleController.MainLight_Control(lightEnable);
+            }
         }
 
         /// <summary>
-        /// 设置模块的激活状态
+        /// 设置灯光的开关状态
         /// </summary>
         /// <param name="portName"></param>
-        public void Set_ActivateModulesState(string portName)
+        public void Set_LightEnabled(string portName)
         {
-            PortValue_Set<bool>(portName, value => activateState = value);
+            PortValue_Set<bool>(portName, value => lightEnable = value);
         }
 
         /// <summary>
-        /// 设置模块的激活状态
+        /// 设置灯光的开关状态
         /// </summary>
         /// <param name="state"></param>
-        public void Set_ActivateModulesState(bool state)
+        public void Set_LightEnabled(bool state)
         {
-            activateState = state;
+            lightEnable = state;
         }
 
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
         public override xAction_Base Clone()
         {
             // 调用基类的Clone方法
-            action_mc_modules_activate clone = base.Clone() as action_mc_modules_activate;
+            action_mc_mainlight_control clone = base.Clone() as action_mc_mainlight_control;
 
             // 复制派生类特有的字段
             if (clone != null)
             {
-                clone.activateState = this.activateState;
+                clone.lightEnable = this.lightEnable;
             }
 
             return clone;

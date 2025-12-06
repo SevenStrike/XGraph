@@ -562,7 +562,15 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+                            //Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+
+                            // 父节点存在的变量端口
+                            Port port_parent = null;
+
+                            if (n_parent is xNode_Debug)
+                                port_parent = n_parent.GetPort(item.TargetPortName, xPortType.In);
+                            else
+                                port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
 
                             if (n_var != null && port_parent != null)
                             {

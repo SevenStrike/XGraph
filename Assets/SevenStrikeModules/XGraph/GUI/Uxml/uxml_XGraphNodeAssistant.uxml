@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/XGraphNodeAssistant.uss?fileID=7433441132597879392&amp;guid=01c085a3dfbcf0f4f9202e31f0615d64&amp;type=3#XGraphNodeAssistant" />
+    <Style src="project://database/Assets/SevenStrikeModules/XGraph/GUI/Uss/uss_XGraphNodeAssistant.uss?fileID=7433441132597879392&amp;guid=01c085a3dfbcf0f4f9202e31f0615d64&amp;type=3#uss_XGraphNodeAssistant" />
     <engine:VisualElement name="TitleContainer" style="flex-direction: row; padding-top: 15px; padding-right: 10px; padding-bottom: 15px; padding-left: 10px; width: 100%; overflow: hidden; flex-shrink: 0;">
         <engine:VisualElement name="con_title" style="overflow: hidden; flex-shrink: 0; width: 100%; flex-direction: row;">
             <engine:VisualElement name="icon" style="width: 20px; height: 20px; margin-right: 10px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/assistant.png?fileID=2800000&amp;guid=d1104a6bccf0baf46833f4a02ff3bd98&amp;type=3#assistant&quot;); flex-shrink: 0;" />
@@ -12,7 +12,6 @@
             <engine:TextField label="节点前缀" name="input_prefix" emoji-fallback-support="false" class="input_params" />
             <engine:TextField label="节点类名" name="input_name" emoji-fallback-support="false" class="input_params" />
             <engine:TextField label="行为类" enabled="false" name="pr_action" class="input_params" />
-            <engine:TextField label="行为编辑器" enabled="false" name="pr_editor" class="input_params" />
             <engine:TextField label="节点类" enabled="false" name="pr_graph" class="input_params" />
             <engine:DropdownField label="继承类型" name="drop_types" class="input_params" />
             <editor:ObjectField label="节点图标" name="obj_icon" class="input_params" />
@@ -43,13 +42,7 @@
                 <engine:VisualElement name="line" style="position: absolute; height: 60px; border-left-color: rgba(255, 255, 255, 0.24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 37px; top: 20px;" />
                 <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 8px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
             </engine:VisualElement>
-            <engine:VisualElement name="fd_editorName" style="flex-direction: row; margin-bottom: 10px; padding-left: 60px; overflow: visible;">
-                <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/c%23.png?fileID=2800000&amp;guid=d9ed12ad9a0b12146bcef08e0dc31646&amp;type=3#c#&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
-                <engine:Label text="&lt;b&gt;&lt;color=#FFBF23&gt;editor_&lt;/color&gt;&lt;/b&gt;mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
-                <engine:Label text="属性" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
-                <engine:VisualElement name="line" style="position: absolute; height: auto; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; left: 38px; top: 8px; width: 16px; border-top-color: rgba(255, 255, 255, 0.24); flex-shrink: 0;" />
-            </engine:VisualElement>
-            <engine:VisualElement name="fd_graphName" style="flex-direction: row; margin-bottom: 10px; padding-left: 60px; overflow: visible; margin-left: 0;">
+            <engine:VisualElement name="fd_graphName" style="flex-direction: row; margin-bottom: 10px; padding-left: 60px; overflow: visible;">
                 <engine:VisualElement name="icon" style="width: 15px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/c%23.png?fileID=2800000&amp;guid=d9ed12ad9a0b12146bcef08e0dc31646&amp;type=3#c#&quot;); margin-right: 10px; height: 15px; flex-shrink: 0;" />
                 <engine:Label text="&lt;b&gt;&lt;color=#FFBF23&gt;graph_&lt;/color&gt;&lt;/b&gt;mc_setRange" name="name" style="-unity-text-align: middle-left; flex-grow: 0; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden;" />
                 <engine:Label text="节点" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />

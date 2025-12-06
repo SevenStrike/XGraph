@@ -245,6 +245,18 @@ namespace SevenStrikeModules.XGraph
 
             return vare;
         }
+        public Variable Variable_Get(string portName)
+        {
+            // 按优先级查找变量：属性变量 → 黑板变量 → 内部变量
+            Variable variable = PropertysDatas_Get(portName) ?? VariableDatas_Get(portName) ?? InternalVariableDatas_Get(portName);
+
+            if (variable != null)
+            {
+                return variable;
+            }
+            else
+                return null;
+        }
         #endregion
 
         #region 变量操作

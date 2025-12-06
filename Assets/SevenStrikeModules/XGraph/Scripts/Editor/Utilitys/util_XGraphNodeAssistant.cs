@@ -20,7 +20,6 @@ namespace SevenStrikeModules.XGraph
         [SerializeField] private TextField pr_graph;
         [SerializeField] private Label fd_folderName;
         [SerializeField] private Label fd_actionName;
-        [SerializeField] private Label fd_editorName;
         [SerializeField] private Label fd_graphName;
         [SerializeField] private Button btn_save;
         [SerializeField] private ObjectField obj_icon;
@@ -64,7 +63,6 @@ namespace SevenStrikeModules.XGraph
             pr_graph = root.Q<TextField>("pr_graph");
             fd_folderName = root.Q<VisualElement>("fd_folderName")?.Q<Label>("name");
             fd_actionName = root.Q<VisualElement>("fd_actionName")?.Q<Label>("name");
-            fd_editorName = root.Q<VisualElement>("fd_editorName")?.Q<Label>("name");
             fd_graphName = root.Q<VisualElement>("fd_graphName")?.Q<Label>("name");
             btn_save = root.Q<Button>("btn_save");
             obj_icon = root.Q<ObjectField>("obj_icon");
@@ -87,7 +85,6 @@ namespace SevenStrikeModules.XGraph
             {
                 "起始",
                 "合成",
-                "等待",
                 "属性",
                 "结束"
             };
@@ -160,7 +157,6 @@ namespace SevenStrikeModules.XGraph
         private void Btn_save_clicked()
         {
             string scr_action = ScriptMaker_CreateContent_Action();
-            string scr_editor = ScriptMaker_CreateContent_Editor();
             string scr_graph = ScriptMaker_CreateContent_Graph();
 
             string path = ScriptMaker_SavePath();
@@ -175,7 +171,6 @@ namespace SevenStrikeModules.XGraph
                 Debug.Log(path_editor);
 
                 ScriptMaker_Create(path_root, $"action_{prefix}_{nodeName}", scr_action);
-                ScriptMaker_Create(path_editor, $"editor_{prefix}_{nodeName}", scr_editor);
                 ScriptMaker_Create(path_editor, $"graph_{prefix}_{nodeName}", scr_graph);
 
                 // 刷新资源数据库
@@ -187,6 +182,10 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 辅助
+        /// <summary>
+        /// 设置生成的扩展节点类型
+        /// </summary>
+        /// <param name="type"></param>
         private void setxtype(string type)
         {
             switch (type)
@@ -196,9 +195,6 @@ namespace SevenStrikeModules.XGraph
                     break;
                 case "合成":
                     xtype = "xAction_Composite";
-                    break;
-                case "等待":
-                    xtype = "xAction_Wait";
                     break;
                 case "属性":
                     xtype = "xAction_Property";
@@ -211,10 +207,12 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 数据刷新
+        /// <summary>
+        /// 根据输入的参数刷新控件显示内容
+        /// </summary>
         private void update_Data()
         {
             field_content_set(pr_action, $"action_{prefix}_{nodeName}");
-            field_content_set(pr_editor, $"editor_{prefix}_{nodeName}");
             field_content_set(pr_graph, $"graph_{prefix}_{nodeName}");
 
             update_StructContent();
@@ -223,9 +221,11 @@ namespace SevenStrikeModules.XGraph
 
             label_content_set(fd_folderName, $"{prefix}_{nodeName}");
             label_content_set(fd_actionName, $"<b><color=#FFBF23>action_</color></b>{prefix}_{nodeName}");
-            label_content_set(fd_editorName, $"<b><color=#FFBF23>editor_</color></b>{prefix}_{nodeName}");
             label_content_set(fd_graphName, $"<b><color=#FFBF23>graph_</color></b>{prefix}_{nodeName}");
         }
+        /// <summary>
+        /// 根据输入的参数刷新节点配置数据
+        /// </summary>
         private void update_StructContent()
         {
             string content = $"{{\r\n    \"name\": \"{(string.IsNullOrEmpty(nickName) ? nodeName : nickName)}\",\r\n    \"prefixNamespace\": \"SevenStrikeModules.XGraph\",\r\n    \"prefixClass\": \"action_{prefix}_\",\r\n    \"actionNodeType\": \"{nodeName}\",\r\n    \"icon\": \"{(obj_icon.value == null ? "0a4daa5b210366743a06c03f7d6ff078" : iconguid)}\",\r\n    \"visualNodeType\": \"graph_{prefix}_{nodeName}\"\r\n}}";
@@ -234,6 +234,11 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 控件控制
+        /// <summary>
+        /// 输入框控件输入内容
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="content"></param>
         private void field_content_set(TextField field, string content)
         {
             if (field != null)
@@ -241,7 +246,11 @@ namespace SevenStrikeModules.XGraph
                 field.value = content;
             }
         }
-
+        /// <summary>
+        /// 标签控件内容
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="content"></param>
         private void label_content_set(Label label, string content)
         {
             if (label != null)
@@ -252,6 +261,78 @@ namespace SevenStrikeModules.XGraph
         #endregion
 
         #region 生成扩展节点脚本结构
+        /// <summary>
+        /// 生成行为代码内容
+        /// </summary>
+        /// <returns></returns>
+        private string ScriptMaker_CreateContent_Action()
+        {
+            string content = "";
+
+            content = $@"namespace SevenStrikeModules.XGraph
+{{    {fragment_using_unityengine()}    
+    public class action_{prefix}_{nodeName} : {xtype}
+    {{
+        /// <summary>
+        /// 节点执行
+        /// </summary>
+        public override void Execute()
+        {{
+            base.Execute();
+        }}{fragment_PropertyNodeContent()}
+       
+        /// <summary>
+        /// 克隆该节点时确保改脚本独立变量正确克隆
+        /// </summary>
+        /// <returns></returns>
+        public override xAction_Base Clone()
+        {{
+            // 调用基类的Clone方法
+            action_{prefix}_{nodeName} clone = base.Clone() as action_{prefix}_{nodeName};
+
+            // 复制派生类特有的字段
+            if (clone != null)
+            {{
+                // 此处可以将原始数据赋值到克隆数据
+                // clone.property = this.property;
+            }}
+
+            return clone;
+        }}
+    }}
+}}";
+            return content;
+        }
+        /// <summary>
+        /// 生成节点代码内容
+        /// </summary>
+        /// <returns></returns>
+        private string ScriptMaker_CreateContent_Graph()
+        {
+            string content = "";
+
+            content = $@"namespace SevenStrikeModules.XGraph
+{{
+{fragment_using_UnityEditor_Experimental_GraphView()}    using UnityEngine;{fragment_using_UnityEngine_UIElements()}
+
+    public class graph_{prefix}_{nodeName} : xNode_{xtype.Split('_')[1]}
+    {{
+        action_{prefix}_{nodeName} {nodeName};
+
+        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
+        {{
+            base.Initialize(graphView, pos, data);
+
+            {nodeName} = base.{xtype.Split('_')[1].ToLower()} as action_{prefix}_{nodeName};
+        }}{fragment_NodeDraw()}{fragment_Callbacks()}{fragment_OverrideInspectorGUI()}
+    }}
+}}";
+            return content;
+        }
+        /// <summary>
+        /// 选择保存路径
+        /// </summary>
+        /// <returns></returns>
         private string ScriptMaker_SavePath()
         {
             // 打开文件夹选择对话框，从Assets目录开始
@@ -273,6 +354,12 @@ namespace SevenStrikeModules.XGraph
 
             return null;
         }
+        /// <summary>
+        /// 创建代码文件
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <param name="ScriptName"></param>
+        /// <param name="ScriptContent"></param>
         private void ScriptMaker_Create(string folderPath, string ScriptName, string ScriptContent)
         {
             string scriptPath = Path.Combine(folderPath, ScriptName + ".cs");
@@ -280,95 +367,10 @@ namespace SevenStrikeModules.XGraph
             // 创建脚本文件
             File.WriteAllText(scriptPath, ScriptContent);
         }
-        private string CreatePortContent()
-        {
-            string content = "";
-            if (xtype == "xAction_Property")
-            {
-                content = @$"  #region 端口设置
-                List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-                // 加入行为端口
-                port_out.Add(new xGraph_NodePort(""属性"", typeof(Variable_Float), Port.Capacity.Multi));
-                OutputPort_Set(port_out);
-                #endregion";
-            }
-            else
-            {
-                if (xtype == "xAction_Start")
-                {
-                    content = @$" #region 端口设置
-                    List<xGraph_NodePort> ports_out = new List<xGraph_NodePort>();
-                    // 加入行为端口
-                    ports_out.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Multi));
-                    OutputPort_Set(ports_out);
-                    #endregion";
-                }
-                else if (xtype == "xAction_Composite" || xtype == "xAction_Wait")
-                {
-                    content = @$"   #region 端口设置
-                    List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
-                    // 加入行为端口
-                    port_in.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Single));
-                    InputPort_Set(port_in);
-                    
-                    List<xGraph_NodePort> port_out = new List<xGraph_NodePort>();
-                    // 加入行为端口
-                    port_out.Add(new xGraph_NodePort("""", typeof(xAction_Base), Port.Capacity.Multi));
-                    OutputPort_Set(port_out);
-                    #endregion";
-                }
-                else if (xtype == "xAction_End")
-                {
-                    content = @$"  #region 端口设置
-                    List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
-                    // 加入行为端口
-                    port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));
-                    InputPort_Set(port_in);
-                    #endregion";
-                }
-            }
-            return content;
-        }
-        private string CreateStartNodePortOffset()
-        {
-            string content = "";
+        #endregion
 
-            if (xtype == "xAction_Start")
-            {
-                content = @$"
-
-                        // 因为开始节点没有行为输入端，为了让首个输入端口视觉上不会和分割线重叠所以需要矫正偏移
-                        inputContainer.style.paddingTop = 25;";
-            }
-            return content;
-        }
-        private string CreateNodeOutputDraw()
-        {
-            string content = "";
-
-            if (xtype != "xAction_End")
-            {
-                content = @$"
-
-                        // 绘制输出节点容器
-                        Draw_Output();";
-            }
-            return content;
-        }
-        private string CreateNodeInputDraw()
-        {
-            string content = "";
-
-            if (xtype != "xAction_Property")
-            {
-                content = @$"
-
-                        // 绘制输入节点容器
-                        Draw_Input();";
-            }
-            return content;
-        }
-        private string CreateNodeDraw()
+        #region Fragment 代码片段
+        private string fragment_NodeDraw()
         {
             string content = "";
 
@@ -376,32 +378,16 @@ namespace SevenStrikeModules.XGraph
             {
                 content = $@"
 
-
-    #region 节点绘制
+        #region 节点绘制
         public override xNode_Base Draw()
         {{
-            // 绘制主容器
-            Draw_Main();
-
-            // 绘制标题容器
-            Draw_Title();
-
-            // 绘制标题按钮容器
-            Draw_TitleButton();
-
-            // 绘制顶部容器
-            Draw_Top();{CreateNodeInputDraw()}{CreateNodeOutputDraw()}                        
-
-            // 绘制扩展容器
-            Draw_Extension();{CreateStartNodePortOffset()}
-
-            return this;
+            return base.Draw();
         }}
         #endregion";
             }
             return content;
         }
-        private string CreatePropertyNodeAction()
+        private string fragment_PropertyNodeContent()
         {
             if (xtype != "xAction_Property")
                 return null;
@@ -409,19 +395,12 @@ namespace SevenStrikeModules.XGraph
             string content = "";
             content = $@"
 
-
         /// <summary>
         /// 初始化属性变量列表
         /// </summary>
         public override void Propertys_Initialize()
         {{
             base.Propertys_Initialize();
-
-            #region 属性
-            Variable vare_property = new Variable_Float(""属性"");
-            vare_property.description = ""实时获取到的 - 属性"";
-            Propertys_Add(vare_property);
-            #endregion
         }}
 
         /// <summary>
@@ -434,106 +413,15 @@ namespace SevenStrikeModules.XGraph
 
             return content;
         }
-        private string ScriptMaker_CreateContent_Action()
+        private string fragment_Callbacks()
         {
+            if (xtype == "xAction_Property")
+                return null;
+
             string content = "";
+            content = $@"
 
-            content = $@"namespace SevenStrikeModules.XGraph
-{{
-    using UnityEngine;
-
-    public class action_{prefix}_{nodeName} : {xtype}
-    {{
-        /// <summary>
-        /// 节点执行
-        /// </summary>
-        public override void Execute()
-        {{
-            base.Execute();
-        }}{CreatePropertyNodeAction()}
-    }}
-}}";
-            return content;
-        }
-        private string ScriptMaker_CreateContent_Editor()
-        {
-            string content = "";
-
-            content = $@"namespace SevenStrikeModules.XGraph
-{{
-    using UnityEditor;
-    using UnityEngine.UIElements;
-
-    [CustomEditor(typeof(action_{prefix}_{nodeName}))]
-    public class editor_{prefix}_{nodeName} : editor_{xtype}
-    {{
-        /// <summary>
-        /// 目标对象
-        /// </summary>
-        private action_{prefix}_{nodeName} {nodeName};
-
-        public override void OnEnable()
-        {{
-            base.OnEnable();
-        }}
-        /// <summary>
-        /// 获取脚本
-        /// </summary>
-        public override void GetTargetScript()
-        {{
-            base.GetTargetScript();
-
-            {nodeName} = target as action_{prefix}_{nodeName};
-        }}
-        /// <summary>
-        /// 获取序列化属性
-        /// </summary>
-        public override void GetProperties()
-        {{
-            base.GetProperties();
-        }}
-
-        //------------------------------------------------------
-
-        /// <summary>
-        /// 自定义组件折叠容器
-        /// </summary>
-        /// <param name=""root""></param>
-        public override Foldout Folder_Extensions(VisualElement root)
-        {{
-            Foldout fold = base.Folder_Extensions(root);
-
-            return fold;
-        }}
-    }}
-}}";
-            return content;
-        }
-        private string ScriptMaker_CreateContent_Graph()
-        {
-            string content = "";
-
-            content = $@"namespace SevenStrikeModules.XGraph
-{{
-    using System.Collections.Generic;
-    using UnityEditor.Experimental.GraphView;
-    using UnityEngine;
-    using UnityEngine.UIElements;
-
-    public class graph_{prefix}_{nodeName} : {(xtype != "xAction_Property" ? "xNode_Base" : "xNode_Property")}
-    {{
-        action_{prefix}_{nodeName} {nodeName};
-
-        public override void Initialize(xg_GraphView graphView, Vector2 pos = default, xAction_Base data = null)
-        {{
-            base.Initialize(graphView, pos, data);
-
-            {CreatePortContent()}     
-
-            {nodeName} = ActionData as action_{prefix}_{nodeName};
-        }}{CreateNodeDraw()}
-
-        #region 重写
+        #region 重写 - 回调
         /// <summary>
         /// 黑板变量数值变化时的回调
         /// </summary>
@@ -541,158 +429,64 @@ namespace SevenStrikeModules.XGraph
         {{
             base.On_VariablesValue_Changed();
         }}
-        /// <summary>
-        /// 当克隆节点时
-        /// </summary>
-        /// <param name=""list""></param>
-        public override void On_Nodes_Duplicated(List<DuplicateNodeData> list)
-        {{
-            base.On_Nodes_Duplicated(list);
-        }}
-        /// <summary>
-        /// 当节点重建时
-        /// </summary>
-        public override void On_Node_Restructure()
-        {{
-            base.On_Node_Restructure();
-        }}
-        /// <summary>
-        /// 当节点连线时
-        /// </summary>
-        /// <param name=""edge""></param>
-        public override void On_Node_CreateEdge(Edge edge)
-        {{
-            base.On_Node_CreateEdge(edge);
-        }}
-        /// <summary>
-        /// 当节点移除连线时
-        /// </summary>
-        /// <param name=""edge""></param>
-        public override void On_Node_RemovedEdge(Edge edge)
-        {{
-            base.On_Node_RemovedEdge(edge);
-        }}
-        /// <summary>
-        /// 当节点头像改变时
-        /// </summary>
-        /// <param name=""tex""></param>
-        public override void On_Node_AvatarChanged(Texture2D tex)
-        {{
-            base.On_Node_AvatarChanged(tex);
-        }}
-        /// <summary>
-        /// 当节点执行模式改变时
-        /// </summary>
-        /// <param name=""state""></param>
-        public override void On_Node_ConcurrentChanged(bool state)
-        {{
-            base.On_Node_ConcurrentChanged(state);
-        }}
-        /// <summary>
-        /// 当改变节点图标时
-        /// </summary>
-        /// <param name=""tex""></param>
-        public override void On_Node_IconChanged(Texture2D tex)
-        {{
-            base.On_Node_IconChanged(tex);
-        }}
-        /// <summary>
-        /// 当改变节点颜色主题时
-        /// </summary>
-        public override void On_Node_ThemeColorChanged()
-        {{
-            base.On_Node_ThemeColorChanged();
-        }}
-        /// <summary>
-        /// 当改变节点通透模式时
-        /// </summary>
-        /// <param name=""state""></param>
-        public override void On_Node_TransparentChanged(bool state)
-        {{
-            base.On_Node_TransparentChanged(state);
-        }}
-        /// <summary>
-        /// 当改变节点尺寸时
-        /// </summary>
-        /// <param name=""evt""></param>
-        public override void OnSizeChanged(GeometryChangedEvent evt)
-        {{
-            base.OnSizeChanged(evt);
-        }}
-        /// <summary>
-        /// 当选中节点时
-        /// </summary>
-        public override void OnSelected()
-        {{
-            base.OnSelected();
-        }}
-        /// <summary>
-        /// 当取消选中节点时
-        /// </summary>
-        public override void OnUnselected()
-        {{
-            base.OnUnselected();
-        }}
-        #endregion
-    }}
-}}";
+        #endregion";
+
             return content;
         }
-        #endregion      
+        private string fragment_OverrideInspectorGUI()
+        {
+            if (xtype == "xAction_Property")
+                return null;
 
-        /// <summary>
-        /// 确保所有控件都已经初始化
-        /// </summary>
-        private void ControlsInitialized()
-        {
-            if (rootVisualElement == null) return;
+            string content = "";
+            content = $@"
 
-            // 重新获取控件引用
-            input_prefix = rootVisualElement.Q<TextField>("input_prefix");
-            input_name = rootVisualElement.Q<TextField>("input_name");
-            input_nickname = rootVisualElement.Q<TextField>("input_nickname");
-            contentField = rootVisualElement.Q<TextField>("contentField");
-            pr_action = rootVisualElement.Q<TextField>("pr_action");
-            pr_editor = rootVisualElement.Q<TextField>("pr_editor");
-            pr_graph = rootVisualElement.Q<TextField>("pr_graph");
-            fd_folderName = rootVisualElement.Q<VisualElement>("fd_folderName")?.Q<Label>("name");
-            fd_actionName = rootVisualElement.Q<VisualElement>("fd_actionName")?.Q<Label>("name");
-            fd_editorName = rootVisualElement.Q<VisualElement>("fd_editorName")?.Q<Label>("name");
-            fd_graphName = rootVisualElement.Q<VisualElement>("fd_graphName")?.Q<Label>("name");
-            obj_icon = rootVisualElement.Q<ObjectField>("obj_icon");
-            node_icon = rootVisualElement.Q<VisualElement>("node_icon");
-            node_nickname = rootVisualElement.Q<Label>("node_nickname");
-            drop_types = rootVisualElement.Q<DropdownField>("drop_types");
-        }
+        #region 重写 - 绘制Inspector
         /// <summary>
-        /// 安全地更新数据，避免空引用
+        /// 自定义组件折叠容器
         /// </summary>
-        private void SafeUpdateData()
-        {
-            try
-            {
-                update_Data();
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"更新数据时发生错误: {e.Message}");
-            }
+        /// <param name=""root""></param>
+        public override Foldout ins_Folder_Extensions(VisualElement root)
+        {{
+            Foldout fold = base.ins_Folder_Extensions(root);
+            return fold;
+        }}
+        #endregion";
+
+            return content;
         }
-        /// <summary>
-        /// 根据xtype获取对应的下拉框显示值
-        /// </summary>
-        private string GetDropdownValueFromXType(string xType)
+        private string fragment_using_unityengine()
         {
-            switch (xType)
-            {
-                case "xAction_Start": return "起始";
-                case "xAction_Composite": return "合成";
-                case "xAction_Wait": return "等待";
-                case "xAction_Property": return "属性";
-                case "xAction_End": return "结束";
-                default: return "起始";
-            }
+            if (xtype == "xAction_Property")
+                return null;
+
+            string content = "";
+            content = $@"
+    using UnityEngine;
+";
+            return content;
         }
+        private string fragment_using_UnityEditor_Experimental_GraphView()
+        {
+            if (xtype == "xAction_Property")
+                return null;
+
+            string content = "";
+            content = $@"    using UnityEditor.Experimental.GraphView;
+";
+            return content;
+        }
+        private string fragment_using_UnityEngine_UIElements()
+        {
+            if (xtype == "xAction_Property")
+                return null;
+
+            string content = "";
+            content = $@"
+    using UnityEngine.UIElements;";
+            return content;
+        }
+        #endregion
 
         #region 数据持久化
         private void SavePrefsData_String(string key, string data)

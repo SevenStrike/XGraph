@@ -11726,6 +11726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f40178970aa68b46941b1e2702fa551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 961739752}
   ModulesRoot: {fileID: 2093927247}
   ModulesEffective: []
   sp_MainLight:

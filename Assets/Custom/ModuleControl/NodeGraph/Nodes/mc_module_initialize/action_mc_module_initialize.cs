@@ -18,7 +18,6 @@ namespace SevenStrikeModules.XGraph
                 asset.ModuleController.Modules_Active(activateAllModules, true);
         }
 
-        #region 赋值
         /// <summary>
         /// 从目标端口的变量值来设置启动时显示所有模组变量值
         /// </summary>
@@ -36,9 +35,7 @@ namespace SevenStrikeModules.XGraph
         {
             activateAllModules = state;
         }
-        #endregion
 
-        #region 克隆
         /// <summary>
         /// 克隆该节点时确保改脚本独立变量正确克隆
         /// </summary>
@@ -56,6 +53,5 @@ namespace SevenStrikeModules.XGraph
 
             return clone;
         }
-        #endregion
     }
 }

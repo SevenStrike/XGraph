@@ -10,7 +10,7 @@ namespace SevenStrikeModules.XGraph
         [SerializeField] public Light Light;
 
         /// <summary>
-        /// 行为节点执行方法
+        /// 节点执行
         /// </summary>
         public override void Execute()
         {

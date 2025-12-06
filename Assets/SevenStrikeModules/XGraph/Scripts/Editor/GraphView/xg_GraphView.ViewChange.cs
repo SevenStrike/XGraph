@@ -418,8 +418,17 @@ namespace SevenStrikeModules.XGraph
                     string portName = edge.input.portName;
                     // 获取变量节点的变量类型
                     Type type = node_var_internal.VariableData.variable.GetType();
+
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetPort(type, portName, xPortType.In);
+                    //Port port = node_child.GetPort(type, portName, xPortType.In);
+
+                    // 拿到行为节点上的对应的变量类型的端口
+                    Port port = null;
+                    if (node_child is xNode_Debug)
+                        port = node_child.GetPort(portName, xPortType.In);
+                    else
+                        port = node_child.GetPort(type, portName, xPortType.In);
+
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 

@@ -20,7 +20,6 @@
         </engine:VisualElement>
         <engine:VisualElement name="footer" style="bottom: 0; flex-grow: 1; height: 55px; flex-direction: row; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; background-color: rgb(56, 56, 56); flex-shrink: 0;">
             <engine:Button text="保存更改" name="btn_save" style="margin-bottom: 0; height: 35px; margin-top: 0; margin-right: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 13px; -unity-font-style: bold; letter-spacing: 5px; flex-grow: 1; padding-right: 0; flex-shrink: 1;" />
-            <engine:Button text="修复&amp;清理" name="btn_fixed" style="margin-bottom: 0; height: 35px; margin-top: 0; margin-right: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); font-size: 13px; -unity-font-style: bold; letter-spacing: 5px; flex-grow: 0.3; padding-left: 0; flex-shrink: 1; width: auto;" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

@@ -13,6 +13,7 @@ public class SmoothParams
 
 public class ModuleController : MonoBehaviour
 {
+    [SerializeField] public Camera cam;
     [SerializeField] public Transform ModulesRoot;
     [SerializeField] public ModuleEffective[] ModulesEffective;
 

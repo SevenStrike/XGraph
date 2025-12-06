@@ -52,6 +52,22 @@
                     "actionNodeType": "property_mainlight",
                     "icon": "aebbed90eb11e364fbf2831156f5e6e9",
                     "visualNodeType": "graph_mc_property_mainlight"
+                },
+                {
+                    "name": "相机Transform数据",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "action_mc_",
+                    "actionNodeType": "camera_transformData",
+                    "icon": "4afe7a195f8f6fa48b7b680fd8f4f5e4",
+                    "visualNodeType": "graph_mc_camera_transformData"
+                },
+                {
+                    "name": "雾效控制",
+                    "prefixNamespace": "SevenStrikeModules.XGraph",
+                    "prefixClass": "action_mc_",
+                    "actionNodeType": "fog_control",
+                    "icon": "5133c1bc58ab71e47b89b44b8e9a4c4b",
+                    "visualNodeType": "graph_mc_fog_control"
                 }
             ]
         }
