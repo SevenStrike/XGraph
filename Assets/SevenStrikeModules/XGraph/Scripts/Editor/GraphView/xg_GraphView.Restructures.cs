@@ -174,19 +174,19 @@ namespace SevenStrikeModules.XGraph
                     {
                         if (port.Name == "开")
                         {
-                            if (branch_node.childNode_true != null)
+                            xNode_Base n_true = FindNodeView(branch_node.childNode_true);
+                            if (n_true != null)
                             {
-                                xNode_Base n_true = FindNodeView(branch_node.childNode_true);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_true.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
                         }
-                        else if (port.Name == "关")
+                        if (port.Name == "关")
                         {
-                            if (branch_node.childNode_false != null)
+                            xNode_Base n_false = FindNodeView(branch_node.childNode_false);
+                            if (n_false != null)
                             {
-                                xNode_Base n_false = FindNodeView(branch_node.childNode_false);
                                 util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_false.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);

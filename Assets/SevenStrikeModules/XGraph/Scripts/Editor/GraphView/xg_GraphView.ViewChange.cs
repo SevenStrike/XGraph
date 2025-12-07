@@ -4,6 +4,7 @@ namespace SevenStrikeModules.XGraph
     using System.Linq;
     using UnityEditor;
     using UnityEditor.Experimental.GraphView;
+    using UnityEngine;
 
     public partial class xg_GraphView
     {
@@ -105,6 +106,7 @@ namespace SevenStrikeModules.XGraph
                         AddElement(animatedEdge);
                     }
 
+                    Undo.RecordObject(ActionTreeAsset, "Add ChildNode");
                     // 将 "n_child" 放到 "n_parent" 的child成员变量中，这样就可以让父级数据节点知道自己和哪个子级数据节点相连接
                     ActionTreeAsset.ChildNode_Add(node_parent.ActionData, node_child.ActionData);
                 }
@@ -145,8 +147,11 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
+                Undo.RecordObject(ActionTreeAsset, "Add BranchChildNode");
                 // 将 "n_child" 放到 "n_parent" 的相对应True和False的child成员变量中
                 ActionTreeAsset.ChildNode_Add(node_branch.ActionData, node_child.ActionData, edge?.output.portName);
+
+                Debug.Log($"{node_branch.branch.childNode_true}  / {node_branch.branch.childNode_false}");
             }
             #endregion
 
@@ -379,6 +384,7 @@ namespace SevenStrikeModules.XGraph
                     // 确保子节点类型不是  VNode_Variable_Internal 类型同时还保证是 ActionNodeBase 类型
                     if (!(node_child is xNode_Variable_Internal) && edge.input.portType == typeof(xAction_Base))
                     {
+                        Undo.RecordObject(ActionTreeAsset, "Remove ChildNode");
                         // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
                         ActionTreeAsset.ChildNode_Remove(node_parent.ActionData, node_child.ActionData);
                     }
@@ -420,9 +426,6 @@ namespace SevenStrikeModules.XGraph
                     Type type = node_var_internal.VariableData.variable.GetType();
 
                     // 拿到行为节点上的对应的变量类型的端口
-                    //Port port = node_child.GetPort(type, portName, xPortType.In);
-
-                    // 拿到行为节点上的对应的变量类型的端口
                     Port port = null;
                     if (node_child is xNode_Debug)
                         port = node_child.GetPort(portName, xPortType.In);
@@ -441,6 +444,7 @@ namespace SevenStrikeModules.XGraph
                 xNode_Branch node_branch = node_parent as xNode_Branch;
                 if (node_branch != null && node_child != null)
                 {
+                    Undo.RecordObject(ActionTreeAsset, "Remove ChildNode");
                     // 将 "n_child" 从 "n_parent" 的 "port" 数据节点变量中移除
                     ActionTreeAsset.ChildNode_Remove(node_parent.ActionData, node_child.ActionData, edge.output.portName);
                 }
@@ -582,14 +586,13 @@ namespace SevenStrikeModules.XGraph
         /// <param name="element"></param>
         private void Removed_Node(GraphElement element)
         {
-            #region 延展节点
             xNode_Base nodeview = element as xNode_Base;
             if (nodeview != null)
             {
+                Undo.RecordObject(ActionTreeAsset, "Remove ActionNode");
                 // 从根节点中移除数据节点
                 ActionTreeAsset.Remove(nodeview.ActionData);
             }
-            #endregion          
         }
         #endregion
     }

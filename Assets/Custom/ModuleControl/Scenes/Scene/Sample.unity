@@ -11756,7 +11756,6 @@ MonoBehaviour:
   SampleAsset: {fileID: 11400000, guid: a5e25493adf33e74a8aef658a368ae97, type: 2}
   TargetScript: {fileID: 1444357495}
   ManualExecutionMode: 0
-  Logs: 0
 --- !u!114 &1444357498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11776,7 +11775,6 @@ MonoBehaviour:
   key_ActionResume: 114
   key_ActionManualStep: 32
   key_RunnerMode: 109
-  Logs: 0
 --- !u!1 &1471331477
 GameObject:
   m_ObjectHideFlags: 0

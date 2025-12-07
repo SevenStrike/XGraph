@@ -2,6 +2,7 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
+    using UnityEditor;
     using UnityEngine;
 
     public class xAction_Asset : ScriptableObject
@@ -497,12 +498,14 @@ namespace SevenStrikeModules.XGraph
             {
                 Labels.Add(label.Clone(false));
             }
+#if UNITY_EDITOR
             // 用 targetAsset 中的 Groups 覆盖当前 Groups 数据列表
             Groups = new List<xGroupData>();
             foreach (var group in target.Groups)
             {
                 Groups.Add(group.Clone(false));
             }
+#endif
             // 用 targetAsset 中的 Variables 覆盖当前 Variables 数据列表
             Variables = new List<xVariableData>();
             foreach (var vare in target.Variables)

@@ -841,6 +841,7 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Action args)
         {
+            Undo.RecordObject(ActionTreeAsset, "Create ActionNode");
             // 创建新的节点并指定资源数据项
             xNode_Base visualNode = Node_MakeAction(args.position, ActionTreeAsset.Create(args));
 
@@ -859,7 +860,6 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Stick args)
         {
-            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
             Undo.RecordObject(ActionTreeAsset, "Create StickNode");
             // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
             xStickData stickdata = new xStickData(args.stickName, args.stickContent, GUID.Generate().ToString(), args.position, args.size);
@@ -882,7 +882,6 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Label args)
         {
-            // 便签节点创建，便签类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Sticks 变量中
             Undo.RecordObject(ActionTreeAsset, "Create LabelNode");
             // 新建行为树便签内容加入到行为树根资源的 Sticks 变量中
             xLabelData labeldata = new xLabelData(args.content, GUID.Generate().ToString(), args.position, args.size, args.color, args.font, args.opacity, args.fontSize, args.bold, args.italic);
@@ -905,7 +904,6 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Decal args)
         {
-            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Decals 变量中
             Undo.RecordObject(ActionTreeAsset, "Create DecalNode");
             // 新建行为树贴图内容加入到行为树根资源的 Decals 变量中
             xDecalData decaldata = new xDecalData(GUID.Generate().ToString(), args.position, args.size, args.scale, args.color, args.opacity, args.hasTexture, args.decalTexture);
@@ -928,7 +926,6 @@ namespace SevenStrikeModules.XGraph
         /// <returns></returns>
         public Node CreateNode(NodeCreateArgs_Variable args)
         {
-            // 贴图节点创建，贴图类是不需要加入行为树根资源中的，而是加入到行为树根资源的 Variables 变量中
             Undo.RecordObject(ActionTreeAsset, "Create VariablelNode");
             // 新建行为树贴图内容加入到行为树根资源的 Variables 变量中
             xVariableData vardata = new xVariableData(args.name, args.description, args.type, GUID.Generate().ToString(), args.position, args.size, args.varguid, args.variable, args.transparentNode);

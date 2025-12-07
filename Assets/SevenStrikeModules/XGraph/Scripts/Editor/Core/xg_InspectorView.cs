@@ -171,7 +171,7 @@ namespace SevenStrikeModules.XGraph
             VisualElement assetgui = new VisualElement();
 
             #region 标题
-            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(assetgui, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/Icon.png"), target.name.Substring(0, target.name.Length - 10), new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
+            VisualElement titlegroup = util_XGraphInspectorGUI.GUI_Title(assetgui, util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/Icon.png"), target.name, new string[] { "titlegroup" }, new string[] { "titleicon" }, new string[] { "titlename" });
             #endregion
 
             #region 标题附加 - 变量类型标签
