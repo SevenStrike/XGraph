@@ -1,7 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
 
+    [Serializable]
     public class WindowThemeParams
     {
         public string solution;
@@ -16,6 +18,7 @@ namespace SevenStrikeModules.XGraph
         public int val_thicklines;
     }
 
+    [Serializable]
     public class WindowThemeList
     {
         public List<WindowThemeParams> Themes = new List<WindowThemeParams>();

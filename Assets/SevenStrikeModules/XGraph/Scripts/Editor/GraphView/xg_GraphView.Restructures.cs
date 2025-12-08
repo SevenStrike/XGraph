@@ -113,6 +113,9 @@ namespace SevenStrikeModules.XGraph
 
             #endregion
 
+            // 获取并添加快照记录
+            gv_GraphWindow.AddCaptureMenus();
+
             gv_GraphWindow.NodeEditorIsReady = true;
         }
 

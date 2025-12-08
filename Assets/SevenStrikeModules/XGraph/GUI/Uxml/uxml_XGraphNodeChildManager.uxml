@@ -15,7 +15,6 @@
                 <engine:Label text="-" name="title" style="-unity-text-align: middle-left; flex-grow: 1; padding-left: 5px; text-overflow: ellipsis; overflow: hidden; flex-shrink: 1; font-size: 15px; -unity-font-style: bold;" />
                 <engine:Label text="行为资源" name="type" style="-unity-text-align: middle-right; flex-grow: 1; padding-left: 5px; flex-shrink: 1; text-overflow: ellipsis; overflow: hidden; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);" />
             </engine:VisualElement>
-            <engine:ScrollView name="Childs_Scrollview" style="padding-top: 15px; padding-bottom: 25px; background-color: rgba(255, 0, 0, 0); display: none;" />
             <engine:ListView name="Childs" />
         </engine:VisualElement>
         <engine:VisualElement name="footer" style="bottom: 0; flex-grow: 1; height: 55px; flex-direction: row; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; background-color: rgb(56, 56, 56); flex-shrink: 0;">

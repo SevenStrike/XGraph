@@ -3,7 +3,8 @@
     <editor:Toolbar style="border-bottom-color: rgb(23, 23, 23); bottom: 0.3px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);">
         <engine:VisualElement name="graphIcon" style="width: 54px; background-size: 15px 80%; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/GraphIcon/main.png?fileID=2800000&amp;guid=a0d13690d099b414eac0c3806f221eff&amp;type=3#main&quot;); -unity-background-image-tint-color: rgb(255, 255, 255);" />
         <engine:Label text="Graph Name" name="graphTitle" style="width: 130px; -unity-text-align: middle-center; -unity-font-style: bold; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; margin-left: 10px; padding-left: 5px; padding-right: 5px;" />
-        <editor:ToolbarButton name="btn_Reload" tabindex="1" tooltip="保存当前设计节点" class="ToolbarButon" style="padding-top: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/reload.png?fileID=2800000&amp;guid=52aa1585562a36448b7b4d9f320601ab&amp;type=3#reload&quot;); background-size: 13px 13px; width: 50px;" />
+        <editor:ToolbarButton name="btn_Capture" tabindex="1" tooltip="建立当前设计节点的快照" class="ToolbarButon" style="padding-top: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/graphcapture.png?fileID=2800000&amp;guid=755bb53fdfb49d14ca983cc8a4d09ed4&amp;type=3#graphcapture&quot;); background-size: 13px 13px; width: 50px;" />
+        <editor:ToolbarButton name="btn_Reload" tabindex="1" tooltip="重载当前设计节点" class="ToolbarButon" style="padding-top: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/reload.png?fileID=2800000&amp;guid=52aa1585562a36448b7b4d9f320601ab&amp;type=3#reload&quot;); background-size: 13px 13px; width: 50px;" />
         <editor:ToolbarButton name="btn_Save" tabindex="1" tooltip="保存当前设计节点" class="ToolbarButon" style="padding-top: 0; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Save.png?fileID=2800000&amp;guid=924fbd6f9fa34f2489f8fc3920db0ee6&amp;type=3#Save&quot;); background-size: 13px 13px; width: 50px;" />
         <editor:ToolbarButton name="btn_Load" tabindex="2" tooltip="打开目标设计节点" class="ToolbarButon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/Load.png?fileID=2800000&amp;guid=cebed0bdc5a35814fa0aafe9ce91a72a&amp;type=3#Load&quot;); background-size: 14px 15px; width: 50px;" />
         <editor:ToolbarToggle name="toggle_BlackBoardViewDisplay" class="ToolbarButon" style="width: 50px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/BlackBoard.png?fileID=2800000&amp;guid=609bb224480d0214d81da2f3ec9ea80f&amp;type=3#BlackBoard&quot;); background-size: 17px 17px;" />
@@ -24,6 +25,7 @@
             <engine:Label name="graph_nodeinfo_footer" picking-mode="Ignore" style="height: 21px; padding-left: 0; font-size: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; padding-right: 20px; width: 45%; -unity-text-align: middle-right; color: rgba(132, 132, 132, 0.62); top: auto; padding-top: 0; padding-bottom: 0; bottom: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); overflow: hidden; flex-direction: column; position: absolute; right: 10px; text-overflow: ellipsis;" />
         </SevenStrikeModules.XGraph.xg_GraphView>
         <engine:Label text="ActionFree" name="graphintro_MarkText" enabled="true" picking-mode="Ignore" class="MarkText" style="margin-bottom: 0; bottom: 15px; -unity-text-align: lower-left;" />
+        <engine:VisualElement name="captureshot" picking-mode="Ignore" class="captureshot" style="position: absolute; width: 100%; height: 100%; background-color: rgb(255, 255, 255);" />
         <SevenStrikeModules.XGraph.xg_ResizableElement name="InspectorView_Container" style="width: 299px; height: 426px; top: 10px; left: 662px; background-color: rgb(56, 56, 56); border-top-width: 0.5px; border-right-width: 0.5px; border-bottom-width: 0.5px; border-left-width: 0.5px; border-left-color: rgba(121, 121, 121, 0.47); border-right-color: rgba(121, 121, 121, 0.47); border-top-color: rgba(121, 121, 121, 0.47); border-bottom-color: rgba(121, 121, 121, 0.47); border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 0; margin-bottom: 0; margin-left: 0; margin-right: 0;">
             <engine:Label text="Inspector 属性视图" name="InspectorView_Container_Title" class="InspectorView_Container_Title" />
             <engine:ScrollView horizontal-scroller-visibility="Hidden" focusable="true" style="width: 100%; height: 100%; padding-left: 0; padding-right: 0; padding-bottom: 8px;">
@@ -72,6 +74,36 @@
             <engine:VisualElement name="dateicon" style="flex-shrink: 0; width: 12px; height: 12px; align-self: center; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/time.png?fileID=2800000&amp;guid=abc0ee4ce20e5b742899acc0548290d1&amp;type=3#time&quot;); -unity-background-image-tint-color: rgba(255, 255, 255, 0.8); margin-left: 10px;" />
             <engine:Label text="2025/12/31  -  23:40" name="lastsavedatetime" style="flex-grow: 0; -unity-text-align: middle-left; padding-left: 0; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); color: rgba(255, 255, 255, 0.52); width: auto; flex-shrink: 0; padding-right: 0; overflow: hidden; text-overflow: ellipsis; margin-left: 20px; font-size: 12px; margin-right: 10px; letter-spacing: 3px;" />
             <engine:Label text="360小时前" name="lastsavelag" style="flex-grow: 0; -unity-text-align: middle-center; padding-left: 18px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); color: rgba(255, 255, 255, 0.52); width: auto; flex-shrink: 0; padding-right: 0; overflow: hidden; text-overflow: ellipsis; margin-left: 10px; font-size: 12px; border-left-color: rgba(121, 121, 121, 0.24); border-left-width: 1px; letter-spacing: 5px; margin-right: 15px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="CaptureRoot" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; align-items: center; justify-content: center;">
+        <engine:VisualElement name="CaptureMask" class="capture_mask" />
+        <engine:VisualElement name="Capture_Dialog_Creator" class="capture_dialog" style="width: 400px; display: none;">
+            <engine:Label text="节点资源快照 - 捕捉" name="title" class="InspectorView_Container_Title" />
+            <engine:VisualElement name="header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+                <engine:TextField label="快照命名" name="field_capture_name" class="capture_field" />
+                <engine:VisualElement name="space" style="height: 2.5px;" />
+                <engine:TextField label="版本标记" name="field_capture_ver" class="capture_field" />
+            </engine:VisualElement>
+            <engine:VisualElement name="footer" style="bottom: 0; height: 38px; margin-top: 32px; margin-bottom: 10px;">
+                <engine:VisualElement name="button_group" style="flex-direction: row-reverse; padding-right: 10px; margin-top: 5px;">
+                    <engine:VisualElement name="btn_creator_capture" class="capture_btn">
+                        <engine:VisualElement tooltip="捕获快照" name="icon" picking-mode="Ignore" class="capture_btn_icon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/graphcapture.png?fileID=2800000&amp;guid=755bb53fdfb49d14ca983cc8a4d09ed4&amp;type=3#graphcapture&quot;);" />
+                        <engine:Label text="快照" name="name" picking-mode="Ignore" class="capture_btn_text" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="space" style="width: 5px;" />
+                    <engine:VisualElement name="btn_creator_cancel" class="capture_btn">
+                        <engine:VisualElement tooltip="捕获快照" name="icon" picking-mode="Ignore" class="capture_btn_icon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/cancel.png?fileID=2800000&amp;guid=c551debd6ac15ab4995a81d8dcc97246&amp;type=3#cancel&quot;);" />
+                        <engine:Label text="取消" name="name" picking-mode="Ignore" class="capture_btn_text" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="Capture_Dialog_Restore" class="capture_dialog" style="width: 400px; height: auto; flex-grow: 0.8;">
+            <engine:Label text="节点资源快照 - 恢复" name="title" class="InspectorView_Container_Title" />
+            <engine:VisualElement name="list" style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+                <engine:ListView name="captures" />
+            </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

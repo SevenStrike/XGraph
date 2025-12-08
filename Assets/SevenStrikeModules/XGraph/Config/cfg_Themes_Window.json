@@ -7,8 +7,8 @@
             "col_thickLine": "#8D8D8D00",
             "col_customimage": "#8F8F8FED",
             "col_theme": "#3BFC99FF",
-            "col_blackboard_bg": "##454545E0",
-            "col_inspector_bg": "##454545E0",
+            "col_blackboard_bg": "#454545E0",
+            "col_inspector_bg": "#454545E0",
             "val_griddistance": 18,
             "val_thicklines": 18
         },

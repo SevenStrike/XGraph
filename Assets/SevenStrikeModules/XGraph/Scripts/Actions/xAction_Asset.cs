@@ -2,11 +2,18 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using UnityEditor;
+    using UnityEditor.VersionControl;
     using UnityEngine;
 
     public class xAction_Asset : ScriptableObject
     {
+        #region 行为节点资源快照
+        /// <summary>
+        /// 行为节点资源快照
+        /// </summary>
+        public List<class_ActionAssetCaptureData> ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
+        #endregion
+
         #region Graphview 基础参数
         /// <summary>
         /// 记录的节点编辑器最后一次的窗口尺寸
@@ -350,6 +357,13 @@ namespace SevenStrikeModules.XGraph
             XGraph_DisplayNodeFlow = target.XGraph_DisplayNodeFlow;
             // 自定义扩展节点列表配置文件
             GraphNodesStruct = target.GraphNodesStruct;
+
+            ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
+            ActionAssetCaptureData.Clear();
+            foreach (var data in target.ActionAssetCaptureData)
+            {
+                ActionAssetCaptureData.Add(data.Clone());
+            }
             #endregion
 
             #region Nodes
@@ -519,6 +533,8 @@ namespace SevenStrikeModules.XGraph
                 BlackboardVariable.Add(vare.Clone(false));
             }
             #endregion
+
+            GUIUtility.systemCopyBuffer = JsonUtility.ToJson(target);
         }
         /// <summary>
         /// 创建当前流程设计的克隆体（仅编辑器下）
@@ -560,6 +576,12 @@ namespace SevenStrikeModules.XGraph
             asset.GraphviewGridBackgroundThemes = GraphviewGridBackgroundThemes.Clone();
             // 选择框主题配置参数（脱离引用克隆）
             asset.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
+
+            asset.ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
+            foreach (var data in ActionAssetCaptureData)
+            {
+                asset.ActionAssetCaptureData.Add(data.Clone());
+            }
             #endregion
 
             #region Nodes

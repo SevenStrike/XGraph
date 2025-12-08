@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Unity.Plastic.Newtonsoft.Json;
     using UnityEditor;
     using UnityEditor.Callbacks;
     using UnityEditor.Experimental.GraphView;
@@ -69,6 +68,14 @@
         /// Graphview编辑器的组件 - 行为资源信息容器
         /// </summary>
         internal VisualElement xw_GraphInfo_Container;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照闪光
+        /// </summary>
+        internal VisualElement xw_captureshot;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照遮罩层背景
+        /// </summary>
+        internal VisualElement xw_CaptureMask;
         /// <summary>
         /// Graphview编辑器的组件 - 选项面板 - 背景颜色
         /// </summary>
@@ -189,6 +196,10 @@
         /// </summary>
         private Label xw_label_graphMarkText;
         /// <summary>
+        /// 快照菜单按钮
+        /// </summary>
+        private Button xw_btn_capture;
+        /// <summary>
         ///  xw_graphView 控件 - 保存按钮
         /// </summary>
         private Button xw_btn_save;
@@ -244,6 +255,30 @@
         ///  xw_graphView 控件 - 窗口内鼠标在Graphview中的位置 Y
         /// </summary>
         private Label xw_label_GraphMousePos_y;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照按钮 - 捕获快照
+        /// </summary>
+        internal VisualElement xw_capture_dialog_creator_btn_confirm;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照按钮 - 取消捕获快照
+        /// </summary>
+        internal VisualElement xw_capture_dialog_creator_btn_cancel;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照面板
+        /// </summary>
+        internal VisualElement xw_capture_dialog_creator;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照面板 - 创建快照 - 输入框 - 名称
+        /// </summary>
+        internal TextField xw_capture_dialog_creator_field_name;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照面板 - 创建快照 - 输入框 - 版本
+        /// </summary>
+        internal TextField xw_capture_dialog_creator_field_ver;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照恢复列表面板
+        /// </summary>
+        internal VisualElement xw_capture_dialog_restore;
         #endregion
 
         #region 参数
@@ -266,6 +301,11 @@
         /// 选中节点时是否显示数据流效果
         /// </summary>
         public bool DisplayNodeFlow = true;
+        #endregion
+
+        #region 快照
+        private VisualTreeAsset capture_Item;
+        private ListView capture_childs;
         #endregion
 
         #region 委托
@@ -842,9 +882,107 @@
             xw_label_GraphMousePos_y = xw_GraphInfo_Container.Q<VisualElement>("front").Q<Label>("mousepos_y");
             #endregion
 
+            #region 行为节点资源快照
+            // 找到快照闪光组件
+            xw_captureshot = root.Q<VisualElement>("captureshot");
+            xw_captureshot.style.opacity = 0;
+
+            // 找到快照按钮 
+            xw_btn_capture = root.Q<Button>("btn_Capture");
+            #endregion
+
+            #region 快照捕获面板
+            // 找到快照弹窗遮罩层背景
+            VisualElement capture_root = root.Q<VisualElement>("CaptureRoot");
+            capture_root.BringToFront();
+
+            #region  找到快照弹窗遮罩层背景
+            xw_CaptureMask = capture_root.Q<VisualElement>("CaptureMask");
+            xw_CaptureMask.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                Capture_MaskVisible(false);
+                Capture_Dialog_Creator_Visiblity(false);
+                Capture_Dialog_Restore_Visiblity(false);
+            });
+            Capture_MaskVisible(false);
+            #endregion
+
+            // 快照面板 - 捕获
+            xw_capture_dialog_creator = capture_root.Q<VisualElement>("Capture_Dialog_Creator");
+            Capture_Dialog_Creator_Visiblity(false);
+            // 快照面板 - 恢复
+            xw_capture_dialog_restore = capture_root.Q<VisualElement>("Capture_Dialog_Restore");
+            Capture_Dialog_Restore_Visiblity(false);
+
+            // 快照捕获参数输入框 - 名称
+            xw_capture_dialog_creator_field_name = capture_root.Q<TextField>("field_capture_name");
+            xw_capture_dialog_creator_field_name.Q<Label>().AddToClassList(".capture_field_narrow");
+
+            // 快照捕获参数输入框 - 版本
+            xw_capture_dialog_creator_field_ver = capture_root.Q<TextField>("field_capture_ver");
+            xw_capture_dialog_creator_field_ver.Q<Label>().AddToClassList(".capture_field_narrow");
+
+            #region 按钮 - 捕获快照
+            xw_capture_dialog_creator_btn_confirm = xw_capture_dialog_creator.Q<VisualElement>("btn_creator_capture");
+            xw_capture_dialog_creator_btn_confirm.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 0.2f;
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 0.2f;
+            });
+            xw_capture_dialog_creator_btn_confirm.RegisterCallback<MouseEnterEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 0.6f;
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 0.6f;
+            });
+            xw_capture_dialog_creator_btn_confirm.RegisterCallback<MouseLeaveEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
+            });
+            xw_capture_dialog_creator_btn_confirm.RegisterCallback<MouseUpEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
+                Debug.Log("捕获快照");
+            });
+            #endregion
+
+            #region 按钮 - 取消捕获
+            xw_capture_dialog_creator_btn_cancel = xw_capture_dialog_creator.Q<VisualElement>("btn_creator_cancel");
+            xw_capture_dialog_creator_btn_cancel.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 0.2f;
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 0.2f;
+            });
+            xw_capture_dialog_creator_btn_cancel.RegisterCallback<MouseEnterEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 0.6f;
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 0.6f;
+            });
+            xw_capture_dialog_creator_btn_cancel.RegisterCallback<MouseLeaveEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
+            });
+            xw_capture_dialog_creator_btn_cancel.RegisterCallback<MouseUpEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
+                xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
+                Debug.Log("取消捕获快照");
+                Capture_MaskVisible(false);
+                Capture_Dialog_Creator_Visiblity(false);
+            });
+            #endregion
+
+            // 读取并克隆uxml布局到 scrollview 布局
+            capture_Item = util_XGraphEditorUtility.AssetLoad<VisualTreeAsset>($"{util_Dashboard.GetPath_GUI_Uxml()}uxml_XGraphCaptureRestoreList_Item.uxml");
+            capture_childs = capture_root.Q<ListView>("captures");
+            #endregion
+
             // 在整个窗口根元素上注册全局快捷键
             rootVisualElement.RegisterCallback<KeyDownEvent>(GraphViewGlobalKeyDownEvents, TrickleDown.TrickleDown);
         }
+
 
         /// <summary>
         /// 编辑器界面绘制逻辑
@@ -1670,9 +1808,8 @@
 
                 // 读取菜单结构列表内容
                 string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Themes_Window.json").text;
-                WindowThemeList themelist = JsonConvert.DeserializeObject<WindowThemeList>(json);
-
-                foreach (var theme in themelist.Themes)
+                WindowThemeList themeList = JsonUtility.FromJson<WindowThemeList>(json);
+                foreach (var theme in themeList.Themes)
                 {
                     // 添加菜单项
                     menu.AddItem(new GUIContent(theme.solution), false, () =>
@@ -2559,6 +2696,252 @@
                 xw_graphView.keyEvent_Close();
                 evt.StopPropagation();
             }
+        }
+        #endregion
+
+        #region 快照操作
+        /// <summary>
+        /// 添加快照菜单
+        /// </summary>
+        public void AddCaptureMenus()
+        {
+            xw_btn_capture.clicked += () =>
+            {
+                GenericMenu menu = new GenericMenu();
+
+                #region 保存快照
+                menu.AddItem(new GUIContent("C 保存快照"), false, () =>
+                {
+                    Debug.Log("弹窗 -> 保存快照！");
+                    EditorApplication.delayCall += () =>
+                    {
+                        Capture_MaskVisible(true);
+                        Capture_Dialog_Creator_Visiblity(true);
+                    };
+                });
+                #endregion
+
+                // 添加分隔线
+                menu.AddSeparator("");
+
+                #region 恢复快照
+                menu.AddItem(new GUIContent("D 恢复快照"), false, () =>
+                {
+                    Debug.Log("弹窗 -> 恢复快照！");
+                    EditorApplication.delayCall += () =>
+                    {
+                        Capture_MaskVisible(true);
+                        Capture_Dialog_Restore_Visiblity(true);
+
+                        // 清空 ListView 现有项（可选）
+                        capture_childs.bindItem = null;
+                        capture_childs.makeItem = null;
+                        capture_childs.unbindItem = null;
+
+                        // 设置数据源
+                        capture_childs.itemsSource = CloneTree.ActionAssetCaptureData;
+
+                        capture_childs.fixedItemHeight = 55;
+
+                        // 创造 ListView 的模版样式
+                        capture_childs.makeItem = CaptureRestoreChildElement;
+
+                        // 将模板添加到 ListView
+                        capture_childs.bindItem = BindData;
+
+                        // 添加解绑回调 - 关键修复
+                        capture_childs.unbindItem = UnbindData;
+
+                        // 重建 ListView
+                        capture_childs.Rebuild();
+                        capture_childs.RefreshItems();
+                    };
+                });
+                #endregion
+
+                // 显示菜单
+                menu.ShowAsContext();
+            };
+        }
+
+        #region 获取快照恢复项模板
+        /// <summary>
+        /// 获取列表项模版
+        /// </summary>
+        /// <returns></returns>
+        private TemplateContainer GetTemplate()
+        {
+            return capture_Item.CloneTree();
+        }
+        /// <summary>
+        /// 获取列表项的模版跟物体作为列表项的基础样式和元素组成结构
+        /// </summary>
+        /// <returns></returns>
+        private VisualElement CaptureRestoreChildElement()
+        {
+            return GetTemplate().Q<VisualElement>("item");
+        }
+        #endregion
+
+        #region 快照恢复数据绑定
+        /// <summary>
+        /// 绑定列表项的数据
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        private void BindData(VisualElement element, int index)
+        {
+            class_ActionAssetCaptureData captureData = CloneTree.ActionAssetCaptureData[index];
+
+            // 获取 icon
+            VisualElement icon = element.Q<VisualElement>("icon");
+            // 获取 title 标签
+            Label lab_title = element.Q<Label>("name");
+            // 获取 datatime 标签
+            Label lab_datetime = element.Q<Label>("datetime");
+            // 获取 action_type 标签
+            Label lab_ver = element.Q<Label>("ver");
+            // 获取 type 标签
+            Button btn_discard = element.Q<Button>("btn_discard");
+            // 获取 type 标签
+            Button btn_restore = element.Q<Button>("btn_restore");
+
+            // 设置 title 标签
+            if (lab_title != null)
+                lab_title.text = captureData.name;
+
+            // 设置 type 标签
+            if (lab_datetime != null)
+                lab_datetime.text = captureData.datetime;
+
+            // 设置 type 标签
+            if (lab_ver != null)
+            {
+                lab_ver.text = captureData.ver;
+                lab_ver.style.color = util_XGraphEditorUtility.Color_From_HexString("#3BFE9B");
+            }
+            // 注册删除快照按钮事件
+            btn_discard.clicked += () =>
+            {
+                if (util_XGraphEditorUtility.DialogMsg("确认丢弃快照", $"确定要丢弃快照 '{captureData.name}' 吗？", "丢弃", "取消"))
+                {
+                    CloneTree.ActionAssetCaptureData.Remove(captureData);
+                    AssetDatabase.SaveAssets();
+                    RefreshListView();
+                }
+            };
+            // 注册读取快照按钮事件
+            btn_restore.clicked += () =>
+            {
+                if (util_XGraphEditorUtility.DialogMsg("确认恢复快照", $"确定要恢复快照 '{captureData.name}' 吗？", "恢复", "取消"))
+                {
+                    Capture_MaskVisible(false);
+                    Capture_Dialog_Creator_Visiblity(false);
+                    Capture_Dialog_Restore_Visiblity(false);
+
+                    // 恢复节点资源数据快照（确保节点资源数据类替换完成）
+                    EditorApplication.delayCall += () =>
+                    {
+                        EditorApplication.delayCall += () =>
+                        {
+                            string json_data = captureData.data;
+                            Debug.Log(json_data);
+                        };
+                    };
+                }
+            };
+
+        }
+        /// <summary>
+        /// 解绑列表项 - 清理事件监听器
+        /// </summary>
+        private void UnbindData(VisualElement element, int index)
+        {
+            // 获取删除按钮
+            Button btn_discard = element.Q<Button>("btn_discard");
+            // 获取 type 标签
+            Button btn_restore = element.Q<Button>("btn_restore");
+
+            if (btn_discard != null)
+            {
+                // 清理按钮的点击事件
+                btn_discard.clickable = null;
+                btn_discard.userData = null;
+            }
+
+            if (btn_restore != null)
+            {
+                // 清理按钮的点击事件
+                btn_restore.clickable = null;
+                btn_restore.userData = null;
+            }
+
+            // 清理其他可能的事件监听器
+            element.ClearClassList();
+        }
+        /// <summary>
+        /// 刷新 ListView 显示
+        /// </summary>
+        private void RefreshListView()
+        {
+            if (CloneTree == null) return;
+
+            // 重新设置数据源
+            capture_childs.itemsSource = CloneTree.ActionAssetCaptureData;
+
+            // 刷新 ListView
+            capture_childs.Rebuild();
+            capture_childs.RefreshItems();
+        }
+        #endregion
+
+        /// <summary>
+        /// 快照遮罩背景可见性
+        /// </summary>
+        /// <param name="state"></param>
+        private void Capture_MaskVisible(bool state)
+        {
+            xw_CaptureMask.pickingMode = state ? PickingMode.Position : PickingMode.Ignore;
+            xw_CaptureMask.style.opacity = state ? 1 : 0;
+        }
+        /// <summary>
+        /// 捕获快照弹窗
+        /// </summary>
+        public void Capture_Dialog_Creator_Visiblity(bool state)
+        {
+            xw_capture_dialog_creator.style.display = new StyleEnum<DisplayStyle>(state ? DisplayStyle.Flex : DisplayStyle.None);
+            xw_capture_dialog_creator.style.opacity = state ? 1 : 0;
+            Translate translate = new Translate(0, state ? 0 : 150, 0);
+            xw_capture_dialog_creator.style.translate = new StyleTranslate(translate);
+        }
+        /// <summary>
+        /// 恢复快照弹窗
+        /// </summary>
+        private void Capture_Dialog_Restore_Visiblity(bool state)
+        {
+            xw_capture_dialog_restore.style.display = new StyleEnum<DisplayStyle>(state ? DisplayStyle.Flex : DisplayStyle.None);
+            xw_capture_dialog_restore.style.opacity = state ? 1 : 0;
+            Translate translate = new Translate(0, state ? 0 : 150, 0);
+            xw_capture_dialog_restore.style.translate = new StyleTranslate(translate);
+        }
+        /// <summary>
+        /// 立即捕获快照
+        /// </summary>
+        public void Capture_Now()
+        {
+            Capture_ShotBlink();
+        }
+        /// <summary>
+        /// 快照闪光
+        /// </summary>        
+        public void Capture_ShotBlink()
+        {
+            util_XGraphEditorUtility.Element_Opacity_Set(xw_captureshot, 1);
+
+            EditorApplication.delayCall += () =>
+            {
+                util_XGraphEditorUtility.Element_Opacity_Set(xw_captureshot, 0);
+            };
         }
         #endregion
     }
