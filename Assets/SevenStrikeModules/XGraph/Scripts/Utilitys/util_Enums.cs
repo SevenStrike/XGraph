@@ -95,4 +95,13 @@ namespace SevenStrikeModules.XGraph
         警告 = 1,
         错误 = 2
     }
+    /// <summary>
+    /// 通知类型
+    /// </summary>
+    public enum xNotifyType
+    {
+        信息 = 0,
+        警告 = 1,
+        错误 = 2
+    }
 }

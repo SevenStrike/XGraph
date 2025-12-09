@@ -191,8 +191,8 @@
 .captureshot {
     opacity: 0;
     transition-property: opacity;
-    transition-duration: 0.6s;
-    transition-timing-function: ease-out-cubic;
+    transition-duration: 1s;
+    transition-timing-function: ease-out-circ;
     transition-delay: 0s;
 }
 
@@ -273,8 +273,17 @@
 
 .unity-text-field__label {
     min-width: 80px;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 8px;
     -unity-font-style: bold;
     -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+}
+
+.capture_dialog_titletext {
+    font-size: 20px;
+    -unity-font-style: normal;
+    color: rgb(255, 255, 255);
+    -unity-font-definition: url("project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&guid=7e75af13bdd075345ab6bcc4962b42c2&type=3#x_Regular");
+    height: 100%;
+    -unity-text-align: middle-left;
 }

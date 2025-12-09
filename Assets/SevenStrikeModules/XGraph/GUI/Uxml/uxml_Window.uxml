@@ -20,12 +20,18 @@
     <engine:Label text="节点视图" name="graphintro_Title" style="background-color: rgb(29, 29, 29); height: 21px; -unity-text-align: middle-left; padding-left: 20px; font-size: 13px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; width: 100%; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;);">
         <engine:Label name="graph_nodeinfo_header" style="height: 21px; padding-left: 0; font-size: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; background-size: 50% 100%; padding-right: 20px; width: 70%; -unity-text-align: middle-right; align-self: flex-end;" />
     </engine:Label>
-    <engine:VisualElement name="GraphRegion" style="width: 100%; height: 100%;">
+    <engine:VisualElement name="GraphRegion" style="width: 100%; height: 100%; overflow: hidden;">
         <SevenStrikeModules.XGraph.xg_GraphView name="graphView" style="left: auto;">
             <engine:Label name="graph_nodeinfo_footer" picking-mode="Ignore" style="height: 21px; padding-left: 0; font-size: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; margin-left: 0; padding-right: 20px; width: 45%; -unity-text-align: middle-right; color: rgba(132, 132, 132, 0.62); top: auto; padding-top: 0; padding-bottom: 0; bottom: 20px; -unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); overflow: hidden; flex-direction: column; position: absolute; right: 10px; text-overflow: ellipsis;" />
         </SevenStrikeModules.XGraph.xg_GraphView>
+        <engine:VisualElement name="dialog_notify" style="width: auto; display: flex; flex-direction: row; justify-content: space-between; padding-left: 20px; padding-right: 20px; padding-top: 6px; padding-bottom: 6px; position: absolute; bottom: -72px; left: auto; align-self: center; background-color: rgb(56, 56, 56); border-left-color: rgba(121, 121, 121, 0.47); border-right-color: rgba(121, 121, 121, 0.47); border-top-color: rgba(121, 121, 121, 0.47); border-bottom-color: rgba(121, 121, 121, 0.47); border-top-width: 0.5px; border-right-width: 0.5px; border-bottom-width: 0.5px; border-left-width: 0.5px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; transition-property: opacity, translate; transition-duration: 0.5s, 0.5s; transition-timing-function: ease-out-circ, ease-out-circ; translate: 0 -118px; transition-delay: 0s, 0s;">
+            <engine:Label text="这是一条重要的通知消息" name="msg" style="-unity-font-definition: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/Fonts/x_Regular.ttf?fileID=12800000&amp;guid=7e75af13bdd075345ab6bcc4962b42c2&amp;type=3#x_Regular&quot;); margin-top: 5px; font-size: 14px; flex-grow: 1; padding-right: 20px; overflow: hidden; text-overflow: ellipsis;" />
+            <engine:VisualElement name="btn" class="capture_btn" style="padding-right: 15px; padding-left: 15px;">
+                <engine:VisualElement tooltip="捕获快照" name="icon" picking-mode="Ignore" class="capture_btn_icon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/notify_warn.png?fileID=2800000&amp;guid=2d351311f653df0419ace05211db0667&amp;type=3#notify_warn&quot;); -unity-background-image-tint-color: rgb(255, 192, 78);" />
+                <engine:Label text="明白" name="name" picking-mode="Ignore" class="capture_btn_text" />
+            </engine:VisualElement>
+        </engine:VisualElement>
         <engine:Label text="ActionFree" name="graphintro_MarkText" enabled="true" picking-mode="Ignore" class="MarkText" style="margin-bottom: 0; bottom: 15px; -unity-text-align: lower-left;" />
-        <engine:VisualElement name="captureshot" picking-mode="Ignore" class="captureshot" style="position: absolute; width: 100%; height: 100%; background-color: rgb(255, 255, 255);" />
         <SevenStrikeModules.XGraph.xg_ResizableElement name="InspectorView_Container" style="width: 299px; height: 426px; top: 10px; left: 662px; background-color: rgb(56, 56, 56); border-top-width: 0.5px; border-right-width: 0.5px; border-bottom-width: 0.5px; border-left-width: 0.5px; border-left-color: rgba(121, 121, 121, 0.47); border-right-color: rgba(121, 121, 121, 0.47); border-top-color: rgba(121, 121, 121, 0.47); border-bottom-color: rgba(121, 121, 121, 0.47); border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; margin-top: 0; margin-bottom: 0; margin-left: 0; margin-right: 0;">
             <engine:Label text="Inspector 属性视图" name="InspectorView_Container_Title" class="InspectorView_Container_Title" />
             <engine:ScrollView horizontal-scroller-visibility="Hidden" focusable="true" style="width: 100%; height: 100%; padding-left: 0; padding-right: 0; padding-bottom: 8px;">
@@ -77,7 +83,7 @@
         </engine:VisualElement>
     </engine:VisualElement>
     <engine:VisualElement name="CaptureRoot" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; align-items: center; justify-content: center;">
-        <engine:VisualElement name="CaptureMask" class="capture_mask" />
+        <engine:VisualElement name="CaptureMask" picking-mode="Ignore" class="capture_mask" style="transition-duration: 0.3s; transition-timing-function: ease-out-circ; opacity: 0;" />
         <engine:VisualElement name="Capture_Dialog_Creator" class="capture_dialog" style="width: 400px; display: none;">
             <engine:Label text="节点资源快照 - 捕捉" name="title" class="InspectorView_Container_Title" />
             <engine:VisualElement name="header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
@@ -99,8 +105,18 @@
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:VisualElement>
-        <engine:VisualElement name="Capture_Dialog_Restore" class="capture_dialog" style="width: 400px; height: auto; flex-grow: 0.8;">
+        <engine:VisualElement name="Capture_Dialog_Restore" class="capture_dialog" style="width: 400px; height: auto; flex-grow: 0.8; overflow: hidden; display: none;">
             <engine:Label text="节点资源快照 - 恢复" name="title" class="InspectorView_Container_Title" />
+            <engine:VisualElement name="TitleContainer" style="flex-direction: row; padding-top: 15px; padding-right: 10px; padding-bottom: 15px; padding-left: 10px; width: 100%; overflow: hidden; flex-shrink: 0; flex-grow: 0; height: 50px;">
+                <engine:VisualElement name="con_title" style="overflow: hidden; flex-shrink: 0; width: 100%; flex-direction: row;">
+                    <engine:VisualElement name="icon" style="width: 20px; height: 20px; margin-right: 24px; background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/graphcapture.png?fileID=2800000&amp;guid=755bb53fdfb49d14ca983cc8a4d09ed4&amp;type=3#graphcapture&quot;); flex-shrink: 0;" />
+                    <engine:Label text="快照列表" name="title" class="capture_dialog_titletext" style="overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; flex-grow: 0; width: 261px;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="btn_clear" class="capture_btn" style="position: absolute; right: 0; margin-right: 15px;">
+                    <engine:VisualElement tooltip="捕获快照" name="icon" picking-mode="Ignore" class="capture_btn_icon" style="background-image: url(&quot;project://database/Assets/SevenStrikeModules/XGraph/GUI/Icons/graphcapture_clear.png?fileID=2800000&amp;guid=c36356eba9551944a9eecad5dca27bc4&amp;type=3#graphcapture_clear&quot;);" />
+                    <engine:Label text="清空快照" name="name" picking-mode="Ignore" class="capture_btn_text" />
+                </engine:VisualElement>
+            </engine:VisualElement>
             <engine:VisualElement name="list" style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
                 <engine:ListView name="captures" />
             </engine:VisualElement>

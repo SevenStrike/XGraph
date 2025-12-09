@@ -69,10 +69,6 @@
         /// </summary>
         internal VisualElement xw_GraphInfo_Container;
         /// <summary>
-        /// Graphview编辑器的组件 - 快照闪光
-        /// </summary>
-        internal VisualElement xw_captureshot;
-        /// <summary>
         /// Graphview编辑器的组件 - 快照遮罩层背景
         /// </summary>
         internal VisualElement xw_CaptureMask;
@@ -279,6 +275,30 @@
         /// Graphview编辑器的组件 - 快照恢复列表面板
         /// </summary>
         internal VisualElement xw_capture_dialog_restore;
+        /// <summary>
+        /// Graphview编辑器的组件 - 快照恢复列表面板的清空快照按钮
+        /// </summary>
+        internal VisualElement xw_capture_dialog_restore_btn_clearcaptures;
+        /// <summary>
+        /// Graphview编辑器的组件 - 通知面板
+        /// </summary>
+        internal VisualElement xw_dialog_notify;
+        /// <summary>
+        ///  Graphview编辑器的组件 - 通知面板 - 按钮文字
+        /// </summary>
+        private Label xw_dialog_notify_btn_name;
+        /// <summary>
+        ///  Graphview编辑器的组件 - 通知面板 - 按钮图标
+        /// </summary>
+        private VisualElement xw_dialog_notify_btn_icon;
+        /// <summary>
+        ///  Graphview编辑器的组件 - 通知面板 - 消息
+        /// </summary>
+        private Label xw_dialog_notify_msg;
+        /// <summary>
+        /// Graphview编辑器的组件 - 通知面板 - 按钮
+        /// </summary>
+        internal VisualElement xw_dialog_notify_btn;
         #endregion
 
         #region 参数
@@ -301,6 +321,7 @@
         /// 选中节点时是否显示数据流效果
         /// </summary>
         public bool DisplayNodeFlow = true;
+        public Texture2D[] notifyicons;
         #endregion
 
         #region 快照
@@ -346,6 +367,25 @@
         /// 节点编辑器窗口是否已经准备就绪
         /// </summary>
         public bool NodeEditorIsReady = false;
+
+        #region 计时器参数
+        /// <summary>
+        /// 通知面板自动关闭倒计时计时器
+        /// </summary>
+        private System.Diagnostics.Stopwatch notifyAutoCloseTimer;
+        /// <summary>
+        /// 通知面板自动关闭的倒计时时长（毫秒）
+        /// </summary>
+        private float notifyAutoCloseDuration = 3000f; // 默认3秒
+        /// <summary>
+        /// 是否正在等待自动关闭通知面板
+        /// </summary>
+        private bool isNotifyAutoClosePending = false;
+        /// <summary>
+        /// 自动关闭通知的延迟调用句柄
+        /// </summary>
+        private System.Action delayedAutoCloseAction = null;
+        #endregion
 
         /// <summary>
         /// 打开资源节点编辑器
@@ -883,10 +923,6 @@
             #endregion
 
             #region 行为节点资源快照
-            // 找到快照闪光组件
-            xw_captureshot = root.Q<VisualElement>("captureshot");
-            xw_captureshot.style.opacity = 0;
-
             // 找到快照按钮 
             xw_btn_capture = root.Q<Button>("btn_Capture");
             #endregion
@@ -904,15 +940,12 @@
                 Capture_Dialog_Creator_Visiblity(false);
                 Capture_Dialog_Restore_Visiblity(false);
             });
-            Capture_MaskVisible(false);
+            Capture_MaskVisible(false, 0);
             #endregion
 
-            // 快照面板 - 捕获
+            #region 快照面板 - 捕获
             xw_capture_dialog_creator = capture_root.Q<VisualElement>("Capture_Dialog_Creator");
             Capture_Dialog_Creator_Visiblity(false);
-            // 快照面板 - 恢复
-            xw_capture_dialog_restore = capture_root.Q<VisualElement>("Capture_Dialog_Restore");
-            Capture_Dialog_Restore_Visiblity(false);
 
             // 快照捕获参数输入框 - 名称
             xw_capture_dialog_creator_field_name = capture_root.Q<TextField>("field_capture_name");
@@ -943,7 +976,8 @@
             {
                 xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
                 xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
-                Debug.Log("捕获快照");
+
+                Capture_Now();
             });
             #endregion
 
@@ -968,10 +1002,43 @@
             {
                 xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
                 xw_capture_dialog_creator_btn_cancel.style.opacity = 1;
-                Debug.Log("取消捕获快照");
+
                 Capture_MaskVisible(false);
                 Capture_Dialog_Creator_Visiblity(false);
             });
+            #endregion
+            #endregion
+
+            #region 快照面板 - 恢复
+            xw_capture_dialog_restore = capture_root.Q<VisualElement>("Capture_Dialog_Restore");
+            xw_capture_dialog_restore_btn_clearcaptures = xw_capture_dialog_restore.Q<VisualElement>("TitleContainer").Q<VisualElement>("btn_clear");
+            #region 按钮 - 取消捕获
+            xw_capture_dialog_restore_btn_clearcaptures.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 0.2f;
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 0.2f;
+            });
+            xw_capture_dialog_restore_btn_clearcaptures.RegisterCallback<MouseEnterEvent>((evt) =>
+            {
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 0.6f;
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 0.6f;
+            });
+            xw_capture_dialog_restore_btn_clearcaptures.RegisterCallback<MouseLeaveEvent>((evt) =>
+            {
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 1;
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 1;
+            });
+            xw_capture_dialog_restore_btn_clearcaptures.RegisterCallback<MouseUpEvent>((evt) =>
+            {
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 1;
+                xw_capture_dialog_restore_btn_clearcaptures.style.opacity = 1;
+
+                Capture_MaskVisible(false);
+                Capture_Dialog_Restore_Visiblity(false);
+                CaptureClear();
+            });
+            #endregion
+            Capture_Dialog_Restore_Visiblity(false);
             #endregion
 
             // 读取并克隆uxml布局到 scrollview 布局
@@ -979,10 +1046,48 @@
             capture_childs = capture_root.Q<ListView>("captures");
             #endregion
 
+            #region 通知面板
+            xw_dialog_notify = root.Q<VisualElement>("dialog_notify");
+
+            #region 通知按钮
+            xw_dialog_notify_btn = xw_dialog_notify.Q<VisualElement>("btn");
+            xw_dialog_notify_btn.RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                xw_dialog_notify_btn.style.opacity = 0.2f;
+                xw_dialog_notify_btn.style.opacity = 0.2f;
+            });
+            xw_dialog_notify_btn.RegisterCallback<MouseEnterEvent>((evt) =>
+            {
+                xw_dialog_notify_btn.style.opacity = 0.6f;
+                xw_dialog_notify_btn.style.opacity = 0.6f;
+            });
+            xw_dialog_notify_btn.RegisterCallback<MouseLeaveEvent>((evt) =>
+            {
+                xw_capture_dialog_creator_btn_confirm.style.opacity = 1;
+                xw_dialog_notify_btn.style.opacity = 1;
+            });
+            xw_dialog_notify_btn.RegisterCallback<MouseUpEvent>((evt) =>
+            {
+                xw_dialog_notify_btn.style.opacity = 1;
+                xw_dialog_notify_btn.style.opacity = 1;
+                //Debug.Log("关闭通知");
+                Notify_Displayer(false);
+            });
+            #endregion
+
+            // 通知消息
+            xw_dialog_notify_msg = xw_dialog_notify.Q<Label>("msg");
+            // 通知按钮文字
+            xw_dialog_notify_btn_name = xw_dialog_notify_btn.Q<Label>("name");
+            // 通知按钮图标
+            xw_dialog_notify_btn_icon = xw_dialog_notify_btn.Q<VisualElement>("icon");
+
+            Notify_Displayer(false);
+            #endregion
+
             // 在整个窗口根元素上注册全局快捷键
             rootVisualElement.RegisterCallback<KeyDownEvent>(GraphViewGlobalKeyDownEvents, TrickleDown.TrickleDown);
         }
-
 
         /// <summary>
         /// 编辑器界面绘制逻辑
@@ -1006,6 +1111,14 @@
 
             // 编辑器内运行 & 停止时资源的重载
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
+
+            // 初始化通知面板自动关闭计时器
+            notifyAutoCloseTimer = new System.Diagnostics.Stopwatch();
+
+            notifyicons = new Texture2D[3];
+            notifyicons[0] = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/notify_info.png");
+            notifyicons[1] = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/notify_warn.png");
+            notifyicons[2] = util_XGraphEditorUtility.AssetLoad<Texture2D>($"{util_Dashboard.GetPath_GUI()}Icons/notify_error.png");
         }
 
         private void OnDisable()
@@ -1013,6 +1126,10 @@
             EditorApplication.update -= OnWindowResizingUpdate;
             // 编辑器内运行 & 停止时资源的重载
             EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+
+            // 取消自动关闭计时器
+            CancelAutoClose();
+            EditorApplication.update -= AutoCloseUpdate;
         }
 
         private void OnDestroy()
@@ -1021,6 +1138,10 @@
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
             xw_DestroyGraphView();
+
+            // 清理自动关闭相关资源
+            CancelAutoClose();
+            EditorApplication.update -= AutoCloseUpdate;
         }
 
         #region 重新编译时XGraph资源重载操作
@@ -2331,6 +2452,20 @@
         /// </summary>
         public void ActionTree_SaveAndReplace()
         {
+            if (CloneTree == null || SourceTree == null || !NodeEditorIsReady) return;
+
+            // 确保 CloneTree 的 name 与 SourceTree 一致
+            string sourceAssetPath = AssetDatabase.GetAssetPath(SourceTree);
+            if (!string.IsNullOrEmpty(sourceAssetPath))
+            {
+                string assetFileName = System.IO.Path.GetFileNameWithoutExtension(sourceAssetPath);
+                CloneTree.name = assetFileName;
+            }
+            else
+            {
+                CloneTree.name = SourceTree.name;
+            }
+
             // 保存最后一次的窗口尺寸，窗口尺寸不受克隆操作影响，总是回保存到原始资源而非克隆资源
             if (CloneTree != null && NodeEditorIsReady)
             {
@@ -2604,9 +2739,10 @@
         /// </summary>
         private void xw_DeleteCloneTreeAsset()
         {
-            // 删除临时的克隆Tree资源
+            // 清理临时克隆树
             if (CloneTree != null)
             {
+                UnityEngine.Object.DestroyImmediate(CloneTree);
                 CloneTree = null;
             }
         }
@@ -2712,7 +2848,6 @@
                 #region 保存快照
                 menu.AddItem(new GUIContent("C 保存快照"), false, () =>
                 {
-                    Debug.Log("弹窗 -> 保存快照！");
                     EditorApplication.delayCall += () =>
                     {
                         Capture_MaskVisible(true);
@@ -2727,7 +2862,6 @@
                 #region 恢复快照
                 menu.AddItem(new GUIContent("D 恢复快照"), false, () =>
                 {
-                    Debug.Log("弹窗 -> 恢复快照！");
                     EditorApplication.delayCall += () =>
                     {
                         Capture_MaskVisible(true);
@@ -2739,7 +2873,7 @@
                         capture_childs.unbindItem = null;
 
                         // 设置数据源
-                        capture_childs.itemsSource = CloneTree.ActionAssetCaptureData;
+                        capture_childs.itemsSource = SourceTree.ActionAssetCaptureData;
 
                         capture_childs.fixedItemHeight = 55;
 
@@ -2783,7 +2917,7 @@
         }
         #endregion
 
-        #region 快照恢复数据绑定
+        #region 快照恢复面板数据绑定
         /// <summary>
         /// 绑定列表项的数据
         /// </summary>
@@ -2791,7 +2925,7 @@
         /// <param name="index"></param>
         private void BindData(VisualElement element, int index)
         {
-            class_ActionAssetCaptureData captureData = CloneTree.ActionAssetCaptureData[index];
+            class_ActionAssetCaptureData captureData = SourceTree.ActionAssetCaptureData[index];
 
             // 获取 icon
             VisualElement icon = element.Q<VisualElement>("icon");
@@ -2825,17 +2959,17 @@
             {
                 if (util_XGraphEditorUtility.DialogMsg("确认丢弃快照", $"确定要丢弃快照 '{captureData.name}' 吗？", "丢弃", "取消"))
                 {
-                    CloneTree.ActionAssetCaptureData.Remove(captureData);
+                    SourceTree.Capture_Discard(captureData);
                     AssetDatabase.SaveAssets();
                     RefreshListView();
                 }
             };
-            // 注册读取快照按钮事件
+            // 注册恢复快照按钮事件
             btn_restore.clicked += () =>
             {
                 if (util_XGraphEditorUtility.DialogMsg("确认恢复快照", $"确定要恢复快照 '{captureData.name}' 吗？", "恢复", "取消"))
                 {
-                    Capture_MaskVisible(false);
+                    Capture_MaskVisible(false, 0);
                     Capture_Dialog_Creator_Visiblity(false);
                     Capture_Dialog_Restore_Visiblity(false);
 
@@ -2844,8 +2978,70 @@
                     {
                         EditorApplication.delayCall += () =>
                         {
-                            string json_data = captureData.data;
-                            Debug.Log(json_data);
+                            string json = captureData.data;
+                            //Debug.Log(json);
+                            //解析成类替换CloneTree
+
+                            try
+                            {
+                                // 1. 解析 JSON 为临时 xAction_Asset 对象
+                                xAction_Asset restoredAsset = ScriptableObject.CreateInstance<xAction_Asset>();
+                                JsonUtility.FromJsonOverwrite(json, restoredAsset);
+
+                                if (restoredAsset == null)
+                                {
+                                    Notify_Send("错误", $"无法解析快照数据", xNotifyType.错误, 5000);
+                                    return;
+                                }
+                                // 2. 关键修复：确保 name 属性与源资源文件名匹配
+                                string sourceAssetName = SourceTree.name;
+                                string assetFileName = System.IO.Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(SourceTree));
+
+                                // 优先使用资产文件名，如果没有则使用源资源的 name
+                                string correctName = !string.IsNullOrEmpty(assetFileName) ? assetFileName : sourceAssetName;
+                                restoredAsset.name = correctName;
+
+                                // 3. 验证和修复数据
+                                if (restoredAsset.Actions == null) { restoredAsset.Actions = new List<xAction_Base>(); }
+                                if (restoredAsset.Variables == null) { restoredAsset.Variables = new List<xVariableData>(); }
+                                if (restoredAsset.Sticks == null) { restoredAsset.Sticks = new List<xStickData>(); }
+                                if (restoredAsset.Labels == null) { restoredAsset.Labels = new List<xLabelData>(); }
+                                if (restoredAsset.Decals == null) { restoredAsset.Decals = new List<xDecalData>(); }
+                                if (restoredAsset.Groups == null) { restoredAsset.Groups = new List<xGroupData>(); }
+                                if (restoredAsset.BlackboardVariable == null) { restoredAsset.BlackboardVariable = new List<Variable>(); }
+
+                                // 4. 保存旧引用用于销毁
+                                xAction_Asset oldCloneTree = CloneTree;
+
+                                // 5. 创建新的克隆树
+                                xAction_Asset newCloneTree = restoredAsset.Clone();
+
+                                // 6. 销毁临时的解析对象
+                                UnityEngine.Object.DestroyImmediate(restoredAsset);
+
+                                // 7. 替换引用
+                                CloneTree = newCloneTree;
+
+                                // 8. 安全销毁旧克隆树
+                                if (oldCloneTree != null && oldCloneTree != SourceTree)
+                                {
+                                    // 确保不是原始资源
+                                    UnityEngine.Object.DestroyImmediate(oldCloneTree);
+                                }
+
+                                // 9. 刷新 UI
+                                RestructureGraphViews();
+
+                                // 10. 通知用户
+                                Notify_Send("完成", $"已恢复快照: {captureData.name}", xNotifyType.信息, 5000);
+
+                                //Debug.Log($"快照恢复完成: {captureData.name}");
+                            }
+                            catch (System.Exception ex)
+                            {
+                                //Debug.LogError($"恢复快照时出错: {ex.Message}\n{ex.StackTrace}");
+                                Notify_Send("错误", $"恢复快照失败: {ex.Message}", xNotifyType.错误, 5000);
+                            }
                         };
                     };
                 }
@@ -2887,7 +3083,7 @@
             if (CloneTree == null) return;
 
             // 重新设置数据源
-            capture_childs.itemsSource = CloneTree.ActionAssetCaptureData;
+            capture_childs.itemsSource = SourceTree.ActionAssetCaptureData;
 
             // 刷新 ListView
             capture_childs.Rebuild();
@@ -2899,8 +3095,9 @@
         /// 快照遮罩背景可见性
         /// </summary>
         /// <param name="state"></param>
-        private void Capture_MaskVisible(bool state)
+        private void Capture_MaskVisible(bool state, float duration = 0.3f)
         {
+            xw_CaptureMask.style.transitionDuration = new StyleList<TimeValue>(new List<TimeValue>() { duration });
             xw_CaptureMask.pickingMode = state ? PickingMode.Position : PickingMode.Ignore;
             xw_CaptureMask.style.opacity = state ? 1 : 0;
         }
@@ -2925,24 +3122,202 @@
             xw_capture_dialog_restore.style.translate = new StyleTranslate(translate);
         }
         /// <summary>
-        /// 立即捕获快照
+        /// 立即建立快照
         /// </summary>
         public void Capture_Now()
         {
-            Capture_ShotBlink();
+            Capture_MaskVisible(false, 0.5f);
+            Capture_Dialog_Creator_Visiblity(false);
+
+            string name = xw_capture_dialog_creator_field_name.value;
+            string ver = xw_capture_dialog_creator_field_ver.value;
+
+            if (string.IsNullOrEmpty(name))
+            {
+                Notify_Send("明白", $"请填写 - \"快照命名\"！", xNotifyType.警告, 3000);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(ver))
+            {
+                Notify_Send("明白", $"请填写 - \"版本标记\"！", xNotifyType.警告, 3000);
+                return;
+            }
+
+            if (SourceTree.Capture_Exist(name, ver))
+                Notify_Send("忽略", $"节点资源快照 {xw_capture_dialog_creator_field_name.value} 记录已存在！", xNotifyType.警告, 5000);
+            else
+                Notify_Send("完成", $"节点资源快照 {xw_capture_dialog_creator_field_name.value} 记录完成！", xNotifyType.信息, 5000);
+            CaptureCreated();
         }
         /// <summary>
-        /// 快照闪光
-        /// </summary>        
-        public void Capture_ShotBlink()
+        /// 创建快照
+        /// </summary>
+        private void CaptureCreated()
         {
-            util_XGraphEditorUtility.Element_Opacity_Set(xw_captureshot, 1);
+            //Debug.Log("创建快照！");
+
+            string json = JsonUtility.ToJson(CloneTree);
+            class_ActionAssetCaptureData data = new class_ActionAssetCaptureData();
+            data.name = xw_capture_dialog_creator_field_name.value;
+            data.ver = xw_capture_dialog_creator_field_ver.value;
+            data.datetime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            data.data = json;
+
+            SourceTree.Capture_Add(data);
+        }
+        /// <summary>
+        /// 清空快照
+        /// </summary>
+        private void CaptureClear()
+        {
+            if (!util_XGraphEditorUtility.DialogMsg("确认清空快照", $"确定要清空所有快照吗？", "清空", "取消"))
+                return;
+
+            Notify_Send("已清空", $"已清空所有快照！", xNotifyType.信息, 2000);
+            //Debug.Log("清空所有快照！");
+            SourceTree.Capture_Clear();
+        }
+        #endregion
+
+        #region 通知面板
+        public void Notify_Send(string btn_name, string msg, xNotifyType type = xNotifyType.信息, float autoCloseDuration = 3000f)
+        {
+            // 取消之前的自动关闭
+            CancelAutoClose();
+
+            // 设置新的倒计时时长
+            notifyAutoCloseDuration = autoCloseDuration;
+
+            switch (type)
+            {
+                case xNotifyType.信息:
+                    xw_dialog_notify_btn_icon.style.backgroundImage = notifyicons[0];
+                    xw_dialog_notify_btn_icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString("4E9AFF");
+                    break;
+                case xNotifyType.警告:
+                    xw_dialog_notify_btn_icon.style.backgroundImage = notifyicons[1];
+                    xw_dialog_notify_btn_icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString("FFC14F");
+                    break;
+                case xNotifyType.错误:
+                    xw_dialog_notify_btn_icon.style.backgroundImage = notifyicons[2];
+                    xw_dialog_notify_btn_icon.style.unityBackgroundImageTintColor = util_XGraphEditorUtility.Color_From_HexString("FF5353");
+                    break;
+            }
+            xw_dialog_notify_btn_name.text = btn_name;
+            xw_dialog_notify_msg.text = msg;
+            Notify_Displayer(true);
+
+            // 如果设置了正数的倒计时，则启动自动关闭
+            if (autoCloseDuration > 0)
+            {
+                StartAutoClose(autoCloseDuration);
+            }
+        }
+
+        /// <summary>
+        /// 显示通知
+        /// </summary>
+        /// <param name="state"></param>
+        public void Notify_Displayer(bool state)
+        {
+            if (!state)
+            {
+                // 关闭通知时取消自动关闭计时器
+                CancelAutoClose();
+            }
+
+            xw_dialog_notify.style.display = new StyleEnum<DisplayStyle>(state ? DisplayStyle.Flex : DisplayStyle.None);
+
+            if (!state)
+                return;
+
+            Translate translate_start = new Translate(0, state ? -90 : 0, 0);
+            Translate translate_end = new Translate(0, state ? -118 : 0, 0);
+
+            xw_dialog_notify.style.transitionDuration = new StyleList<TimeValue>(new List<TimeValue>() { 0 });
+
+            xw_dialog_notify.style.opacity = 0;
+            xw_dialog_notify.style.translate = new StyleTranslate(translate_start);
 
             EditorApplication.delayCall += () =>
             {
-                util_XGraphEditorUtility.Element_Opacity_Set(xw_captureshot, 0);
+                xw_dialog_notify.style.transitionDuration = new StyleList<TimeValue>(new List<TimeValue>() { 0.45f });
+
+                xw_dialog_notify.style.opacity = 1;
+                xw_dialog_notify.style.translate = new StyleTranslate(translate_end);
             };
+
+            if (!state)
+            {
+                xw_dialog_notify_btn_name.text = null;
+                xw_dialog_notify_msg.text = null;
+            }
         }
+        #endregion
+
+        #region 通知面板自动关闭功能
+
+        /// <summary>
+        /// 启动自动关闭计时器
+        /// </summary>
+        /// <param name="duration">倒计时时长（毫秒）</param>
+        private void StartAutoClose(float duration)
+        {
+            CancelAutoClose(); // 先取消之前的计时
+
+            isNotifyAutoClosePending = true;
+            notifyAutoCloseTimer.Restart();
+
+            // 使用 EditorApplication.delayCall 模拟计时器
+            delayedAutoCloseAction = () =>
+            {
+                if (isNotifyAutoClosePending && notifyAutoCloseTimer.ElapsedMilliseconds >= duration)
+                {
+                    Notify_Displayer(false);
+                    isNotifyAutoClosePending = false;
+                    delayedAutoCloseAction = null;
+                }
+            };
+
+            // 开始计时循环
+            EditorApplication.update += AutoCloseUpdate;
+        }
+
+        /// <summary>
+        /// 取消自动关闭
+        /// </summary>
+        private void CancelAutoClose()
+        {
+            if (isNotifyAutoClosePending)
+            {
+                EditorApplication.update -= AutoCloseUpdate;
+                isNotifyAutoClosePending = false;
+                notifyAutoCloseTimer.Stop();
+                delayedAutoCloseAction = null;
+            }
+        }
+
+        /// <summary>
+        /// 自动关闭更新循环
+        /// </summary>
+        private void AutoCloseUpdate()
+        {
+            if (delayedAutoCloseAction != null && isNotifyAutoClosePending)
+            {
+                delayedAutoCloseAction.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// 获取剩余自动关闭时间（毫秒）
+        /// </summary>
+        public float GetRemainingAutoCloseTime()
+        {
+            if (!isNotifyAutoClosePending) return 0;
+            return Mathf.Max(0, notifyAutoCloseDuration - (float)notifyAutoCloseTimer.ElapsedMilliseconds);
+        }
+
         #endregion
     }
 }

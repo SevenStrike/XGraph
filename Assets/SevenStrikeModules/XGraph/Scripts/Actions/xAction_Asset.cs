@@ -2,17 +2,10 @@ namespace SevenStrikeModules.XGraph
 {
     using System;
     using System.Collections.Generic;
-    using UnityEditor.VersionControl;
     using UnityEngine;
 
     public class xAction_Asset : ScriptableObject
     {
-        #region 行为节点资源快照
-        /// <summary>
-        /// 行为节点资源快照
-        /// </summary>
-        public List<class_ActionAssetCaptureData> ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
-        #endregion
 
         #region Graphview 基础参数
         /// <summary>
@@ -135,6 +128,13 @@ namespace SevenStrikeModules.XGraph
         /// 黑板变量列表
         /// </summary>
         [SerializeReference] public List<Variable> BlackboardVariable = new List<Variable>();
+        #endregion
+
+        #region 行为节点资源快照
+        /// <summary>
+        /// 行为节点资源快照
+        /// </summary>
+        public List<class_ActionAssetCaptureData> ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
         #endregion
 
         #region 回调
@@ -320,6 +320,8 @@ namespace SevenStrikeModules.XGraph
         {
             if (target == null) return;
 
+            this.name = target.name;
+
             // 清空当前原始资源的所有子节点
             ClearDatas();
 
@@ -358,12 +360,12 @@ namespace SevenStrikeModules.XGraph
             // 自定义扩展节点列表配置文件
             GraphNodesStruct = target.GraphNodesStruct;
 
-            ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
-            ActionAssetCaptureData.Clear();
-            foreach (var data in target.ActionAssetCaptureData)
-            {
-                ActionAssetCaptureData.Add(data.Clone());
-            }
+            //ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
+            //ActionAssetCaptureData.Clear();
+            //foreach (var data in target.ActionAssetCaptureData)
+            //{
+            //    ActionAssetCaptureData.Add(data.Clone());
+            //}
             #endregion
 
             #region Nodes
@@ -545,6 +547,8 @@ namespace SevenStrikeModules.XGraph
             // 创建新的 ActionNode_Asset
             xAction_Asset asset = CreateInstance<xAction_Asset>();
 
+            asset.name = this.name;
+
             #region Graphs
             // 对象名称
             asset.name = name;
@@ -577,11 +581,11 @@ namespace SevenStrikeModules.XGraph
             // 选择框主题配置参数（脱离引用克隆）
             asset.GraphviewRectangleSelectorThemes = GraphviewRectangleSelectorThemes.Clone();
 
-            asset.ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
-            foreach (var data in ActionAssetCaptureData)
-            {
-                asset.ActionAssetCaptureData.Add(data.Clone());
-            }
+            //asset.ActionAssetCaptureData = new List<class_ActionAssetCaptureData>();
+            //foreach (var data in ActionAssetCaptureData)
+            //{
+            //    asset.ActionAssetCaptureData.Add(data.Clone());
+            //}
             #endregion
 
             #region Nodes
@@ -760,40 +764,6 @@ namespace SevenStrikeModules.XGraph
             #endregion
 
             return asset;
-        }
-        /// <summary>
-        /// 保存为Tree资源到目标路径下
-        /// </summary>
-        /// <param name="root"></param>
-        /// <param name="path"></param>
-        public void SaveNodeRootAsset(xAction_Asset root, string path)
-        {
-#if UNITY_EDITOR
-            //// 提取根路径整理 - 去掉尾部的 /
-            //string path_root = util_Dashboard.GetPath_Root();
-            //path_root = path_root.Substring(0, path_root.Length - 1);
-
-            //// 目标路径整理 - 去掉尾部的 /
-            //string path_target = $"{util_Dashboard.GetPath_Temp()}";
-            //path_target = path_target.Substring(0, path_target.Length - 1);
-
-            //// 判断是否存在目标路径，如果不存在就创建该路径的文件夹
-            //if (!UnityEditor.AssetDatabase.AssetPathExists(path_target))
-            //{
-            //    UnityEditor.AssetDatabase.CreateFolder(path_root, "Temp");
-            //    //AssetDatabase.SaveAssets();
-            //    UnityEditor.AssetDatabase.Refresh();
-            //}
-
-            //// 保存为临时.asset 文件，供Unity资源系统进行操作
-            //UnityEditor.AssetDatabase.CreateAsset(root, path);
-            //foreach (var treenode in root.Actions)
-            //{
-            //UnityEditor.AssetDatabase.AddObjectToAsset(treenode, root);
-            //}
-
-            //AssetDatabase.SaveAssets();
-#endif
         }
         /// <summary>
         /// 获取指定数据节点的子资源
@@ -1444,6 +1414,61 @@ namespace SevenStrikeModules.XGraph
         public void NodeGroup_Remove(xGroupData data)
         {
             Groups.Remove(data);
+        }
+        #endregion
+
+        #region 行为节点快照操作
+        /// <summary>
+        /// 检测快照是否已经存在
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="ver"></param>
+        /// <returns></returns>
+        public bool Capture_Exist(string name, string ver)
+        {
+            bool exist = false;
+            foreach (var data in ActionAssetCaptureData)
+            {
+                if (data.name == name && data.ver == ver)
+                {
+                    exist = true;
+                    break;
+                }
+            }
+            return exist;
+        }
+        /// <summary>
+        /// 添加快照
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="ver"></param>
+        /// <returns></returns>
+        public void Capture_Add(class_ActionAssetCaptureData data)
+        {
+            if (Capture_Exist(data.name, data.ver))
+                return;
+
+            ActionAssetCaptureData.Add(data);
+        }
+        /// <summary>
+        /// 丢弃快照
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public void Capture_Discard(class_ActionAssetCaptureData data)
+        {
+            if (!Capture_Exist(data.name, data.ver))
+                return;
+
+            ActionAssetCaptureData.Remove(data);
+        }
+        /// <summary>
+        /// 清空所有快照
+        /// </summary>
+        /// <returns></returns>
+        public void Capture_Clear()
+        {
+            ActionAssetCaptureData.Clear();
         }
         #endregion
     }

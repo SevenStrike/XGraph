@@ -270,6 +270,9 @@ namespace SevenStrikeModules.XGraph
         /// <param name="newPos"></param>
         public override void SetPosition(Rect newPos)
         {
+            if (ActionData.BaseArgs.RootAsset == null)
+                return;
+
             Undo.RecordObject(ActionData.BaseArgs.RootAsset, "SetPosition VisualNode");
             base.SetPosition(newPos);
             if (ActionData != null)
