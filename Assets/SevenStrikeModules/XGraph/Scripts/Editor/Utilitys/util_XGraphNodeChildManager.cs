@@ -256,6 +256,7 @@ namespace SevenStrikeModules.XGraph
                 if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.identifyName}' 吗？", "删除", "取消"))
                 {
                     CloneNodeAsset.Remove(action);
+                    CloneNodeAsset.Variables_Refresh();
                     AssetDatabase.SaveAssets();
                     RefreshListView();
                 }
