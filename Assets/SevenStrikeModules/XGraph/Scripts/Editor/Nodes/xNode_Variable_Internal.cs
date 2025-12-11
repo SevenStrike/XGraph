@@ -88,8 +88,9 @@ namespace SevenStrikeModules.XGraph
             Type var_type = Type.GetType($"SevenStrikeModules.XGraph.Variable_{actionvar.variable.type}, {asm}");
 
             #region 端口设置
-            // 加入行为端口
+            // 加入端口：单输入，类型：根据传入 variable.type 参数解析
             Port_Inputs.Add(new xGraph_NodePort("", var_type, Port.Capacity.Single));
+            // 加入端口：多输出，类型：根据传入 variable.type 参数解析
             Port_Outputs.Add(new xGraph_NodePort("", var_type, Port.Capacity.Multi));
             #endregion
 

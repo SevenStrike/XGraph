@@ -125,14 +125,15 @@ namespace SevenStrikeModules.XGraph
         /// <param name="actions"></param>
         private void Restructure_Actions(List<xAction_Base> actions)
         {
-            // 根据根节点的数据列表  -  重建  -  内部变量节点
-            // 内部变量节点优先重建 - 为了确保后续的行为节点能正常注册 On_InternalVariable_ValueChanged 回调
+            // 根据行为节点数据重建视觉节点 - 变量类，内部变量节点优先重建 - 为了确保后续的行为节点能正常注册 On_InternalVariable_ValueChanged 回调
             foreach (var data in actions)
             {
+                // 如果节点数据类型为变量类
                 if (data is xAction_Variable)
                 {
+                    // 为节点设置根行为资源
                     data.SetActionAssetRoot(ActionTreeAsset);
-
+                    // 根据节点数据重建视觉节点
                     xNode_Base vNode_Base = Node_MakeAction(data.BaseArgs.nodeGraphPosition, data);
                     vNode_Base.RefreshExpandedState();
 
@@ -141,22 +142,28 @@ namespace SevenStrikeModules.XGraph
                     vNode_Base.CheckTransparentDisplay(vNode_Base.ActionData.BaseArgs.TransparentNode);
                 }
             }
-            // 根据根节点的数据列表  -  重建  -  行为节点
+            // 根据行为节点数据重建视觉节点- 行为类
             foreach (var data in actions)
             {
+                // 如果节点数据类型不是变量类
                 if (data is not xAction_Variable)
                 {
+                    // 为节点设置根行为资源
                     data.SetActionAssetRoot(ActionTreeAsset);
 
+                    // 如果节点数据类型为：延展节点
                     if (data.BaseArgs.actionNodeType == "Relay")
                     {
+                        // 根据节点数据重建视觉节点
                         xNode_Relay vNode_Relay = Node_MakeRelay(data.BaseArgs.nodeGraphPosition, data);
                         vNode_Relay.Draw();
                         vNode_Relay.CheckTransparentDisplay(vNode_Relay.ActionData.BaseArgs.TransparentNode);
                         vNode_Relay.RefreshExpandedState();
                     }
+                    // 否则就是：一般行为节点
                     else
                     {
+                        // 根据节点数据重建视觉节点
                         xNode_Base vNode_Base = Node_MakeAction(data.BaseArgs.nodeGraphPosition, data);
                         vNode_Base.RefreshExpandedState();
 
@@ -166,9 +173,11 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-            // 根据行为树根节点的数据列表  -  重建  -  行为连线
+
+            // 根据行为节点数据重建父子关系的连线
             foreach (var data in actions)
             {
+                // 如果是分支节点数据
                 if (data is xAction_Branch branch_node)
                 {
                     xNode_Base n_branch = FindNodeView(branch_node.BaseArgs.guid);
@@ -180,7 +189,7 @@ namespace SevenStrikeModules.XGraph
                             xNode_Base n_true = FindNodeView(branch_node.childNode_true);
                             if (n_true != null)
                             {
-                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_true.Port_Inputs));
+                                util_AnimatedEdge edge = ConnectNode(port.Port, util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_true.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
@@ -190,7 +199,7 @@ namespace SevenStrikeModules.XGraph
                             xNode_Base n_false = FindNodeView(branch_node.childNode_false);
                             if (n_false != null)
                             {
-                                util_AnimatedEdge edge = port.Port.ConnectTo<util_AnimatedEdge>(util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_false.Port_Inputs));
+                                util_AnimatedEdge edge = ConnectNode(port.Port, util_XGraphEditorUtility.GetPort_WithType_OfPortList<xAction_Base>(n_false.Port_Inputs));
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
@@ -225,7 +234,7 @@ namespace SevenStrikeModules.XGraph
                     }
                 }
             }
-            // 根据行为树根节点的数据列表  -  检查并重建  -  行为延展
+            // 根据行为节点数据重建延展类的节点的父子关系连线
             foreach (var data in actions)
             {
                 // 获取延展节点
@@ -236,7 +245,8 @@ namespace SevenStrikeModules.XGraph
                     relay.CheckConnected();
                 }
             }
-            // 根据行为树根节点的数据列表  -  检查并重建  -  调用重建回调
+
+            // 调用每个行为节点数据上的重建回调，便于注册的事件得到回调响应
             foreach (var data in actions)
             {
                 if (data.On_Node_Restructure != null)
@@ -499,10 +509,10 @@ namespace SevenStrikeModules.XGraph
                     // 使用倒序循环，避免删除时索引问题
                     for (int i = action.BaseArgs.VariableDatas.Count - 1; i >= 0; i--)
                     {
-                        var item = action.BaseArgs.VariableDatas[i];
+                        var vdata = action.BaseArgs.VariableDatas[i];
 
                         // 在节点图内找到目标变量节点与行为节点的匹配端口连接起来
-                        xNode_Variable n_var = FindNode(item.VariableNodeGuid) as xNode_Variable;
+                        xNode_Variable n_var = FindNode(vdata.VariableNodeGuid) as xNode_Variable;
                         if (n_var != null)
                         {
                             // 获取变量节点的变量类型
@@ -514,13 +524,13 @@ namespace SevenStrikeModules.XGraph
                             Port port_parent = null;
 
                             if (n_parent is xNode_Debug)
-                                port_parent = n_parent.GetPort(item.TargetPortName, xPortType.In);
+                                port_parent = n_parent.GetPort(vdata.TargetPortName, xPortType.In);
                             else
-                                port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+                                port_parent = n_parent.GetPort(type, vdata.TargetPortName, xPortType.In);
 
                             if (n_var != null && port_parent != null)
                             {
-                                util_AnimatedEdge edge = n_var.OutputPort.Port.ConnectTo<util_AnimatedEdge>(port_parent);
+                                util_AnimatedEdge edge = ConnectNode(n_var.OutputPort.Port, port_parent);
                                 edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                 AddElement(edge);
                             }
@@ -558,38 +568,38 @@ namespace SevenStrikeModules.XGraph
                     for (int i = action.BaseArgs.InternalVariableDatas.Count - 1; i >= 0; i--)
                     {
                         // 获取列表其中一项
-                        var item = action.BaseArgs.InternalVariableDatas[i];
+                        var inter_vdata = action.BaseArgs.InternalVariableDatas[i];
 
                         // 在节点图内找到目标 - 内部变量节点
-                        xNode_Variable_Internal internal_varnode = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
+                        xNode_Variable_Internal internal_varnode = FindNode(inter_vdata.VariableNodeGuid) as xNode_Variable_Internal;
                         if (internal_varnode != null)
                         {
-                            item.variable = internal_varnode.VariableData.variable.Clone(false);
-                            switch (item.variable.type)
+                            inter_vdata.variable = internal_varnode.VariableData.variable.Clone(false);
+                            switch (inter_vdata.variable.type)
                             {
                                 case xVariableType.String:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<string>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<string>());
                                     break;
                                 case xVariableType.Float:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<float>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<float>());
                                     break;
                                 case xVariableType.Int:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<int>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<int>());
                                     break;
                                 case xVariableType.Bool:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<bool>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<bool>());
                                     break;
                                 case xVariableType.Vector2:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector2>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector2>());
                                     break;
                                 case xVariableType.Vector3:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector3>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector3>());
                                     break;
                                 case xVariableType.Vector4:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector4>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector4>());
                                     break;
                                 case xVariableType.Color:
-                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Color>());
+                                    inter_vdata.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Color>());
                                     break;
                             }
                             internal_varnode.UpdateFieldValue();
@@ -604,9 +614,9 @@ namespace SevenStrikeModules.XGraph
                             Port port_parent = null;
 
                             if (n_parent is xNode_Debug)
-                                port_parent = n_parent.GetPort(item.TargetPortName, xPortType.In);
+                                port_parent = n_parent.GetPort(inter_vdata.TargetPortName, xPortType.In);
                             else
-                                port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+                                port_parent = n_parent.GetPort(type, inter_vdata.TargetPortName, xPortType.In);
 
                             if (internal_varnode != null && port_parent != null)
                             {
@@ -620,7 +630,7 @@ namespace SevenStrikeModules.XGraph
 
                                 if (outputPort != null)
                                 {
-                                    util_AnimatedEdge edge = outputPort.ConnectTo<util_AnimatedEdge>(port_parent);
+                                    util_AnimatedEdge edge = ConnectNode(outputPort, port_parent);
                                     edge.OnUnSelectedEdge += OnUnSelectedEdge;
                                     AddElement(edge);
                                 }
@@ -628,14 +638,14 @@ namespace SevenStrikeModules.XGraph
                             else
                             {
                                 // 端口不存在，移除无效记录
-                                Debug.LogWarning($"移除无效的内部变量引用（端口不存在）: 行为={action.BaseArgs.guid}, 变量节点={item.VariableNodeGuid}");
+                                Debug.LogWarning($"移除无效的内部变量引用（端口不存在）: 行为={action.BaseArgs.guid}, 变量节点={inter_vdata.VariableNodeGuid}");
                                 action.BaseArgs.InternalVariableDatas.RemoveAt(i);
                             }
                         }
                         else
                         {
                             // 变量节点不存在，移除无效记录
-                            Debug.LogWarning($"移除无效的内部变量引用（节点不存在）: 行为={action.BaseArgs.guid}, 变量节点={item.VariableNodeGuid}");
+                            Debug.LogWarning($"移除无效的内部变量引用（节点不存在）: 行为={action.BaseArgs.guid}, 变量节点={inter_vdata.VariableNodeGuid}");
                             action.BaseArgs.InternalVariableDatas.RemoveAt(i);
                         }
                     }

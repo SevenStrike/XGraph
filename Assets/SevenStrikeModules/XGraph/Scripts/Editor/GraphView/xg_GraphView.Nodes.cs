@@ -627,7 +627,6 @@ namespace SevenStrikeModules.XGraph
             // 初始化节点并将data数据容器赋值过来便于后面使用
             node.Initialize(this, pos, data);
 
-
             #region GraphView 视图操作
             // 添加进当前主GraphView视图中
             this.AddElement(node);

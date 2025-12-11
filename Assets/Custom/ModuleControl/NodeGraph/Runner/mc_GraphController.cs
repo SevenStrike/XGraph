@@ -33,14 +33,23 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public KeyCode key_RunnerMode = KeyCode.M;
 
+
+
+        public KeyCode key_vare_control = KeyCode.U;
         public string[] vare_data_list;
         public int index_vare = -1;
 
+        public KeyCode key_msg_control = KeyCode.I;
         public string[] msg_data_list;
         public int index_msg = -1;
 
+        public KeyCode key_delay_control = KeyCode.O;
         public float[] delay_data_list;
         public int index_delay = -1;
+
+        public KeyCode key_switch_control = KeyCode.P;
+        public bool[] switch_data_list;
+        public int index_switch = -1;
 
         private void Start()
         {
@@ -50,8 +59,11 @@ namespace SevenStrikeModules.XGraph
             msg_data_list = new string[4] { "m_bK7TdR2N", "m_Yp5sQ9Lm", "m_3xG8FjZc", "m_qHn1Vw4R" };
             index_msg = -1;
 
-            delay_data_list = new float[4] { 1, 2, 3, 4 };
+            delay_data_list = new float[4] { 0, 1, 2, 3 };
             index_delay = -1;
+
+            switch_data_list = new bool[2] { true, false };
+            index_switch = -1;
         }
 
         private void OnDestroy()
@@ -97,9 +109,8 @@ namespace SevenStrikeModules.XGraph
             {
                 GraphRunner.Manual_Action_Execution();
             }
-
             // 修改变量 - vare
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(key_vare_control))
             {
                 if (index_vare >= vare_data_list.Length - 1)
                     index_vare = 0;
@@ -108,9 +119,8 @@ namespace SevenStrikeModules.XGraph
 
                 GraphRunner.SampleAsset.Variable_SetValue<string>("vare", vare_data_list[index_vare]);
             }
-
             // 修改变量 - msg
-            if (Input.GetKeyDown(KeyCode.O))
+            if (Input.GetKeyDown(key_msg_control))
             {
                 if (index_msg >= msg_data_list.Length - 1)
                     index_msg = 0;
@@ -119,9 +129,8 @@ namespace SevenStrikeModules.XGraph
 
                 GraphRunner.SampleAsset.Variable_SetValue<string>("msg", msg_data_list[index_msg]);
             }
-
             // 修改变量 - delay
-            if (Input.GetKeyDown(KeyCode.L))
+            if (Input.GetKeyDown(key_delay_control))
             {
                 if (index_delay >= delay_data_list.Length - 1)
                     index_delay = 0;
@@ -129,6 +138,16 @@ namespace SevenStrikeModules.XGraph
                     index_delay++;
 
                 GraphRunner.SampleAsset.Variable_SetValue<float>("delay", delay_data_list[index_delay]);
+            }
+            // 修改变量 - switch
+            if (Input.GetKeyDown(key_switch_control))
+            {
+                if (index_switch >= switch_data_list.Length - 1)
+                    index_switch = 0;
+                else
+                    index_switch++;
+
+                GraphRunner.SampleAsset.Variable_SetValue<bool>("switch", switch_data_list[index_switch]);
             }
         }
 

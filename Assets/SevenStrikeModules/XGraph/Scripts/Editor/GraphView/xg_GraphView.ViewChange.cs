@@ -45,6 +45,7 @@ namespace SevenStrikeModules.XGraph
                 // 如果创建了连线，edge 为连线
                 foreach (var edge in edgesToCreate)
                 {
+                    // 输出端->Parent    |    输入端->Child
                     CreateEdge(edge.output.node, edge.input.node, edge);
                 }
             }
@@ -58,6 +59,8 @@ namespace SevenStrikeModules.XGraph
         /// <param name="edge"></param>
         private void CreateEdge(Node n_parent, Node n_child, Edge edge)
         {
+            // 连线的输出端->Parent    |    连线的输入端->Child
+
             // 移除原有的连线
             if (edge != null)
             {
@@ -179,7 +182,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                //Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid");
+                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind Variable  To Action");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
@@ -194,7 +197,7 @@ namespace SevenStrikeModules.XGraph
 
             #region 内部变量节点 ---> 行为节点
             xNode_Variable_Internal node_varInternal = n_parent as xNode_Variable_Internal;
-            if (node_varInternal != null && node_child != null)
+            if (node_varInternal != null && node_child != null && node_child is not xNode_Variable_Internal)
             {
                 Port port_start = node_varInternal.Port_Outputs.FirstOrDefault()?.Port;
                 Port port_end = null;
@@ -215,7 +218,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                //Undo.RecordObject(node_child.ActionData, "Assigned InternalVariable Guid To InternalVariableAction");
+                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind InternalVariableAction To Action");
                 string portName = edge?.input.portName;
                 node_child.ActionData.InternalVariableData_Bind(node_varInternal.VariableData, portName);
             }
@@ -244,7 +247,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                //Undo.RecordObject(node_child.ActionData, "Assigned Variable Guid To BaseAction");
+                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind Variable To Action");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_bb_var.VariableData, portName);
@@ -287,6 +290,8 @@ namespace SevenStrikeModules.XGraph
                         animatedEdge = ConnectNode(port_property, port_action);
                         AddElement(animatedEdge);
                     }
+
+                    Undo.RecordObject(node_property.property.BaseArgs.RootAsset, "Bind Property To Action");
 
                     // node_property.PropertyData : 目标属性节点的属性数据
                     xAction_Property propertyData = node_property.property;

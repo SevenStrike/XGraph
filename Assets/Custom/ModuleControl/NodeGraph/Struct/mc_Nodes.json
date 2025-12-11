@@ -2,7 +2,7 @@
     "root_title": "节点列表",
     "root_types": [
         {
-            "catergory_title": "基础",
+            "catergory_title": "模组控制器",
             "catergory_icon": "b3594d300f4dc65418422a1c931e4d0d",
             "catergory_nodes": [
                 {
@@ -34,7 +34,7 @@
                     "prefixNamespace": "SevenStrikeModules.XGraph",
                     "prefixClass": "action_mc_",
                     "actionNodeType": "mainlight_control",
-                    "icon": "4318583132bab364a8f9b989966915b9",
+                    "icon": "aebbed90eb11e364fbf2831156f5e6e9",
                     "visualNodeType": "graph_mc_mainlight_control"
                 },
                 {

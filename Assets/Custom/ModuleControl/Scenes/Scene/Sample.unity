@@ -11753,7 +11753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 602bdf3665d4b3f498b1ff845c6d0343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SampleAsset: {fileID: 11400000, guid: a5e25493adf33e74a8aef658a368ae97, type: 2}
+  SampleAsset: {fileID: 11400000, guid: 7e4347ea3efbd394dba64b89420b793f, type: 2}
   TargetScript: {fileID: 1444357495}
   ManualExecutionMode: 0
 --- !u!114 &1444357498
@@ -11775,12 +11775,18 @@ MonoBehaviour:
   key_ActionResume: 114
   key_ActionManualStep: 32
   key_RunnerMode: 109
+  key_vare_control: 117
   vare_data_list: []
   index_vare: 0
+  key_msg_control: 105
   msg_data_list: []
   index_msg: 0
+  key_delay_control: 111
   delay_data_list: []
   index_delay: 0
+  key_switch_control: 112
+  switch_data_list: 
+  index_switch: -1
 --- !u!1 &1471331477
 GameObject:
   m_ObjectHideFlags: 0
@@ -14779,7 +14785,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 0
-  m_Color: {r: 0, g: 0.88063455, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.411, b: 0, a: 1}
   m_Intensity: 3.27
   m_Range: 3
   m_SpotAngle: 156.02028

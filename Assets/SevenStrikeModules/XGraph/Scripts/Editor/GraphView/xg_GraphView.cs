@@ -793,6 +793,10 @@ namespace SevenStrikeModules.XGraph
                 if (startNode == port.node)
                     continue;
 
+                // 确保不是同一个节点的端口（防止自连接）
+                if ((startNode is xNode_Variable_Internal) && (port.node is xNode_Variable_Internal))
+                    continue;
+
                 // 检查类型是否兼容
                 if (!startPort.portType.IsAssignableFrom(port.portType) && !port.portType.IsAssignableFrom(startPort.portType))
                 {
