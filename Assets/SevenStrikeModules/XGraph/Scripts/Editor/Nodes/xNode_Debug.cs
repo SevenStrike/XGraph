@@ -65,6 +65,8 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
+
+            debug.DebugMessage();
         }
         #endregion
 
@@ -132,6 +134,38 @@ namespace SevenStrikeModules.XGraph
         public override Foldout ins_Folder_Propertys(VisualElement root)
         {
             return null;
+        }
+        /// <summary>
+        /// 自定义组件折叠容器
+        /// </summary>
+        /// <param name="root"></param>
+        public override Foldout ins_Folder_Extensions(VisualElement root)
+        {
+            Foldout fold = base.ins_Folder_Extensions(root);
+
+            #region 调试内容
+            Label label_msg = util_XGraphInspectorGUI.GUI_Label(fold, $"对象内容：{debug.Msg}", new string[] { "field_text" });
+            #endregion
+
+            // 当节点绑定变量时，将变量值同步到控件值
+            debug.On_Node_Variable_Binded += (vare) =>
+            {
+                label_msg.text = debug.Msg;
+            };
+
+            // 克隆节点后刷新控件值为克隆后的最新值
+            debug.On_Node_Duplicated += (clone, source) =>
+            {
+                // 克隆父物体的行为数据
+                xAction_Debug s_source = (xAction_Debug)source;
+                // 克隆后的行为数据
+                xAction_Debug s_clone = (xAction_Debug)clone;
+                s_clone.Msg = s_source.Msg;
+
+                label_msg.text = debug.Msg;
+            };
+
+            return fold;
         }
         #endregion
     }

@@ -53,5 +53,12 @@ namespace SevenStrikeModules.XGraph
 
             return clone;
         }
+
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+
+            Set_ModulesInitialized("激活所有模组");
+        }
     }
 }

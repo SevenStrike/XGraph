@@ -536,7 +536,8 @@ namespace SevenStrikeModules.XGraph
             }
             #endregion
 
-            GUIUtility.systemCopyBuffer = JsonUtility.ToJson(target);
+            // 清理无效属性绑定记录
+            CleanAllInvalidPropertyBindings();
         }
         /// <summary>
         /// 创建当前流程设计的克隆体（仅编辑器下）
@@ -762,6 +763,9 @@ namespace SevenStrikeModules.XGraph
                 asset.BlackboardVariable.Add(v.Clone(false));
             }
             #endregion
+
+            // 清理无效属性绑定记录
+            asset.CleanAllInvalidPropertyBindings();
 
             return asset;
         }
@@ -1077,6 +1081,16 @@ namespace SevenStrikeModules.XGraph
                     Actions[i].On_Node_IsStartNode(Actions[i].BaseArgs.isStartNode);
             }
         }
+        /// <summary>
+        /// 所有节点清理属性绑定
+        /// </summary>
+        public void CleanAllInvalidPropertyBindings()
+        {
+            foreach (var action in Actions)
+            {
+                action.BindedPropertys_Cleaner();
+            }
+        }
         #endregion
 
         #region 便签操作
@@ -1294,47 +1308,48 @@ namespace SevenStrikeModules.XGraph
             // 更新行为节点中的 “黑板变量数据列表” 的变量信息
             foreach (var action in Actions)
             {
-                foreach (var data in action.BaseArgs.VariableDatas)
+                foreach (var dataItem in action.BaseArgs.VariableDatas)
                 {
-                    foreach (var variable in BlackboardVariable)
+                    foreach (var bbvare in BlackboardVariable)
                     {
                         // 匹配黑板变量
-                        if (data.variable.guid == variable.guid)
+                        if (dataItem.variable.guid == bbvare.guid)
                         {
-                            data.variable.name = variable.name;
-                            data.variable.description = variable.description;
-                            switch (data.variable.type)
+                            dataItem.variable.name = bbvare.name;
+                            dataItem.variable.description = bbvare.description;
+                            switch (dataItem.variable.type)
                             {
                                 case xVariableType.String:
-                                    data.variable.SetValue<string>(variable.GetValue<string>());
+                                    dataItem.variable.SetValue<string>(bbvare.GetValue<string>());
                                     break;
                                 case xVariableType.Float:
-                                    data.variable.SetValue<float>(variable.GetValue<float>());
+                                    dataItem.variable.SetValue<float>(bbvare.GetValue<float>());
                                     break;
                                 case xVariableType.Int:
-                                    data.variable.SetValue<int>(variable.GetValue<int>());
+                                    dataItem.variable.SetValue<int>(bbvare.GetValue<int>());
                                     break;
                                 case xVariableType.Bool:
-                                    data.variable.SetValue<bool>(variable.GetValue<bool>());
+                                    dataItem.variable.SetValue<bool>(bbvare.GetValue<bool>());
                                     break;
                                 case xVariableType.Vector2:
-                                    data.variable.SetValue<Vector2>(variable.GetValue<Vector2>());
+                                    dataItem.variable.SetValue<Vector2>(bbvare.GetValue<Vector2>());
                                     break;
                                 case xVariableType.Vector3:
-                                    data.variable.SetValue<Vector3>(variable.GetValue<Vector3>());
+                                    dataItem.variable.SetValue<Vector3>(bbvare.GetValue<Vector3>());
                                     break;
                                 case xVariableType.Vector4:
-                                    data.variable.SetValue<Vector4>(variable.GetValue<Vector4>());
+                                    dataItem.variable.SetValue<Vector4>(bbvare.GetValue<Vector4>());
                                     break;
                                 case xVariableType.Color:
-                                    data.variable.SetValue<Color>(variable.GetValue<Color>());
+                                    dataItem.variable.SetValue<Color>(bbvare.GetValue<Color>());
                                     break;
                             }
 
+                            // 此时还要判断节点数据类型是否是变量类型，如果是的那么需要将变量属性与值克隆过去以达到同步状态
                             if (action is xAction_Variable vare)
                             {
                                 string originalGUID = vare.variable.guid;
-                                vare.variable = data.variable.Clone(false);
+                                vare.variable = dataItem.variable.Clone(false);
                                 vare.variable.guid = originalGUID;
                                 vare.variable.name = action.identifyName;
                             }

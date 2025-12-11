@@ -50,6 +50,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action OnManual_WaitComplete;
 
+
         private void Start()
         {
             // 为每一个行为注册运行时变量值改变回调

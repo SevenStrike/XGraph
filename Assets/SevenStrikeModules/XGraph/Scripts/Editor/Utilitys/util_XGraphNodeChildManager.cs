@@ -255,9 +255,14 @@ namespace SevenStrikeModules.XGraph
             {
                 if (util_XGraphEditorUtility.DialogMsg("确认删除", $"确定要删除节点 '{action.identifyName}' 吗？", "删除", "取消"))
                 {
+                    // 清理无效属性绑定
+                    CloneNodeAsset.CleanAllInvalidPropertyBindings();
+                    // 移除目标节点
                     CloneNodeAsset.Remove(action);
+                    // 整体数值变量刷新
                     CloneNodeAsset.Variables_Refresh();
                     AssetDatabase.SaveAssets();
+                    // 列表刷新
                     RefreshListView();
                 }
             };

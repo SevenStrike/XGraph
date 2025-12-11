@@ -4,7 +4,6 @@ namespace SevenStrikeModules.XGraph
 
     public class xAction_Variable : xAction_Base
     {
-        [Header("- 变量 -")]
         [SerializeReference] public Variable variable;
 
         public Variable Initialized(string name, xVariableType type)
@@ -140,6 +139,52 @@ namespace SevenStrikeModules.XGraph
             }
 
             return clone;
+        }
+
+        /// <summary>
+        /// 当内部变量有其他变量&属性值接入时的变量的获取
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns></returns>
+        public Variable VariableChildVariableGet(string portName)
+        {
+            // 按优先级查找变量：属性变量 → 黑板变量 → 内部变量
+            Variable variable = PropertysDatas_Get(portName) ?? VariableDatas_Get(portName) ?? InternalVariableDatas_Get(portName);
+
+            if (variable != null)
+            {
+                switch (variable.type)
+                {
+                    case xVariableType.String:
+                        this.variable.SetValue(variable.GetValue<string>());
+                        break;
+                    case xVariableType.Float:
+                        this.variable.SetValue(variable.GetValue<float>());
+                        break;
+                    case xVariableType.Int:
+                        this.variable.SetValue(variable.GetValue<int>());
+                        break;
+                    case xVariableType.Bool:
+                        this.variable.SetValue(variable.GetValue<bool>());
+                        break;
+                    case xVariableType.Vector2:
+                        this.variable.SetValue(variable.GetValue<Vector2>());
+                        break;
+                    case xVariableType.Vector3:
+                        this.variable.SetValue(variable.GetValue<Vector3>());
+                        break;
+                    case xVariableType.Vector4:
+                        this.variable.SetValue(variable.GetValue<Vector4>());
+                        break;
+                    case xVariableType.Color:
+                        this.variable.SetValue(variable.GetValue<Color>());
+                        break;
+                }
+
+                return variable;
+            }
+
+            return this.variable;
         }
     }
 }

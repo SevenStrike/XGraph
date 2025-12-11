@@ -207,7 +207,45 @@ namespace SevenStrikeModules.XGraph
             {
                 if (portName == data.TargetPortName)
                 {
-                    vare = data.variable;
+                    // 获取到内部变量数据节点
+                    xAction_Variable internal_vare = BaseArgs.RootAsset.FindActionNode(data.VariableNodeGuid) as xAction_Variable;
+                    if (internal_vare != null)
+                    {
+                        // 获取内部变量自身绑定的“黑板变量、内部变量、属性”的变量体，返回给变量获取方法：Variable_Get()
+                        vare = internal_vare.VariableChildVariableGet("");
+
+                        // 绑定记录本身的变量被获取到的变量覆盖
+                        data.variable = vare.Clone(false);
+                        // 根据变量类型设置绑定记录中的变量的值
+                        switch (data.variable.type)
+                        {
+                            case xVariableType.String:
+                                data.variable.SetValue<string>(vare.GetValue<string>());
+                                break;
+                            case xVariableType.Float:
+                                data.variable.SetValue<float>(vare.GetValue<float>());
+                                break;
+                            case xVariableType.Int:
+                                data.variable.SetValue<int>(vare.GetValue<int>());
+                                break;
+                            case xVariableType.Bool:
+                                data.variable.SetValue<bool>(vare.GetValue<bool>());
+                                break;
+                            case xVariableType.Vector2:
+                                data.variable.SetValue<Vector2>(vare.GetValue<Vector2>());
+                                break;
+                            case xVariableType.Vector3:
+                                data.variable.SetValue<Vector3>(vare.GetValue<Vector3>());
+                                break;
+                            case xVariableType.Vector4:
+                                data.variable.SetValue<Vector4>(vare.GetValue<Vector4>());
+                                break;
+                            case xVariableType.Color:
+                                data.variable.SetValue<Color>(vare.GetValue<Color>());
+                                break;
+                        }
+                    }
+                    //vare = data.variable;
                     break;
                 }
             }
@@ -245,6 +283,11 @@ namespace SevenStrikeModules.XGraph
 
             return vare;
         }
+        /// <summary>
+        /// 根据端口名称获取绑定的变量
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns></returns>
         public Variable Variable_Get(string portName)
         {
             // 按优先级查找变量：属性变量 → 黑板变量 → 内部变量
@@ -548,6 +591,35 @@ namespace SevenStrikeModules.XGraph
 
             if (On_Node_Property_Unbinded != null)
                 On_Node_Property_Unbinded();
+        }
+        /// <summary>
+        /// 绑定的属性清理
+        /// </summary>
+        public void BindedPropertys_Cleaner()
+        {
+            if (BaseArgs.binded_propertys == null || BaseArgs.binded_propertys.Count == 0)
+                return;
+
+            if (BaseArgs.RootAsset == null)
+            {
+                BaseArgs.binded_propertys.Clear();
+                return;
+            }
+
+            // 从后往前遍历，可以安全删除
+            for (int i = BaseArgs.binded_propertys.Count - 1; i >= 0; i--)
+            {
+                var binding = BaseArgs.binded_propertys[i];
+
+                // 使用FindActionNode方法查找对应的属性节点
+                xAction_Base foundNode = BaseArgs.RootAsset.FindActionNode(binding.Property_GUID);
+
+                // 如果找不到对应的属性节点，删除该项
+                if (foundNode == null)
+                {
+                    BaseArgs.binded_propertys.RemoveAt(i);
+                }
+            }
         }
         #endregion
 

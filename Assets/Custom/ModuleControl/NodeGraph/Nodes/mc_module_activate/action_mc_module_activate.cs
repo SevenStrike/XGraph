@@ -79,5 +79,13 @@ namespace SevenStrikeModules.XGraph
 
             return clone;
         }
+
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+
+            Set_ActivateModuleName_withPort("名称");
+            Set_ActivateModuleState_withPort("激活");
+        }
     }
 }

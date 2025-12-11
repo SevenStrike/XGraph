@@ -58,5 +58,12 @@ namespace SevenStrikeModules.XGraph
 
             return clone;
         }
+
+        public override void On_VariablesValue_Changed()
+        {
+            base.On_VariablesValue_Changed();
+
+            Set_LightEnabled("开关");
+        }
     }
 }

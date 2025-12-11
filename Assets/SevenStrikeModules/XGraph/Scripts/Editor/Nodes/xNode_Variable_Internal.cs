@@ -502,7 +502,7 @@ namespace SevenStrikeModules.XGraph
             ColorField field = evt.target as ColorField;
             if (VariableData.BaseArgs.VariableDatas.Count > 0)
             {
-                field.value = VariableData.BaseArgs.VariableDatas.First().variable.GetValue<Color>();
+                field.value = VariableData.BaseArgs.VariableDatas[0].variable.GetValue<Color>();
                 return;
             }
             //Undo.RecordObject(VariableData, "Change NodeData Color Variable");
@@ -540,6 +540,9 @@ namespace SevenStrikeModules.XGraph
             if (tog_pill != null && VariableData.variable.GetValue<bool>())
                 util_XGraphEditorUtility.Element_BackgroundColorTint_Set(tog_pill, graphView.ActionTreeAsset.GraphviewGridBackgroundThemes.themecolor);
         }
+        #endregion
+
+        #region 其他
         /// <summary>
         /// 改变节点名称的同时同步修改变量类的名称
         /// </summary>
@@ -596,65 +599,93 @@ namespace SevenStrikeModules.XGraph
             // 更新节点信息内容显示
             VariableNodeInfoRefresh();
         }
-        public void VariableNodeFieldValueUpdate()
+        /// <summary>
+        /// 刷新控件值
+        /// </summary>
+        public void UpdateFieldValue()
         {
+            // 获取控件
             VisualElement valuefield = extensionContainer.Q<VisualElement>(name: $"Field_{VariableData.variable.type}");
-
+            // 根据自身变量类型刷新控件值
             switch (VariableData.variable.type)
             {
+                //字符串
                 case xVariableType.String:
+                    // 目标控件
                     TextField value_String = valuefield as TextField;
                     if (value_String != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_String.value = VariableData.variable.GetValue<string>();
                     }
                     break;
+                //浮点
                 case xVariableType.Float:
+                    // 目标控件
                     FloatField value_Float = valuefield as FloatField;
                     if (value_Float != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Float.value = VariableData.variable.GetValue<float>();
                     }
                     break;
+                //整型
                 case xVariableType.Int:
+                    // 目标控件
                     IntegerField value_Int = valuefield as IntegerField;
                     if (value_Int != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Int.value = VariableData.variable.GetValue<int>();
                     }
                     break;
+                //布尔
                 case xVariableType.Bool:
+                    // 目标控件
                     Toggle value_Bool = valuefield as Toggle;
                     if (value_Bool != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Bool.value = VariableData.variable.GetValue<bool>();
                     }
                     break;
+                //2维向量
                 case xVariableType.Vector2:
+                    // 目标控件
                     Vector2Field value_Vector2 = valuefield as Vector2Field;
                     if (value_Vector2 != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Vector2.value = VariableData.variable.GetValue<Vector2>();
                     }
                     break;
+                //3维向量
                 case xVariableType.Vector3:
+                    // 目标控件
                     Vector3Field value_Vector3 = valuefield as Vector3Field;
                     if (value_Vector3 != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Vector3.value = VariableData.variable.GetValue<Vector3>();
                     }
                     break;
+                //4维向量
                 case xVariableType.Vector4:
+                    // 目标控件
                     Vector4Field value_Vector4 = valuefield as Vector4Field;
                     if (value_Vector4 != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Vector4.value = VariableData.variable.GetValue<Vector4>();
                     }
                     break;
+                //颜色
                 case xVariableType.Color:
+                    // 目标控件
                     ColorField value_Color = valuefield as ColorField;
                     if (value_Color != null)
                     {
+                        // 从变量数据中获取值给控件
                         value_Color.value = VariableData.variable.GetValue<Color>();
                     }
                     break;
@@ -669,7 +700,7 @@ namespace SevenStrikeModules.XGraph
         public override void On_VariablesValue_Changed()
         {
             base.On_VariablesValue_Changed();
-            VariableNodeFieldValueUpdate();
+            UpdateFieldValue();
         }
         #endregion
     }

@@ -11775,6 +11775,12 @@ MonoBehaviour:
   key_ActionResume: 114
   key_ActionManualStep: 32
   key_RunnerMode: 109
+  vare_data_list: []
+  index_vare: 0
+  msg_data_list: []
+  index_msg: 0
+  delay_data_list: []
+  index_delay: 0
 --- !u!1 &1471331477
 GameObject:
   m_ObjectHideFlags: 0
@@ -14773,7 +14779,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 0
-  m_Color: {r: 1, g: 0.663727, b: 0.46099997, a: 1}
+  m_Color: {r: 0, g: 0.88063455, b: 1, a: 1}
   m_Intensity: 3.27
   m_Range: 3
   m_SpotAngle: 156.02028

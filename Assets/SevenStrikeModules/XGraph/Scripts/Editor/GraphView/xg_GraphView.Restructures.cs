@@ -509,7 +509,14 @@ namespace SevenStrikeModules.XGraph
                             Type type = n_var.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
-                            Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+                            //Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
+                            // 父节点存在的变量端口
+                            Port port_parent = null;
+
+                            if (n_parent is xNode_Debug)
+                                port_parent = n_parent.GetPort(item.TargetPortName, xPortType.In);
+                            else
+                                port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
 
                             if (n_var != null && port_parent != null)
                             {
@@ -553,16 +560,42 @@ namespace SevenStrikeModules.XGraph
                         // 获取列表其中一项
                         var item = action.BaseArgs.InternalVariableDatas[i];
 
-                        // 在节点图内找到目标 - 内部变量节点 - 与 - 行为节点 - 的 - 匹配端口 - 连接
-                        xNode_Variable_Internal n_var = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
-                        if (n_var != null)
+                        // 在节点图内找到目标 - 内部变量节点
+                        xNode_Variable_Internal internal_varnode = FindNode(item.VariableNodeGuid) as xNode_Variable_Internal;
+                        if (internal_varnode != null)
                         {
-                            n_var.VariableData.variable = item.variable.Clone(false);
-                            n_var.VariableData.variable.name = "";
-                            n_var.VariableNodeFieldValueUpdate();
+                            item.variable = internal_varnode.VariableData.variable.Clone(false);
+                            switch (item.variable.type)
+                            {
+                                case xVariableType.String:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<string>());
+                                    break;
+                                case xVariableType.Float:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<float>());
+                                    break;
+                                case xVariableType.Int:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<int>());
+                                    break;
+                                case xVariableType.Bool:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<bool>());
+                                    break;
+                                case xVariableType.Vector2:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector2>());
+                                    break;
+                                case xVariableType.Vector3:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector3>());
+                                    break;
+                                case xVariableType.Vector4:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Vector4>());
+                                    break;
+                                case xVariableType.Color:
+                                    item.variable.SetValue(internal_varnode.VariableData.variable.GetValue<Color>());
+                                    break;
+                            }
+                            internal_varnode.UpdateFieldValue();
 
                             // 获取变量节点的变量类型
-                            Type type = n_var.VariableData.variable.GetType();
+                            Type type = internal_varnode.VariableData.variable.GetType();
 
                             // 父节点存在的变量端口
                             //Port port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
@@ -575,11 +608,11 @@ namespace SevenStrikeModules.XGraph
                             else
                                 port_parent = n_parent.GetPort(type, item.TargetPortName, xPortType.In);
 
-                            if (n_var != null && port_parent != null)
+                            if (internal_varnode != null && port_parent != null)
                             {
                                 // 不使用 LINQ 的 First()
                                 Port outputPort = null;
-                                foreach (var port in n_var.Port_Outputs)
+                                foreach (var port in internal_varnode.Port_Outputs)
                                 {
                                     outputPort = port.Port;
                                     break;

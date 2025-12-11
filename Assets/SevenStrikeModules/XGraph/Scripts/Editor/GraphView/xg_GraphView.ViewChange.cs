@@ -187,7 +187,7 @@ namespace SevenStrikeModules.XGraph
                 // 两个变量类型一致时
                 if (node_internalvar.VariableData.variable.type == node_var.VariableData.type)
                 {
-                    node_internalvar.VariableNodeFieldValueUpdate();
+                    node_internalvar.UpdateFieldValue();
                 }
             }
             #endregion
@@ -408,7 +408,13 @@ namespace SevenStrikeModules.XGraph
                     // 获取变量节点的变量类型
                     Type type = node_var.VariableData.variable.GetType();
                     // 拿到行为节点上的对应的变量类型的端口
-                    Port port = node_child.GetPort(type, portName, xPortType.In);
+                    //Port port = node_child.GetPort(type, portName, xPortType.In);
+                    Port port = null;
+                    if (node_child is xNode_Debug)
+                        port = node_child.GetPort(portName, xPortType.In);
+                    else
+                        port = node_child.GetPort(type, portName, xPortType.In);
+
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
