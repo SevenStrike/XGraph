@@ -273,6 +273,7 @@ namespace SevenStrikeModules.XGraph
                     // 属性节点更新
                     if (prop != null)
                     {
+                        // 触发属性节点的值更新
                         prop.Propertys_Update();
                         // 获取属性节点的指定端口名称的属性变量值
                         vare = prop.Propertys_Get(property.Property_PortName);

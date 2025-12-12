@@ -182,7 +182,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind Variable  To Action");
+                Undo.RecordObject(ActionTreeAsset, "Bind Variable  To Action");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_var.VariableData, portName);
@@ -218,7 +218,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind InternalVariableAction To Action");
+                Undo.RecordObject(ActionTreeAsset, "Bind InternalVariableAction To Action");
                 string portName = edge?.input.portName;
                 node_child.ActionData.InternalVariableData_Bind(node_varInternal.VariableData, portName);
             }
@@ -247,7 +247,7 @@ namespace SevenStrikeModules.XGraph
                     AddElement(animatedEdge);
                 }
 
-                Undo.RecordObject(node_child.ActionData.BaseArgs.RootAsset, "Bind Variable To Action");
+                Undo.RecordObject(ActionTreeAsset, "Bind Variable To Action");
                 string portName = edge?.input.portName;
                 // 加入行为节点数据中的变量列表中
                 node_child.ActionData.VariableData_Bind(node_bb_var.VariableData, portName);
@@ -291,7 +291,7 @@ namespace SevenStrikeModules.XGraph
                         AddElement(animatedEdge);
                     }
 
-                    Undo.RecordObject(node_property.property.BaseArgs.RootAsset, "Bind Property To Action");
+                    Undo.RecordObject(ActionTreeAsset, "Bind Property To Action");
 
                     // node_property.PropertyData : 目标属性节点的属性数据
                     xAction_Property propertyData = node_property.property;
@@ -400,7 +400,7 @@ namespace SevenStrikeModules.XGraph
                 xNode_Relay relay_child = edge.input.node as xNode_Relay;
                 if (relay_child != null)
                 {
-                    //Undo.RecordObject(relay_child.ActionData, "Remove RelayConnector");
+                    Undo.RecordObject(ActionTreeAsset, "Remove RelayConnector");
                     relay_child.Disconnected();
                 }
                 #endregion
@@ -423,6 +423,7 @@ namespace SevenStrikeModules.XGraph
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
+                    Undo.RecordObject(ActionTreeAsset, "Remove BlackBoard With Action Connector");
                     // 从行为节点解绑 ”黑板变量数据“
                     node_child.ActionData.VariableData_Unbind(node_var.VariableData.guid_n, portName);
                 }
@@ -446,6 +447,8 @@ namespace SevenStrikeModules.XGraph
                     // 断开端口与连线的连接
                     port.Disconnect(edge);
 
+                    Undo.RecordObject(ActionTreeAsset, "Remove InternalVariable Connector");
+
                     // 从行为节点解绑 ”内部变量节点数据“
                     node_child.ActionData.InternalVariableData_Unbind(node_var_internal.VariableData.BaseArgs.guid, portName);
                 }
@@ -468,6 +471,8 @@ namespace SevenStrikeModules.XGraph
                     // 确保子节点类型是  xNode_Base 类型同时还保证 "输入 / 输出" 端口类型不是 xAction_Base 类型
                     if (node_child is xNode_Base && node_parent is not xNode_Variable_Internal && edge.input.portType != typeof(xAction_Base) && edge.output.portType != typeof(xAction_Base))
                     {
+                        Undo.RecordObject(ActionTreeAsset, "Remove Action With Property Connector");
+
                         // node_property.PropertyData : 目标属性节点的属性数据
                         string property_guid = node_Property.property.BaseArgs.guid;
                         // "属性节点" 端口的 -- 名称

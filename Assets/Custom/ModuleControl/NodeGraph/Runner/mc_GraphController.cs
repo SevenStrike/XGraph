@@ -8,6 +8,8 @@ namespace SevenStrikeModules.XGraph
         /// 节点运行器
         /// </summary>
         public mc_GraphRunner GraphRunner;
+
+        [Header("节点图流程控制")]
         /// <summary>
         /// 执行节点流程
         /// </summary>
@@ -33,20 +35,19 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public KeyCode key_RunnerMode = KeyCode.M;
 
-
-
+        [Header("修改黑板变量：modules")]
         public KeyCode key_vare_control = KeyCode.U;
         public string[] vare_data_list;
         public int index_vare = -1;
-
+        [Header("修改黑板变量：msg")]
         public KeyCode key_msg_control = KeyCode.I;
         public string[] msg_data_list;
         public int index_msg = -1;
-
+        [Header("修改黑板变量：delay")]
         public KeyCode key_delay_control = KeyCode.O;
         public float[] delay_data_list;
         public int index_delay = -1;
-
+        [Header("修改黑板变量：switch")]
         public KeyCode key_switch_control = KeyCode.P;
         public bool[] switch_data_list;
         public int index_switch = -1;
