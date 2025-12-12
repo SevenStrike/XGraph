@@ -3110,6 +3110,9 @@
             xw_capture_dialog_creator.style.opacity = state ? 1 : 0;
             Translate translate = new Translate(0, state ? 0 : 150, 0);
             xw_capture_dialog_creator.style.translate = new StyleTranslate(translate);
+
+            if (xw_capture_dialog_creator_field_name != null)
+                xw_capture_dialog_creator_field_name.Focus();
         }
         /// <summary>
         /// 恢复快照弹窗
@@ -3144,11 +3147,21 @@
                 return;
             }
 
-            if (SourceTree.Capture_Exist(name, ver))
-                Notify_Send("忽略", $"节点资源快照 {xw_capture_dialog_creator_field_name.value} 记录已存在！", xNotifyType.警告, 5000);
-            else
+            // 如果目标快照不存在
+            if (!SourceTree.Capture_Exist(name, ver))
+            {
                 Notify_Send("完成", $"节点资源快照 {xw_capture_dialog_creator_field_name.value} 记录完成！", xNotifyType.信息, 5000);
-            CaptureCreated();
+                CaptureCreated();
+            }
+            // 如果目标快照存在询问是否覆盖
+            else
+            {
+                if (util_XGraphEditorUtility.DialogMsg("确认覆盖快照", $"确定要覆盖快照 {name} | {ver} 吗？", "覆盖", "取消"))
+                {
+                    CaptureCoveringCreated(name, ver);
+                    Notify_Send("忽略", $"节点资源快照 {name} | {ver} 记录已覆盖！", xNotifyType.信息, 5000);
+                }
+            }
         }
         /// <summary>
         /// 创建快照
@@ -3165,6 +3178,22 @@
             data.data = json;
 
             SourceTree.Capture_Add(data);
+        }
+        /// <summary>
+        /// 覆盖快照
+        /// </summary>
+        private void CaptureCoveringCreated(string name, string ver)
+        {
+            //Debug.Log("创建快照！");
+
+            string json = JsonUtility.ToJson(CloneTree);
+            class_ActionAssetCaptureData data = new class_ActionAssetCaptureData();
+            data.name = xw_capture_dialog_creator_field_name.value;
+            data.ver = xw_capture_dialog_creator_field_ver.value;
+            data.datetime = DateTime.Now.ToString("yyyy-MM-dd  -  HH:mm:ss");
+            data.data = json;
+
+            SourceTree.Capture_Covering(data);
         }
         /// <summary>
         /// 清空快照

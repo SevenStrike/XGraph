@@ -12,6 +12,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public mc_GraphAsset SampleAsset;
         /// <summary>
+        /// 原始行为资源（克隆）
+        /// </summary>
+        public mc_GraphAsset SampleAssetClone; // 修改类型为 mc_GraphAsset
+        /// <summary>
         /// 流程运行中
         /// </summary>
         private bool isRunning = false;
@@ -50,13 +54,78 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public Action OnManual_WaitComplete;
 
-
         private void Start()
         {
+            Asset_Clone();
+
             // 为每一个行为注册运行时变量值改变回调
             RegisterVariableChangeWithAction();
 
             SampleAsset.ModuleController = TargetScript;
+        }
+
+        /// <summary>
+        /// 克隆资源副本
+        /// </summary>
+        private void Asset_Clone()
+        {
+            //#if UNITY_EDITOR
+            if (!Application.isEditor)
+                return;
+            //#endif
+
+            if (SampleAsset == null)
+            {
+                Debug.LogError("SampleAsset 为 null，无法克隆");
+                return;
+            }
+
+            // 克隆为正确的类型
+            SampleAssetClone = Instantiate(SampleAsset);
+            SampleAssetClone.name = SampleAsset.name;
+
+            Debug.Log($"已克隆资源: {SampleAsset.name} -> {SampleAssetClone.name}");
+        }
+
+        /// <summary>
+        /// 还原资源
+        /// </summary>
+        private void Asset_Restore()
+        {
+            //#if UNITY_EDITOR
+            if (!Application.isEditor)
+                return;
+            //#endif
+
+            if (SampleAsset == null || SampleAssetClone == null)
+            {
+                Debug.LogError("无法恢复资源: SampleAsset 或 SampleAssetClone 为 null");
+                return;
+            }
+
+            try
+            {
+                // 使用 Replace 方法恢复数据
+                SampleAsset.Replace(SampleAssetClone);
+
+                Debug.Log($"已恢复资源: {SampleAsset.name}");
+
+                // 清理克隆资源
+                if (Application.isEditor && !Application.isPlaying)
+                {
+                    DestroyImmediate(SampleAssetClone, true);
+                }
+                else
+                {
+                    Destroy(SampleAssetClone);
+                }
+
+                SampleAssetClone = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"恢复资源时出错: {ex.Message}");
+            }
         }
 
         private void OnDisable()
@@ -66,6 +135,12 @@ namespace SevenStrikeModules.XGraph
 
             // 清理手动执行模式
             Manual_CleanupMode();
+
+            // 仅在运行时且克隆存在时恢复
+            if (Application.isPlaying && SampleAssetClone != null)
+            {
+                Asset_Restore();
+            }
         }
 
         void Update()
@@ -74,6 +149,15 @@ namespace SevenStrikeModules.XGraph
             if (ManualExecutionMode && isWaitingForDelay)
             {
                 // 可以在这里添加等待状态的UI提示等
+            }
+        }
+
+        private void OnDestroy()
+        {
+            // 确保在对象销毁时也恢复资源
+            if (SampleAssetClone != null)
+            {
+                Asset_Restore();
             }
         }
 

@@ -11754,6 +11754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SampleAsset: {fileID: 11400000, guid: a5e25493adf33e74a8aef658a368ae97, type: 2}
+  SampleAssetClone: {fileID: 0}
   TargetScript: {fileID: 1444357495}
   ManualExecutionMode: 0
 --- !u!114 &1444357498
@@ -11775,9 +11776,9 @@ MonoBehaviour:
   key_ActionResume: 102
   key_ActionManualStep: 103
   key_RunnerMode: 104
-  key_vare_control: 118
-  vare_data_list: []
-  index_vare: 0
+  key_module_control: 118
+  module_data_list: []
+  index_module: -1
   key_msg_control: 98
   msg_data_list: []
   index_msg: 0

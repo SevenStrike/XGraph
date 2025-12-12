@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: mc-NodeGraph
   m_EditorClassIdentifier: 
   LastGraphWindowSize: {x: 1560, y: 1036}
-  LastGraphViewPosition: {x: -639, y: 451}
-  LastGraphViewZoom: 1
-  LastSaveDateTime: 2025-12-12  -  13:41:23
+  LastGraphViewPosition: {x: -764, y: 498}
+  LastGraphViewZoom: 0.93167704
+  LastSaveDateTime: 2025-12-13  -  00:52:17
   GraphNodesStruct: {fileID: 4900000, guid: 67ec120f3ab9b6c428246fcdc6b95eea, type: 3}
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
@@ -59,26 +59,30 @@ MonoBehaviour:
   XGraph_DisplayNodeFlow: 1
   LogEnabled: 1
   Actions:
-  - rid: 1468847756194611447
-  - rid: 1468847756194611448
-  - rid: 1468847756194611449
-  - rid: 1468847756194611450
-  - rid: 1468847756194611451
-  - rid: 1468847756194611452
-  - rid: 1468847756194611453
-  - rid: 1468847756194611454
-  - rid: 1468847756194611455
-  - rid: 1468847756194611456
-  - rid: 1468847756194611457
+  - rid: 1468847766687187414
+  - rid: 1468847766687187415
+  - rid: 1468847766687187416
+  - rid: 1468847766687187417
+  - rid: 1468847766687187418
+  - rid: 1468847766687187419
+  - rid: 1468847766687187420
+  - rid: 1468847766687187421
+  - rid: 1468847766687187422
+  - rid: 1468847766687187423
+  - rid: 1468847766687187424
+  - rid: 1468847766687187425
+  - rid: 1468847766687187426
   Variables:
-  - rid: 1468847756194611458
-  - rid: 1468847756194611459
+  - rid: 1468847766687187427
+  - rid: 1468847766687187428
+  - rid: 1468847766687187429
+  - rid: 1468847766687187430
   Sticks: []
   Labels: []
   Decals:
   - guid: d224be7e5c03c87458605fef3090e17b
-    position: {x: 879.188, y: -127.185974}
-    size: {x: 157, y: 162}
+    position: {x: 1299.7269, y: -328.50668}
+    size: {x: 152, y: 128}
     color: {r: 1, g: 1, b: 1, a: 1}
     opacity: 1
     texture_exist: 1
@@ -86,7 +90,8 @@ MonoBehaviour:
     scale: {x: 1, y: 1, z: 1}
   Groups: []
   BlackboardVariable:
-  - rid: 1468847756194611460
+  - rid: 1468847766687187431
+  - rid: 1468847766687187432
   ActionAssetCaptureData:
   - name: based
     ver: 1.0
@@ -113,143 +118,139 @@ MonoBehaviour:
       - \u706F\u5149\u989C\u8272\",\"type\":7,\"value\":{\"r\":1.0,\"g\":0.41100001335144045,\"b\":0.0,\"a\":1.0}}},{\"rid\":1050,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"b9127e8e4fb706f42b24f112e7bdb0ac\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Debug\",\"icon\":\"27ad0086ea940654182c96ed2888eca4\",\"visualNodeType\":\"xNode_Debug\",\"nodeGraphPosition\":{\"x\":1706.4971923828125,\"y\":88.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-10010},\"isStartNode\":false,\"ParentNodeGuid\":\"8ff475b48e35df647a128ae18f7f5149\",\"VariableDatas\":[{\"TargetPortName\":\"\u5BF9\u8C61\",\"VariableNodeGuid\":\"b4569f76130c1384c9a4fa3f62da04f0\",\"variable\":{\"rid\":1066}}],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1051,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"836a447affbf03f459f66dc24c6da581\",\"description\":\"Float\",\"type\":1,\"value\":2.0}},{\"rid\":1052,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"vare\",\"guid\":\"8b25e958f2c4a2f48ac8eeae73f7cd98\",\"description\":\"String\",\"type\":0,\"value\":\"Module_A\"}},{\"rid\":1053,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"836a447affbf03f459f66dc24c6da581\",\"description\":\"Float\",\"type\":1,\"value\":2.0}},{\"rid\":1054,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"vare\",\"guid\":\"8b25e958f2c4a2f48ac8eeae73f7cd98\",\"description\":\"String\",\"type\":0,\"value\":\"Module_A\"}},{\"rid\":1055,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"switch\",\"guid\":\"24be42271df41cc4db1dc78505551125\",\"description\":\"Bool\",\"type\":3,\"value\":false}},{\"rid\":1056,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"msg\",\"guid\":\"92410d271f39e4f46af1412909c5ca05\",\"description\":\"String\",\"type\":0,\"value\":\"m_bK7TdR2N\"}},{\"rid\":1057,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"836a447affbf03f459f66dc24c6da581\",\"description\":\"Float\",\"type\":1,\"value\":2.0}},{\"rid\":1058,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"vare\",\"guid\":\"8b25e958f2c4a2f48ac8eeae73f7cd98\",\"description\":\"String\",\"type\":0,\"value\":\"Module_A\"}},{\"rid\":1059,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"9282209fc2259d84f88c72a72bda734d\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1060,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"836a447affbf03f459f66dc24c6da581\",\"description\":\"Float\",\"type\":1,\"value\":2.0}},{\"rid\":1061,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"vare\",\"guid\":\"8b25e958f2c4a2f48ac8eeae73f7cd98\",\"description\":\"String\",\"type\":0,\"value\":\"Module_A\"}},{\"rid\":1062,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"7000845b3a378214fbcc63af3be6ffc4\",\"description\":\"\",\"type\":3,\"value\":false}},{\"rid\":1063,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"1e5db7d00b0fafa40a502b5cf539d4c2\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1064,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"switch\",\"guid\":\"24be42271df41cc4db1dc78505551125\",\"description\":\"Bool\",\"type\":3,\"value\":false}},{\"rid\":1065,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"5c997a4b2e9e86845ae1e6940f04af0c\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1066,\"type\":{\"class\":\"Variable_String\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"msg\",\"guid\":\"92410d271f39e4f46af1412909c5ca05\",\"description\":\"String\",\"type\":0,\"value\":\"m_bK7TdR2N\"}}]}}"
   - name: simple
     ver: 1.0
-    datetime: 2025-12-12  -  13:33:57
+    datetime: 2025-12-12  -  20:20:19
     data: "{\"LastGraphWindowSize\":{\"x\":1560,\"y\":1036},\"LastGraphViewPosition\":{\"x\":-639.0,\"y\":451.0},\"LastGraphViewZoom\":1.0,\"LastSaveDateTime\":\"2025-12-12 
-      -  13:33:35\",\"GraphNodesStruct\":{\"instanceID\":37146},\"GraphviewGridBackgroundThemes\":{\"bgcolor\":{\"r\":0.16470590233802796,\"g\":0.16470590233802796,\"b\":0.16470590233802796,\"a\":0.686274528503418},\"gridcolor\":{\"r\":0.5803921818733215,\"g\":0.5803921818733215,\"b\":0.5803921818733215,\"a\":0.047058820724487308},\"customimagecolor\":{\"r\":0.5607842803001404,\"g\":0.5607842803001404,\"b\":0.5607842803001404,\"a\":0.9294118285179138},\"thickLinecolor\":{\"r\":0.5529412031173706,\"g\":0.5529412031173706,\"b\":0.5529412031173706,\"a\":0.0},\"themecolor\":{\"r\":0.23137259483337403,\"g\":0.9882352948188782,\"b\":0.6000000238418579,\"a\":1.0},\"blackboard_bgcolor\":{\"r\":0.2705881893634796,\"g\":0.2705881893634796,\"b\":0.2705881893634796,\"a\":0.8784313797950745},\"inspector_bgcolor\":{\"r\":0.2705881893634796,\"g\":0.2705881893634796,\"b\":0.2705881893634796,\"a\":0.8784313797950745},\"InvertBgGradient\":false,\"spacing\":18.0,\"thicklines\":18,\"customimage\":{\"instanceID\":0}},\"GraphviewRectangleSelectorThemes\":{\"rectangleSelectorLineColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6000000238418579},\"segments\":4,\"displayCoordinate\":false},\"Last_GraphView_BlackboardPanel_TransformData\":{\"top\":8.0,\"bottom\":0.0,\"left\":9.0,\"right\":0.0,\"anc_Top\":true,\"anc_Bottom\":false,\"anc_Left\":true,\"anc_Right\":false,\"size\":{\"x\":299.0,\"y\":426.0}},\"Last_GraphView_InspectorPanel_TransformData\":{\"top\":6.0,\"bottom\":0.0,\"left\":0.0,\"right\":10.0,\"anc_Top\":true,\"anc_Bottom\":false,\"anc_Left\":false,\"anc_Right\":true,\"size\":{\"x\":360.0,\"y\":839.0}},\"XGraph_InspectorViewDisplay\":true,\"XGraph_BlackBoardViewDisplay\":true,\"XGraph_DisplayNodeColor\":true,\"XGraph_DisplayNodeFlow\":true,\"LogEnabled\":true,\"Actions\":[{\"rid\":1000},{\"rid\":1001},{\"rid\":1002},{\"rid\":1003},{\"rid\":1004},{\"rid\":1005},{\"rid\":1006},{\"rid\":1007},{\"rid\":1008},{\"rid\":1009},{\"rid\":1010}],\"Variables\":[{\"rid\":1011},{\"rid\":1012}],\"Sticks\":[],\"Labels\":[],\"Decals\":[{\"guid\":\"d224be7e5c03c87458605fef3090e17b\",\"position\":{\"x\":879.18798828125,\"y\":-127.18597412109375},\"size\":{\"x\":157.0,\"y\":162.0},\"color\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"opacity\":1.0,\"texture_exist\":true,\"texture_decal\":{\"instanceID\":60798},\"scale\":{\"x\":1.0,\"y\":1.0,\"z\":1.0}}],\"Groups\":[],\"BlackboardVariable\":[{\"rid\":1013}],\"ActionAssetCaptureData\":[],\"references\":{\"version\":2,\"RefIds\":[{\"rid\":1000,\"type\":{\"class\":\"action_mc_module_initialize\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u6A21\u7EC4\u521D\u59CB\u5316\",\"BaseArgs\":{\"rid\":1014},\"childNodes\":[\"085b9bb012866c849a9147edc1bee213\"],\"activateAllModules\":false}},{\"rid\":1001,\"type\":{\"class\":\"action_mc_mainlight_control\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u4E3B\u706F\u63A7\u5236\",\"BaseArgs\":{\"rid\":1015},\"childNodes\":[\"389caa5a363370b4d95d3c9fdc212770\"],\"lightEnable\":true}},{\"rid\":1002,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Bool\",\"BaseArgs\":{\"rid\":1016},\"variable\":{\"rid\":1017}}},{\"rid\":1003,\"type\":{\"class\":\"action_mc_property_mainlight\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u706F\u5149\u5C5E\u6027\",\"BaseArgs\":{\"rid\":1018},\"PropertyVariables\":[{\"rid\":1019},{\"rid\":1020},{\"rid\":1021}],\"Light\":{\"instanceID\":0}}},{\"rid\":1004,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Color\",\"BaseArgs\":{\"rid\":1022},\"variable\":{\"rid\":1023}}},{\"rid\":1005,\"type\":{\"class\":\"xAction_Debug\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u8C03\u8BD5\",\"BaseArgs\":{\"rid\":1024},\"childNodes\":[\"956592938ecfe254b9faed972a4d21b4\"],\"Msg\":\"3.27\"}},{\"rid\":1006,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Float\",\"BaseArgs\":{\"rid\":1025},\"variable\":{\"rid\":1026}}},{\"rid\":1007,\"type\":{\"class\":\"xAction_Wait\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u7B49\u5F85\",\"BaseArgs\":{\"rid\":1027},\"childNodes\":[\"1c1ec7234686e4140939e8b0f3f836f7\"],\"Time\":2.0}},{\"rid\":1008,\"type\":{\"class\":\"xAction_Wait\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u7B49\u5F85\",\"BaseArgs\":{\"rid\":1028},\"childNodes\":[\"2f02a948dbde90b42baadfae52cdd48d\"],\"Time\":2.0}},{\"rid\":1009,\"type\":{\"class\":\"xAction_Debug\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u8C03\u8BD5\",\"BaseArgs\":{\"rid\":1029},\"childNodes\":[\"3bb86f984067697408c2c6cef6ca059e\"],\"Msg\":\"RGBA(0.000,
-      0.589, 1.000, 1.000)\"}},{\"rid\":1010,\"type\":{\"class\":\"action_mc_mainlight_control\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u4E3B\u706F\u63A7\u5236\",\"BaseArgs\":{\"rid\":1030},\"childNodes\":[],\"lightEnable\":false}},{\"rid\":1011,\"type\":{\"class\":\"xVariableData\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"guid_n\":\"72e0c236638023f4e8d25cb576a3385c\",\"guid_v\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"type\":1,\"variable\":{\"rid\":1031},\"transparent\":false,\"position\":{\"x\":1133.0,\"y\":-163.0},\"size\":{\"x\":129.0,\"y\":38.0}}},{\"rid\":1012,\"type\":{\"class\":\"xVariableData\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"guid_n\":\"8db1edc1175496f48b42a597de7cf3b0\",\"guid_v\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"type\":1,\"variable\":{\"rid\":1032},\"transparent\":false,\"position\":{\"x\":1373.0,\"y\":26.0},\"size\":{\"x\":129.0,\"y\":38.0}}},{\"rid\":1013,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":2.0}},{\"rid\":1014,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"6aab1e5b1d389164ab868d3c33fcc500\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"module_initialize\",\"icon\":\"392aaff70f0ba134c99baa862febcd71\",\"visualNodeType\":\"graph_mc_module_initialize\",\"nodeGraphPosition\":{\"x\":1092.0,\"y\":-287.0},\"nodeGraphSize\":{\"x\":170.0,\"y\":86.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":true,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1015,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"1c1ec7234686e4140939e8b0f3f836f7\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"mainlight_control\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_mainlight_control\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":-112.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"085b9bb012866c849a9147edc1bee213\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5F00\u5173\",\"VariableNodeGuid\":\"d8aeda7e76fb12841846e45dc5def47d\",\"variable\":{\"rid\":1033}}],\"binded_propertys\":[]}},{\"rid\":1016,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"d8aeda7e76fb12841846e45dc5def47d\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":-12.186004638671875},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1017,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"b4e1c2fd956674d439213861d2cea046\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1018,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"property_mainlight\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_property_mainlight\",\"nodeGraphPosition\":{\"x\":856.18798828125,\"y\":122.81399536132813},\"nodeGraphSize\":{\"x\":166.0,\"y\":156.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1019,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u5F3A\u5EA6\",\"guid\":\"33c087facb822bf4aa0b34c1ef3c05ba\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
-      - \u706F\u5149\u5F3A\u5EA6\",\"type\":1,\"value\":3.2699999809265138}},{\"rid\":1020,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u8303\u56F4\",\"guid\":\"33ed86b574d02e14aa50737816132a4d\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
+      -  20:20:11\",\"GraphNodesStruct\":{\"instanceID\":37146},\"GraphviewGridBackgroundThemes\":{\"bgcolor\":{\"r\":0.16470590233802796,\"g\":0.16470590233802796,\"b\":0.16470590233802796,\"a\":0.686274528503418},\"gridcolor\":{\"r\":0.5803921818733215,\"g\":0.5803921818733215,\"b\":0.5803921818733215,\"a\":0.047058820724487308},\"customimagecolor\":{\"r\":0.5607842803001404,\"g\":0.5607842803001404,\"b\":0.5607842803001404,\"a\":0.9294118285179138},\"thickLinecolor\":{\"r\":0.5529412031173706,\"g\":0.5529412031173706,\"b\":0.5529412031173706,\"a\":0.0},\"themecolor\":{\"r\":0.23137259483337403,\"g\":0.9882352948188782,\"b\":0.6000000238418579,\"a\":1.0},\"blackboard_bgcolor\":{\"r\":0.2705881893634796,\"g\":0.2705881893634796,\"b\":0.2705881893634796,\"a\":0.8784313797950745},\"inspector_bgcolor\":{\"r\":0.2705881893634796,\"g\":0.2705881893634796,\"b\":0.2705881893634796,\"a\":0.8784313797950745},\"InvertBgGradient\":false,\"spacing\":18.0,\"thicklines\":18,\"customimage\":{\"instanceID\":0}},\"GraphviewRectangleSelectorThemes\":{\"rectangleSelectorLineColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6000000238418579},\"segments\":4,\"displayCoordinate\":false},\"Last_GraphView_BlackboardPanel_TransformData\":{\"top\":8.0,\"bottom\":0.0,\"left\":9.0,\"right\":0.0,\"anc_Top\":true,\"anc_Bottom\":false,\"anc_Left\":true,\"anc_Right\":false,\"size\":{\"x\":299.0,\"y\":426.0}},\"Last_GraphView_InspectorPanel_TransformData\":{\"top\":6.0,\"bottom\":0.0,\"left\":0.0,\"right\":10.0,\"anc_Top\":true,\"anc_Bottom\":false,\"anc_Left\":false,\"anc_Right\":true,\"size\":{\"x\":360.0,\"y\":839.0}},\"XGraph_InspectorViewDisplay\":true,\"XGraph_BlackBoardViewDisplay\":true,\"XGraph_DisplayNodeColor\":true,\"XGraph_DisplayNodeFlow\":true,\"LogEnabled\":true,\"Actions\":[{\"rid\":1000},{\"rid\":1001},{\"rid\":1002},{\"rid\":1003},{\"rid\":1004},{\"rid\":1005},{\"rid\":1006},{\"rid\":1007},{\"rid\":1008},{\"rid\":1009},{\"rid\":1010}],\"Variables\":[{\"rid\":1011},{\"rid\":1012}],\"Sticks\":[],\"Labels\":[],\"Decals\":[{\"guid\":\"d224be7e5c03c87458605fef3090e17b\",\"position\":{\"x\":1576.0,\"y\":-380.0},\"size\":{\"x\":259.0,\"y\":268.0},\"color\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"opacity\":1.0,\"texture_exist\":true,\"texture_decal\":{\"instanceID\":60798},\"scale\":{\"x\":1.0,\"y\":1.0,\"z\":1.0}}],\"Groups\":[],\"BlackboardVariable\":[{\"rid\":1013}],\"ActionAssetCaptureData\":[],\"references\":{\"version\":2,\"RefIds\":[{\"rid\":1000,\"type\":{\"class\":\"action_mc_module_initialize\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u6A21\u7EC4\u521D\u59CB\u5316\",\"BaseArgs\":{\"rid\":1014},\"childNodes\":[\"085b9bb012866c849a9147edc1bee213\"],\"activateAllModules\":false}},{\"rid\":1001,\"type\":{\"class\":\"action_mc_mainlight_control\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u4E3B\u706F\u63A7\u5236\",\"BaseArgs\":{\"rid\":1015},\"childNodes\":[\"389caa5a363370b4d95d3c9fdc212770\"],\"lightEnable\":true}},{\"rid\":1002,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Bool\",\"BaseArgs\":{\"rid\":1016},\"variable\":{\"rid\":1017}}},{\"rid\":1003,\"type\":{\"class\":\"action_mc_property_mainlight\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u706F\u5149\u5C5E\u6027\",\"BaseArgs\":{\"rid\":1018},\"PropertyVariables\":[{\"rid\":1019},{\"rid\":1020},{\"rid\":1021}],\"Light\":{\"instanceID\":36976}}},{\"rid\":1004,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Color\",\"BaseArgs\":{\"rid\":1022},\"variable\":{\"rid\":1023}}},{\"rid\":1005,\"type\":{\"class\":\"xAction_Debug\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u8C03\u8BD5\",\"BaseArgs\":{\"rid\":1024},\"childNodes\":[\"956592938ecfe254b9faed972a4d21b4\"],\"Msg\":\"3.269438\"}},{\"rid\":1006,\"type\":{\"class\":\"xAction_Variable\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"Float\",\"BaseArgs\":{\"rid\":1025},\"variable\":{\"rid\":1026}}},{\"rid\":1007,\"type\":{\"class\":\"xAction_Wait\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u7B49\u5F85\",\"BaseArgs\":{\"rid\":1027},\"childNodes\":[\"1c1ec7234686e4140939e8b0f3f836f7\"],\"Time\":1.0}},{\"rid\":1008,\"type\":{\"class\":\"xAction_Wait\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u7B49\u5F85\",\"BaseArgs\":{\"rid\":1028},\"childNodes\":[\"2f02a948dbde90b42baadfae52cdd48d\"],\"Time\":1.0}},{\"rid\":1009,\"type\":{\"class\":\"xAction_Debug\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u8C03\u8BD5\",\"BaseArgs\":{\"rid\":1029},\"childNodes\":[\"3bb86f984067697408c2c6cef6ca059e\"],\"Msg\":\"RGBA(1.000,
+      0.411, 0.000, 1.000)\"}},{\"rid\":1010,\"type\":{\"class\":\"action_mc_mainlight_control\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"identifyName\":\"\u4E3B\u706F\u63A7\u5236\",\"BaseArgs\":{\"rid\":1030},\"childNodes\":[],\"lightEnable\":false}},{\"rid\":1011,\"type\":{\"class\":\"xVariableData\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"guid_n\":\"72e0c236638023f4e8d25cb576a3385c\",\"guid_v\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"type\":1,\"variable\":{\"rid\":1031},\"transparent\":false,\"position\":{\"x\":1133.0,\"y\":-163.0},\"size\":{\"x\":129.0,\"y\":38.0}}},{\"rid\":1012,\"type\":{\"class\":\"xVariableData\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"guid_n\":\"8db1edc1175496f48b42a597de7cf3b0\",\"guid_v\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"type\":1,\"variable\":{\"rid\":1032},\"transparent\":false,\"position\":{\"x\":1373.0,\"y\":26.0},\"size\":{\"x\":129.0,\"y\":38.0}}},{\"rid\":1013,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":1.0}},{\"rid\":1014,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"6aab1e5b1d389164ab868d3c33fcc500\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"module_initialize\",\"icon\":\"392aaff70f0ba134c99baa862febcd71\",\"visualNodeType\":\"graph_mc_module_initialize\",\"nodeGraphPosition\":{\"x\":1092.0,\"y\":-287.0},\"nodeGraphSize\":{\"x\":170.0,\"y\":86.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":true,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1015,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"1c1ec7234686e4140939e8b0f3f836f7\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"mainlight_control\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_mainlight_control\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":-112.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"085b9bb012866c849a9147edc1bee213\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5F00\u5173\",\"VariableNodeGuid\":\"d8aeda7e76fb12841846e45dc5def47d\",\"variable\":{\"rid\":1033}}],\"binded_propertys\":[]}},{\"rid\":1016,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"d8aeda7e76fb12841846e45dc5def47d\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":-12.186004638671875},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1017,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"b4e1c2fd956674d439213861d2cea046\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1018,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"property_mainlight\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_property_mainlight\",\"nodeGraphPosition\":{\"x\":856.18798828125,\"y\":122.81399536132813},\"nodeGraphSize\":{\"x\":166.0,\"y\":156.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1019,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u5F3A\u5EA6\",\"guid\":\"33c087facb822bf4aa0b34c1ef3c05ba\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
+      - \u706F\u5149\u5F3A\u5EA6\",\"type\":1,\"value\":3.269437789916992}},{\"rid\":1020,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u8303\u56F4\",\"guid\":\"33ed86b574d02e14aa50737816132a4d\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
       - \u706F\u5149\u8303\u56F4\",\"type\":1,\"value\":3.0}},{\"rid\":1021,\"type\":{\"class\":\"Variable_Color\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u989C\u8272\",\"guid\":\"95049c932c89da741a5fba004b1b5ad8\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
-      - \u706F\u5149\u989C\u8272\",\"type\":7,\"value\":{\"r\":0.0,\"g\":0.5893979072570801,\"b\":1.0,\"a\":1.0}}},{\"rid\":1022,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"4e0d762b51436f742a3cb593148676fb\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":263.8139953613281},\"nodeGraphSize\":{\"x\":166.0,\"y\":94.0},\"themeSolution\":\"J
-      \u6A58\u8272\",\"themeColor\":{\"r\":1.0,\"g\":0.6392157077789307,\"b\":0.18431372940540315,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[{\"Property_NodeName\":\"\u706F\u5149\u5C5E\u6027\",\"Property_GUID\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"Property_PortName\":\"\u989C\u8272\",\"Property_PortType\":\"SevenStrikeModules.XGraph.Variable_Color\",\"Action_PortName\":\"\",\"Action_PortType\":\"SevenStrikeModules.XGraph.Variable_Color\"}]}},{\"rid\":1023,\"type\":{\"class\":\"Variable_Color\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Color\",\"guid\":\"16d23539eb28ac346906e29d660c4dd6\",\"description\":\"\",\"type\":7,\"value\":{\"r\":0.0,\"g\":0.5893979072570801,\"b\":1.0,\"a\":1.0}}},{\"rid\":1024,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"389caa5a363370b4d95d3c9fdc212770\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Debug\",\"icon\":\"27ad0086ea940654182c96ed2888eca4\",\"visualNodeType\":\"xNode_Debug\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":129.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60796},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"1c1ec7234686e4140939e8b0f3f836f7\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5BF9\u8C61\",\"VariableNodeGuid\":\"a9ba6db60d031664db95b360ef086225\",\"variable\":{\"rid\":1034}}],\"binded_propertys\":[]}},{\"rid\":1025,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"a9ba6db60d031664db95b360ef086225\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":112.81405639648438},\"nodeGraphSize\":{\"x\":166.0,\"y\":99.0},\"themeSolution\":\"J
-      \u6A58\u8272\",\"themeColor\":{\"r\":1.0,\"g\":0.6392157077789307,\"b\":0.18431372940540315,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[{\"Property_NodeName\":\"\u706F\u5149\u5C5E\u6027\",\"Property_GUID\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"Property_PortName\":\"\u5F3A\u5EA6\",\"Property_PortType\":\"SevenStrikeModules.XGraph.Variable_Float\",\"Action_PortName\":\"\",\"Action_PortType\":\"SevenStrikeModules.XGraph.Variable_Float\"}]}},{\"rid\":1026,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Float\",\"guid\":\"aa2f82afdc25b5845be5d46be48d2ab8\",\"description\":\"\",\"type\":1,\"value\":3.2699999809265138}},{\"rid\":1027,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"085b9bb012866c849a9147edc1bee213\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Wait\",\"icon\":\"f0d551b2dfd5763439898ac3b72cf76a\",\"visualNodeType\":\"xNode_Wait\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":-256.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60806},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"6aab1e5b1d389164ab868d3c33fcc500\",\"VariableDatas\":[{\"TargetPortName\":\"\u65F6\u95F4\",\"VariableNodeGuid\":\"72e0c236638023f4e8d25cb576a3385c\",\"variable\":{\"rid\":1035}}],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1028,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"956592938ecfe254b9faed972a4d21b4\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Wait\",\"icon\":\"f0d551b2dfd5763439898ac3b72cf76a\",\"visualNodeType\":\"xNode_Wait\",\"nodeGraphPosition\":{\"x\":1576.0,\"y\":-49.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60806},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"389caa5a363370b4d95d3c9fdc212770\",\"VariableDatas\":[{\"TargetPortName\":\"\u65F6\u95F4\",\"VariableNodeGuid\":\"8db1edc1175496f48b42a597de7cf3b0\",\"variable\":{\"rid\":1036}}],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1029,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"2f02a948dbde90b42baadfae52cdd48d\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Debug\",\"icon\":\"27ad0086ea940654182c96ed2888eca4\",\"visualNodeType\":\"xNode_Debug\",\"nodeGraphPosition\":{\"x\":1576.0,\"y\":193.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60796},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"956592938ecfe254b9faed972a4d21b4\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5BF9\u8C61\",\"VariableNodeGuid\":\"4e0d762b51436f742a3cb593148676fb\",\"variable\":{\"rid\":1037}}],\"binded_propertys\":[]}},{\"rid\":1030,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"3bb86f984067697408c2c6cef6ca059e\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"mainlight_control\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_mainlight_control\",\"nodeGraphPosition\":{\"x\":1816.0,\"y\":112.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-154166},\"isStartNode\":false,\"ParentNodeGuid\":\"2f02a948dbde90b42baadfae52cdd48d\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1031,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":2.0}},{\"rid\":1032,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":2.0}},{\"rid\":1033,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"b4e1c2fd956674d439213861d2cea046\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1034,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u5F3A\u5EA6\",\"guid\":\"33c087facb822bf4aa0b34c1ef3c05ba\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
-      - \u706F\u5149\u5F3A\u5EA6\",\"type\":1,\"value\":3.2699999809265138}},{\"rid\":1035,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":2.0}},{\"rid\":1036,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":2.0}},{\"rid\":1037,\"type\":{\"class\":\"Variable_Color\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u989C\u8272\",\"guid\":\"95049c932c89da741a5fba004b1b5ad8\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
-      - \u706F\u5149\u989C\u8272\",\"type\":7,\"value\":{\"r\":0.0,\"g\":0.5893979072570801,\"b\":1.0,\"a\":1.0}}}]}}"
+      - \u706F\u5149\u989C\u8272\",\"type\":7,\"value\":{\"r\":1.0,\"g\":0.41100001335144045,\"b\":0.0,\"a\":1.0}}},{\"rid\":1022,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"4e0d762b51436f742a3cb593148676fb\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":263.8139953613281},\"nodeGraphSize\":{\"x\":166.0,\"y\":94.0},\"themeSolution\":\"J
+      \u6A58\u8272\",\"themeColor\":{\"r\":1.0,\"g\":0.6392157077789307,\"b\":0.18431372940540315,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[{\"Property_NodeName\":\"\u706F\u5149\u5C5E\u6027\",\"Property_GUID\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"Property_PortName\":\"\u989C\u8272\",\"Property_PortType\":\"SevenStrikeModules.XGraph.Variable_Color\",\"Action_PortName\":\"\",\"Action_PortType\":\"SevenStrikeModules.XGraph.Variable_Color\"}]}},{\"rid\":1023,\"type\":{\"class\":\"Variable_Color\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Color\",\"guid\":\"16d23539eb28ac346906e29d660c4dd6\",\"description\":\"\",\"type\":7,\"value\":{\"r\":1.0,\"g\":0.41100001335144045,\"b\":0.0,\"a\":1.0}}},{\"rid\":1024,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"389caa5a363370b4d95d3c9fdc212770\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Debug\",\"icon\":\"27ad0086ea940654182c96ed2888eca4\",\"visualNodeType\":\"xNode_Debug\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":129.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60796},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"1c1ec7234686e4140939e8b0f3f836f7\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5BF9\u8C61\",\"VariableNodeGuid\":\"a9ba6db60d031664db95b360ef086225\",\"variable\":{\"rid\":1034}}],\"binded_propertys\":[]}},{\"rid\":1025,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"a9ba6db60d031664db95b360ef086225\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Variable\",\"icon\":\"882ad97b01f2b944bb65b11e1094256f\",\"visualNodeType\":\"xNode_Variable_Internal\",\"nodeGraphPosition\":{\"x\":1096.18798828125,\"y\":112.81405639648438},\"nodeGraphSize\":{\"x\":166.0,\"y\":99.0},\"themeSolution\":\"J
+      \u6A58\u8272\",\"themeColor\":{\"r\":1.0,\"g\":0.6392157077789307,\"b\":0.18431372940540315,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[{\"Property_NodeName\":\"\u706F\u5149\u5C5E\u6027\",\"Property_GUID\":\"1b9920fe2222dc34a9fa17675fe376cf\",\"Property_PortName\":\"\u5F3A\u5EA6\",\"Property_PortType\":\"SevenStrikeModules.XGraph.Variable_Float\",\"Action_PortName\":\"\",\"Action_PortType\":\"SevenStrikeModules.XGraph.Variable_Float\"}]}},{\"rid\":1026,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Float\",\"guid\":\"aa2f82afdc25b5845be5d46be48d2ab8\",\"description\":\"\",\"type\":1,\"value\":3.269437789916992}},{\"rid\":1027,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"085b9bb012866c849a9147edc1bee213\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Wait\",\"icon\":\"f0d551b2dfd5763439898ac3b72cf76a\",\"visualNodeType\":\"xNode_Wait\",\"nodeGraphPosition\":{\"x\":1336.0,\"y\":-256.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60806},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"6aab1e5b1d389164ab868d3c33fcc500\",\"VariableDatas\":[{\"TargetPortName\":\"\u65F6\u95F4\",\"VariableNodeGuid\":\"72e0c236638023f4e8d25cb576a3385c\",\"variable\":{\"rid\":1035}}],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1028,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"956592938ecfe254b9faed972a4d21b4\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Wait\",\"icon\":\"f0d551b2dfd5763439898ac3b72cf76a\",\"visualNodeType\":\"xNode_Wait\",\"nodeGraphPosition\":{\"x\":1576.0,\"y\":-49.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60806},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"389caa5a363370b4d95d3c9fdc212770\",\"VariableDatas\":[{\"TargetPortName\":\"\u65F6\u95F4\",\"VariableNodeGuid\":\"8db1edc1175496f48b42a597de7cf3b0\",\"variable\":{\"rid\":1036}}],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1029,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"2f02a948dbde90b42baadfae52cdd48d\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"xAction_\",\"actionNodeType\":\"Debug\",\"icon\":\"27ad0086ea940654182c96ed2888eca4\",\"visualNodeType\":\"xNode_Debug\",\"nodeGraphPosition\":{\"x\":1576.0,\"y\":193.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":true,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":60796},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"956592938ecfe254b9faed972a4d21b4\",\"VariableDatas\":[],\"InternalVariableDatas\":[{\"TargetPortName\":\"\u5BF9\u8C61\",\"VariableNodeGuid\":\"4e0d762b51436f742a3cb593148676fb\",\"variable\":{\"rid\":1037}}],\"binded_propertys\":[]}},{\"rid\":1030,\"type\":{\"class\":\"class_ActionBaseArgs\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"content\":\"\",\"guid\":\"3bb86f984067697408c2c6cef6ca059e\",\"namespaces\":\"SevenStrikeModules.XGraph\",\"classes\":\"action_mc_\",\"actionNodeType\":\"mainlight_control\",\"icon\":\"aebbed90eb11e364fbf2831156f5e6e9\",\"visualNodeType\":\"graph_mc_mainlight_control\",\"nodeGraphPosition\":{\"x\":1816.0,\"y\":112.0},\"nodeGraphSize\":{\"x\":166.0,\"y\":100.0},\"themeSolution\":\"\",\"themeColor\":{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0},\"isConcurrentExecution\":false,\"HasAvatar\":false,\"TransparentNode\":false,\"Avatar\":{\"instanceID\":0},\"NodeIcon\":{\"instanceID\":0},\"RootAsset\":{\"instanceID\":-178380},\"isStartNode\":false,\"ParentNodeGuid\":\"2f02a948dbde90b42baadfae52cdd48d\",\"VariableDatas\":[],\"InternalVariableDatas\":[],\"binded_propertys\":[]}},{\"rid\":1031,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":1.0}},{\"rid\":1032,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":1.0}},{\"rid\":1033,\"type\":{\"class\":\"Variable_Bool\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"Bool\",\"guid\":\"b4e1c2fd956674d439213861d2cea046\",\"description\":\"\",\"type\":3,\"value\":true}},{\"rid\":1034,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u5F3A\u5EA6\",\"guid\":\"33c087facb822bf4aa0b34c1ef3c05ba\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
+      - \u706F\u5149\u5F3A\u5EA6\",\"type\":1,\"value\":3.269437789916992}},{\"rid\":1035,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":1.0}},{\"rid\":1036,\"type\":{\"class\":\"Variable_Float\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"delay\",\"guid\":\"3de2587cccfed5d49a079c0e784c6d3c\",\"description\":\"\u5EF6\u8FDF\u65F6\u95F4\",\"type\":1,\"value\":1.0}},{\"rid\":1037,\"type\":{\"class\":\"Variable_Color\",\"ns\":\"SevenStrikeModules.XGraph\",\"asm\":\"Assembly-CSharp\"},\"data\":{\"name\":\"\u989C\u8272\",\"guid\":\"95049c932c89da741a5fba004b1b5ad8\",\"description\":\"\u5B9E\u65F6\u83B7\u53D6\u5230\u7684
+      - \u706F\u5149\u989C\u8272\",\"type\":7,\"value\":{\"r\":1.0,\"g\":0.41100001335144045,\"b\":0.0,\"a\":1.0}}}]}}"
   ModuleController: {fileID: 0}
   references:
     version: 2
     RefIds:
-    - rid: 1468847756091589040
-      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: "\u5F3A\u5EA6"
-        guid: 33c087facb822bf4aa0b34c1ef3c05ba
-        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u5F3A\u5EA6"
-        type: 1
-        value: 3.2694378
-    - rid: 1468847756091589041
-      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: "\u8303\u56F4"
-        guid: 33ed86b574d02e14aa50737816132a4d
-        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u8303\u56F4"
-        type: 1
-        value: 3
-    - rid: 1468847756091589042
-      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: "\u989C\u8272"
-        guid: 95049c932c89da741a5fba004b1b5ad8
-        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
-        type: 7
-        value: {r: 1, g: 0.411, b: 0, a: 1}
-    - rid: 1468847756194611447
+    - rid: 1468847766687187414
       type: {class: action_mc_module_initialize, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u6A21\u7EC4\u521D\u59CB\u5316"
         BaseArgs:
-          rid: 1468847756194611461
+          rid: 1468847766687187433
         childNodes:
         - 085b9bb012866c849a9147edc1bee213
         activateAllModules: 0
-    - rid: 1468847756194611448
+    - rid: 1468847766687187415
       type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u4E3B\u706F\u63A7\u5236"
         BaseArgs:
-          rid: 1468847756194611462
+          rid: 1468847766687187434
         childNodes:
         - 389caa5a363370b4d95d3c9fdc212770
+        - 9c70d022a8aa46548a6db476ee89696c
         lightEnable: 1
-    - rid: 1468847756194611449
+    - rid: 1468847766687187416
       type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: Bool
         BaseArgs:
-          rid: 1468847756194611463
+          rid: 1468847766687187435
         variable:
-          rid: 1468847756194611464
-    - rid: 1468847756194611450
+          rid: 1468847766687187436
+    - rid: 1468847766687187417
       type: {class: action_mc_property_mainlight, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u706F\u5149\u5C5E\u6027"
         BaseArgs:
-          rid: 1468847756194611465
+          rid: 1468847766687187437
         PropertyVariables:
-        - rid: 1468847756091589040
-        - rid: 1468847756091589041
-        - rid: 1468847756091589042
+        - rid: 1468847766687187438
+        - rid: 1468847766687187439
+        - rid: 1468847766687187440
         Light: {fileID: 0}
-    - rid: 1468847756194611451
+    - rid: 1468847766687187418
       type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: Color
         BaseArgs:
-          rid: 1468847756194611466
+          rid: 1468847766687187441
         variable:
-          rid: 1468847756194611467
-    - rid: 1468847756194611452
+          rid: 1468847766687187442
+    - rid: 1468847766687187419
       type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u8C03\u8BD5"
         BaseArgs:
-          rid: 1468847756194611468
+          rid: 1468847766687187443
         childNodes:
         - 956592938ecfe254b9faed972a4d21b4
-        Msg: 3.269438
-    - rid: 1468847756194611453
+        Msg: 0
+    - rid: 1468847766687187420
       type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: Float
         BaseArgs:
-          rid: 1468847756194611469
+          rid: 1468847766687187444
         variable:
-          rid: 1468847756194611470
-    - rid: 1468847756194611454
+          rid: 1468847766687187445
+    - rid: 1468847766687187421
       type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u7B49\u5F85"
         BaseArgs:
-          rid: 1468847756194611471
+          rid: 1468847766687187446
         childNodes:
         - 1c1ec7234686e4140939e8b0f3f836f7
         Time: 1
-    - rid: 1468847756194611455
+    - rid: 1468847766687187422
       type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u7B49\u5F85"
         BaseArgs:
-          rid: 1468847756194611472
+          rid: 1468847766687187447
         childNodes:
         - 2f02a948dbde90b42baadfae52cdd48d
         Time: 1
-    - rid: 1468847756194611456
+    - rid: 1468847766687187423
       type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u8C03\u8BD5"
         BaseArgs:
-          rid: 1468847756194611473
+          rid: 1468847766687187448
         childNodes:
         - 3bb86f984067697408c2c6cef6ca059e
+        - 0f2f231aa469a984c96e28506089137d
         Msg: RGBA(1.000, 0.411, 0.000, 1.000)
-    - rid: 1468847756194611457
+    - rid: 1468847766687187424
       type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         identifyName: "\u4E3B\u706F\u63A7\u5236"
         BaseArgs:
-          rid: 1468847756194611474
+          rid: 1468847766687187449
         childNodes: []
         lightEnable: 0
-    - rid: 1468847756194611458
+    - rid: 1468847766687187425
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 1468847766687187450
+        childNodes: []
+        activateState: 0
+        activateName: Module_A
+    - rid: 1468847766687187426
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 1468847766687187451
+        childNodes: []
+        activateState: 1
+        activateName: Module_A
+    - rid: 1468847766687187427
       type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -258,11 +259,11 @@ MonoBehaviour:
         guid_v: 3de2587cccfed5d49a079c0e784c6d3c
         type: 1
         variable:
-          rid: 1468847756194611475
+          rid: 1468847766687187452
         transparent: 0
-        position: {x: 1133, y: -163}
+        position: {x: 893, y: -94}
         size: {x: 129, y: 38}
-    - rid: 1468847756194611459
+    - rid: 1468847766687187428
       type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -271,11 +272,37 @@ MonoBehaviour:
         guid_v: 3de2587cccfed5d49a079c0e784c6d3c
         type: 1
         variable:
-          rid: 1468847756194611476
+          rid: 1468847766687187453
         transparent: 0
-        position: {x: 1373, y: 26}
+        position: {x: 1613, y: 69}
         size: {x: 129, y: 38}
-    - rid: 1468847756194611460
+    - rid: 1468847766687187429
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        guid_n: c09a9789618cb7f4b8a37e28054ba404
+        guid_v: 591b99ad000f31c4c82804f394e1156a
+        type: 0
+        variable:
+          rid: 1468847766687187454
+        transparent: 0
+        position: {x: 2078.0002, y: 151.00017}
+        size: {x: 144, y: 38}
+    - rid: 1468847766687187430
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        guid_n: 02c22b026ffb8fa44ac05ed00dbb5091
+        guid_v: 591b99ad000f31c4c82804f394e1156a
+        type: 0
+        variable:
+          rid: 1468847766687187455
+        transparent: 0
+        position: {x: 1358.0002, y: -168.92667}
+        size: {x: 144, y: 38}
+    - rid: 1468847766687187431
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -283,7 +310,15 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847756194611461
+    - rid: 1468847766687187432
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        guid: 591b99ad000f31c4c82804f394e1156a
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        type: 0
+        value: Module_A
+    - rid: 1468847766687187433
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -293,7 +328,7 @@ MonoBehaviour:
         actionNodeType: module_initialize
         icon: 392aaff70f0ba134c99baa862febcd71
         visualNodeType: graph_mc_module_initialize
-        nodeGraphPosition: {x: 1092, y: -287}
+        nodeGraphPosition: {x: 852, y: -218}
         nodeGraphSize: {x: 170, y: 86}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -308,7 +343,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611462
+    - rid: 1468847766687187434
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -322,7 +357,7 @@ MonoBehaviour:
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
-        isConcurrentExecution: 0
+        isConcurrentExecution: 1
         HasAvatar: 0
         TransparentNode: 0
         Avatar: {fileID: 0}
@@ -335,9 +370,9 @@ MonoBehaviour:
         - TargetPortName: "\u5F00\u5173"
           VariableNodeGuid: d8aeda7e76fb12841846e45dc5def47d
           variable:
-            rid: 1468847756194611477
+            rid: 1468847766687187456
         binded_propertys: []
-    - rid: 1468847756194611463
+    - rid: 1468847766687187435
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -347,7 +382,7 @@ MonoBehaviour:
         actionNodeType: Variable
         icon: 882ad97b01f2b944bb65b11e1094256f
         visualNodeType: xNode_Variable_Internal
-        nodeGraphPosition: {x: 1096.188, y: -12.186005}
+        nodeGraphPosition: {x: 1096, y: -49}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -362,7 +397,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611464
+    - rid: 1468847766687187436
       type: {class: Variable_Bool, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Bool
@@ -370,7 +405,7 @@ MonoBehaviour:
         description: 
         type: 3
         value: 1
-    - rid: 1468847756194611465
+    - rid: 1468847766687187437
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -380,7 +415,7 @@ MonoBehaviour:
         actionNodeType: property_mainlight
         icon: aebbed90eb11e364fbf2831156f5e6e9
         visualNodeType: graph_mc_property_mainlight
-        nodeGraphPosition: {x: 856.188, y: 122.813995}
+        nodeGraphPosition: {x: 1096, y: 67}
         nodeGraphSize: {x: 166, y: 156}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -395,7 +430,31 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611466
+    - rid: 1468847766687187438
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u5F3A\u5EA6"
+        guid: 33c087facb822bf4aa0b34c1ef3c05ba
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u5F3A\u5EA6"
+        type: 1
+        value: 3.269377
+    - rid: 1468847766687187439
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u8303\u56F4"
+        guid: 33ed86b574d02e14aa50737816132a4d
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u8303\u56F4"
+        type: 1
+        value: 3
+    - rid: 1468847766687187440
+      type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: "\u989C\u8272"
+        guid: 95049c932c89da741a5fba004b1b5ad8
+        description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
+        type: 7
+        value: {r: 1, g: 0.411, b: 0, a: 1}
+    - rid: 1468847766687187441
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -405,7 +464,7 @@ MonoBehaviour:
         actionNodeType: Variable
         icon: 882ad97b01f2b944bb65b11e1094256f
         visualNodeType: xNode_Variable_Internal
-        nodeGraphPosition: {x: 1096.188, y: 263.814}
+        nodeGraphPosition: {x: 1336.0002, y: 211.23997}
         nodeGraphSize: {x: 166, y: 94}
         themeSolution: "J \u6A58\u8272"
         themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
@@ -426,7 +485,7 @@ MonoBehaviour:
           Property_PortType: SevenStrikeModules.XGraph.Variable_Color
           Action_PortName: 
           Action_PortType: SevenStrikeModules.XGraph.Variable_Color
-    - rid: 1468847756194611467
+    - rid: 1468847766687187442
       type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Color
@@ -434,7 +493,7 @@ MonoBehaviour:
         description: 
         type: 7
         value: {r: 1, g: 0.411, b: 0, a: 1}
-    - rid: 1468847756194611468
+    - rid: 1468847766687187443
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -444,7 +503,7 @@ MonoBehaviour:
         actionNodeType: Debug
         icon: 27ad0086ea940654182c96ed2888eca4
         visualNodeType: xNode_Debug
-        nodeGraphPosition: {x: 1336, y: 129}
+        nodeGraphPosition: {x: 1576, y: -46}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -461,9 +520,9 @@ MonoBehaviour:
         - TargetPortName: "\u5BF9\u8C61"
           VariableNodeGuid: a9ba6db60d031664db95b360ef086225
           variable:
-            rid: 1468847756194611478
+            rid: 1468847766687187457
         binded_propertys: []
-    - rid: 1468847756194611469
+    - rid: 1468847766687187444
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -473,7 +532,7 @@ MonoBehaviour:
         actionNodeType: Variable
         icon: 882ad97b01f2b944bb65b11e1094256f
         visualNodeType: xNode_Variable_Internal
-        nodeGraphPosition: {x: 1096.188, y: 112.81406}
+        nodeGraphPosition: {x: 1336, y: 57}
         nodeGraphSize: {x: 166, y: 99}
         themeSolution: "J \u6A58\u8272"
         themeColor: {r: 1, g: 0.6392157, b: 0.18431373, a: 1}
@@ -494,15 +553,15 @@ MonoBehaviour:
           Property_PortType: SevenStrikeModules.XGraph.Variable_Float
           Action_PortName: 
           Action_PortType: SevenStrikeModules.XGraph.Variable_Float
-    - rid: 1468847756194611470
+    - rid: 1468847766687187445
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Float
         guid: aa2f82afdc25b5845be5d46be48d2ab8
         description: 
         type: 1
-        value: 3.2694378
-    - rid: 1468847756194611471
+        value: 0
+    - rid: 1468847766687187446
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -512,7 +571,7 @@ MonoBehaviour:
         actionNodeType: Wait
         icon: f0d551b2dfd5763439898ac3b72cf76a
         visualNodeType: xNode_Wait
-        nodeGraphPosition: {x: 1336, y: -256}
+        nodeGraphPosition: {x: 1096, y: -187}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -528,10 +587,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 72e0c236638023f4e8d25cb576a3385c
           variable:
-            rid: 1468847756194611479
+            rid: 1468847766687187458
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611472
+    - rid: 1468847766687187447
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -541,7 +600,7 @@ MonoBehaviour:
         actionNodeType: Wait
         icon: f0d551b2dfd5763439898ac3b72cf76a
         visualNodeType: xNode_Wait
-        nodeGraphPosition: {x: 1576, y: -49}
+        nodeGraphPosition: {x: 1816, y: -74}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -557,10 +616,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 8db1edc1175496f48b42a597de7cf3b0
           variable:
-            rid: 1468847756194611480
+            rid: 1468847766687187459
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611473
+    - rid: 1468847766687187448
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -570,11 +629,11 @@ MonoBehaviour:
         actionNodeType: Debug
         icon: 27ad0086ea940654182c96ed2888eca4
         visualNodeType: xNode_Debug
-        nodeGraphPosition: {x: 1576, y: 193}
+        nodeGraphPosition: {x: 2056, y: 4}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
-        isConcurrentExecution: 0
+        isConcurrentExecution: 1
         HasAvatar: 1
         TransparentNode: 0
         Avatar: {fileID: 2800000, guid: 955439608ff900644880427e66df7011, type: 3}
@@ -587,9 +646,9 @@ MonoBehaviour:
         - TargetPortName: "\u5BF9\u8C61"
           VariableNodeGuid: 4e0d762b51436f742a3cb593148676fb
           variable:
-            rid: 1468847756194611481
+            rid: 1468847766687187460
         binded_propertys: []
-    - rid: 1468847756194611474
+    - rid: 1468847766687187449
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -599,7 +658,7 @@ MonoBehaviour:
         actionNodeType: mainlight_control
         icon: aebbed90eb11e364fbf2831156f5e6e9
         visualNodeType: graph_mc_mainlight_control
-        nodeGraphPosition: {x: 1816, y: 112}
+        nodeGraphPosition: {x: 2296, y: -77}
         nodeGraphSize: {x: 166, y: 100}
         themeSolution: 
         themeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -614,7 +673,65 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847756194611475
+    - rid: 1468847766687187450
+      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        content: 
+        guid: 0f2f231aa469a984c96e28506089137d
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        actionNodeType: module_activate
+        icon: 4318583132bab364a8f9b989966915b9
+        visualNodeType: graph_mc_module_activate
+        nodeGraphPosition: {x: 2296, y: 54}
+        nodeGraphSize: {x: 166, y: 135}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: 2f02a948dbde90b42baadfae52cdd48d
+        VariableDatas:
+        - TargetPortName: "\u540D\u79F0"
+          VariableNodeGuid: c09a9789618cb7f4b8a37e28054ba404
+          variable:
+            rid: 1468847766687187461
+        InternalVariableDatas: []
+        binded_propertys: []
+    - rid: 1468847766687187451
+      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        content: 
+        guid: 9c70d022a8aa46548a6db476ee89696c
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        actionNodeType: module_activate
+        icon: 4318583132bab364a8f9b989966915b9
+        visualNodeType: graph_mc_module_activate
+        nodeGraphPosition: {x: 1576.0002, y: -254.50008}
+        nodeGraphSize: {x: 166, y: 135}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: 1c1ec7234686e4140939e8b0f3f836f7
+        VariableDatas:
+        - TargetPortName: "\u540D\u79F0"
+          VariableNodeGuid: 02c22b026ffb8fa44ac05ed00dbb5091
+          variable:
+            rid: 1468847766687187462
+        InternalVariableDatas: []
+        binded_propertys: []
+    - rid: 1468847766687187452
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -622,7 +739,7 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847756194611476
+    - rid: 1468847766687187453
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -630,7 +747,23 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847756194611477
+    - rid: 1468847766687187454
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        guid: 591b99ad000f31c4c82804f394e1156a
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        type: 0
+        value: Module_A
+    - rid: 1468847766687187455
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        guid: 591b99ad000f31c4c82804f394e1156a
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        type: 0
+        value: Module_A
+    - rid: 1468847766687187456
       type: {class: Variable_Bool, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Bool
@@ -638,15 +771,15 @@ MonoBehaviour:
         description: 
         type: 3
         value: 1
-    - rid: 1468847756194611478
+    - rid: 1468847766687187457
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
-        name: "\u5F3A\u5EA6"
+        name: Float
         guid: 33c087facb822bf4aa0b34c1ef3c05ba
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u5F3A\u5EA6"
         type: 1
-        value: 3.2694378
-    - rid: 1468847756194611479
+        value: 0
+    - rid: 1468847766687187458
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -654,7 +787,7 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847756194611480
+    - rid: 1468847766687187459
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -662,11 +795,27 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847756194611481
+    - rid: 1468847766687187460
       type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
-        name: "\u989C\u8272"
+        name: Color
         guid: 95049c932c89da741a5fba004b1b5ad8
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
         type: 7
         value: {r: 1, g: 0.411, b: 0, a: 1}
+    - rid: 1468847766687187461
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        guid: 591b99ad000f31c4c82804f394e1156a
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        type: 0
+        value: Module_A
+    - rid: 1468847766687187462
+      type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: module
+        guid: 591b99ad000f31c4c82804f394e1156a
+        description: "\u76EE\u6807\u6A21\u7EC4\u540D\u79F0"
+        type: 0
+        value: Module_A

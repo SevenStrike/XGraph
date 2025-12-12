@@ -1485,6 +1485,24 @@ namespace SevenStrikeModules.XGraph
         {
             ActionAssetCaptureData.Clear();
         }
+        /// <summary>
+        /// 覆盖快照
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public void Capture_Covering(class_ActionAssetCaptureData data)
+        {
+            foreach (var item in ActionAssetCaptureData)
+            {
+                if (item.name == data.name && item.ver == data.ver)
+                {
+                    item.name = data.name;
+                    item.ver = data.ver;
+                    item.datetime = data.datetime;
+                    item.data = data.data;
+                }
+            }
+        }
         #endregion
     }
 }

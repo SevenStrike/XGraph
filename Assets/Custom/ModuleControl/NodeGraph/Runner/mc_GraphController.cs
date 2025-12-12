@@ -36,9 +36,9 @@ namespace SevenStrikeModules.XGraph
         public KeyCode key_RunnerMode = KeyCode.M;
 
         [Header("修改黑板变量：modules")]
-        public KeyCode key_vare_control = KeyCode.U;
-        public string[] vare_data_list;
-        public int index_vare = -1;
+        public KeyCode key_module_control = KeyCode.U;
+        public string[] module_data_list;
+        public int index_module = -1;
         [Header("修改黑板变量：msg")]
         public KeyCode key_msg_control = KeyCode.I;
         public string[] msg_data_list;
@@ -54,8 +54,8 @@ namespace SevenStrikeModules.XGraph
 
         private void Start()
         {
-            vare_data_list = new string[4] { "Module_A", "Module_B", "Module_C", "Module_D" };
-            index_vare = -1;
+            module_data_list = new string[4] { "Module_A", "Module_B", "Module_C", "Module_D" };
+            index_module = -1;
 
             msg_data_list = new string[4] { "m_bK7TdR2N", "m_Yp5sQ9Lm", "m_3xG8FjZc", "m_qHn1Vw4R" };
             index_msg = -1;
@@ -111,14 +111,14 @@ namespace SevenStrikeModules.XGraph
                 GraphRunner.Manual_Action_Execution();
             }
             // 修改变量 - vare
-            if (Input.GetKeyDown(key_vare_control))
+            if (Input.GetKeyDown(key_module_control))
             {
-                if (index_vare >= vare_data_list.Length - 1)
-                    index_vare = 0;
+                if (index_module >= module_data_list.Length - 1)
+                    index_module = 0;
                 else
-                    index_vare++;
+                    index_module++;
 
-                GraphRunner.SampleAsset.Variable_SetValue<string>("vare", vare_data_list[index_vare]);
+                GraphRunner.SampleAsset.Variable_SetValue<string>("module", module_data_list[index_module]);
             }
             // 修改变量 - msg
             if (Input.GetKeyDown(key_msg_control))
