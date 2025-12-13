@@ -23,12 +23,17 @@ namespace SevenStrikeModules.XGraph
         /// 流程暂停中
         /// </summary>
         private bool isPaused = false;
+        /// <summary>
+        /// 运行时修改
+        /// </summary>
+        public bool RuntimeSave = false;
 
         /// <summary>
         /// 自定义的目标脚本，用于赋值给行为资源中的目标脚本对象，利用此脚本可达成行为节点对目标脚本功能的调用
         /// </summary>
         public ModuleController TargetScript;
 
+        #region 手动执行
         /// <summary>
         /// 手动执行模式开关
         /// </summary>
@@ -53,6 +58,7 @@ namespace SevenStrikeModules.XGraph
         /// 手动执行等待结束回调
         /// </summary>
         public Action OnManual_WaitComplete;
+        #endregion
 
         private void Start()
         {
@@ -69,10 +75,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private void Asset_Clone()
         {
-            //#if UNITY_EDITOR
             if (!Application.isEditor)
                 return;
-            //#endif
+            if (!RuntimeSave)
+                return;
 
             if (SampleAsset == null)
             {
@@ -92,10 +98,10 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         private void Asset_Restore()
         {
-            //#if UNITY_EDITOR
             if (!Application.isEditor)
                 return;
-            //#endif
+            if (!RuntimeSave)
+                return;
 
             if (SampleAsset == null || SampleAssetClone == null)
             {

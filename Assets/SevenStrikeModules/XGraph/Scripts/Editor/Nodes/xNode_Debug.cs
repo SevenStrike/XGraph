@@ -17,6 +17,7 @@ namespace SevenStrikeModules.XGraph
             #region 端口 - 输入
             List<xGraph_NodePort> port_in = new List<xGraph_NodePort>();
             port_in.Add(new xGraph_NodePort("", typeof(xAction_Base), Port.Capacity.Single));// 加入行为端口（输入）
+            port_in.Add(new xGraph_NodePort("前缀", typeof(Variable), Port.Capacity.Single));// 加入变量端口（输入）
             port_in.Add(new xGraph_NodePort("对象", typeof(Variable), Port.Capacity.Single));// 加入变量端口（输入）
             InputPort_Set(port_in);
             #endregion
@@ -66,7 +67,8 @@ namespace SevenStrikeModules.XGraph
         {
             base.On_VariablesValue_Changed();
 
-            debug.DebugMessage();
+            debug.DebugMessage_withPort("对象");
+            debug.SetPrefix_withPort("前缀");
         }
         #endregion
 
@@ -143,6 +145,24 @@ namespace SevenStrikeModules.XGraph
         {
             Foldout fold = base.ins_Folder_Extensions(root);
 
+            #region 调试前缀
+            TextField field_prefix = util_XGraphInspectorGUI.GUI_Field_String(fold, "前缀", debug.Prefix, new string[] { "field_text" });
+            field_prefix.RegisterCallback<ChangeEvent<string>>((evt) =>
+            {
+                // 如果该节点已经存在绑定的变量，则将当前序列化值给到控件值，因为该序列化值已受变量控制
+                if (isVariableBinded("前缀"))
+                {
+                    field_prefix.value = debug.Prefix;
+                    debug.SetPrefix_withPort("前缀");
+                }
+                // 否则就代表没有任何变量节点接入，而使用控件值给到序列化属性值
+                else
+                {
+                    debug.SetPrefix(field_prefix.value);
+                }
+            });
+            #endregion
+
             #region 调试内容
             Label label_msg = util_XGraphInspectorGUI.GUI_Label(fold, $"对象内容：{debug.Msg}", new string[] { "field_text" });
             #endregion
@@ -151,6 +171,7 @@ namespace SevenStrikeModules.XGraph
             debug.On_Node_Variable_Binded += (vare) =>
             {
                 label_msg.text = debug.Msg;
+                field_prefix.value = debug.Prefix;
             };
 
             // 克隆节点后刷新控件值为克隆后的最新值
@@ -160,9 +181,12 @@ namespace SevenStrikeModules.XGraph
                 xAction_Debug s_source = (xAction_Debug)source;
                 // 克隆后的行为数据
                 xAction_Debug s_clone = (xAction_Debug)clone;
+
                 s_clone.Msg = s_source.Msg;
+                s_clone.Prefix = s_source.Prefix;
 
                 label_msg.text = debug.Msg;
+                field_prefix.value = debug.Prefix;
             };
 
             return fold;

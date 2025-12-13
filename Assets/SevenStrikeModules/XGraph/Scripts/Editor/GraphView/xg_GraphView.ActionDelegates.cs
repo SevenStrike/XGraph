@@ -119,6 +119,12 @@ namespace SevenStrikeModules.XGraph
         /// <param name="evt"></param>
         private void Action_KeyDown(KeyDownEvent evt)
         {
+            // 只有在没有选中文本输入框时才处理全局快捷键
+            if (IsFocusedElementTextField())
+            {
+                return; // 让文本输入框自己处理快捷键
+            }
+
             if (evt.keyCode == KeyCode.C && (evt.ctrlKey || evt.commandKey))
             {
                 Node_Copy();
@@ -144,6 +150,14 @@ namespace SevenStrikeModules.XGraph
                 MakeGroup("节点编组", gv_NodeCreatedPosition);
                 evt.StopPropagation();
             }
+        }
+        /// <summary>
+        /// 检查当前焦点元素是否是文本输入框
+        /// </summary>
+        private bool IsFocusedElementTextField()
+        {
+            var focused = focusController.focusedElement;
+            return focused is TextField || focused is TextElement;
         }
         /// <summary>
         /// 注册XGraphWindow的 节点颜色标记开关状态委托

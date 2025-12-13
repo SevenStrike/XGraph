@@ -1,6 +1,16 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+    using UnityEditor;
     using UnityEngine;
+
+    [Serializable]
+    public class VariableController<T>
+    {
+        public KeyCode key_control;
+        public T[] data_list;
+        public int index = -1;
+    }
 
     public class mc_GraphController : MonoBehaviour
     {
@@ -36,35 +46,26 @@ namespace SevenStrikeModules.XGraph
         public KeyCode key_RunnerMode = KeyCode.M;
 
         [Header("修改黑板变量：modules")]
-        public KeyCode key_module_control = KeyCode.U;
-        public string[] module_data_list;
-        public int index_module = -1;
+        public VariableController<string> vc_modules;
         [Header("修改黑板变量：msg")]
-        public KeyCode key_msg_control = KeyCode.I;
-        public string[] msg_data_list;
-        public int index_msg = -1;
+        public VariableController<string> vc_msg;
         [Header("修改黑板变量：delay")]
-        public KeyCode key_delay_control = KeyCode.O;
-        public float[] delay_data_list;
-        public int index_delay = -1;
+        public VariableController<float> vc_delay;
         [Header("修改黑板变量：switch")]
-        public KeyCode key_switch_control = KeyCode.P;
-        public bool[] switch_data_list;
-        public int index_switch = -1;
+        public VariableController<bool> vc_switch;
+
+        private void OnManual_StepComplete()
+        {
+            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "手动步骤执行完成，可以执行下一步", GraphRunner.SampleAsset.LogEnabled);
+        }
+        private void OnManual_WaitComplete()
+        {
+            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "等待节点完成，可以继续执行", GraphRunner.SampleAsset.LogEnabled);
+        }
 
         private void Start()
         {
-            module_data_list = new string[4] { "Module_A", "Module_B", "Module_C", "Module_D" };
-            index_module = -1;
-
-            msg_data_list = new string[4] { "m_bK7TdR2N", "m_Yp5sQ9Lm", "m_3xG8FjZc", "m_qHn1Vw4R" };
-            index_msg = -1;
-
-            delay_data_list = new float[4] { 0, 1, 2, 3 };
-            index_delay = -1;
-
-            switch_data_list = new bool[2] { true, false };
-            index_switch = -1;
+            Variable_Initialize();
         }
 
         private void OnDestroy()
@@ -84,6 +85,78 @@ namespace SevenStrikeModules.XGraph
             {
                 GraphRunner.Runner_Start();
             }
+            ActionControl();
+            Variable_Modified();
+        }
+
+        /// <summary>
+        /// 初始化变量的目标修改值
+        /// </summary>
+        private void Variable_Initialize()
+        {
+            vc_modules.data_list = new string[4] { "Module_A", "Module_B", "Module_C", "Module_D" };
+            vc_modules.index = -1;
+
+            vc_msg.data_list = new string[4] { "m_bK7TdR2N", "m_Yp5sQ9Lm", "m_3xG8FjZc", "m_qHn1Vw4R" };
+            vc_msg.index = -1;
+
+            vc_delay.data_list = new float[4] { 0, 1, 2, 3 };
+            vc_delay.index = -1;
+
+            vc_switch.data_list = new bool[2] { true, false };
+            vc_switch.index = -1;
+        }
+        /// <summary>
+        /// 变量修改
+        /// </summary>
+        private void Variable_Modified()
+        {
+            // 修改变量 - modue
+            if (Input.GetKeyDown(vc_modules.key_control))
+            {
+                if (vc_modules.index >= vc_modules.data_list.Length - 1)
+                    vc_modules.index = 0;
+                else
+                    vc_modules.index++;
+
+                GraphRunner.SampleAsset.Variable_SetValue<string>("module", vc_modules.data_list[vc_modules.index]);
+            }
+            // 修改变量 - msg
+            if (Input.GetKeyDown(vc_msg.key_control))
+            {
+                if (vc_msg.index >= vc_msg.data_list.Length - 1)
+                    vc_msg.index = 0;
+                else
+                    vc_msg.index++;
+
+                GraphRunner.SampleAsset.Variable_SetValue<string>("msg", vc_msg.data_list[vc_msg.index]);
+            }
+            // 修改变量 - delay
+            if (Input.GetKeyDown(vc_delay.key_control))
+            {
+                if (vc_delay.index >= vc_delay.data_list.Length - 1)
+                    vc_delay.index = 0;
+                else
+                    vc_delay.index++;
+
+                GraphRunner.SampleAsset.Variable_SetValue<float>("delay", vc_delay.data_list[vc_delay.index]);
+            }
+            // 修改变量 - switch
+            if (Input.GetKeyDown(vc_switch.key_control))
+            {
+                if (vc_switch.index >= vc_switch.data_list.Length - 1)
+                    vc_switch.index = 0;
+                else
+                    vc_switch.index++;
+
+                GraphRunner.SampleAsset.Variable_SetValue<bool>("switch", vc_switch.data_list[vc_switch.index]);
+            }
+        }
+        /// <summary>
+        /// 行为流程控制
+        /// </summary>
+        private void ActionControl()
+        {
             // 流程节点 - 杀死
             if (Input.GetKeyDown(key_ActionKill))
             {
@@ -110,56 +183,14 @@ namespace SevenStrikeModules.XGraph
             {
                 GraphRunner.Manual_Action_Execution();
             }
-            // 修改变量 - vare
-            if (Input.GetKeyDown(key_module_control))
-            {
-                if (index_module >= module_data_list.Length - 1)
-                    index_module = 0;
-                else
-                    index_module++;
-
-                GraphRunner.SampleAsset.Variable_SetValue<string>("module", module_data_list[index_module]);
-            }
-            // 修改变量 - msg
-            if (Input.GetKeyDown(key_msg_control))
-            {
-                if (index_msg >= msg_data_list.Length - 1)
-                    index_msg = 0;
-                else
-                    index_msg++;
-
-                GraphRunner.SampleAsset.Variable_SetValue<string>("msg", msg_data_list[index_msg]);
-            }
-            // 修改变量 - delay
-            if (Input.GetKeyDown(key_delay_control))
-            {
-                if (index_delay >= delay_data_list.Length - 1)
-                    index_delay = 0;
-                else
-                    index_delay++;
-
-                GraphRunner.SampleAsset.Variable_SetValue<float>("delay", delay_data_list[index_delay]);
-            }
-            // 修改变量 - switch
-            if (Input.GetKeyDown(key_switch_control))
-            {
-                if (index_switch >= switch_data_list.Length - 1)
-                    index_switch = 0;
-                else
-                    index_switch++;
-
-                GraphRunner.SampleAsset.Variable_SetValue<bool>("switch", switch_data_list[index_switch]);
-            }
         }
 
-        private void OnManual_StepComplete()
-        {
-            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "手动步骤执行完成，可以执行下一步", GraphRunner.SampleAsset.LogEnabled);
-        }
-
-        private void OnManual_WaitComplete()
-        {
-            util_Dashboard.LogMsg(xMessageType.警告, "节点流程执行控制器", "等待节点完成，可以继续执行", GraphRunner.SampleAsset.LogEnabled);
-        }
     }
+
+#if UNITY_EDITOR
+    public class Editor_mc_GraphController : Editor
+    {
+
+    }
+#endif
 }

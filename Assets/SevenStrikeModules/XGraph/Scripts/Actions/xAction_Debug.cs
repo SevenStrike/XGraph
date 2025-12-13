@@ -10,6 +10,7 @@ namespace SevenStrikeModules.XGraph
         /// </summary>
         public List<string> childNodes = new List<string>();
 
+        [SerializeField] public string Prefix;
         [SerializeField] public string Msg;
 
         /// <summary>
@@ -20,16 +21,34 @@ namespace SevenStrikeModules.XGraph
             if (On_Node_Excute != null)
                 On_Node_Excute();
 
-            DebugMessage();
-            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{identifyName}  {Msg}  （{(BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", BaseArgs.RootAsset.LogEnabled);
+            DebugMessage_withPort("对象");
+            SetPrefix_withPort("前缀");
+
+            util_Dashboard.LogMsg(xMessageType.信息, $"---> ：", $"{identifyName}  {Prefix}{Msg}  （{(BaseArgs.isConcurrentExecution ? "并发" : "顺序")}）", BaseArgs.RootAsset.LogEnabled);
         }
 
-        public void DebugMessage()
+        public void DebugMessage_withPort(string value)
         {
-            Variable vare = Variable_Get("对象");
+            Variable vare = Variable_Get(value);
             if (vare != null)
                 Msg = vare.GetValue().ToString();
+        }
 
+        public void SetPrefix_withPort(string value)
+        {
+            Variable vare = Variable_Get(value);
+            if (vare != null)
+                Prefix = vare.GetValue().ToString();
+        }
+
+        public void SetPrefix(string value)
+        {
+            Prefix = value;
+        }
+
+        public void DebugMessage(string value)
+        {
+            Msg = value;
         }
 
         /// <summary>
@@ -45,6 +64,7 @@ namespace SevenStrikeModules.XGraph
             if (clone != null)
             {
                 clone.Msg = this.Msg;
+                clone.Prefix = this.Prefix;
             }
 
             return clone;
