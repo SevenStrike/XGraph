@@ -11757,7 +11757,7 @@ MonoBehaviour:
   SampleAssetClone: {fileID: 0}
   RuntimeSave: 0
   TargetScript: {fileID: 1444357495}
-  ManualExecutionMode: 1
+  ManualExecutionMode: 0
 --- !u!114 &1444357498
 MonoBehaviour:
   m_ObjectHideFlags: 0
