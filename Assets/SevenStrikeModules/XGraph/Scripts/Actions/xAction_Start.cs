@@ -1,7 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
 
+    [Serializable]
     public class xAction_Start : xAction_Base
     {
         /// <summary>

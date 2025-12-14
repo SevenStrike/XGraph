@@ -1,5 +1,8 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+
+    [Serializable]
     public abstract class xAction_End : xAction_Base
     {
         /// <summary>

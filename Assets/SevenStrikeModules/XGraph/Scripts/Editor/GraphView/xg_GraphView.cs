@@ -255,7 +255,7 @@ namespace SevenStrikeModules.XGraph
             GraphviewCustomRectangleSelector = new xg_GraphViewRectangleSelector(Color.gray, 5, false);
             this.AddManipulator(GraphviewCustomRectangleSelector);
             // 启用节点之间的连线功能
-            this.AddManipulator(new EdgeManipulator());
+            //this.AddManipulator(new EdgeManipulator());
             // 实例化节点搜索框的主体
             AddNodesSearchBox();
             #endregion

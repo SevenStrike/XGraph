@@ -3,6 +3,7 @@ namespace SevenStrikeModules.XGraph
     using System;
     using UnityEngine;
 
+    [Serializable]
     public class xAction_Branch : xAction_Base
     {
         /// <summary>

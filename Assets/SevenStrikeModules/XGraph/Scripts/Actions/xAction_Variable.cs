@@ -1,7 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using UnityEngine;
 
+    [Serializable]
     public class xAction_Variable : xAction_Base
     {
         [SerializeReference] public Variable variable;

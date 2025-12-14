@@ -1,8 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
-    using UnityEngine;
 
+    [Serializable]
     public class xAction_Wait : xAction_Base
     {
         /// <summary>

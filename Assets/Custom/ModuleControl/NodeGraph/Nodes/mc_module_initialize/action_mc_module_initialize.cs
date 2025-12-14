@@ -1,7 +1,9 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using UnityEngine;
 
+    [Serializable]
     public class action_mc_module_initialize : xAction_Start
     {
         [SerializeField] public bool activateAllModules;

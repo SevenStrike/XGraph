@@ -1,8 +1,10 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
     using System.Collections.Generic;
     using UnityEngine;
 
+    [Serializable]
     public class xAction_Property : xAction_Base
     {
         [SerializeReference] public List<Variable> PropertyVariables = new List<Variable>();

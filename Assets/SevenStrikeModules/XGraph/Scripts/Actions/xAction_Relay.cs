@@ -1,5 +1,8 @@
 namespace SevenStrikeModules.XGraph
 {
+    using System;
+
+    [Serializable]
     public class xAction_Relay : xAction_Composite
     {
         /// <summary>
