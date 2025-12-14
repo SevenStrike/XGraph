@@ -1,6 +1,6 @@
 ## XGraph 流程图插件
 [![license](https://img.shields.io/badge/license-AGPLv3.0-red.svg)](https://github.com/SevenStrike/XGraph/blob/main/LICENSE)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/SevenStrike/XGraph)](https://github.com/SevenStrike/XGraph/releases/latest)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/SevenStrike/XGraph)](https://github.com/SevenStrike/XGraph/releases)
 [![supported](https://img.shields.io/badge/Supported-Unity-success.svg)](https://unity.com/)
 
 ### 概述
