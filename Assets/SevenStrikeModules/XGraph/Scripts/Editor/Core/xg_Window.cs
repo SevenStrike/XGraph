@@ -641,6 +641,11 @@
             xw_OptionsContainerRegion_Reg_BlackBoards = xw_OptionsContainer.Q<VisualElement>("reg_blackboards");
             // 暂未开放
             xw_OptionsContainerRegion_Reg_Other = xw_OptionsContainer.Q<VisualElement>("reg_other");
+
+            // 读取版本号
+            VersionInfo vinfo = JsonUtility.FromJson<VersionInfo>(util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}cfg_Version.json").text);
+            //Debug.Log($"{vinfo} - {vinfo.version}");
+            xw_OptionsContainerRegion_Reg_Other.Q<Label>(name: "xGraphVersion").text = vinfo.version;
             #endregion
 
             VisualElement vm_col_bg = xw_OptionsContainerRegion_Reg_Color.Q<VisualElement>(name: "color_bg");
@@ -1928,7 +1933,7 @@
                 var menu = new GenericMenu();
 
                 // 读取菜单结构列表内容
-                string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}/cfg_Themes_Window.json").text;
+                string json = util_XGraphEditorUtility.AssetLoad<TextAsset>($"{util_Dashboard.GetPath_Config()}cfg_Themes_Window.json").text;
                 WindowThemeList themeList = JsonUtility.FromJson<WindowThemeList>(json);
                 foreach (var theme in themeList.Themes)
                 {
