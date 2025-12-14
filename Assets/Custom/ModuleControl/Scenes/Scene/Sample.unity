@@ -11753,7 +11753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 602bdf3665d4b3f498b1ff845c6d0343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SampleAsset: {fileID: 11400000, guid: a2433ebc7d9e1da4da4e920f82018204, type: 2}
+  SampleAsset: {fileID: 11400000, guid: a5e25493adf33e74a8aef658a368ae97, type: 2}
   SampleAssetClone: {fileID: 0}
   RuntimeSave: 0
   TargetScript: {fileID: 1444357495}
