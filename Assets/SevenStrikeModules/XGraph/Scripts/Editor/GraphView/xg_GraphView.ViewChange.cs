@@ -154,7 +154,7 @@ namespace SevenStrikeModules.XGraph
                 // 将 "n_child" 放到 "n_parent" 的相对应True和False的child成员变量中
                 ActionTreeAsset.ChildNode_Add(node_branch.ActionData, node_child.ActionData, edge?.output.portName);
 
-                Debug.Log($"{node_branch.branch.childNode_true}  / {node_branch.branch.childNode_false}");
+                //Debug.Log($"{node_branch.branch.childNode_true}  / {node_branch.branch.childNode_false}");
             }
             #endregion
 
