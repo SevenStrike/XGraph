@@ -15,7 +15,7 @@ MonoBehaviour:
   LastGraphWindowSize: {x: 1560, y: 1036}
   LastGraphViewPosition: {x: -457, y: 495}
   LastGraphViewZoom: 0.6082725
-  LastSaveDateTime: 2025-12-14  -  13:41:15
+  LastSaveDateTime: 2026-01-30  -  23:28:45
   GraphNodesStruct: {fileID: 4900000, guid: 67ec120f3ab9b6c428246fcdc6b95eea, type: 3}
   GraphviewGridBackgroundThemes:
     bgcolor: {r: 0.1647059, g: 0.1647059, b: 0.1647059, a: 0.6862745}
@@ -59,32 +59,32 @@ MonoBehaviour:
   XGraph_DisplayNodeFlow: 1
   LogEnabled: 1
   Actions:
-  - rid: 1468847801570689510
-  - rid: 1468847801570689511
-  - rid: 1468847801570689512
-  - rid: 1468847801570689513
-  - rid: 1468847801570689514
-  - rid: 1468847801570689515
-  - rid: 1468847801570689516
-  - rid: 1468847801570689517
-  - rid: 1468847801570689518
-  - rid: 1468847801570689519
-  - rid: 1468847801570689520
-  - rid: 1468847801570689521
-  - rid: 1468847801570689522
-  - rid: 1468847801570689523
-  - rid: 1468847801570689524
-  - rid: 1468847801570689525
-  - rid: 1468847801570689526
-  - rid: 1468847801570689527
-  - rid: 1468847801570689528
-  - rid: 1468847801570689529
+  - rid: 8267913619029623060
+  - rid: 8267913619029623061
+  - rid: 8267913619029623062
+  - rid: 8267913619029623063
+  - rid: 8267913619029623064
+  - rid: 8267913619029623065
+  - rid: 8267913619029623066
+  - rid: 8267913619029623067
+  - rid: 8267913619029623068
+  - rid: 8267913619029623069
+  - rid: 8267913619029623070
+  - rid: 8267913619029623071
+  - rid: 8267913619029623072
+  - rid: 8267913619029623073
+  - rid: 8267913619029623074
+  - rid: 8267913619029623075
+  - rid: 8267913619029623076
+  - rid: 8267913619029623077
+  - rid: 8267913619029623078
+  - rid: 8267913619029623079
   Variables:
-  - rid: 1468847801570689530
-  - rid: 1468847801570689531
-  - rid: 1468847801570689532
-  - rid: 1468847801570689533
-  - rid: 1468847801570689534
+  - rid: 8267913619029623080
+  - rid: 8267913619029623081
+  - rid: 8267913619029623082
+  - rid: 8267913619029623083
+  - rid: 8267913619029623084
   Sticks: []
   Labels: []
   Decals:
@@ -99,7 +99,7 @@ MonoBehaviour:
   Groups:
   - name: "\u6A21\u7EC4\u663E\u793A - A"
     guid: 740279e8bb00d8f40be5aadf01bbe360
-    pos: {x: 1754.0001, y: -140}
+    pos: {x: 1754, y: -140}
     solution: "M \u660E\u4EAE"
     guids:
     - 0f2f231aa469a984c96e28506089137d
@@ -133,352 +133,13 @@ MonoBehaviour:
     - e3381e7063b155345b1a16be3564d986
     hasAvatarNodes: 1
   BlackboardVariable:
-  - rid: 1468847801570689535
-  - rid: 1468847801570689536
+  - rid: 8267913619029623085
+  - rid: 8267913619029623086
   ActionAssetCaptureData: []
   ModuleController: {fileID: 0}
   references:
     version: 2
     RefIds:
-    - rid: 1468847801570689510
-      type: {class: action_mc_module_initialize, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u521D\u59CB\u5316"
-        BaseArgs:
-          rid: 1468847801570689537
-        childNodes:
-        - 085b9bb012866c849a9147edc1bee213
-        activateAllModules: 0
-    - rid: 1468847801570689511
-      type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u4E3B\u706F\u63A7\u5236"
-        BaseArgs:
-          rid: 1468847801570689538
-        childNodes:
-        - 389caa5a363370b4d95d3c9fdc212770
-        - 2f02a948dbde90b42baadfae52cdd48d
-        lightEnable: 1
-    - rid: 1468847801570689512
-      type: {class: action_mc_property_mainlight, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u706F\u5149\u5C5E\u6027"
-        BaseArgs:
-          rid: 1468847801570689539
-        PropertyVariables:
-        - rid: 1468847801570689540
-        - rid: 1468847801570689541
-        - rid: 1468847801570689542
-        Light: {fileID: 0}
-    - rid: 1468847801570689513
-      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: Color
-        BaseArgs:
-          rid: 1468847801570689543
-        variable:
-          rid: 1468847801570689544
-    - rid: 1468847801570689514
-      type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u8C03\u8BD5A"
-        BaseArgs:
-          rid: 1468847801570689545
-        childNodes:
-        - 1b98793dcd70d614ea8d5daf96b67b17
-        Prefix: SEVENSTRIKE_____
-        Msg: 0
-    - rid: 1468847801570689515
-      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: Float
-        BaseArgs:
-          rid: 1468847801570689546
-        variable:
-          rid: 1468847801570689547
-    - rid: 1468847801570689516
-      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u7B49\u5F85"
-        BaseArgs:
-          rid: 1468847801570689548
-        childNodes:
-        - 1c1ec7234686e4140939e8b0f3f836f7
-        Time: 1
-    - rid: 1468847801570689517
-      type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u8C03\u8BD5B"
-        BaseArgs:
-          rid: 1468847801570689549
-        childNodes: []
-        Prefix: SEVENSTRIKE_____
-        Msg: RGBA(1.000, 0.411, 0.000, 1.000)
-    - rid: 1468847801570689518
-      type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u4E3B\u706F\u63A7\u5236"
-        BaseArgs:
-          rid: 1468847801570689550
-        childNodes: []
-        lightEnable: 0
-    - rid: 1468847801570689519
-      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
-        BaseArgs:
-          rid: 1468847801570689551
-        childNodes:
-        - c65aa6ee90d2dac4894f9f570f7ced5c
-        activateState: 1
-        activateName: Module_A
-    - rid: 1468847801570689520
-      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u7B49\u5F85"
-        BaseArgs:
-          rid: 1468847801570689552
-        childNodes:
-        - e3381e7063b155345b1a16be3564d986
-        Time: 1
-    - rid: 1468847801570689521
-      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u7B49\u5F85"
-        BaseArgs:
-          rid: 1468847801570689553
-        childNodes:
-        - 49493852bb3ba2d4a8f487e5e16b3be6
-        Time: 1
-    - rid: 1468847801570689522
-      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
-        BaseArgs:
-          rid: 1468847801570689554
-        childNodes:
-        - 7c73ae07359c2cd4b93b65a98df67704
-        activateState: 1
-        activateName: Module_B
-    - rid: 1468847801570689523
-      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u7B49\u5F85"
-        BaseArgs:
-          rid: 1468847801570689555
-        childNodes:
-        - b09f88630cf9b7145a799d27ee16d73b
-        Time: 1
-    - rid: 1468847801570689524
-      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
-        BaseArgs:
-          rid: 1468847801570689556
-        childNodes:
-        - b4e418ebef787f44195e811df2014b5a
-        activateState: 1
-        activateName: Module_C
-    - rid: 1468847801570689525
-      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
-        BaseArgs:
-          rid: 1468847801570689557
-        childNodes:
-        - a1c6c525473e1e949a8a45e222dad764
-        activateState: 1
-        activateName: Module_D
-    - rid: 1468847801570689526
-      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u7B49\u5F85"
-        BaseArgs:
-          rid: 1468847801570689558
-        childNodes:
-        - 3bb86f984067697408c2c6cef6ca059e
-        - ca3ff8c5c5d1b434ab5abd2a884bd4fb
-        Time: 1
-    - rid: 1468847801570689527
-      type: {class: xAction_Relay, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u5EF6\u5C55"
-        BaseArgs:
-          rid: 1468847801570689559
-        childNodes:
-        - 0f2f231aa469a984c96e28506089137d
-    - rid: 1468847801570689528
-      type: {class: action_mc_modules_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B\uFF08\u5168\u90E8\uFF09"
-        BaseArgs:
-          rid: 1468847801570689560
-        childNodes: []
-        activateState: 0
-    - rid: 1468847801570689529
-      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        identifyName: String
-        BaseArgs:
-          rid: 1468847801570689561
-        variable:
-          rid: 1468847801570689562
-    - rid: 1468847801570689530
-      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: delay
-        description: "\u5EF6\u8FDF\u65F6\u95F4"
-        guid_n: 72e0c236638023f4e8d25cb576a3385c
-        guid_v: 3de2587cccfed5d49a079c0e784c6d3c
-        type: 1
-        variable:
-          rid: 1468847801570689563
-        transparent: 0
-        position: {x: 842.1947, y: -30.000015}
-        size: {x: 129, y: 38}
-    - rid: 1468847801570689531
-      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: interval
-        description: Float
-        guid_n: 7814e76f21c5b9b4791842c5a3ff3b66
-        guid_v: e82ae42d0fe19794aa410e2bf7b50494
-        type: 1
-        variable:
-          rid: 1468847801570689564
-        transparent: 0
-        position: {x: 2546, y: -283}
-        size: {x: 146, y: 38}
-    - rid: 1468847801570689532
-      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: interval
-        description: Float
-        guid_n: 420da2d2cbd2bb947b9ce4c393f5f21e
-        guid_v: e82ae42d0fe19794aa410e2bf7b50494
-        type: 1
-        variable:
-          rid: 1468847801570689565
-        transparent: 0
-        position: {x: 2012, y: -283}
-        size: {x: 146, y: 38}
-    - rid: 1468847801570689533
-      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: interval
-        description: Float
-        guid_n: ad9ac97842ec3c74f98995ec34795625
-        guid_v: e82ae42d0fe19794aa410e2bf7b50494
-        type: 1
-        variable:
-          rid: 1468847801570689566
-        transparent: 0
-        position: {x: 2279, y: -283}
-        size: {x: 146, y: 38}
-    - rid: 1468847801570689534
-      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: delay
-        description: "\u5EF6\u8FDF\u65F6\u95F4"
-        guid_n: 3a9f3fdc1c2a6cc4893b2d4fda0a8b8b
-        guid_v: 3de2587cccfed5d49a079c0e784c6d3c
-        type: 1
-        variable:
-          rid: 1468847801570689567
-        transparent: 0
-        position: {x: 2609.9075, y: 131.00002}
-        size: {x: 129, y: 38}
-    - rid: 1468847801570689535
-      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: delay
-        guid: 3de2587cccfed5d49a079c0e784c6d3c
-        description: "\u5EF6\u8FDF\u65F6\u95F4"
-        type: 1
-        value: 1
-    - rid: 1468847801570689536
-      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        name: interval
-        guid: e82ae42d0fe19794aa410e2bf7b50494
-        description: Float
-        type: 1
-        value: 1
-    - rid: 1468847801570689537
-      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        content: 
-        guid: 6aab1e5b1d389164ab868d3c33fcc500
-        namespaces: SevenStrikeModules.XGraph
-        classes: action_mc_
-        actionNodeType: module_initialize
-        icon: 392aaff70f0ba134c99baa862febcd71
-        visualNodeType: graph_mc_module_initialize
-        nodeGraphPosition: {x: 801.1947, y: -153.99998}
-        nodeGraphSize: {x: 170, y: 86}
-        themeSolution: 
-        themeColor: {r: 1, g: 1, b: 1, a: 1}
-        isConcurrentExecution: 0
-        HasAvatar: 0
-        TransparentNode: 0
-        Avatar: {fileID: 0}
-        NodeIcon: {fileID: 0}
-        RootAsset: {fileID: 11400000}
-        isStartNode: 1
-        ParentNodeGuid: 
-        VariableDatas: []
-        InternalVariableDatas: []
-        binded_propertys: []
-    - rid: 1468847801570689538
-      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        content: 
-        guid: 1c1ec7234686e4140939e8b0f3f836f7
-        namespaces: SevenStrikeModules.XGraph
-        classes: action_mc_
-        actionNodeType: mainlight_control
-        icon: aebbed90eb11e364fbf2831156f5e6e9
-        visualNodeType: graph_mc_mainlight_control
-        nodeGraphPosition: {x: 1285.1947, y: -172.99998}
-        nodeGraphSize: {x: 166, y: 100}
-        themeSolution: "\u81EA\u5B9A\u4E49"
-        themeColor: {r: 0.22352941, g: 1, b: 0.67058825, a: 1}
-        isConcurrentExecution: 1
-        HasAvatar: 0
-        TransparentNode: 0
-        Avatar: {fileID: 0}
-        NodeIcon: {fileID: 0}
-        RootAsset: {fileID: 11400000}
-        isStartNode: 0
-        ParentNodeGuid: 085b9bb012866c849a9147edc1bee213
-        VariableDatas: []
-        InternalVariableDatas: []
-        binded_propertys: []
-    - rid: 1468847801570689539
-      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
-      data:
-        content: 
-        guid: 1b9920fe2222dc34a9fa17675fe376cf
-        namespaces: SevenStrikeModules.XGraph
-        classes: action_mc_
-        actionNodeType: property_mainlight
-        icon: aebbed90eb11e364fbf2831156f5e6e9
-        visualNodeType: graph_mc_property_mainlight
-        nodeGraphPosition: {x: 1045.1947, y: 66}
-        nodeGraphSize: {x: 166, y: 156}
-        themeSolution: 
-        themeColor: {r: 1, g: 1, b: 1, a: 1}
-        isConcurrentExecution: 0
-        HasAvatar: 0
-        TransparentNode: 0
-        Avatar: {fileID: 0}
-        NodeIcon: {fileID: 0}
-        RootAsset: {fileID: 11400000}
-        isStartNode: 0
-        ParentNodeGuid: 
-        VariableDatas: []
-        InternalVariableDatas: []
-        binded_propertys: []
     - rid: 1468847801570689540
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
@@ -503,7 +164,346 @@ MonoBehaviour:
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
         type: 7
         value: {r: 1, g: 0.411, b: 0, a: 1}
-    - rid: 1468847801570689543
+    - rid: 8267913619029623060
+      type: {class: action_mc_module_initialize, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u521D\u59CB\u5316"
+        BaseArgs:
+          rid: 8267913619029623087
+        childNodes:
+        - 085b9bb012866c849a9147edc1bee213
+        activateAllModules: 0
+    - rid: 8267913619029623061
+      type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u4E3B\u706F\u63A7\u5236"
+        BaseArgs:
+          rid: 8267913619029623088
+        childNodes:
+        - 389caa5a363370b4d95d3c9fdc212770
+        - 2f02a948dbde90b42baadfae52cdd48d
+        lightEnable: 1
+    - rid: 8267913619029623062
+      type: {class: action_mc_property_mainlight, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u706F\u5149\u5C5E\u6027"
+        BaseArgs:
+          rid: 8267913619029623089
+        PropertyVariables:
+        - rid: 1468847801570689540
+        - rid: 1468847801570689541
+        - rid: 1468847801570689542
+        Light: {fileID: 0}
+    - rid: 8267913619029623063
+      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: Color
+        BaseArgs:
+          rid: 8267913619029623090
+        variable:
+          rid: 8267913619029623091
+    - rid: 8267913619029623064
+      type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u8C03\u8BD5A"
+        BaseArgs:
+          rid: 8267913619029623092
+        childNodes:
+        - 1b98793dcd70d614ea8d5daf96b67b17
+        Prefix: SEVENSTRIKE_____
+        Msg: 0
+    - rid: 8267913619029623065
+      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: Float
+        BaseArgs:
+          rid: 8267913619029623093
+        variable:
+          rid: 8267913619029623094
+    - rid: 8267913619029623066
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        BaseArgs:
+          rid: 8267913619029623095
+        childNodes:
+        - 1c1ec7234686e4140939e8b0f3f836f7
+        Time: 1
+    - rid: 8267913619029623067
+      type: {class: xAction_Debug, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u8C03\u8BD5B"
+        BaseArgs:
+          rid: 8267913619029623096
+        childNodes: []
+        Prefix: SEVENSTRIKE_____
+        Msg: RGBA(1.000, 0.411, 0.000, 1.000)
+    - rid: 8267913619029623068
+      type: {class: action_mc_mainlight_control, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u4E3B\u706F\u63A7\u5236"
+        BaseArgs:
+          rid: 8267913619029623097
+        childNodes: []
+        lightEnable: 0
+    - rid: 8267913619029623069
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 8267913619029623098
+        childNodes:
+        - c65aa6ee90d2dac4894f9f570f7ced5c
+        activateState: 1
+        activateName: Module_A
+    - rid: 8267913619029623070
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        BaseArgs:
+          rid: 8267913619029623099
+        childNodes:
+        - e3381e7063b155345b1a16be3564d986
+        Time: 1
+    - rid: 8267913619029623071
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        BaseArgs:
+          rid: 8267913619029623100
+        childNodes:
+        - 49493852bb3ba2d4a8f487e5e16b3be6
+        Time: 1
+    - rid: 8267913619029623072
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 8267913619029623101
+        childNodes:
+        - 7c73ae07359c2cd4b93b65a98df67704
+        activateState: 1
+        activateName: Module_B
+    - rid: 8267913619029623073
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        BaseArgs:
+          rid: 8267913619029623102
+        childNodes:
+        - b09f88630cf9b7145a799d27ee16d73b
+        Time: 1
+    - rid: 8267913619029623074
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 8267913619029623103
+        childNodes:
+        - b4e418ebef787f44195e811df2014b5a
+        activateState: 1
+        activateName: Module_C
+    - rid: 8267913619029623075
+      type: {class: action_mc_module_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B"
+        BaseArgs:
+          rid: 8267913619029623104
+        childNodes:
+        - a1c6c525473e1e949a8a45e222dad764
+        activateState: 1
+        activateName: Module_D
+    - rid: 8267913619029623076
+      type: {class: xAction_Wait, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u7B49\u5F85"
+        BaseArgs:
+          rid: 8267913619029623105
+        childNodes:
+        - 3bb86f984067697408c2c6cef6ca059e
+        - ca3ff8c5c5d1b434ab5abd2a884bd4fb
+        Time: 1
+    - rid: 8267913619029623077
+      type: {class: xAction_Relay, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u5EF6\u5C55"
+        BaseArgs:
+          rid: 8267913619029623106
+        childNodes:
+        - 0f2f231aa469a984c96e28506089137d
+    - rid: 8267913619029623078
+      type: {class: action_mc_modules_activate, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: "\u6A21\u7EC4\u6FC0\u6D3B\uFF08\u5168\u90E8\uFF09"
+        BaseArgs:
+          rid: 8267913619029623107
+        childNodes: []
+        activateState: 0
+    - rid: 8267913619029623079
+      type: {class: xAction_Variable, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        identifyName: String
+        BaseArgs:
+          rid: 8267913619029623108
+        variable:
+          rid: 8267913619029623109
+    - rid: 8267913619029623080
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: delay
+        description: "\u5EF6\u8FDF\u65F6\u95F4"
+        guid_n: 72e0c236638023f4e8d25cb576a3385c
+        guid_v: 3de2587cccfed5d49a079c0e784c6d3c
+        type: 1
+        variable:
+          rid: 8267913619029623110
+        transparent: 0
+        position: {x: 842.1947, y: -30.000015}
+        size: {x: 129, y: 38}
+    - rid: 8267913619029623081
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: interval
+        description: Float
+        guid_n: 7814e76f21c5b9b4791842c5a3ff3b66
+        guid_v: e82ae42d0fe19794aa410e2bf7b50494
+        type: 1
+        variable:
+          rid: 8267913619029623111
+        transparent: 0
+        position: {x: 2546, y: -283}
+        size: {x: 146, y: 38}
+    - rid: 8267913619029623082
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: interval
+        description: Float
+        guid_n: 420da2d2cbd2bb947b9ce4c393f5f21e
+        guid_v: e82ae42d0fe19794aa410e2bf7b50494
+        type: 1
+        variable:
+          rid: 8267913619029623112
+        transparent: 0
+        position: {x: 2012, y: -283}
+        size: {x: 146, y: 38}
+    - rid: 8267913619029623083
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: interval
+        description: Float
+        guid_n: ad9ac97842ec3c74f98995ec34795625
+        guid_v: e82ae42d0fe19794aa410e2bf7b50494
+        type: 1
+        variable:
+          rid: 8267913619029623113
+        transparent: 0
+        position: {x: 2279, y: -283}
+        size: {x: 146, y: 38}
+    - rid: 8267913619029623084
+      type: {class: xVariableData, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: delay
+        description: "\u5EF6\u8FDF\u65F6\u95F4"
+        guid_n: 3a9f3fdc1c2a6cc4893b2d4fda0a8b8b
+        guid_v: 3de2587cccfed5d49a079c0e784c6d3c
+        type: 1
+        variable:
+          rid: 8267913619029623114
+        transparent: 0
+        position: {x: 2609.9075, y: 131.00002}
+        size: {x: 129, y: 38}
+    - rid: 8267913619029623085
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: delay
+        guid: 3de2587cccfed5d49a079c0e784c6d3c
+        description: "\u5EF6\u8FDF\u65F6\u95F4"
+        type: 1
+        value: 1
+    - rid: 8267913619029623086
+      type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        name: interval
+        guid: e82ae42d0fe19794aa410e2bf7b50494
+        description: Float
+        type: 1
+        value: 1
+    - rid: 8267913619029623087
+      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        content: 
+        guid: 6aab1e5b1d389164ab868d3c33fcc500
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        actionNodeType: module_initialize
+        icon: 392aaff70f0ba134c99baa862febcd71
+        visualNodeType: graph_mc_module_initialize
+        nodeGraphPosition: {x: 801.1947, y: -153.99998}
+        nodeGraphSize: {x: 170, y: 86}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 1
+        ParentNodeGuid: 
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
+    - rid: 8267913619029623088
+      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        content: 
+        guid: 1c1ec7234686e4140939e8b0f3f836f7
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        actionNodeType: mainlight_control
+        icon: aebbed90eb11e364fbf2831156f5e6e9
+        visualNodeType: graph_mc_mainlight_control
+        nodeGraphPosition: {x: 1285.1947, y: -172.99998}
+        nodeGraphSize: {x: 166, y: 100}
+        themeSolution: "\u81EA\u5B9A\u4E49"
+        themeColor: {r: 0.22352941, g: 1, b: 0.67058825, a: 1}
+        isConcurrentExecution: 1
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: 085b9bb012866c849a9147edc1bee213
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
+    - rid: 8267913619029623089
+      type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
+      data:
+        content: 
+        guid: 1b9920fe2222dc34a9fa17675fe376cf
+        namespaces: SevenStrikeModules.XGraph
+        classes: action_mc_
+        actionNodeType: property_mainlight
+        icon: aebbed90eb11e364fbf2831156f5e6e9
+        visualNodeType: graph_mc_property_mainlight
+        nodeGraphPosition: {x: 1045.1947, y: 66}
+        nodeGraphSize: {x: 166, y: 156}
+        themeSolution: 
+        themeColor: {r: 1, g: 1, b: 1, a: 1}
+        isConcurrentExecution: 0
+        HasAvatar: 0
+        TransparentNode: 0
+        Avatar: {fileID: 0}
+        NodeIcon: {fileID: 0}
+        RootAsset: {fileID: 11400000}
+        isStartNode: 0
+        ParentNodeGuid: 
+        VariableDatas: []
+        InternalVariableDatas: []
+        binded_propertys: []
+    - rid: 8267913619029623090
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -534,7 +534,7 @@ MonoBehaviour:
           Property_PortType: SevenStrikeModules.XGraph.Variable_Color
           Action_PortName: 
           Action_PortType: SevenStrikeModules.XGraph.Variable_Color
-    - rid: 1468847801570689544
+    - rid: 8267913619029623091
       type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Color
@@ -542,7 +542,7 @@ MonoBehaviour:
         description: 
         type: 7
         value: {r: 1, g: 0.411, b: 0, a: 1}
-    - rid: 1468847801570689545
+    - rid: 8267913619029623092
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -569,13 +569,13 @@ MonoBehaviour:
         - TargetPortName: "\u5BF9\u8C61"
           VariableNodeGuid: a9ba6db60d031664db95b360ef086225
           variable:
-            rid: 1468847801570689568
+            rid: 8267913619029623115
         - TargetPortName: "\u524D\u7F00"
           VariableNodeGuid: e0a5cb178a40ae445aec9656b3ec3e89
           variable:
-            rid: 1468847801570689569
+            rid: 8267913619029623116
         binded_propertys: []
-    - rid: 1468847801570689546
+    - rid: 8267913619029623093
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -606,7 +606,7 @@ MonoBehaviour:
           Property_PortType: SevenStrikeModules.XGraph.Variable_Float
           Action_PortName: 
           Action_PortType: SevenStrikeModules.XGraph.Variable_Float
-    - rid: 1468847801570689547
+    - rid: 8267913619029623094
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: Float
@@ -614,7 +614,7 @@ MonoBehaviour:
         description: 
         type: 1
         value: 0
-    - rid: 1468847801570689548
+    - rid: 8267913619029623095
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -640,10 +640,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 72e0c236638023f4e8d25cb576a3385c
           variable:
-            rid: 1468847801570689570
+            rid: 8267913619029623117
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689549
+    - rid: 8267913619029623096
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -670,13 +670,13 @@ MonoBehaviour:
         - TargetPortName: "\u5BF9\u8C61"
           VariableNodeGuid: 4e0d762b51436f742a3cb593148676fb
           variable:
-            rid: 1468847801570689571
+            rid: 8267913619029623118
         - TargetPortName: "\u524D\u7F00"
           VariableNodeGuid: e0a5cb178a40ae445aec9656b3ec3e89
           variable:
-            rid: 1468847801570689572
+            rid: 8267913619029623119
         binded_propertys: []
-    - rid: 1468847801570689550
+    - rid: 8267913619029623097
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -701,7 +701,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689551
+    - rid: 8267913619029623098
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -726,7 +726,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689552
+    - rid: 8267913619029623099
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -752,10 +752,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 7814e76f21c5b9b4791842c5a3ff3b66
           variable:
-            rid: 1468847801570689573
+            rid: 8267913619029623120
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689553
+    - rid: 8267913619029623100
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -781,10 +781,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 420da2d2cbd2bb947b9ce4c393f5f21e
           variable:
-            rid: 1468847801570689574
+            rid: 8267913619029623121
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689554
+    - rid: 8267913619029623101
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -809,7 +809,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689555
+    - rid: 8267913619029623102
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -835,10 +835,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: ad9ac97842ec3c74f98995ec34795625
           variable:
-            rid: 1468847801570689575
+            rid: 8267913619029623122
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689556
+    - rid: 8267913619029623103
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -863,7 +863,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689557
+    - rid: 8267913619029623104
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -888,7 +888,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689558
+    - rid: 8267913619029623105
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -914,10 +914,10 @@ MonoBehaviour:
         - TargetPortName: "\u65F6\u95F4"
           VariableNodeGuid: 3a9f3fdc1c2a6cc4893b2d4fda0a8b8b
           variable:
-            rid: 1468847801570689576
+            rid: 8267913619029623123
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689559
+    - rid: 8267913619029623106
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -942,7 +942,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689560
+    - rid: 8267913619029623107
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -967,7 +967,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689561
+    - rid: 8267913619029623108
       type: {class: class_ActionBaseArgs, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         content: 
@@ -992,7 +992,7 @@ MonoBehaviour:
         VariableDatas: []
         InternalVariableDatas: []
         binded_propertys: []
-    - rid: 1468847801570689562
+    - rid: 8267913619029623109
       type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: String
@@ -1000,7 +1000,7 @@ MonoBehaviour:
         description: 
         type: 0
         value: SEVENSTRIKE_____
-    - rid: 1468847801570689563
+    - rid: 8267913619029623110
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -1008,7 +1008,7 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847801570689564
+    - rid: 8267913619029623111
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1016,7 +1016,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689565
+    - rid: 8267913619029623112
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1024,7 +1024,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689566
+    - rid: 8267913619029623113
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1032,7 +1032,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689567
+    - rid: 8267913619029623114
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -1040,15 +1040,15 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847801570689568
+    - rid: 8267913619029623115
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
-        name: Float
+        name: "\u5F3A\u5EA6"
         guid: 33c087facb822bf4aa0b34c1ef3c05ba
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u5F3A\u5EA6"
         type: 1
         value: 0
-    - rid: 1468847801570689569
+    - rid: 8267913619029623116
       type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: String
@@ -1056,7 +1056,7 @@ MonoBehaviour:
         description: 
         type: 0
         value: SEVENSTRIKE_____
-    - rid: 1468847801570689570
+    - rid: 8267913619029623117
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
@@ -1064,15 +1064,15 @@ MonoBehaviour:
         description: "\u5EF6\u8FDF\u65F6\u95F4"
         type: 1
         value: 1
-    - rid: 1468847801570689571
+    - rid: 8267913619029623118
       type: {class: Variable_Color, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
-        name: Color
+        name: "\u989C\u8272"
         guid: 95049c932c89da741a5fba004b1b5ad8
         description: "\u5B9E\u65F6\u83B7\u53D6\u5230\u7684 - \u706F\u5149\u989C\u8272"
         type: 7
         value: {r: 1, g: 0.411, b: 0, a: 1}
-    - rid: 1468847801570689572
+    - rid: 8267913619029623119
       type: {class: Variable_String, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: String
@@ -1080,7 +1080,7 @@ MonoBehaviour:
         description: 
         type: 0
         value: SEVENSTRIKE_____
-    - rid: 1468847801570689573
+    - rid: 8267913619029623120
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1088,7 +1088,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689574
+    - rid: 8267913619029623121
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1096,7 +1096,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689575
+    - rid: 8267913619029623122
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: interval
@@ -1104,7 +1104,7 @@ MonoBehaviour:
         description: Float
         type: 1
         value: 1
-    - rid: 1468847801570689576
+    - rid: 8267913619029623123
       type: {class: Variable_Float, ns: SevenStrikeModules.XGraph, asm: Assembly-CSharp}
       data:
         name: delay
