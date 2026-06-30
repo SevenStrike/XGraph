@@ -14,7 +14,7 @@ XGraph 是一款基于 Unity Editor 的可视化节点编辑器插件，专为�
 
 <br>
 
-### 🎯 此版本为Json数据版本，如果您需要ScriptableObject版本请选择 Standard 分支 ！！
+### 🎯 此版本为 “Json数据驱动” 版本，如果您需要 “ScriptableObject数据驱动” 版本请选择 standard 分支 ！！
 
 <br>
 
